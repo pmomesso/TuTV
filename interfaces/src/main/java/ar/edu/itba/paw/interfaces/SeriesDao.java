@@ -10,4 +10,9 @@ public interface SeriesDao {
     Series getSeriesById(final long id);
     long createSeries(String seriesName, String seriesDescription);
 
+    void addSeriesGenre(long seriesId, String genre);
+
+    void setSeriesRunningTime(long seriesId, int runningTime);
+    void setSeriesNetwork(long seriesId, String network);
+    void setSeriesDescription(long seriesId, String seriesDescription);
 }

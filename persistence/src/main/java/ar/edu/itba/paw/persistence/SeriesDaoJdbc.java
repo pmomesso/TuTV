@@ -17,15 +17,19 @@ import java.util.Map;
 public class SeriesDaoJdbc implements SeriesDao {
 
     private RowMapper<Series> seriesRowMapper = (resultSet, i) -> {
-        Series ret = new Series(resultSet.getString("seriesName"));
-        String description = resultSet.getString("seriesDescription");
+        Series ret = new Series(resultSet.getString("name"));
+        String description = resultSet.getString("description");
         if (description != null) {
             ret.setDescription(description);
         }
-        Double userRating = resultSet.getDouble("userRating");
-        if(userRating != null) {
+        double userRating = resultSet.getDouble("userRating");
+        if(Double.compare(userRating, 0) != 0) {
             ret.setUserRating(userRating);
         }
+        String network = resultSet.getString("network");
+        ret.setNetwork(network);
+        int runningTime = resultSet.getInt("runningTime");
+        ret.setRunningTime(runningTime);
         return ret;
     };
 
@@ -38,11 +42,21 @@ public class SeriesDaoJdbc implements SeriesDao {
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("series")
                 .usingGeneratedKeyColumns("id");
+        /**Create tables related to series*/
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS series(" +
                 "id SERIAL PRIMARY KEY," +
                 "name VARCHAR(32)," +
                 "description VARCHAR(256)," +
-                "userRating FLOAT" +
+                "userRating FLOAT," +
+                "network VARCHAR(16)," +
+                "status VARCHAR(16)," +
+                "runtime INTEGER" +
+                ")");
+        /**Create tables for genres*/
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS genres(" +
+                "id INTEGER REFERENCES series(id)," +
+                "genre VARCHAR(16)," +
+                "UNIQUE(id, genre)" +
                 ")");
     }
 
@@ -62,6 +76,10 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public long createSeries(String seriesName, String seriesDescription) {
+
+        jdbcInsert = jdbcInsert.withTableName("series")
+                                .usingGeneratedKeyColumns("id");
+
         Map<String, Object> args = new HashMap<>();
         args.put("name", seriesName);
         args.put("description", seriesDescription);
@@ -70,6 +88,31 @@ public class SeriesDaoJdbc implements SeriesDao {
         return seriesId.longValue();
     }
 
+    @Override
+    public void addSeriesGenre(long seriesId, String genre) {
 
+        jdbcInsert = jdbcInsert.withTableName("genres");
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("id", seriesId);
+        args.put("genre", genre);
+
+        jdbcInsert.execute(args);
+    }
+
+    @Override
+    public void setSeriesRunningTime(long seriesId, int runningTime) {
+        jdbcTemplate.update("UPDATE series SET runningTime = ? WHERE id = ?", runningTime, seriesId);
+    }
+
+    @Override
+    public void setSeriesNetwork(long seriesId, String network) {
+        jdbcTemplate.update("UPDATE series SET network = ? WHERE id = ?", network, seriesId);
+    }
+
+    @Override
+    public void setSeriesDescription(long seriesId, String description) {
+        jdbcTemplate.update("UPDATE series SET description = ? WHERE id = ?", description, seriesId);
+    }
 
 }

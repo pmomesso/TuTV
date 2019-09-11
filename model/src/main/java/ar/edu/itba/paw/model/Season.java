@@ -8,6 +8,8 @@ public class Season {
     private String name;
     private String description;
     private double userRating;
+    private int numEpisodes;
+
     private List<Episode> episodeList = new LinkedList<Episode>();
 
     public Season(String name, String description) {
@@ -37,6 +39,10 @@ public class Season {
 
     public void setUserRating(double userRating) {
         this.userRating = userRating;
+    }
+
+    public void setNumEpisodes(int numEpisodes) {
+        this.numEpisodes = numEpisodes;
     }
 
 }

@@ -4,6 +4,7 @@ public class Actor {
 
     private String name;
     private int age;
+    private double actorUserRating;
 
     public Actor(String name, int age) {
         this.name = name;
@@ -22,4 +23,13 @@ public class Actor {
     public int getAge() {
         return age;
     }
+
+    public double getActorUserRating() {
+        return this.actorUserRating;
+    }
+
+    public void setActorUserRating(double actorUserRating) {
+        this.actorUserRating = actorUserRating;
+    }
+
 }

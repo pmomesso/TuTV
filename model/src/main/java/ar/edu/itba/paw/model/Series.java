@@ -8,7 +8,10 @@ public class Series  {
 
     private String seriesName;
     private String seriesDescription;
+    private String network;
     private double userRating;
+    private int runningTime;
+    private List<String> genresList = new LinkedList<String>();
     private List<Season> seasonList = new LinkedList<Season>();
     private List<Actor> actorList = new LinkedList<Actor>();
 
@@ -47,6 +50,18 @@ public class Series  {
 
     public void addSeason(Season season) {
         seasonList.add(season);
+    }
+
+    public void addGenre(String genre) {
+        genresList.add(genre);
+    }
+
+    public void setRunningTime(int runningTime) {
+        this.runningTime = runningTime;
+    }
+
+    public void setNetwork(String network) {
+        this.network = network;
     }
 
 }
