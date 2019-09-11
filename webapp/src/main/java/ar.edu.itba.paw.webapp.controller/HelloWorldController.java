@@ -36,6 +36,7 @@ public class HelloWorldController {
 	}
 	//No quiero repetirle todo el tiempo el path "WEB-INF/jsp/.." entonces configuro mi propio view resolver en web config
 
+	//Lo puse por testeo inicial del dao de user, no debería ir ésto...
 	@RequestMapping("/createuser")
 	public ModelAndView createUser(@RequestParam(value = "name", required = true) final String userName) {
 		final long id = us.createUser(userName);
