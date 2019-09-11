@@ -1,13 +1,10 @@
 package ar.edu.itba.paw.model;
 
-/**
- * Hello world!
- *
- */
-public class User 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+public class User {
+
+    private String userName;
+    public User(String username) {
+        this.userName = userName;
     }
+
 }

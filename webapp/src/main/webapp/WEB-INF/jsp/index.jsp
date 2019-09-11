@@ -14,11 +14,11 @@
 
     <!-- Bootstrap core CSS -->
     <link href="../../resources/css/bootstrap.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" media="screen" href="../../resources/css/tvst.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="/resources/css/tvst.css">
 
-    <script src="../../resources/js/jquery.min.js"></script>
-    <script src="../../resources/js/popper.min.js"></script>
-    <script src="../../resources/js/bootstrap.js"></script>
+    <script src="/resources/js/jquery.min.js"></script>
+    <script src="/resources/js/popper.min.js"></script>
+    <script src="/resources/js/bootstrap.js"></script>
   </head>
 
   <body id="container" class="home no-touch white   reduced-right ">
