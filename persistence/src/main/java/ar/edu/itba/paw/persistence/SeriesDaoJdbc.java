@@ -28,7 +28,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         }
         String network = resultSet.getString("network");
         ret.setNetwork(network);
-        int runningTime = resultSet.getInt("runningTime");
+        int runningTime = resultSet.getInt("runtime");
         ret.setRunningTime(runningTime);
         return ret;
     };
