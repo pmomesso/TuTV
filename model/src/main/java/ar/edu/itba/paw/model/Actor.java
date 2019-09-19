@@ -1,10 +1,14 @@
 package ar.edu.itba.paw.model;
 
+import java.util.Date;
+
 public class Actor {
 
     private String name;
     private int age;
     private double actorUserRating;
+    private Date created;
+    private Date updated;
 
     public Actor(String name, int age) {
         this.name = name;

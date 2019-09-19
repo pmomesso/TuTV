@@ -4,11 +4,20 @@ public class Episode {
 
     private String name;
     private String description;
+    private int episodeNumber;
     private double userRating;
 
     public Episode(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    public int getEpisodeNumber() {
+        return episodeNumber;
+    }
+
+    public void setEpisodeNumber(int episodeNumber) {
+        this.episodeNumber = episodeNumber;
     }
 
     public String getName() {

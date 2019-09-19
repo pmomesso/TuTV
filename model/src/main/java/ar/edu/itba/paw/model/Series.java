@@ -1,6 +1,6 @@
 package ar.edu.itba.paw.model;
 
-
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,19 +9,58 @@ public class Series  {
     private String seriesName;
     private String seriesDescription;
     private String network;
+    private String rating;
     private double userRating;
     private int runningTime;
-    private List<String> genresList = new LinkedList<String>();
-    private List<Season> seasonList = new LinkedList<Season>();
-    private List<Actor> actorList = new LinkedList<Actor>();
+    private int status;
+    private long imbdId;
+    private Date firstAired;
+    private Date added;
+    private Date updated;
+    private List<ActorRole> actorList = new LinkedList<ActorRole>();
+    private List<Genre> genresList = new LinkedList<>();
 
     public Series(String seriesName) {
         this.seriesName = seriesName;
     }
 
+    public Series() {}
+
     public Series(String seriesName, String seriesDescription) {
         this.seriesName = seriesName;
         this.seriesDescription = seriesDescription;
+    }
+
+    public String getNetwork() {
+        return network;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public int getRunningTime() {
+        return runningTime;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public long getImbdId() {
+        return imbdId;
+    }
+
+    public Date getFirstAired() {
+        return firstAired;
+    }
+
+    public Date getAdded() {
+        return added;
+    }
+
+    public Date getUpdated() {
+        return updated;
     }
 
     public double getUserRating() {
@@ -44,15 +83,11 @@ public class Series  {
         this.userRating = userRating;
     }
 
-    public void addActor(Actor actor) {
-        actorList.add(actor);
+    public void addActor(ActorRole actorRole) {
+        actorList.add(actorRole);
     }
 
-    public void addSeason(Season season) {
-        seasonList.add(season);
-    }
-
-    public void addGenre(String genre) {
+    public void addGenre(Genre genre) {
         genresList.add(genre);
     }
 

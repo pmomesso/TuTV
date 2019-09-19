@@ -42,7 +42,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("series")
                 .usingGeneratedKeyColumns("id");
-        /**Create tables related to series*/
+        /**Create tables for series*/
         jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS series(" +
                 "id SERIAL PRIMARY KEY," +
                 "name VARCHAR(32)," +
