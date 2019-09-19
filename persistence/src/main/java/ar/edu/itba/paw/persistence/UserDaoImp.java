@@ -32,11 +32,6 @@ public class UserDaoImp implements UserDao {
 		jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
 					.withTableName("users")
 					.usingGeneratedKeyColumns("id");
-		jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users (" +
-				"id SERIAL PRIMARY KEY," +
-				"username VARCHAR(32)," +
-				"password VARCHAR(32)" +
-				")");
 	}
 
 

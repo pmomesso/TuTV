@@ -28,7 +28,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         }
         String network = resultSet.getString("network");
         ret.setNetwork(network);
-        int runningTime = resultSet.getInt("runningTime");
+        int runningTime = resultSet.getInt("runtime");
         ret.setRunningTime(runningTime);
         return ret;
     };
@@ -42,22 +42,6 @@ public class SeriesDaoJdbc implements SeriesDao {
         jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("series")
                 .usingGeneratedKeyColumns("id");
-        /**Create tables for series*/
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS series(" +
-                "id SERIAL PRIMARY KEY," +
-                "name VARCHAR(32)," +
-                "description VARCHAR(256)," +
-                "userRating FLOAT," +
-                "network VARCHAR(16)," +
-                "status VARCHAR(16)," +
-                "runtime INTEGER" +
-                ")");
-        /**Create tables for genres*/
-        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS genres(" +
-                "id INTEGER REFERENCES series(id)," +
-                "genre VARCHAR(16)," +
-                "UNIQUE(id, genre)" +
-                ")");
     }
 
     @Override
