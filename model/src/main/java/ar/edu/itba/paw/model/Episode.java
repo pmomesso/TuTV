@@ -5,7 +5,7 @@ public class Episode {
     private String name;
     private String description;
     private int episodeNumber;
-    private double userRating;
+    private Rating userRating;
 
     public Episode(String name, String description) {
         this.name = name;
@@ -28,12 +28,10 @@ public class Episode {
         return description;
     }
 
-    public double getUserRating() {
+    public Rating getUserRating() {
         return userRating;
     }
 
-    public void setUserRating(double userRating) {
-        this.userRating = userRating;
-    }
+    public void setUserRating(Rating rating) { userRating = rating; }
 
 }

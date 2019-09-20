@@ -7,6 +7,7 @@ public class Season {
     private String name;
     private List<Episode> episodeList;
     private int seasonNumber;
+    private Rating userRating;
 
     public String getName() {
         return name;
@@ -31,4 +32,13 @@ public class Season {
     public void setSeasonNumber(int seasonNumber) {
         this.seasonNumber = seasonNumber;
     }
+
+    public Rating getUserRating() {
+        return userRating;
+    }
+
+    public void setUserRating() {
+
+    }
+
 }

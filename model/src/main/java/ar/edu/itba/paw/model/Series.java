@@ -8,7 +8,7 @@ public class Series  {
     private String seriesDescription;
     private String network;
     private String rating;
-    private double userRating;
+    private Rating userRating;
     private int runningTime;
     private int status;
     private long imbdId;
@@ -61,9 +61,11 @@ public class Series  {
         return updated;
     }
 
-    public double getUserRating() {
+    public Rating getUserRating() {
         return userRating;
     }
+
+    public void setUserRating(Rating rating) { userRating = rating; }
 
     public String getSeriesName() {
         return seriesName;
@@ -75,10 +77,6 @@ public class Series  {
 
     public void setDescription(String seriesDescription) {
         this.seriesDescription = seriesDescription;
-    }
-
-    public void setUserRating(Double userRating) {
-        this.userRating = userRating;
     }
 
     public void addActor(ActorRole actorRole) {

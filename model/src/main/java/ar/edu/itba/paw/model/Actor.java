@@ -6,7 +6,7 @@ public class Actor {
 
     private String name;
     private int age;
-    private double actorUserRating;
+    private Rating userRating;
     private Date created;
     private Date updated;
 
@@ -20,6 +20,8 @@ public class Actor {
         this.age = -1;
     }
 
+    public Actor() {}
+
     public String getName() {
         return name;
     }
@@ -28,12 +30,12 @@ public class Actor {
         return age;
     }
 
-    public double getActorUserRating() {
-        return this.actorUserRating;
+    public Rating getUserRating() {
+        return this.userRating;
     }
 
-    public void setActorUserRating(double actorUserRating) {
-        this.actorUserRating = actorUserRating;
+    public void setActorUserRating(Rating rating) {
+        userRating = rating;
     }
 
 }

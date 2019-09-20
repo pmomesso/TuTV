@@ -47,4 +47,6 @@ public class CommentEpisode {
     public void setPoints(int points) {
         this.points = points;
     }
+
+    public void updatePoints(int points) { this.points += points; }
 }

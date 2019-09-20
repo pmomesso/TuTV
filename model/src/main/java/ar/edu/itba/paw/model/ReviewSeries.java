@@ -6,7 +6,7 @@ public class ReviewSeries {
     private String language;
     private String body;
     private Series series;
-    private int points;
+    private Rating userRating;
 
     public User getCommenter() {
         return commenter;
@@ -40,11 +40,15 @@ public class ReviewSeries {
         this.series = series;
     }
 
-    public int getPoints() {
-        return points;
+    public Rating getUserRating() {
+        return userRating;
     }
 
-    public void setPoints(int points) {
-        this.points = points;
+    public void setUserRating(Rating rating) {
+        userRating = rating;
+    }
+
+    public void addPoints(int points) {
+        userRating.update(points);
     }
 }

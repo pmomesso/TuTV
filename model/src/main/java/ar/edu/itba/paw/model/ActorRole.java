@@ -1,23 +1,29 @@
 package ar.edu.itba.paw.model;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class ActorRole {
 
-    private String role;
+    private List<SeriesCharacter> roles = new LinkedList<>();
     private Actor actor;
     private Series series;
 
-    public ActorRole(String role, Actor actor, Series series) {
-        this.role = role;
+    public ActorRole(Actor actor, Series series) {
         this.actor = actor;
         this.series = series;
     }
 
-    public String getRole() {
-        return role;
+    public ActorRole() {}
+
+    public List<SeriesCharacter> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void addRole(String role) {
+        SeriesCharacter sc = new SeriesCharacter();
+        sc.setName(role);
+        roles.add(sc);
     }
 
     public Actor getActor() {
