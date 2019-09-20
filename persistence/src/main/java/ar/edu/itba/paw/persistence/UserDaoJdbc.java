@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import ar.edu.itba.paw.interfaces.UserDao;
 
 @Repository
-public class UserDaoImp implements UserDao {
+public class UserDaoJdbc implements UserDao {
 	
 	private RowMapper<User> rm = (resultSet, i) -> {
 		User user = new User(resultSet.getString("username"));
@@ -27,7 +27,7 @@ public class UserDaoImp implements UserDao {
 	private SimpleJdbcInsert jdbcInsert;
 	
 	@Autowired
-	public UserDaoImp(final DataSource ds) {
+	public UserDaoJdbc(final DataSource ds) {
 		jdbcTemplate = new JdbcTemplate(ds);
 		jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
 					.withTableName("users")

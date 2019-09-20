@@ -12,6 +12,7 @@ public class Series  {
     private Rating userRating;
     private int runningTime;
     private int status;
+    private int numFollowers;
     private long imbdId;
     private long id;
     private Date firstAired;
@@ -113,4 +114,11 @@ public class Series  {
         this.imageUrl = imageUrl;
     }
 
+    public int getNumFollowers() {
+        return numFollowers;
+    }
+
+    public void setNumFollowers(int numFollowers) {
+        this.numFollowers = numFollowers;
+    }
 }

@@ -11,6 +11,6 @@ public interface SeriesService {
     List<Series> getSeriesByGenreAndNumber(Genre genre, int num);
     List<Series> getAllSeriesByGenre(Genre genre);
     Map<Genre, List<Series>> getSeriesByGenreMap(int lowerNumber, int upperNumber);
-
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
+
 }

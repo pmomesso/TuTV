@@ -31,6 +31,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         genre.setName(resultSet.getString("genre"));
         ret.addGenre(genre);
         ret.setId(resultSet.getLong("id"));
+        ret.setNumFollowers(resultSet.getInt("followers"));
         return ret;
     };
 

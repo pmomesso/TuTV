@@ -13,9 +13,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
-import javax.swing.text.html.Option;
-import java.util.Locale;
-import java.util.Optional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -28,7 +25,7 @@ public class UserDaoImplTest {
     @Autowired
     private DataSource ds;
     @Autowired
-    private UserDaoImp userDao;
+    private UserDaoJdbc userDao;
     private JdbcTemplate jdbcTemplate;
 
     @Before
