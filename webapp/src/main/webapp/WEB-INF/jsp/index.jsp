@@ -130,7 +130,7 @@
                       <c:choose>
                         <c:when test="${status.index} eq 0">
                           <div class="carousel-item active">
-                            <img src="${newShow.imageUrl}" itemprop="image">
+                            <img src="${newShow.bannerUrl}" itemprop="image">
                             <div class="carousel-caption">
                               <h2>${newShow.name}</h2>
                               <h3>${newShow.numFollowers} <spring:message code="index.followers"/></h3>
@@ -139,7 +139,7 @@
                         </c:when>
                         <c:otherwise>
                           <div class="carousel-item">
-                            <img src="${newShow.imageUrl}" itemprop="image">
+                            <img src="${newShow.bannerUrl}" itemprop="image">
                             <div class="carousel-caption">
                               <h2>${newShow.name}</h2>
                               <h3>${newShow.numFollowers} <spring:message code="index.followers"/></h3>
@@ -167,7 +167,7 @@
                       <li id="${serie.id}" class=" ">
                         <div class="image-crop">
                           <a href="/serie?id=${serie.id}">
-                            <img src="${serie.imageUrl}"
+                            <img src="${serie.posterUrl}"
                                  alt="${serie.name}">
                           </a>
                           <div class="overlay">
