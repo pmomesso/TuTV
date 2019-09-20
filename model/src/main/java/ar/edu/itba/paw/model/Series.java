@@ -8,7 +8,8 @@ public class Series  {
     private String seriesDescription;
     private String network;
     private String rating;
-    private String imageUrl;
+    private String posterUrl;
+    private String bannerUrl;
     private Rating userRating;
     private int runningTime;
     private int status;
@@ -106,12 +107,12 @@ public class Series  {
         this.id = id;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getPosterUrl() {
+        return posterUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
     }
 
     public int getNumFollowers() {
@@ -120,5 +121,13 @@ public class Series  {
 
     public void setNumFollowers(int numFollowers) {
         this.numFollowers = numFollowers;
+    }
+
+    public String getBannerUrl() {
+        return bannerUrl;
+    }
+
+    public void setBannerUrl(String bannerUrl) {
+        this.bannerUrl = bannerUrl;
     }
 }

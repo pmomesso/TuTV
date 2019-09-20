@@ -89,7 +89,7 @@ create table if not exists genres
 alter table genres owner to root;
 
 alter table series
-	add constraint series_genres_id_fk
+	add constraint if not exists series_genres_id_fk
 		foreign key ("genreId") references genres;
 
 create table if not exists "seriesAiring"
