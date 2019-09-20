@@ -108,41 +108,46 @@
           <div class="main-block-container">
             <div id="explore">
               <section id="new-shows">
-                <h1>New shows</h1>
-                <a href="/en/show/browse?filter=beginning" class="show-all">See all ></a>
+                <h1><spring:message code="index.newShows"/></h1>
+
                 <div id="myCarousel" class="carousel slide" data-ride="carousel">
                   <!-- Carousel indicators -->
                   <ol class="carousel-indicators">
-                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                    <li data-target="#myCarousel" data-slide-to="1"></li>
-                    <li data-target="#myCarousel" data-slide-to="2"></li>
+                    <c:forEach items="${newShows}" var="newShow" varStatus="status">
+                      <c:choose>
+                        <c:when test="${status.index} eq 0">
+                          <li data-target="#myCarousel" data-slide-to="${status.index}" class="active"></li>
+                        </c:when>
+                        <c:otherwise>
+                          <li data-target="#myCarousel" data-slide-to="${status.index}"></li>
+                        </c:otherwise>
+                      </c:choose>
+                    </c:forEach>
                   </ol>
                   <!-- Wrapper for carousel items -->
                   <div class="carousel-inner">
-                    <div class="carousel-item active">
-                      <img src="https://dg31sz3gwrwan.cloudfront.net/fanart/335425/1378230-0-q80.jpg" itemprop="image">
-                      <div class="carousel-caption">
-                        <h2>Infinity Train</h2>
-                        <h3>5,735 followers</h3>
-                        <button class="add-button">Add</button>
-                      </div>
-                    </div>
-                    <div class="carousel-item">
-                      <img src="https://dg31sz3gwrwan.cloudfront.net/fanart/320593/1355946-0-q80.jpg" itemprop="image">
-                      <div class="carousel-caption">
-                        <h2>Alternatino with Arturo Castro</h2>
-                        <h3>915 followers</h3>
-                        <button class="add-button">Add</button>
-                      </div>
-                    </div>
-                    <div class="carousel-item">
-                      <img src="https://dg31sz3gwrwan.cloudfront.net/fanart/339369/1252365-0-q80.jpg" itemprop="image">
-                      <div class="carousel-caption">
-                        <h2>We Were Tomorrow</h2>
-                        <h3>2,907 followers</h3>
-                        <button class="add-button">Add</button>
-                      </div>
-                    </div>
+                    <c:forEach items="${newShows}" var="newShow" varStatus="status">
+                      <c:choose>
+                        <c:when test="${status.index} eq 0">
+                          <div class="carousel-item active">
+                            <img src="${newShow.imageUrl}" itemprop="image">
+                            <div class="carousel-caption">
+                              <h2>${newShow.name}</h2>
+                              <h3>${newShow.numFollowers} <spring:message code="index.followers"/></h3>
+                            </div>
+                          </div>
+                        </c:when>
+                        <c:otherwise>
+                          <div class="carousel-item">
+                            <img src="${newShow.imageUrl}" itemprop="image">
+                            <div class="carousel-caption">
+                              <h2>${newShow.name}</h2>
+                              <h3>${newShow.numFollowers} <spring:message code="index.followers"/></h3>
+                            </div>
+                          </div>
+                        </c:otherwise>
+                      </c:choose>
+                    </c:forEach>
                   </div>
                   <!-- Carousel controls -->
                   <a class="carousel-control-prev" href="#myCarousel" data-slide="prev">
@@ -153,506 +158,39 @@
                   </a>
                 </div>
               </section>
-              <section id="premieres-finales">
-                <h1></i>Premieres and Finales</h1>
-                <a href="/" class="show-all">See all ></a>
-                <ul class="posters-list shows-list explore-list list-unstyled list-inline">
-                  <li id="show-premieres-finales-item-260172" class=" ">
-                    <div class="image-crop">
-                      <a href="/">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/260172/1058334-4-optimized.jpg"
-                             alt="Mighty Car Mods">
-                      </a>
-                      <div class="overlay">
-                        <a href="/" class="zoom-btn overlay-btn" title="Infos"></a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/260172">Mighty Car Mods</a></h2>
-                      <a href="/en/show/260172" class="secondary-link">1,934 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-premieres-finales-item-361721" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/361721">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/361721/1363219-4-optimized.jpg"
-                             alt="Terrace House: Tokyo 2019–2020">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/361721" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/361721">Terrace House: Tokyo 2019–2020</a></h2>
-                      <a href="/en/show/361721" class="secondary-link">928 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-premieres-finales-item-267266" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/267266">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/267266/946132-4-optimized.jpg"
-                             alt="Rachael Ray">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/267266" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/267266">Rachael Ray</a></h2>
-                      <a href="/en/show/267266" class="secondary-link">4,686 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-premieres-finales-item-274399" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/274399">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/274399/1294036-4-optimized.jpg"
-                             alt="Honest Trailers">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/274399" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/274399">Honest Trailers</a></h2>
-                      <a href="/en/show/274399" class="secondary-link">4,309 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-premieres-finales-item-273005" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/273005">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/273005/1260751-4-optimized.jpg"
-                             alt="Ace of Diamond">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/273005" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/273005">Ace of Diamond</a></h2>
-                      <a href="/en/show/273005" class="secondary-link">17,684 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-premieres-finales-item-350468" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/350468">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/350468/1370882-4-optimized.jpg"
-                             alt="الخلاط">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/350468" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/350468">الخلاط</a></h2>
-                      <a href="/en/show/350468" class="secondary-link">504 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-premieres-finales-item-314671" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/314671">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/314671/1286679-4-optimized.jpg"
-                             alt="Sin Senos Sí Hay Paraíso">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/314671" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/314671">Sin Senos Sí Hay Paraíso</a></h2>
-                      <a href="/en/show/314671" class="secondary-link">8,369 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-premieres-finales-item-85019" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/85019">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/85019/1111760-4-optimized.jpg"
-                             alt="Chopped">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/85019" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/85019">Chopped</a></h2>
-                      <a href="/en/show/85019" class="secondary-link">7,660 followers</a>
-                    </div>
-                  </li>
-                </ul>
-              </section>
-              <section id="drama-shows" class="simple">
-                <h1>Drama</h1>
-                <a href="/en/show/browse?genre=drama" class="show-all">See all ></a>
-                <ul class="posters-list shows-list explore-list list-unstyled list-inline">
-                  <li id="show-drama-item-328708" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/328708">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/328708/1379930-4-optimized.jpg"
-                             alt="Mindhunter">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/328708" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/328708">Mindhunter</a></h2>
-                      <a href="/en/show/328708" class="secondary-link">614,451 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-drama-item-321239" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/321239">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/321239/1276900-4-optimized.jpg"
-                             alt="The Handmaid's Tale">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/321239" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/321239">The Handmaid's Tale</a></h2>
-                      <a href="/en/show/321239" class="secondary-link">864,439 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-drama-item-264586" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/264586">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/264586/1294097-4-optimized.jpg"
-                             alt="Orange Is the New Black">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/264586" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/264586">Orange Is the New Black</a></h2>
-                      <a href="/en/show/264586" class="secondary-link">2,884,524 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-drama-item-323225" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/323225">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/323225/1305858-4-optimized.jpg"
-                             alt="Cable Girls">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/323225" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/323225">Cable Girls</a></h2>
-                      <a href="/en/show/323225" class="secondary-link">372,655 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-drama-item-268592" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/268592">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/268592/1276791-4-optimized.jpg"
-                             alt="The 100">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/268592" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/268592">The 100</a></h2>
-                      <a href="/en/show/268592" class="secondary-link">2,879,016 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-drama-item-73762" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/73762">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/73762/1308148-4-optimized.jpg"
-                             alt="Grey's Anatomy">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/73762" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/73762">Grey's Anatomy</a></h2>
-                      <a href="/en/show/73762" class="secondary-link">2,609,921 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-drama-item-83610" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/83610">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/83610/1301758-4-optimized.jpg" alt="Glee">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/83610" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/83610">Glee</a></h2>
-                      <a href="/en/show/83610" class="secondary-link">840,618 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-drama-item-290853" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/290853">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/290853/1366496-4-optimized.jpg"
-                             alt="Fear the Walking Dead">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/290853" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/290853">Fear the Walking Dead</a></h2>
-                      <a href="/en/show/290853" class="secondary-link">1,047,252 followers</a>
-                    </div>
-                  </li>
-                </ul>
-              </section>
-              <section id="comedy-shows" class="simple">
-                <h1>Comedy</h1>
-                <a href="/en/show/browse?genre=comedy" class="show-all">See all ></a>
-                <ul class="posters-list shows-list explore-list list-unstyled list-inline">
-                  <li id="show-comedy-item-264586" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/264586">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/264586/1294097-4-optimized.jpg"
-                             alt="Orange Is the New Black">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/264586" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/264586">Orange Is the New Black</a></h2>
-                      <a href="/en/show/264586" class="secondary-link">2,884,524 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-comedy-item-83610" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/83610">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/83610/1301758-4-optimized.jpg" alt="Glee">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/83610" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/83610">Glee</a></h2>
-                      <a href="/en/show/83610" class="secondary-link">840,618 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-comedy-item-79168" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/79168">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/79168/1162841-4-optimized.jpg"
-                             alt="Friends">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/79168" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/79168">Friends</a></h2>
-                      <a href="/en/show/79168" class="secondary-link">1,571,410 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-comedy-item-295685" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/295685">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/295685/1359067-4-optimized.jpg"
-                             alt="Lucifer">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/295685" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/295685">Lucifer</a></h2>
-                      <a href="/en/show/295685" class="secondary-link">1,962,238 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-comedy-item-331753" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/331753">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/331753/1333500-4-optimized.jpg"
-                             alt="Black Clover">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/331753" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/331753">Black Clover</a></h2>
-                      <a href="/en/show/331753" class="secondary-link">209,517 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-comedy-item-81797" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/81797">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/81797/1369141-4-optimized.jpg"
-                             alt="One Piece">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/81797" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/81797">One Piece</a></h2>
-                      <a href="/en/show/81797" class="secondary-link">732,146 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-comedy-item-79824" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/79824">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/79824/1262728-4-optimized.jpg"
-                             alt="Naruto Shippuden">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/79824" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/79824">Naruto Shippuden</a></h2>
-                      <a href="/en/show/79824" class="secondary-link">561,785 followers</a>
-                    </div>
-                  </li>
-                  <li id="show-comedy-item-247808" class=" ">
-                    <div class="image-crop">
-                      <a href="/en/show/247808">
-                        <img src="https://dg31sz3gwrwan.cloudfront.net/poster/247808/1373185-4-optimized.jpg" alt="Suits">
-                      </a>
-                      <div class="overlay">
-                        <a href="/en/show/247808" class="zoom-btn overlay-btn" title="Infos">
-                          <i class="zoom-icon icon-tvst-search"></i>
-                        </a>
-                      </div>
-                      <div class="side progress-box">
-                        <div class="loader rotating dark small visible"></div>
-                      </div>
-                    </div>
-                    <div class="show-details poster-details">
-                      <h2><a href="/en/show/247808">Suits</a></h2>
-                      <a href="/en/show/247808" class="secondary-link">1,558,581 followers</a>
-                    </div>
-                  </li>
-                </ul>
-              </section>
+              <c:forEach items="${seriesMap}" var="entry">
+                <section id="${entry.key}">
+                  <h1><spring:message code="${entry.key}"/></h1>
+                  <a href="/series?genre=${entry.key}" class="show-all"><spring:message code="index.seeAll"/></a>
+                  <ul class="posters-list shows-list explore-list list-unstyled list-inline">
+                    <c:forEach items="${entry.value}" var="serie">
+                      <li id="${serie.id}" class=" ">
+                        <div class="image-crop">
+                          <a href="/serie?id=${serie.id}">
+                            <img src="${serie.imageUrl}"
+                                 alt="${serie.name}">
+                          </a>
+                          <div class="overlay">
+                            <a href="/serie?id=${serie.id}" class="zoom-btn overlay-btn" title="info"></a>
+                          </div>
+                          <div class="side progress-box">
+                            <div class="loader rotating dark small visible"></div>
+                          </div>
+                        </div>
+                        <div class="show-details poster-details">
+                          <h2><a href="/serie?id=${serie.id}">${serie.name}</a></h2>
+                          <a href="/serie?id=${serie.id}" class="secondary-link">${serie.numFollowers} <spring:message code="index.followers"/></a>
+                        </div>
+                      </li>
+                    </c:forEach>
+                  </ul>
+                </section>
+              </c:forEach>
             </div>
           </div>
         </div>
       </div>
     </div>
-
     </div>
-
   </body>
 </html>

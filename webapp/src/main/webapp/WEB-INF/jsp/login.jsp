@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
@@ -6,25 +8,27 @@
     <title>Title</title>
 </head>
 <body>
-    <c:url value="/login" var="loginUrl"/>
-    <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
+    <h2><spring:message code="login.title"/></h2>
+    <form:form modelAttribute="loginForm" action="/login" method="post" enctype="application/x-www-form-urlencoded">
         <div>
-            <label for="username">Username:</label>
-            <input id="username" name="username" type="text"/>
+            <form:label path="username"><spring:message code="login.username"/></form:label>
+            <form:input path="username" type="text"/>
+            <form:errors path="username" element="p" cssClass="error"/>
         </div>
         <div>
-            <label for="password">Password:</label>
-            <input id="password" name="password" type="password"/>
+            <form:label path="password"><spring:message code="login.password"/></form:label>
+            <form:input path="password" type="password"/>
+            <form:errors path="password" element="p" cssClass="error"/>
         </div>
         <div>
-            <label for="rememberme">
-                <input id="rememberme" name="rememberme" type="checkbox"/>
-                Remember me
-            </label>
+            <form:label path="rememberme">
+                <form:checkbox path="rememberme"/>
+                <spring:message code="login.rememberme"/>
+            </form:label>
         </div>
         <div>
-            <input type="submit" value="Login!"/>
+            <input type="submit" value="<spring:message code="login.submit"/>"/>
         </div>
-    </form>
+    </form:form>
 </body>
 </html>
