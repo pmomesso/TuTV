@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.model;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Series  {
 
@@ -18,7 +16,7 @@ public class Series  {
     private Date added;
     private Date updated;
     private List<ActorRole> actorList = new LinkedList<ActorRole>();
-    private List<Genre> genresList = new LinkedList<>();
+    private Set<Genre> genresList = new HashSet<>();
 
     public Series(String seriesName) {
         this.seriesName = seriesName;

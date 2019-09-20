@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.SeriesDao;
+import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Series;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,6 +31,8 @@ public class SeriesDaoJdbc implements SeriesDao {
         ret.setNetwork(network);
         int runningTime = resultSet.getInt("runtime");
         ret.setRunningTime(runningTime);
+        Genre genre = new Genre(resultSet.getString("genre"));
+        ret.addGenre(genre);
         return ret;
     };
 
@@ -46,7 +49,26 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Series> getSeriesByName(String seriesName) {
-        return jdbcTemplate.query("SELECT * FROM series WHERE name = ?", new Object[]{seriesName}, seriesRowMapper);
+        return jdbcTemplate.query("SELECT * " +
+                "FROM series " +
+                "WHERE name = ?", new Object[]{seriesName}, seriesRowMapper);
+    }
+
+    @Override
+    public List<Series> getSeriesByGenre(Genre genre) {
+        return jdbcTemplate.query("SELECT * " +
+                "FROM series JOIN genres ON series.genreId = genre.id " +
+                "WHERE genres.genre = ? " +
+                "ORDER BY userRating DESC", new Object[]{genre.toString()}, seriesRowMapper);
+    }
+
+    @Override
+    public List<Series> getBestSeriesByGenre(Genre genre, int numSeries) {
+        return jdbcTemplate.query("SELECT * " +
+                        "FROM series JOIN genres ON series.genreId = genre.id " +
+                        "WHERE genres.genre = ? " +
+                        "ORDER BY userRating DESC limit ?"
+                ,new Object[]{genre.toString(), numSeries}, seriesRowMapper);
     }
 
     @Override
