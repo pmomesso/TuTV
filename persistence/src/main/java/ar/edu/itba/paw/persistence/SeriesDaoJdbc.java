@@ -23,10 +23,6 @@ public class SeriesDaoJdbc implements SeriesDao {
         if (description != null) {
             ret.setDescription(description);
         }
-        double userRating = resultSet.getDouble("userRating");
-        if(Double.compare(userRating, 0) != 0) {
-            ret.setUserRating(userRating);
-        }
         String network = resultSet.getString("network");
         ret.setNetwork(network);
         int runningTime = resultSet.getInt("runtime");
@@ -34,6 +30,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         Genre genre = new Genre();
         genre.setName(resultSet.getString("genre"));
         ret.addGenre(genre);
+        ret.setId(resultSet.getLong("id"));
         return ret;
     };
 

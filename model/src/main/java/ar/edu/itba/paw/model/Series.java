@@ -12,6 +12,7 @@ public class Series  {
     private int runningTime;
     private int status;
     private long imbdId;
+    private long id;
     private Date firstAired;
     private Date added;
     private Date updated;
@@ -93,6 +94,14 @@ public class Series  {
 
     public void setNetwork(String network) {
         this.network = network;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
 }
