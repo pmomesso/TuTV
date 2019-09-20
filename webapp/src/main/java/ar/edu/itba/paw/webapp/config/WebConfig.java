@@ -1,9 +1,12 @@
 package ar.edu.itba.paw.webapp.config;
 
+import ar.edu.itba.paw.interfaces.UserDao;
+import org.springframework.context.MessageSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
@@ -17,6 +20,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import javax.sql.DataSource;
+
+import java.nio.charset.StandardCharsets;
 
 @EnableWebMvc
 @ComponentScan({"ar.edu.itba.paw.service", "ar.edu.itba.paw.persistence", "ar.edu.itba.paw.webapp.controller"})
@@ -62,5 +67,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		registry.addResourceHandler("/resources/**")
 				.addResourceLocations("/resources/");
 	}
-	
+
+	@Bean
+	public MessageSource messageSource() {
+		final ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+		messageSource.setBasename("classpath:i18n/messages");
+		messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+		messageSource.setCacheSeconds(20);
+		return messageSource;
+	}
 }
