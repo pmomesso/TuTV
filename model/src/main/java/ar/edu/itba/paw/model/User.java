@@ -21,7 +21,7 @@ public class User {
     private String confirmationKey;
 
     public User(String username) {
-        this.userName = userName;
+        this.userName = username;
     }
 
     public String getUserName() {

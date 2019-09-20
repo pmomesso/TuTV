@@ -13,6 +13,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
+import javax.swing.text.html.Option;
+import java.util.Locale;
+import java.util.Optional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -44,6 +47,7 @@ public class UserDaoImplTest {
     public void testGetUser(){
         //Setup
         jdbcTemplate.execute(String.format("INSERT INTO users VALUES( %d,'%s','password')", USER_ID, USERNAME));
+
         //Ejercitar
         final User user = userDao.getUser(USER_ID);
         //Asserts

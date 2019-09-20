@@ -34,7 +34,6 @@ public class UserDaoImp implements UserDao {
 					.usingGeneratedKeyColumns("id");
 	}
 
-
 	@Override
 	public User getUser(final long id) {
 		List<User> resultSet = jdbcTemplate.query("SELECT * FROM users WHERE id = ?", new Object[]{id}, rm);
