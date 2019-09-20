@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SeriesServiceImpl implements SeriesService {
@@ -22,11 +23,16 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public List<Series> getSeriesByGenreAndNumber(Genre genre, int num) {
-        return seriesDao.getBestSeriesByGenre(genre, num);
+        return seriesDao.getBestSeriesByGenre(genre, 0, num);
     }
 
     @Override
     public List<Series> getAllSeriesByGenre(Genre genre) {
         return seriesDao.getSeriesByGenre(genre);
+    }
+
+    @Override
+    public Map<Genre, List<Series>> getSeriesByGenreMap(int lowerNumber, int upperNumber) {
+        return seriesDao.getBestSeriesByGenres(lowerNumber, upperNumber);
     }
 }

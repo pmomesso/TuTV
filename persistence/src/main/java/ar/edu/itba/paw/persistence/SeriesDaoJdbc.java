@@ -31,7 +31,8 @@ public class SeriesDaoJdbc implements SeriesDao {
         ret.setNetwork(network);
         int runningTime = resultSet.getInt("runtime");
         ret.setRunningTime(runningTime);
-        Genre genre = new Genre(resultSet.getString("genre"));
+        Genre genre = new Genre();
+        genre.setName(resultSet.getString("genre"));
         ret.addGenre(genre);
         return ret;
     };
@@ -59,16 +60,41 @@ public class SeriesDaoJdbc implements SeriesDao {
         return jdbcTemplate.query("SELECT * " +
                 "FROM series JOIN genres ON series.genreId = genre.id " +
                 "WHERE genres.genre = ? " +
-                "ORDER BY userRating DESC", new Object[]{genre.toString()}, seriesRowMapper);
+                "ORDER BY userRating DESC",
+                new Object[]{genre.toString()}, seriesRowMapper);
     }
 
     @Override
-    public List<Series> getBestSeriesByGenre(Genre genre, int numSeries) {
+    public List<Series> getBestSeriesByGenre(Genre genre, int lowerLimit, int upperLimit) {
         return jdbcTemplate.query("SELECT * " +
                         "FROM series JOIN genres ON series.genreId = genre.id " +
                         "WHERE genres.genre = ? " +
-                        "ORDER BY userRating DESC limit ?"
-                ,new Object[]{genre.toString(), numSeries}, seriesRowMapper);
+                        "ORDER BY userRating DESC LIMIT ? OFFSET ?",
+                new Object[]{genre.toString(), upperLimit - lowerLimit + 1, lowerLimit}, seriesRowMapper);
+    }
+
+    @Override
+    public Map<Genre, List<Series>> getBestSeriesByGenres(int lowerLimit, int upperLimit) {
+        Map<Genre, List<Series>> ret = new HashMap<>();
+
+        List<Genre> genreList = getAllGenres();
+        List<Series> seriesList;
+        for(Genre g : genreList) {
+            seriesList = getBestSeriesByGenre(g, lowerLimit, upperLimit);
+            ret.put(g, seriesList);
+        }
+
+        return ret;
+    }
+
+    private List<Genre> getAllGenres() {
+        return jdbcTemplate.query("SELECT DISTINCT genre" +
+                                "FROM genres",
+                          (resultSet, i) -> {
+                                Genre g = new Genre();
+                                g.setName(resultSet.getString("genres"));
+                                return g;
+                          });
     }
 
     @Override
@@ -98,10 +124,10 @@ public class SeriesDaoJdbc implements SeriesDao {
     public void addSeriesGenre(long seriesId, String genre) {
 
         jdbcInsert = jdbcInsert.withTableName("genres");
-
+        long genreId = getGenreId(genre);
         Map<String, Object> args = new HashMap<>();
         args.put("id", seriesId);
-        args.put("genre", genre);
+        args.put("genreId", genreId);
 
         jdbcInsert.execute(args);
     }
@@ -119,6 +145,15 @@ public class SeriesDaoJdbc implements SeriesDao {
     @Override
     public void setSeriesDescription(long seriesId, String description) {
         jdbcTemplate.update("UPDATE series SET description = ? WHERE id = ?", description, seriesId);
+    }
+
+
+    private long getGenreId(String genre) {
+        List<Long> genreId = jdbcTemplate.query("SELECT id" +
+                        "FROM genres" +
+                        "WHERE genre = ?", new Object[]{genre},
+                ((resultSet, i) -> resultSet.getLong("id")));
+        return genreId.get(0);
     }
 
 }
