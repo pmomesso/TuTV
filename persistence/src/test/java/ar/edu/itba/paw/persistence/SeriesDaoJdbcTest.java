@@ -2,7 +2,6 @@ package ar.edu.itba.paw.persistence;
 
 
 import ar.edu.itba.paw.model.Series;
-import ar.edu.itba.paw.model.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +59,7 @@ public class SeriesDaoJdbcTest {
         final Series series = seriesDao.getSeriesById(ID);
         //Asserts
         Assert.assertNotNull(series);
-        Assert.assertEquals(series.getSeriesName(),NAME);
+        Assert.assertEquals(series.getName(),NAME);
         Assert.assertEquals(series.getSeriesDescription(),DESCRIPTION);
         Assert.assertEquals(series.getUserRating(),USER_RATING,0.0f);
     }
@@ -75,7 +74,7 @@ public class SeriesDaoJdbcTest {
         Assert.assertNotNull(seriesList);
         Assert.assertEquals(seriesList.size(),1);
         final Series series = seriesList.get(0);
-        Assert.assertEquals(series.getSeriesName(),NAME);
+        Assert.assertEquals(series.getName(),NAME);
         Assert.assertEquals(series.getSeriesDescription(),DESCRIPTION);
         Assert.assertEquals(series.getUserRating(),USER_RATING,0.0f);
     }

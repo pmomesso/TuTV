@@ -35,4 +35,9 @@ public class SeriesServiceImpl implements SeriesService {
     public Map<Genre, List<Series>> getSeriesByGenreMap(int lowerNumber, int upperNumber) {
         return seriesDao.getBestSeriesByGenres(lowerNumber, upperNumber);
     }
+
+    @Override
+    public List<Series> getNewestSeries(int lowerNumber, int upperNumber) {
+        return seriesDao.getNewSeries(lowerNumber, upperNumber);
+    }
 }

@@ -71,6 +71,13 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     @Override
+    public List<Series> getNewSeries(int lowerLimit, int upperLimit) {
+        return jdbcTemplate.query("SELECT * " +
+                "FROM series " +
+                "ORDER BY firstaired DESC LIMIT ? OFFSET ?", new Object[]{upperLimit - lowerLimit + 1, upperLimit}, seriesRowMapper);
+    }
+
+    @Override
     public Map<Genre, List<Series>> getBestSeriesByGenres(int lowerLimit, int upperLimit) {
         Map<Genre, List<Series>> ret = new HashMap<>();
 
@@ -85,7 +92,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private List<Genre> getAllGenres() {
-        return jdbcTemplate.query("SELECT DISTINCT genre" +
+        return jdbcTemplate.query("SELECT DISTINCT genre " +
                                 "FROM genres",
                           (resultSet, i) -> {
                                 Genre g = new Genre();
