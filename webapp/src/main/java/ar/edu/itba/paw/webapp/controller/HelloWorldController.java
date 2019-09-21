@@ -53,7 +53,7 @@ public class HelloWorldController {
 //		return new ModelAndView("redirect:/user/" + u.getId());
 //	}
 
-	@RequestMapping(value = "/create", method = RequestMethod.GET)
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public ModelAndView showRegister(@ModelAttribute("registerForm") final UserForm form) {
 		return new ModelAndView("register"); // para que si tengo un error en el formulario, poder tener precalculados los valores que el usuario calculo..
 	}
