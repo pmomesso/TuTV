@@ -10,9 +10,9 @@ public class Series  {
     private String rating;
     private String posterUrl;
     private String bannerUrl;
+    private String status;
     private Rating userRating;
     private int runningTime;
-    private int status;
     private int numFollowers;
     private long imbdId;
     private long id;
@@ -45,7 +45,7 @@ public class Series  {
         return runningTime;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -130,4 +130,5 @@ public class Series  {
     public void setBannerUrl(String bannerUrl) {
         this.bannerUrl = bannerUrl;
     }
+
 }
