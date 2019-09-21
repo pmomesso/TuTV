@@ -9,6 +9,27 @@ create table if not exists users
 
 alter table users owner to root;
 
+create table if not exists genres
+(
+	id serial not null
+		constraint genres_pk
+			primary key,
+	genre varchar(16),
+	constraint genres_id_genre_key
+		unique (id, genre)
+);
+
+alter table genres owner to root;
+
+create table if not exists "seriesGenre"
+(
+	genreid integer
+		constraint genreid
+			references genres
+);
+
+alter table "seriesGenre" owner to root;
+
 create table if not exists actor
 (
 	id serial not null
@@ -64,33 +85,15 @@ create table if not exists series
 		constraint series_network_networkid_fk
 			references network,
 	firstaired date,
-	id_imbd integer,
+	id_imbd varchar(64),
 	added date,
 	updated date,
-	"genreId" integer,
-	imageurl varchar(256),
-	followers integer default 0 not null
+	posterurl varchar(256),
+	followers integer default 0 not null,
+	bannerurl varchar(256)
 );
 
 alter table series owner to root;
-
-create table if not exists genres
-(
-	id serial not null
-		constraint genres_pk
-			primary key
-		constraint genres_id_fkey
-			references series,
-	genre varchar(16),
-	constraint genres_id_genre_key
-		unique (id, genre)
-);
-
-alter table genres owner to root;
-
-alter table series
-	add constraint if not exists series_genres_id_fk
-		foreign key ("genreId") references genres;
 
 create table if not exists "seriesAiring"
 (
@@ -103,15 +106,6 @@ create table if not exists "seriesAiring"
 );
 
 alter table "seriesAiring" owner to root;
-
-create table if not exists "seriesGenre"
-(
-	genreid integer
-		constraint genreid
-			references genres
-);
-
-alter table "seriesGenre" owner to root;
 
 create table if not exists "actorRoles"
 (
@@ -182,3 +176,15 @@ create table if not exists follows
 );
 
 alter table follows owner to root;
+
+create table if not exists hasgenre
+(
+	seriesid integer
+		constraint hasgenre_series_id_fk
+			references series,
+	genreid integer
+		constraint hasgenre_genres_id_fk
+			references genres
+);
+
+alter table hasgenre owner to root;
