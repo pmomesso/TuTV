@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
+
 @Controller
 public class HelloWorldController {
 	
@@ -36,7 +38,7 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ModelAndView login(@ModelAttribute("loginForm") final LoginForm form, final BindingResult errors) {
+	public ModelAndView login(@Valid @ModelAttribute("loginForm") final LoginForm form, final BindingResult errors) {
 		if (errors.hasErrors()) {
 			return showLogin(form);
 		}
@@ -44,14 +46,16 @@ public class HelloWorldController {
 		return new ModelAndView("redirect:/");
 	}
 
-//	@RequestMapping(value = "/create", method = RequestMethod.POST)
-//	public ModelAndView create(@Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors) {
-//		 if (errors.hasErrors()) {
-//		 	return showRegister(form);
-//		 }
+	@RequestMapping(value = "/create", method = RequestMethod.POST)
+	public ModelAndView create(@Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors) {
+		 if (errors.hasErrors()) {
+		 	return showRegister(form);
+		 }
+		 // TODO create user
 //		final User u = us.create(form.getUsername());
 //		return new ModelAndView("redirect:/user/" + u.getId());
-//	}
+		return null;
+	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public ModelAndView showRegister(@ModelAttribute("registerForm") final UserForm form) {

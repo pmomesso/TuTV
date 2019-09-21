@@ -161,7 +161,7 @@
               <c:forEach items="${seriesMap}" var="entry">
                 <section id="${entry.key}">
                   <h1><spring:message code="${entry.key}"/></h1>
-                  <a href="/series?genre=${entry.key}" class="show-all"><spring:message code="index.seeAll"/></a>
+                  <a href="/series?genre=${entry.key.id}" class="show-all"><spring:message code="index.seeAll"/></a>
                   <ul class="posters-list shows-list explore-list list-unstyled list-inline">
                     <c:forEach items="${entry.value}" var="serie">
                       <li id="${serie.id}" class=" ">
