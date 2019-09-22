@@ -76,6 +76,7 @@ create table if not exists series
 	id serial not null
 		constraint series_pkey
 			primary key,
+	tvDbId integer,
 	name varchar(32),
 	description varchar(256),
 	"userRating" double precision,
@@ -85,7 +86,7 @@ create table if not exists series
 		constraint series_network_networkid_fk
 			references network,
 	firstaired date,
-	id_imbd varchar(64),
+	id_imdb varchar(64),
 	added date,
 	updated date,
 	posterurl varchar(256),
@@ -113,6 +114,7 @@ create table if not exists "actorRoles"
 	actorid integer
 		constraint actor
 			references actor,
+	tvDbId integer,
 	seriesid integer
 		constraint seriesid
 			references series,
@@ -145,7 +147,8 @@ create table if not exists season
 			primary key,
 	seriesid integer not null
 		constraint season_series_id_fk
-			references series
+			references series,
+	seasonNumber integer not null
 );
 
 alter table season owner to root;
@@ -158,6 +161,7 @@ create table if not exists episode
 		constraint episode_series_id_fk
 			references series,
 	numepisode integer not null,
+	tvdbid integer not null,
 	seasonid integer not null
 		constraint episode_season_seasonid_fk
 			references season
