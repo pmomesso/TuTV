@@ -23,7 +23,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         if (description != null) {
             ret.setDescription(description);
         }
-        String network = resultSet.getString("network");
+        String network = resultSet.getString("networkId");
         ret.setNetwork(network);
         int runningTime = resultSet.getInt("runtime");
         ret.setRunningTime(runningTime);
@@ -33,7 +33,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         ret.setPosterUrl(resultSet.getString("posterurl"));
         Genre g = new Genre();
         g.setName(resultSet.getString("genre"));
-        g.setId(resultSet.getInt("genreid"));
+        //g.setId(resultSet.getInt("genreid"));
         ret.addGenre(g);
         return ret;
     };
@@ -49,30 +49,28 @@ public class SeriesDaoJdbc implements SeriesDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    //Todo: cambiar a una query que busque por similitud del nombre
     @Override
     public List<Series> getSeriesByName(String seriesName) {
         return jdbcTemplate.query("SELECT * " +
-                "FROM (series JOIN hasgenre ON series.id = hasgenre.seriesid JOIN genre ON genre.id = hasgenre.genreid) " +
-                "AS foo(id, name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
-                "WHERE name LIKE '%?%'", new Object[]{seriesName.toLowerCase()}, seriesRowMapper);
+                "FROM (series JOIN hasgenre ON series.id = hasgenre.seriesid JOIN genres ON genres.id = hasgenre.genreid) " +
+                "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre) " +
+                "WHERE LOWER(foo.name) LIKE ?",new Object[]{"%"+seriesName.toLowerCase()+"%"}, seriesRowMapper);
     }
 
     @Override
     public List<Series> getSeriesByGenre(Genre genre) {
         return jdbcTemplate.query("SELECT * " +
-                        "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasGenre.genreid = genres.id) " +
-                        "AS foo(id, name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
-                        "WHERE genres.id = ?",
-                new Object[]{genre.getId()}, seriesRowMapper);
+                "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
+                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                "WHERE genres.id = ?", new Object[]{genre.getId()}, seriesRowMapper);
     }
 
     @Override
     public List<Series> getBestSeriesByGenre(Genre genre, int lowerLimit, int upperLimit) {
         return jdbcTemplate.query("SELECT * " +
-                        "FROM series JOIN hasGenre ON series.genreId = hasGenre.id " +
-                        "WHERE genres.genre = ? " +
-                        "ORDER BY userRating DESC LIMIT ? OFFSET ?",
+                        "FROM series JOIN hasgenre ON series.id = hasgenre.seriesid " +
+                        "WHERE hasgenre.genreid = ? " +
+                        "ORDER BY \"userRating\" DESC LIMIT ? OFFSET ?",
                 new Object[]{genre.getId(), upperLimit - lowerLimit + 1, lowerLimit}, seriesRowMapper);
     }
 
@@ -98,12 +96,12 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private List<Genre> getAllGenres() {
-        return jdbcTemplate.query("SELECT DISTINCT genre " +
+        return jdbcTemplate.query("SELECT genre " +
                                 "FROM genres",
                           (resultSet, i) -> {
                                 Genre g = new Genre();
-                                g.setName(resultSet.getString("genres"));
-                                g.setId(resultSet.getInt("genreid"));
+                                g.setName(resultSet.getString("genre"));
+                                //g.setId(resultSet.getInt("id"));
                                 return g;
                           });
     }

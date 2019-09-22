@@ -8,6 +8,7 @@ import java.util.Map;
 
 public interface SeriesService {
 
+    List<Series> getSeriesByName(String name);
     List<Series> getSeriesByGenreAndNumber(Genre genre, int num);
     List<Series> getAllSeriesByGenre(Genre genre);
     Map<Genre, List<Series>> getSeriesByGenreMap(int lowerNumber, int upperNumber);

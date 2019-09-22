@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.webapp.form.LoginForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class HelloWorldController {
@@ -31,7 +33,17 @@ public class HelloWorldController {
 		mav.addObject("seriesMap", seriesService.getSeriesByGenreMap(0,5));
 		return mav;
 	}
-	
+	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	public ModelAndView search(@RequestParam String name) {
+		//Si el parametro es vacio, lo redirecciono al home que tiene todas las series.
+		if(name.length() == 0){
+			return new ModelAndView("redirect:/");
+		}
+		final ModelAndView mav = new ModelAndView("search");
+		List<Series> series = seriesService.getSeriesByName(name);
+		mav.addObject("seriesResult",series);
+		return mav;
+	}
 	@RequestMapping(value = "/login", method = RequestMethod.GET) //Le digo que url mappeo
 	public ModelAndView showLogin(@ModelAttribute("loginForm") final LoginForm form) {
 		return new ModelAndView("login");

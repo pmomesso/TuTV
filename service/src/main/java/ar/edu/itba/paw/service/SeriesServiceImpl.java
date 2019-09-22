@@ -22,6 +22,10 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
+    public List<Series> getSeriesByName(String name){
+        return seriesDao.getSeriesByName(name);
+    }
+    @Override
     public List<Series> getSeriesByGenreAndNumber(Genre genre, int num) {
         return seriesDao.getBestSeriesByGenre(genre, 0, num);
     }

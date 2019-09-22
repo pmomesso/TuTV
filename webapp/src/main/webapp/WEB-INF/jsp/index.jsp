@@ -35,11 +35,10 @@
             <a id="home-link" href="/">
               <img class="logo tutv" src="./../../resources/img/Tutv.png" alt="TUTV"> <span id="home-text">TUTV</span>
             </a> <!--#44d9e6-->
-            <form id="global-search" class="navbar-form form-search" action="/">
+            <form id="global-search" class="navbar-form form-search" action="<c:url value="/search"/>">
               <img class="logo logo_icon" src="./../../resources/img/search.png" alt="Search">
-              <input style="display:none" type="text" name="search">
-              <input type="text" id="global-search-input" name="search" class="show-search" placeholder="Search">
-              <a href="/" class="cancel-search">×</a>
+              <input type="text" id="global-search-input" name="name" class="show-search" placeholder="Search">
+              <input type="submit" style="visibility: hidden;" />
             </form>
             <div id="global-search-results"></div>
             <div class="all-left-navs">
@@ -160,7 +159,6 @@
               </section>
               <c:forEach items="${seriesMap}" var="entry">
                 <section id="${entry.key}">
-                  <h1><spring:message code="${entry.key}"/></h1>
                   <a href="/series?genre=${entry.key.id}" class="show-all"><spring:message code="index.seeAll"/></a>
                   <ul class="posters-list shows-list explore-list list-unstyled list-inline">
                     <c:forEach items="${entry.value}" var="serie">
