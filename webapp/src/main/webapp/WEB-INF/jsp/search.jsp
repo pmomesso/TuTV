@@ -110,7 +110,6 @@
                         </section>
                         <c:forEach items="${seriesResult}" var="series">
                         <section id="${series.id}">
-                            <c:out value="${series.name}" />
                             <ul class="posters-list shows-list explore-list list-unstyled list-inline">]
                                     <li id="${series.id}" class=" ">
                                         <div class="image-crop">

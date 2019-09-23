@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         ret.setPosterUrl(resultSet.getString("posterurl"));
         Genre g = new Genre();
         g.setName(resultSet.getString("genre"));
-        //g.setId(resultSet.getInt("genreid"));
+        g.setId(resultSet.getInt("genreid"));
         ret.addGenre(g);
         return ret;
     };
@@ -41,6 +42,27 @@ public class SeriesDaoJdbc implements SeriesDao {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert jdbcInsert;
 
+    private Series getById(List<Series> series,long id){
+        for(Series s : series){
+            if(s.getId() == id)
+                return s;
+        }
+        return null;
+    }
+    private List<Series> groupGenres(List<Series> seriesList){
+        List<Series> retList = new ArrayList<>();
+        Series s;
+        for(Series series : seriesList){
+            s = getById(retList,series.getId());
+            if(s != null){
+                s.addGenres(series.getGenres());
+            }
+            else{
+                retList.add(series);
+            }
+        }
+        return retList;
+    }
     @Autowired
     public SeriesDaoJdbc(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
@@ -51,34 +73,36 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Series> getSeriesByName(String seriesName) {
-        return jdbcTemplate.query("SELECT * " +
+        return groupGenres(jdbcTemplate.query("SELECT * " +
                 "FROM (series JOIN hasgenre ON series.id = hasgenre.seriesid JOIN genres ON genres.id = hasgenre.genreid) " +
                 "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre) " +
-                "WHERE LOWER(foo.name) LIKE ?",new Object[]{"%"+seriesName.toLowerCase()+"%"}, seriesRowMapper);
+                "WHERE LOWER(foo.name) LIKE ?",new Object[]{"%"+seriesName.toLowerCase()+"%"}, seriesRowMapper));
     }
 
     @Override
     public List<Series> getSeriesByGenre(Genre genre) {
-        return jdbcTemplate.query("SELECT * " +
+        return groupGenres(jdbcTemplate.query("SELECT * " +
                 "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
                 "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
-                "WHERE genres.id = ?", new Object[]{genre.getId()}, seriesRowMapper);
+                "WHERE genreid = ?", new Object[]{genre.getId()}, seriesRowMapper));
     }
 
     @Override
     public List<Series> getBestSeriesByGenre(Genre genre, int lowerLimit, int upperLimit) {
-        return jdbcTemplate.query("SELECT * " +
-                        "FROM series JOIN hasgenre ON series.id = hasgenre.seriesid " +
-                        "WHERE hasgenre.genreid = ? " +
+        return groupGenres(jdbcTemplate.query("SELECT * " +
+                        "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
+                        "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                        "WHERE genreid = ?" +
                         "ORDER BY userRating DESC LIMIT ? OFFSET ?",
-                new Object[]{genre.getId(), upperLimit - lowerLimit + 1, lowerLimit}, seriesRowMapper);
+                new Object[]{genre.getId(), upperLimit - lowerLimit + 1, lowerLimit}, seriesRowMapper));
     }
 
     @Override
     public List<Series> getNewSeries(int lowerLimit, int upperLimit) {
-        return jdbcTemplate.query("SELECT * " +
-                "FROM series " +
-                "ORDER BY firstaired DESC LIMIT ? OFFSET ?", new Object[]{upperLimit - lowerLimit + 1, upperLimit}, seriesRowMapper);
+        return groupGenres(jdbcTemplate.query("SELECT * " +
+                "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
+                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                "ORDER BY firstaired DESC LIMIT ? OFFSET ?", new Object[]{upperLimit - lowerLimit + 1, upperLimit}, seriesRowMapper));
     }
 
     @Override
@@ -96,23 +120,26 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private List<Genre> getAllGenres() {
-        return jdbcTemplate.query("SELECT genre " +
+        return jdbcTemplate.query("SELECT * " +
                                 "FROM genres",
                           (resultSet, i) -> {
                                 Genre g = new Genre();
                                 g.setName(resultSet.getString("genre"));
-                                //g.setId(resultSet.getInt("id"));
+                                g.setId(resultSet.getInt("id"));
                                 return g;
                           });
     }
 
     @Override
     public Series getSeriesById(final long id) {
-        final List<Series> seriesList = jdbcTemplate.query("SELECT * FROM series WHERE id = ?", new Object[]{id}, seriesRowMapper);
+        final List<Series> seriesList = jdbcTemplate.query("SELECT * " +
+                "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
+                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                "WHERE id = ?", new Object[]{id}, seriesRowMapper);
         if(seriesList.isEmpty()) {
             return null;
         }
-        return seriesList.get(0);
+        return groupGenres(seriesList).get(0);
     }
 
     @Override

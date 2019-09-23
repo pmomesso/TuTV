@@ -91,6 +91,12 @@ public class Series  {
         genresList.add(genre);
     }
 
+    public void addGenres(Collection<Genre> genres){
+        genresList.addAll(genres);
+    }
+    public Set<Genre> getGenres(){
+        return genresList;
+    }
     public void setRunningTime(int runningTime) {
         this.runningTime = runningTime;
     }
@@ -129,6 +135,19 @@ public class Series  {
 
     public void setBannerUrl(String bannerUrl) {
         this.bannerUrl = bannerUrl;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(this == obj)
+            return true;
+        if(!(obj instanceof Series))
+            return false;
+        return id == ((Series)obj).id;
+    }
+    @Override
+    public int hashCode(){
+        return Long.valueOf(id).hashCode();
     }
 
 }
