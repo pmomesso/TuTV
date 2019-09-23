@@ -5,11 +5,14 @@ import ar.edu.itba.paw.model.Series;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface SeriesDao {
 
+    Map<Genre, Set<Series>> getSeriesMapByName(String seriesName);
     List<Series> getSeriesByName(String seriesName);
 
+    List<Series> getSeriesByGenre(String genreName);
     List<Series> getSeriesByGenre(Genre genre);
 
     List<Series> getBestSeriesByGenre(Genre genre, int lowerLimit, int upperLimit);

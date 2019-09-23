@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class SeriesServiceImpl implements SeriesService {
@@ -22,6 +23,11 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
+    public Map<Genre, Set<Series>> getSeriesMapByName(String name) {
+        return seriesDao.getSeriesMapByName(name);
+    }
+
+    @Override
     public List<Series> getSeriesByName(String name){
         return seriesDao.getSeriesByName(name);
     }
@@ -30,6 +36,10 @@ public class SeriesServiceImpl implements SeriesService {
         return seriesDao.getBestSeriesByGenre(genre, 0, num);
     }
 
+    @Override
+    public List<Series> getAllSeriesByGenre(String genreName) {
+        return seriesDao.getSeriesByGenre(genreName);
+    }
     @Override
     public List<Series> getAllSeriesByGenre(Genre genre) {
         return seriesDao.getSeriesByGenre(genre);

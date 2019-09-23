@@ -35,12 +35,7 @@
             <a id="home-link" href="/">
               <img class="logo tutv" src="./../../resources/img/Tutv.png" alt="TUTV"> <span id="home-text">TUTV</span>
             </a> <!--#44d9e6-->
-            <form id="global-search" class="navbar-form form-search" action="<c:url value="/search"/>">
-              <img class="logo logo_icon" src="./../../resources/img/search.png" alt="Search">
-              <input type="text" id="global-search-input" name="name" class="show-search" placeholder="Search">
-              <input type="submit" style="visibility: hidden;" />
-            </form>
-            <div id="global-search-results"></div>
+            <%@ include file="../searchForm.html" %>
             <div class="all-left-navs">
 
               <section id="menu">

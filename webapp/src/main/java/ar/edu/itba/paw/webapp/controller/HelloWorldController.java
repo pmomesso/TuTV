@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.webapp.form.LoginForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class HelloWorldController {
@@ -25,7 +26,7 @@ public class HelloWorldController {
 
 	@Autowired
 	private SeriesService seriesService;
-	
+
 	@RequestMapping("/") //Le digo que url mappeo
 	public ModelAndView helloWorld() {
 		final ModelAndView mav = new ModelAndView("index");
@@ -34,14 +35,24 @@ public class HelloWorldController {
 		return mav;
 	}
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public ModelAndView search(@RequestParam String name) {
+	public ModelAndView search(@RequestParam String op,@RequestParam String search) {
 		//Si el parametro es vacio, lo redirecciono al home que tiene todas las series.
-		if(name.length() == 0){
+		if(search.length() == 0){
 			return new ModelAndView("redirect:/");
 		}
 		final ModelAndView mav = new ModelAndView("search");
-		List<Series> series = seriesService.getSeriesByName(name);
-		mav.addObject("seriesResult",series);
+		if(op.equals("genre")){
+			List<Series> series = seriesService.getAllSeriesByGenre(search);
+			HashMap<Genre,List<Series>> genres = new HashMap<>();
+			if(series.size() > 0){
+				Genre genre = (Genre)series.get(0).getGenres().toArray()[0];
+				genres.put(genre,series);
+			}
+			mav.addObject("searchResults",genres);
+		}
+		else{
+			mav.addObject("searchResults",seriesService.getSeriesMapByName(search));
+		}
 		return mav;
 	}
 	@RequestMapping(value = "/login", method = RequestMethod.GET) //Le digo que url mappeo

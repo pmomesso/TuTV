@@ -10,10 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class SeriesDaoJdbc implements SeriesDao {
@@ -76,7 +73,38 @@ public class SeriesDaoJdbc implements SeriesDao {
         return groupGenres(jdbcTemplate.query("SELECT * " +
                 "FROM (series JOIN hasgenre ON series.id = hasgenre.seriesid JOIN genres ON genres.id = hasgenre.genreid) " +
                 "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre) " +
-                "WHERE LOWER(foo.name) LIKE ?",new Object[]{"%"+seriesName.toLowerCase()+"%"}, seriesRowMapper));
+                "WHERE LOWER(name) LIKE ?",new Object[]{"%"+seriesName.toLowerCase()+"%"}, seriesRowMapper));
+    }
+
+    @Override
+    public Map<Genre, Set<Series>> getSeriesMapByName(String seriesName) {
+        //Obtengo las series repetidas sin todavia agrupar los generos.
+        List<Series> series = jdbcTemplate.query("SELECT * " +
+                "FROM (series JOIN hasgenre ON series.id = hasgenre.seriesid JOIN genres ON genres.id = hasgenre.genreid) " +
+                "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre) " +
+                "WHERE LOWER(name) LIKE ?",new Object[]{"%"+seriesName.toLowerCase()+"%"}, seriesRowMapper);
+        Map<Genre,Set<Series>> genres = new HashMap<>();
+        Genre g;
+        for(Series s : series){
+            g = (Genre)s.getGenres().toArray()[0];
+            if(!genres.containsKey(g)){
+                Set<Series> genreSeries = new HashSet<>();
+                genreSeries.add(s);
+                genres.put(g,genreSeries);
+            }
+            else{
+                genres.get(g).add(s);
+            }
+
+        }
+        return genres;
+    }
+    @Override
+    public List<Series> getSeriesByGenre(String genreName) {
+        return groupGenres(jdbcTemplate.query("SELECT * " +
+                "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
+                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                "WHERE LOWER(genre) LIKE ?", new Object[]{"%"+genreName.toLowerCase()+"%"}, seriesRowMapper));
     }
 
     @Override
