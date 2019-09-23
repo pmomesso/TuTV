@@ -58,9 +58,9 @@ namespace ApiCrawlerTuTV {
             }
         }
 
-        public async Task<List<Series>> GetSeriesListAsync(int startId, int endId) {
-            List<Series> l = new List<Series>();
-            int id = startId;
+        public async Task<List<Series>> GetSeriesListAsync(int startId, int endId, HashSet<Genre> gl, HashSet<Network> nl) {
+            List<Series> l =    new List<Series>();
+            int id =            startId;
             try {
                 for (; id <= endId; id++) {
 
@@ -73,7 +73,7 @@ namespace ApiCrawlerTuTV {
 
                         string jsonString = await resp.Content.ReadAsStringAsync();
                         TheTvDbSeries TvDbS = JsonConvert.DeserializeObject<TheTvDbSeries>(jsonString);
-                        Series s = TvDbS.ToSeries();
+                        Series s = TvDbS.ToSeries(gl, nl);
 
                         if (String.IsNullOrWhiteSpace(s.seriesName))
                             continue;

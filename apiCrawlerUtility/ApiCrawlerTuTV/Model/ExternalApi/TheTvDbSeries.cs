@@ -33,13 +33,12 @@ namespace ApiCrawlerTuTV.Model.ExternalApi {
 
     public class TheTvDbSeries {
         public TheTvDbSeriesData data { get; set; }
-        public Series ToSeries() {
+        public Series ToSeries(HashSet<Genre> gl, HashSet<Network> nl) {
             TheTvDbSeriesData d = this.data;
             Series s = new Series();
             s.tvDbId =              d.id;
             s.seriesName =          d.seriesName;
             s.seriesDescription =   d.overview;
-            s.network =             d.network;
             s.rating =              d.rating;
             s.status =              d.status;
             s.imbdId =              d.imdbId;
@@ -47,10 +46,41 @@ namespace ApiCrawlerTuTV.Model.ExternalApi {
             s.bannerUrl =           d.banner;
             s.runningTime =         int.Parse(d.runtime);
 
-            s.genresList =          new List<Genre>();
+            Network n = null;
+            foreach (Network n_ in nl) {
+                if (n_.Name == d.network) {
+                    n = n_;
+                    break;
+                }
+            }
+            if(n == null) {
+                n = new Network {
+                    Name = d.network
+                };
+                nl.Add(n);
+            }
+            s.network =     n;
+           
 
-            foreach (string genre in d.genre)
-                s.genresList.Add(new Genre { name = genre });
+            s.genresList =  new List<Genre>();
+
+            foreach (string genre in d.genre) {
+                Genre g = null;
+                foreach (Genre g_ in gl) {
+                    if (g_.name == genre) {
+                        g = g_;
+                        break;
+                    }
+                }
+                if (g == null) {
+                    g = new Genre {
+                        name = genre
+                    };
+                    gl.Add(g);
+                }
+
+                s.genresList.Add(g);
+            }
 
             return s;
         }

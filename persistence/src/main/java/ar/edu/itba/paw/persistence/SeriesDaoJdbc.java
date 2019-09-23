@@ -70,7 +70,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         return jdbcTemplate.query("SELECT * " +
                         "FROM series JOIN hasgenre ON series.id = hasgenre.seriesid " +
                         "WHERE hasgenre.genreid = ? " +
-                        "ORDER BY \"userRating\" DESC LIMIT ? OFFSET ?",
+                        "ORDER BY userRating DESC LIMIT ? OFFSET ?",
                 new Object[]{genre.getId(), upperLimit - lowerLimit + 1, lowerLimit}, seriesRowMapper);
     }
 

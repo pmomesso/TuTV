@@ -10,7 +10,7 @@ namespace ApiCrawlerTuTV.Model {
         public String seriesName { get; set; }
         public int tvDbId { get; set; }
         public String seriesDescription { get; set; }
-        public String network { get; set; }
+        public Network network { get; set; }
         public String rating { get; set; }
         public double userRating { get; set; }
         public int runningTime { get; set; }

@@ -11,10 +11,8 @@ namespace ApiCrawlerTuTV.Model {
         public String description { get; set; }
         public int episodeNumber { get; set; }
         public int seasonNumber { get; set; }
-        public int seasonId { get; set; }
-        public int seriesId { get; set; }
-        public int TvDbId { get; set; }
         public Season season { get; set; }
+        public int TvDbId { get; set; }
         //public Rating userRating { get; set; }
     }
 }

@@ -8,5 +8,13 @@ namespace ApiCrawlerTuTV.Model {
     public class Genre {
         public int id { get; set; }
         public string name { get; set; }
+
+        public override bool Equals(object obj) {
+            return this.name.Equals(((Genre)obj).name);
+        }
+
+        public override int GetHashCode() {
+            return this.name.GetHashCode();
+        }
     }
 }

@@ -60,7 +60,6 @@ namespace ApiCrawlerTuTV.Model.ExternalApi {
 
             foreach (TheTvDbEpisode TvDbE in this.data) {
                 Episode ep = TvDbE.ToEpisode();
-                bool foundSeason = false;
                 Season se = null;
                 foreach(Season season in l) {
                     if (season.seasonNumber == ep.seasonNumber) {
@@ -71,7 +70,8 @@ namespace ApiCrawlerTuTV.Model.ExternalApi {
 
                 if (se == null) {
                     se = new Season {
-                        seasonNumber = ep.seasonNumber
+                        seasonNumber = ep.seasonNumber,
+                        episodeList = new List<Episode>()
                     };
                     l.Add(se);
                 }

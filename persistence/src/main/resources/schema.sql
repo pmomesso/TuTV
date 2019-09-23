@@ -14,28 +14,28 @@ create table if not exists genres
 	id serial not null
 		constraint genres_pk
 			primary key,
-	genre varchar(16),
+	genre varchar(255),
 	constraint genres_id_genre_key
 		unique (id, genre)
 );
 
 alter table genres owner to root;
 
-create table if not exists "seriesGenre"
+create table if not exists seriesGenre
 (
 	genreid integer
 		constraint genreid
 			references genres
 );
 
-alter table "seriesGenre" owner to root;
+alter table seriesGenre owner to root;
 
 create table if not exists actor
 (
 	id serial not null
 		constraint actor_pk
 			primary key,
-	name varchar(32),
+	name varchar(255),
 	created date,
 	updated varchar(32),
 	status varchar(32)
@@ -43,7 +43,7 @@ create table if not exists actor
 
 alter table actor owner to root;
 
-create table if not exists "commentEpisode"
+create table if not exists commentEpisode
 (
 	userid integer
 		constraint commentepisode_users_id_fk
@@ -56,17 +56,17 @@ create table if not exists "commentEpisode"
 		constraint commentepisode_pk
 			primary key
 		constraint commentepisode_commentepisode_id_fk
-			references "commentEpisode"
+			references commentEpisode
 );
 
-alter table "commentEpisode" owner to root;
+alter table commentEpisode owner to root;
 
 create table if not exists network
 (
 	networkid serial not null
 		constraint network_pk
 			primary key,
-	name varchar(32)
+	name varchar(255)
 );
 
 alter table network owner to root;
@@ -77,12 +77,12 @@ create table if not exists series
 		constraint series_pkey
 			primary key,
 	tvDbId integer,
-	name varchar(32),
-	description varchar(256),
-	"userRating" double precision,
+	name varchar(255),
+	description text,
+	userRating double precision,
 	status varchar(16),
 	runtime integer,
-	"networkId" integer
+	networkId integer
 		constraint series_network_networkid_fk
 			references network,
 	firstaired date,
@@ -96,21 +96,23 @@ create table if not exists series
 
 alter table series owner to root;
 
-create table if not exists "seriesAiring"
+create table if not exists seriesAiring
 (
 	seriesid integer not null
 		constraint seriesid
 			references series,
 	dayofweek integer,
 	time time,
-	country varchar(32)
+	country varchar(255)
 );
 
-alter table "seriesAiring" owner to root;
+alter table seriesAiring owner to root;
 
-create table if not exists "actorRoles"
+create table if not exists actorRoles
 (
-	seriesrole varchar(32),
+    id serial not null
+	    primary key,
+	seriesrole varchar(255),
 	actorid integer
 		constraint actor
 			references actor,
@@ -122,14 +124,14 @@ create table if not exists "actorRoles"
 	updated date
 );
 
-alter table "actorRoles" owner to root;
+alter table actorRoles owner to root;
 
-create table if not exists "seriesReview"
+create table if not exists seriesReview
 (
 	userid integer
 		constraint seriesreview_users_id_fk
 			references users,
-	language varchar(32),
+	language varchar(255),
 	body varchar(256),
 	seriesid integer
 		constraint seriesreview_series_id_fk
@@ -138,11 +140,11 @@ create table if not exists "seriesReview"
 	new_column integer
 );
 
-alter table "seriesReview" owner to root;
+alter table seriesReview owner to root;
 
 create table if not exists season
 (
-	seasonid integer not null
+	seasonid serial not null
 		constraint season_pk
 			primary key,
 	seriesid integer not null
@@ -155,8 +157,10 @@ alter table season owner to root;
 
 create table if not exists episode
 (
-	name varchar(32),
-	overview varchar(32),
+    id serial not null
+		primary key,
+	name varchar(255),
+	overview text,
 	seriesid integer
 		constraint episode_series_id_fk
 			references series,
