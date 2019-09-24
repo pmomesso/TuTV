@@ -109,7 +109,7 @@
                   <ol class="carousel-indicators">
                     <c:forEach items="${newShows}" var="newShow" varStatus="status">
                       <c:choose>
-                        <c:when test="${status.index} eq 0">
+                        <c:when test="${status.index == 0}">
                           <li data-target="#myCarousel" data-slide-to="${status.index}" class="active"></li>
                         </c:when>
                         <c:otherwise>
@@ -122,9 +122,9 @@
                   <div class="carousel-inner">
                     <c:forEach items="${newShows}" var="newShow" varStatus="status">
                       <c:choose>
-                        <c:when test="${status.index} eq 0">
+                        <c:when test="${status.index == 0}">
                           <div class="carousel-item active">
-                            <img src="${newShow.bannerUrl}" itemprop="image">
+                            <img src="${newShow.bannerUrl}" itemprop="image" alt="${newShow.bannerUrl}">
                             <div class="carousel-caption">
                               <h2>${newShow.name}</h2>
                               <h3>${newShow.numFollowers} <spring:message code="index.followers"/></h3>
@@ -133,7 +133,7 @@
                         </c:when>
                         <c:otherwise>
                           <div class="carousel-item">
-                            <img src="${newShow.bannerUrl}" itemprop="image">
+                            <img src="${newShow.bannerUrl}" itemprop="image" alt="${newShow.bannerUrl}">>
                             <div class="carousel-caption">
                               <h2>${newShow.name}</h2>
                               <h3>${newShow.numFollowers} <spring:message code="index.followers"/></h3>
