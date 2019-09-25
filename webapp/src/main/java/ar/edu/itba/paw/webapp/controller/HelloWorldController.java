@@ -41,6 +41,7 @@ public class HelloWorldController {
 			return new ModelAndView("redirect:/");
 		}
 		final ModelAndView mav = new ModelAndView("search");
+        mav.addObject("op",op);
 		if(op.equals("genre")){
 			List<Series> series = seriesService.getAllSeriesByGenre(search);
 			HashMap<Genre,List<Series>> genres = new HashMap<>();
@@ -51,7 +52,7 @@ public class HelloWorldController {
 			mav.addObject("searchResults",genres);
 		}
 		else{
-			mav.addObject("searchResults",seriesService.getSeriesMapByName(search));
+			mav.addObject("searchResults",seriesService.getSeriesByName(search));
 		}
 		return mav;
 	}

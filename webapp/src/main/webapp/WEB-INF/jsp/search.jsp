@@ -105,13 +105,42 @@
                         <section id="search_results">
                             <h1><spring:message code="search.searchResults"/></h1>
                         </section>
-                        <c:forEach items="${searchResults}" var="entry">
-                            <section id="${entry.key}">
-                                <h2><c:out value="${entry.key.name}"/></h2>
-                                <a href="/series?genre=${entry.key.id}" class="show-all"><spring:message code="index.seeAll"/></a>
-                                <ul class="posters-list shows-list explore-list list-unstyled list-inline">
-                                    <c:forEach items="${entry.value}" var="serie">
-                                        <li id="${serie.id}" class=" ">
+                        <c:choose>
+                            <c:when test="${op == 'genre'}">
+                                <c:forEach items="${searchResults}" var="entry">
+                                    <section id="${entry.key}">
+                                        <h2><c:out value="${entry.key.name}"/></h2>
+                                        <a href="/series?genre=${entry.key.id}" class="show-all"><spring:message code="index.seeAll"/></a>
+                                        <ul class="posters-list shows-list explore-list list-unstyled list-inline">
+                                            <c:forEach items="${entry.value}" var="serie">
+                                                <li id="${serie.id}" class="">
+                                                    <div class="image-crop">
+                                                        <a href="/serie?id=${serie.id}">
+                                                            <img src="${serie.posterUrl}"
+                                                                 alt="${serie.name}">
+                                                        </a>
+                                                        <div class="overlay">
+                                                            <a href="/serie?id=${serie.id}" class="zoom-btn overlay-btn" title="info"></a>
+                                                        </div>
+                                                        <div class="side progress-box">
+                                                            <div class="loader rotating dark small visible"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="show-details poster-details">
+                                                        <h2><a href="/serie?id=${serie.id}">${serie.name}</a></h2>
+                                                        <a href="/serie?id=${serie.id}" class="secondary-link">${serie.numFollowers} <spring:message code="index.followers"/></a>
+                                                    </div>
+                                                </li>
+                                            </c:forEach>
+                                        </ul>
+                                    </section>
+                                </c:forEach>
+                            </c:when>
+                            <c:when test="${op == 'name'}">
+                                <section id="searchResultsSection">
+                                    <ul class="posters-list shows-list explore-list list-unstyled list-inline" style="overflow: visible">
+                                    <c:forEach items="${searchResults}" var="serie">
+                                        <li id="${serie.id}">
                                             <div class="image-crop">
                                                 <a href="/serie?id=${serie.id}">
                                                     <img src="${serie.posterUrl}"
@@ -130,9 +159,11 @@
                                             </div>
                                         </li>
                                     </c:forEach>
-                                </ul>
-                            </section>
-                        </c:forEach>
+                                    </ul>
+                                </section>
+                            </c:when>
+                        </c:choose>
+
                     </div>
                 </div>
             </div>
