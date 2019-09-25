@@ -10098,3 +10098,6 @@ INSERT INTO public.series (id, tvdbid, name, description, userrating, status, ru
 
 The show is produced by FX Productions and Blueprint Entertainment Inc.', null, 'Ended', 25, 117, '2008-10-09', 'tt1262403', null, null, 'https://m.media-amazon.com/images/M/MV5BMTQzMjYwODk1N15BMl5BanBnXkFtZTcwODA5Mzk5Mw@@._V1_SX300.jpg', 0, 'graphical/83339-g.jpg');
 INSERT INTO public.series (id, tvdbid, name, description, userrating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl) VALUES (172, 83340, 'My Lovely Sam-Soon', 'Kim Sam-soon is a baker who has a talent in making pastries and cakes. On Christmas Eve, she caught her boyfriend, Min Hyun-woo, cheating on her and breaks up. On that same night, she accidentally went into the men''s restroom and met Hyun Jin-hun. By sheer coincidence, Jin-hun needs a baker for his restaurant Bon Appetit and Sam-soon is unemployed. Sam-soon is hired as the restaurant''s chief baker and the two fight like a cat and dog.', null, 'Ended', 60, 17, '2005-06-01', 'tt0477524', null, null, 'https://m.media-amazon.com/images/M/MV5BMDc1YjNhODYtZTY3Ni00NzM5LWFmZTgtYTk2MWFlNzc2NzliXkEyXkFqcGdeQXVyNTI4MDA2NDE@._V1_SX300.jpg', 0, 'graphical/83340-g2.jpg');
+
+
+UPDATE series SET bannerurl = CONCAT('https://www.thetvdb.com/banners/', bannerurl) WHERE length(bannerurl) > 1;
