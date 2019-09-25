@@ -29,8 +29,8 @@
       <div class="page-left page-sidebar page-column ">
         <div class="scrollable scrolling-element">
           <div class="wrapper">
-            <a id="home-link" href="/">
-              <img class="logo tutv" src="./../../resources/img/Tutv.png" alt="TUTV"> <span id="home-text">TUTV</span>
+            <a id="home-link" href="<c:url value="/"/>">
+              <img class="logo tutv" src="<c:url value="/resources/img/Tutv.png"/>" alt="TUTV"> <span id="home-text">TUTV</span>
             </a> <!--#44d9e6-->
             <%@ include file="../searchForm.jsp" %>
             <div class="all-left-navs">
@@ -38,25 +38,25 @@
                 <ul class="menu list-unstyled">
                   <li class="upcoming ">
                     <a href="/" title="Upcoming">
-                      <img class="logo logo_icon" src="./../../resources/img/upcoming.png" alt="Upcoming">
+                      <img class="logo logo_icon" src="<c:url value="/resources/img/upcoming.png"/>" alt="Upcoming">
                       <span><spring:message code="index.upcoming"/></span>
                     </a>
                   </li>
                   <li class="home ">
                     <a href="/" title="Watchlist">
-                      <img class="logo logo_icon" src="./../../resources/img/watchlist.png" alt="Watchlist">
+                      <img class="logo logo_icon" src="<c:url value="/resources/img/watchlist.png"/>" alt="Watchlist">
                       <span><spring:message code="index.watchlist"/></span>
                     </a>
                   </li>
                   <li class="profile ">
                     <a href="/" title="Profile">
-                      <img class="logo logo_icon" src="./../../resources/img/profile.png" alt="Profile">
+                      <img class="logo logo_icon" src="<c:url value="/resources/img/profile.png"/>" alt="Profile">
                       <span><spring:message code="index.profile"/></span>
                     </a>
                   </li>
                   <li class="explore active">
                     <a href="/" title="Explore">
-                      <img class="logo logo_icon" src="./../../resources/img/explore_active.png" alt="Explore">
+                      <img class="logo logo_icon" src="<c:url value="/resources/img/explore_active.png"/>" alt="Explore">
                       <span><spring:message code="index.explore"/></span>
                     </a>
                   </li>
@@ -67,13 +67,13 @@
                 <ul class="menu list-unstyled">
                   <li class="account ">
                     <a href="/" title="Settings">
-                      <img class="logo logo_icon" src="./../../resources/img/settings.png" alt="Settings">
+                      <img class="logo logo_icon" src="<c:url value="/resources/img/settings.png"/>" alt="Settings">
                       <span><spring:message code="index.settings"/></span>
                     </a>
                   </li>
                   <li class="help">
                     <a href="/" class="help-btn" title="Help">
-                      <img class="logo logo_icon" src="./../../resources/img/help.png" alt="Help">
+                      <img class="logo logo_icon" src="<c:url value="/resources/img/help.png"/>" alt="Help">
                       <span><spring:message code="index.help"/></span>
                     </a>
                   </li>
@@ -81,7 +81,7 @@
               </section>
               <section>
                 <a href="/" class="signout-link" title="Sign out">
-                  <img class="logo logo_icon" src="./../../resources/img/sign_out.png" alt="Sign out">
+                  <img class="logo logo_icon" src="<c:url value="/resources/img/sign_out.png"/>" alt="Sign out">
                   <span><spring:message code="index.signout"/></span>
                 </a>
               </section>
@@ -147,14 +147,14 @@
               </section>
               <c:forEach items="${seriesMap}" var="entry">
                 <section id="${entry.key}">
-                  <a href="/series?genre=${entry.key.id}">
+                  <a href="<c:url value="/serie?genre=${entry.key.id}"/>">
                     <h2 class="black-font"><c:out value="${entry.key.name}"/></h2>
                     <span class="show-all"><spring:message code="index.seeAll"/></span>
                   </a>
                   <ul class="posters-list shows-list explore-list list-unstyled list-inline">
                     <c:forEach items="${entry.value}" var="serie">
                       <li id="${serie.id}" class=" ">
-                        <a href="/serie?id=${serie.id}">
+                        <a href="<c:url value="/serie?id=${serie.id}"/>">
                           <div class="image-crop">
                             <img src="${serie.posterUrl}" alt="${serie.name}">
                             <div class="overlay"><span class="zoom-btn overlay-btn"/></div>

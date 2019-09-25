@@ -2,9 +2,9 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <form id="global-search" class="navbar-form form-search" action="/search">
+    <form id="global-search" class="navbar-form form-search" action="<c:url value="/search"/>">
     <div class="form-group">
-        <img class="logo logo_icon" src="./../../resources/img/search.png" alt="Search">
+        <img class="logo logo_icon" src="<c:url value="/resources/img/search.png"/>" alt="Search">
     </div>
     <div class="form-group">
         <input type="text" id="global-search-input" name="search" class="show-search" placeholder="<spring:message code="search.search"/>">

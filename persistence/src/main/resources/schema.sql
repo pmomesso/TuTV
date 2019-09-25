@@ -8,8 +8,6 @@ create table if not exists users
 	mail varchar(32)
 );
 
-alter table users owner to root;
-
 create table if not exists genres
 (
 	id serial not null
@@ -20,16 +18,12 @@ create table if not exists genres
 		unique (id, genre)
 );
 
-alter table genres owner to root;
-
 create table if not exists seriesGenre
 (
 	genreid integer
 		constraint genreid
 			references genres
 );
-
-alter table seriesGenre owner to root;
 
 create table if not exists actor
 (
@@ -41,8 +35,6 @@ create table if not exists actor
 	updated varchar(32),
 	status varchar(32)
 );
-
-alter table actor owner to root;
 
 create table if not exists commentEpisode
 (
@@ -60,8 +52,6 @@ create table if not exists commentEpisode
 			references commentEpisode
 );
 
-alter table commentEpisode owner to root;
-
 create table if not exists network
 (
 	networkid serial not null
@@ -69,8 +59,6 @@ create table if not exists network
 			primary key,
 	name varchar(255)
 );
-
-alter table network owner to root;
 
 create table if not exists series
 (
@@ -95,8 +83,6 @@ create table if not exists series
 	bannerurl varchar(256)
 );
 
-alter table series owner to root;
-
 create table if not exists seriesAiring
 (
 	seriesid integer not null
@@ -106,8 +92,6 @@ create table if not exists seriesAiring
 	time time,
 	country varchar(255)
 );
-
-alter table seriesAiring owner to root;
 
 create table if not exists actorRoles
 (
@@ -125,8 +109,6 @@ create table if not exists actorRoles
 	updated date
 );
 
-alter table actorRoles owner to root;
-
 create table if not exists seriesReview
 (
 	userid integer
@@ -141,8 +123,6 @@ create table if not exists seriesReview
 	new_column integer
 );
 
-alter table seriesReview owner to root;
-
 create table if not exists season
 (
 	seasonid serial not null
@@ -153,8 +133,6 @@ create table if not exists season
 			references series,
 	seasonNumber integer not null
 );
-
-alter table season owner to root;
 
 create table if not exists episode
 (
@@ -172,7 +150,6 @@ create table if not exists episode
 			references season
 );
 
-alter table episode owner to root;
 
 create table if not exists follows
 (
@@ -184,7 +161,6 @@ create table if not exists follows
 			references series
 );
 
-alter table follows owner to root;
 
 create table if not exists hasgenre
 (
@@ -195,5 +171,3 @@ create table if not exists hasgenre
 		constraint hasgenre_genres_id_fk
 			references genres
 );
-
-alter table hasgenre owner to root;
