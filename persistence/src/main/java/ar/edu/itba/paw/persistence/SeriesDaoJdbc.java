@@ -77,6 +77,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         }
         return null;
     }
+
     private List<Series> groupGenres(List<Series> seriesList){
         List<Series> retList = new ArrayList<>();
         Series s;
