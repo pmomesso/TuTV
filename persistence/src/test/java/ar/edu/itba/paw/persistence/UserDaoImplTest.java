@@ -45,7 +45,7 @@ public class UserDaoImplTest {
     @Test
     public void testGetUser(){
         //Setup
-        jdbcTemplate.execute(String.format("INSERT INTO users VALUES( %d,'%s','%s', '%s')", USER_ID, USERNAME, PASSWORD, MAIL));
+        jdbcTemplate.execute(String.format("INSERT INTO users(id, username, password, mail) VALUES( %d,'%s','%s', '%s')", USER_ID, USERNAME, PASSWORD, MAIL));
 
         //Ejercitar
         final User user = userDao.getUser(USER_ID);

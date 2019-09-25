@@ -4,7 +4,8 @@ create table if not exists users
 		constraint users_pkey
 			primary key,
 	username varchar(32),
-	password varchar(32)
+	password varchar(32),
+	mail varchar(32)
 );
 
 create table if not exists genres
