@@ -33,7 +33,7 @@
                     <img class="logo tutv" src="./../../resources/img/Tutv.png" alt="TUTV"> <span
                         id="home-text">TUTV</span>
                 </a> <!--#44d9e6-->
-                <%@ include file="../searchForm.html" %>
+                <%@ include file="../searchForm.jsp" %>
                 <div class="all-left-navs">
                     <section id="menu">
                         <ul class="menu list-unstyled">
