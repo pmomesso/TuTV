@@ -42,6 +42,7 @@ public class SeriesDaoJdbcTest {
     private static final String GENRE = "genre";
     private static final Genre GENRE_OBJ = new Genre(GENRE_ID,GENRE);
     private static final String NETWORK_NAME = "network";
+    private static final int NETWORK_ID = 1;
     @Autowired
     private DataSource ds;
     @Autowired
@@ -49,11 +50,12 @@ public class SeriesDaoJdbcTest {
     private JdbcTemplate jdbcTemplate;
 
     private void populateDatabase(){
+        jdbcTemplate.execute(String.format(Locale.US, "INSERT INTO network (networkid, name) VALUES(%d,'%s')", NETWORK_ID, NETWORK_NAME));
         jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO genres (id,genre) VALUES(%d,'%s')",GENRE_ID,GENRE));
         jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO series " +
-                "(id,tvDbId,name,description,userRating,status,runtime,firstaired,id_imdb,added,updated,posterUrl,bannerUrl,followers) " +
-                "VALUES(%d,%d,'%s','%s',%f,'%s',%d,'%s','%s','%s','%s','%s','%s',%d)",
-                ID, TVDB_ID, NAME,DESCRIPTION,USER_RATING,STATUS,RUNTIME,FIRST_AIRED,ID_IMDB,ADDED,UPDATED,POSTER_URL,BANNER_URL,FOLLOWERS));
+                "(id,tvDbId,name,description,userRating,status,runtime,networkid,firstaired,id_imdb,added,updated,posterUrl,bannerUrl,followers) " +
+                "VALUES(%d,%d,'%s','%s',%f,'%s',%d,%d,'%s','%s','%s','%s','%s','%s',%d)",
+                ID, TVDB_ID, NAME,DESCRIPTION,USER_RATING,STATUS,RUNTIME,NETWORK_ID,FIRST_AIRED,ID_IMDB,ADDED,UPDATED,POSTER_URL,BANNER_URL,FOLLOWERS));
         jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO hasgenre (seriesid,genreid) VALUES(%d,%d)",ID,GENRE_ID));
     }
     private void assertSeries(Series series){
@@ -73,6 +75,7 @@ public class SeriesDaoJdbcTest {
         Assert.assertEquals(series.getBannerUrl(),BANNER_URL);
         Assert.assertEquals(series.getNumFollowers(),FOLLOWERS);
         Assert.assertEquals(series.getGenres().size(),1);
+        Assert.assertEquals(series.getNetwork(), NETWORK_NAME);
         Genre g = (Genre)series.getGenres().toArray()[0];
         Assert.assertEquals(g.getId(),GENRE_ID);
         Assert.assertEquals(g.getName(),GENRE);
@@ -83,6 +86,7 @@ public class SeriesDaoJdbcTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "hasgenre");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "series");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "genres");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "network");
     }
 
     @Test
@@ -210,12 +214,10 @@ public class SeriesDaoJdbcTest {
     public void setSeriesNetworkTest(){
         //Setup
         populateDatabase();
-        final int networkId = 1;
-        jdbcTemplate.execute(String.format("INSERT INTO network (networkid,name) VALUES(%d,'%s')",networkId,"network"));
         //Ejercitar
-        seriesDao.setSeriesNetwork(ID,networkId);
+        seriesDao.setSeriesNetwork(ID,NETWORK_ID);
         //Asserts
-        Assert.assertEquals(JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","networkId = " + networkId),1);
+        Assert.assertEquals(JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","networkId = " + NETWORK_ID),1);
     }
     @Test
     public void setSeriesDescriptionTest(){
