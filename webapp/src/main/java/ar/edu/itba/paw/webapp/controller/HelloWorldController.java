@@ -44,13 +44,14 @@ public class HelloWorldController {
 		final ModelAndView mav = new ModelAndView("search");
         mav.addObject("op",op);
 		if(op.equals("genre")){
-			List<Series> series = seriesService.getAllSeriesByGenre(search);
-			HashMap<Genre,List<Series>> genres = new HashMap<>();
-			if(series.size() > 0){
-				Genre genre = (Genre)series.get(0).getGenres().toArray()[0];
-				genres.put(genre,series);
+			Map<Genre,List<Series>> genres = seriesService.getSeriesByGenreMap(0,5);
+			Map<Genre,List<Series>> searchResults = new HashMap<>();
+			for(Map.Entry<Genre,List<Series>> entry : genres.entrySet()){
+				if(entry.getKey().getName().toLowerCase().contains(search.toLowerCase())){
+					searchResults.put(entry.getKey(),entry.getValue());
+				}
 			}
-			mav.addObject("searchResults",genres);
+			mav.addObject("searchResults",searchResults);
 		}
 		else{
 			mav.addObject("searchResults",seriesService.getSeriesByName(search));

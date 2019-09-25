@@ -9,13 +9,12 @@ import java.util.Set;
 
 public interface SeriesDao {
 
-    Map<Genre, Set<Series>> getSeriesMapByName(String seriesName);
     List<Series> getSeriesByName(String seriesName);
 
     List<Series> getSeriesByGenre(String genreName);
-    List<Series> getSeriesByGenre(Genre genre);
+    List<Series> getSeriesByGenre(int id);
 
-    List<Series> getBestSeriesByGenre(Genre genre, int lowerLimit, int upperLimit);
+    List<Series> getBestSeriesByGenre(int genreId, int lowerLimit, int upperLimit);
 
     List<Series> getNewSeries(int lowerLimit, int upperLimit);
 
@@ -23,10 +22,11 @@ public interface SeriesDao {
 
     Series getSeriesById(final long id);
 
-    long createSeries(String seriesName, String seriesDescription);
+    long createSeries(Integer tvdbid,String seriesName, String seriesDescription,Double userRating,String status,Integer runtime,
+                      Integer networkId,String firstAired,String idImdb,String added,String updated,String posterUrl,String bannerUrl,Integer followers);
 
-    void addSeriesGenre(long seriesId, String genre);
+    long addSeriesGenre(String genre,List<Series> series);
     void setSeriesRunningTime(long seriesId, int runningTime);
-    void setSeriesNetwork(long seriesId, String network);
+    void setSeriesNetwork(long seriesId, int networkId);
     void setSeriesDescription(long seriesId, String seriesDescription);
 }

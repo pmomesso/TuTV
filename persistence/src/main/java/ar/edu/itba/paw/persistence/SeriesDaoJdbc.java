@@ -6,38 +6,68 @@ import ar.edu.itba.paw.model.Series;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Repository
 public class SeriesDaoJdbc implements SeriesDao {
 
     private RowMapper<Series> seriesRowMapper = (resultSet, i) -> {
+        //Creo la serie.
         Series ret = new Series(resultSet.getString("name"));
         String description = resultSet.getString("description");
         if (description != null) {
             ret.setDescription(description);
         }
-        String network = resultSet.getString("networkId");
-        ret.setNetwork(network);
-        int runningTime = resultSet.getInt("runtime");
-        ret.setRunningTime(runningTime);
         ret.setId(resultSet.getLong("id"));
+        ret.setUserRating(resultSet.getDouble("userRating"));
+        ret.setImdbId(resultSet.getString("id_imdb"));
+        ret.setNetworkId(resultSet.getInt("networkId"));
+        ret.setRunningTime(resultSet.getInt("runtime"));
         ret.setNumFollowers(resultSet.getInt("followers"));
         ret.setBannerUrl(resultSet.getString("bannerurl"));
         ret.setPosterUrl(resultSet.getString("posterurl"));
-        Genre g = new Genre();
-        g.setName(resultSet.getString("genre"));
-        g.setId(resultSet.getInt("genreid"));
-        ret.addGenre(g);
+        ret.setStatus(resultSet.getString("status"));
+        //Seteo las fechas.
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String added = resultSet.getString("added");
+        if(added != null){
+            try {
+                ret.setAdded(format.parse(added));
+            } catch (ParseException e) {e.printStackTrace();}
+        }
+        String updated = resultSet.getString("updated");
+        if(updated != null){
+            try {
+                ret.setUpdated(format.parse(updated));
+            } catch (ParseException e) {e.printStackTrace();}
+        }
+        String firstAired = resultSet.getString("firstAired");
+        if(firstAired != null){
+            try {
+                ret.setFirstAired(format.parse(firstAired));
+            } catch (ParseException e) {e.printStackTrace();}
+        }
+        //Creo el genero.
+        if(resultSet.getString("genre") != null){
+            Genre g = new Genre();
+            g.setName(resultSet.getString("genre"));
+            g.setId(resultSet.getInt("genreid"));
+            ret.addGenre(g);
+        }
         return ret;
     };
 
     private JdbcTemplate jdbcTemplate;
-    private SimpleJdbcInsert jdbcInsert;
+    private SimpleJdbcInsert seriesjdbcInsert;
+    private SimpleJdbcInsert genresjdbcInsert;
+    private SimpleJdbcInsert hasGenrejdbcInsert;
 
     private Series getById(List<Series> series,long id){
         for(Series s : series){
@@ -63,74 +93,56 @@ public class SeriesDaoJdbc implements SeriesDao {
     @Autowired
     public SeriesDaoJdbc(final DataSource ds) {
         jdbcTemplate = new JdbcTemplate(ds);
-        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        seriesjdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("series")
                 .usingGeneratedKeyColumns("id");
+        genresjdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("genres")
+                .usingGeneratedKeyColumns("id");
+        hasGenrejdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("hasgenre");
     }
 
     @Override
     public List<Series> getSeriesByName(String seriesName) {
         return groupGenres(jdbcTemplate.query("SELECT * " +
-                "FROM (series JOIN hasgenre ON series.id = hasgenre.seriesid JOIN genres ON genres.id = hasgenre.genreid) " +
-                "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre) " +
+                "FROM (series LEFT JOIN hasgenre ON series.id = hasgenre.seriesid LEFT JOIN genres ON genres.id = hasgenre.genreid) " +
+                "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre) " +
                 "WHERE LOWER(name) LIKE ?",new Object[]{"%"+seriesName.toLowerCase()+"%"}, seriesRowMapper));
     }
 
     @Override
-    public Map<Genre, Set<Series>> getSeriesMapByName(String seriesName) {
-        //Obtengo las series repetidas sin todavia agrupar los generos.
-        List<Series> series = jdbcTemplate.query("SELECT * " +
-                "FROM (series JOIN hasgenre ON series.id = hasgenre.seriesid JOIN genres ON genres.id = hasgenre.genreid) " +
-                "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre) " +
-                "WHERE LOWER(name) LIKE ?",new Object[]{"%"+seriesName.toLowerCase()+"%"}, seriesRowMapper);
-        Map<Genre,Set<Series>> genres = new HashMap<>();
-        Genre g;
-        for(Series s : series){
-            g = (Genre)s.getGenres().toArray()[0];
-            if(!genres.containsKey(g)){
-                Set<Series> genreSeries = new HashSet<>();
-                genreSeries.add(s);
-                genres.put(g,genreSeries);
-            }
-            else{
-                genres.get(g).add(s);
-            }
-
-        }
-        return genres;
-    }
-    @Override
     public List<Series> getSeriesByGenre(String genreName) {
         return groupGenres(jdbcTemplate.query("SELECT * " +
                 "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
-                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
                 "WHERE LOWER(genre) LIKE ?", new Object[]{"%"+genreName.toLowerCase()+"%"}, seriesRowMapper));
     }
 
     @Override
-    public List<Series> getSeriesByGenre(Genre genre) {
+    public List<Series> getSeriesByGenre(int id) {
         return groupGenres(jdbcTemplate.query("SELECT * " +
                 "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
-                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
-                "WHERE genreid = ?", new Object[]{genre.getId()}, seriesRowMapper));
+                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                "WHERE genreid = ?", new Object[]{id}, seriesRowMapper));
     }
 
     @Override
-    public List<Series> getBestSeriesByGenre(Genre genre, int lowerLimit, int upperLimit) {
+    public List<Series> getBestSeriesByGenre(int genreId, int lowerLimit, int upperLimit) {
         return groupGenres(jdbcTemplate.query("SELECT * " +
                         "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
-                        "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                        "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
                         "WHERE genreid = ?" +
                         "ORDER BY userRating DESC LIMIT ? OFFSET ?",
-                new Object[]{genre.getId(), upperLimit - lowerLimit + 1, lowerLimit}, seriesRowMapper));
+                new Object[]{genreId, upperLimit - lowerLimit + 1, lowerLimit}, seriesRowMapper));
     }
 
     @Override
     public List<Series> getNewSeries(int lowerLimit, int upperLimit) {
         return groupGenres(jdbcTemplate.query("SELECT * " +
-                "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
-                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
-                "ORDER BY firstaired DESC LIMIT ? OFFSET ?", new Object[]{upperLimit - lowerLimit + 1, upperLimit}, seriesRowMapper));
+                "FROM (series LEFT JOIN hasGenre ON hasgenre.seriesid = series.id LEFT JOIN genres ON hasgenre.genreid = genres.id) " +
+                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                "ORDER BY firstaired DESC LIMIT ? OFFSET ?", new Object[]{upperLimit - lowerLimit + 1, lowerLimit}, seriesRowMapper));
     }
 
     @Override
@@ -140,7 +152,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         List<Genre> genreList = getAllGenres();
         List<Series> seriesList;
         for(Genre g : genreList) {
-            seriesList = getBestSeriesByGenre(g, lowerLimit, upperLimit);
+            seriesList = getBestSeriesByGenre(g.getId(), lowerLimit, upperLimit);
             ret.put(g, seriesList);
         }
 
@@ -161,8 +173,8 @@ public class SeriesDaoJdbc implements SeriesDao {
     @Override
     public Series getSeriesById(final long id) {
         final List<Series> seriesList = jdbcTemplate.query("SELECT * " +
-                "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
-                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imbd, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                "FROM (series LEFT JOIN hasGenre ON hasgenre.seriesid = series.id LEFT JOIN genres ON hasgenre.genreid = genres.id) " +
+                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
                 "WHERE id = ?", new Object[]{id}, seriesRowMapper);
         if(seriesList.isEmpty()) {
             return null;
@@ -171,39 +183,65 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     @Override
-    public long createSeries(String seriesName, String seriesDescription) {
+    public long createSeries(Integer tvdbid,String seriesName, String seriesDescription,Double userRating,String status,
+                             Integer runtime,Integer networkId,String firstAired,String idImdb,String added,String updated,
+                             String posterUrl,String bannerUrl,Integer followers) {
 
-        jdbcInsert = jdbcInsert.withTableName("series")
+        seriesjdbcInsert = seriesjdbcInsert.withTableName("series")
                                 .usingGeneratedKeyColumns("id");
 
         Map<String, Object> args = new HashMap<>();
+        args.put("tvdbid",tvdbid);
         args.put("name", seriesName);
         args.put("description", seriesDescription);
+        args.put("userRating",userRating);
+        args.put("status",status);
+        args.put("runtime",runtime);
+        args.put("networkId",networkId);
+        args.put("firstAired",firstAired);
+        args.put("id_imdb",idImdb);
+        args.put("added",added);
+        args.put("updated",updated);
+        args.put("posterUrl",posterUrl);
+        args.put("bannerUrl",bannerUrl);
+        args.put("followers",followers);
 
-        final Number seriesId = jdbcInsert.executeAndReturnKey(args);
+        final Number seriesId = seriesjdbcInsert.executeAndReturnKey(args);
         return seriesId.longValue();
     }
 
     @Override
-    public void addSeriesGenre(long seriesId, String genre) {
+    public long addSeriesGenre(String genreName,List<Series> series) {
 
-        jdbcInsert = jdbcInsert.withTableName("genres");
-        long genreId = getGenreId(genre);
+        genresjdbcInsert = genresjdbcInsert.withTableName("genres")
+                                .usingGeneratedKeyColumns("id");
         Map<String, Object> args = new HashMap<>();
-        args.put("id", seriesId);
-        args.put("genreId", genreId);
-
-        jdbcInsert.execute(args);
+        args.put("genre", genreName);
+        final Number genreId = genresjdbcInsert.executeAndReturnKey(args);
+        if(series != null && series.size() > 0){
+            hasGenrejdbcInsert = hasGenrejdbcInsert.withTableName("hasgenre");
+            args.clear();
+            MapSqlParameterSource entry;
+            List<MapSqlParameterSource> entries = new ArrayList<>();
+            for(Series s : series){
+                entry = new MapSqlParameterSource()
+                        .addValue("seriesid",s.getId())
+                        .addValue("genreid",genreId);
+                entries.add(entry);
+            }
+            hasGenrejdbcInsert.executeBatch(entries.toArray(new MapSqlParameterSource[entries.size()]));
+        }
+        return genreId.longValue();
     }
 
     @Override
     public void setSeriesRunningTime(long seriesId, int runningTime) {
-        jdbcTemplate.update("UPDATE series SET runningTime = ? WHERE id = ?", runningTime, seriesId);
+        jdbcTemplate.update("UPDATE series SET runtime = ? WHERE id = ?", runningTime, seriesId);
     }
 
     @Override
-    public void setSeriesNetwork(long seriesId, String network) {
-        jdbcTemplate.update("UPDATE series SET network = ? WHERE id = ?", network, seriesId);
+    public void setSeriesNetwork(long seriesId, int networkId) {
+        jdbcTemplate.update("UPDATE series SET networkId = ? WHERE id = ?", networkId, seriesId);
     }
 
     @Override

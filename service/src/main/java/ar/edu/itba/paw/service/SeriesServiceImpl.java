@@ -23,11 +23,6 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public Map<Genre, Set<Series>> getSeriesMapByName(String name) {
-        return seriesDao.getSeriesMapByName(name);
-    }
-
-    @Override
     public List<Series> getSeriesByName(String name){
         return seriesDao.getSeriesByName(name);
     }
@@ -38,18 +33,17 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Series> getSeriesByGenreAndNumber(Genre genre, int num) {
-        return seriesDao.getBestSeriesByGenre(genre, 0, num);
+    public List<Series> getSeriesByGenreAndNumber(int genreId, int num) {
+        return seriesDao.getBestSeriesByGenre(genreId, 0, num);
     }
 
     @Override
     public List<Series> getAllSeriesByGenre(String genreName) {
         return seriesDao.getSeriesByGenre(genreName);
     }
-
     @Override
-    public List<Series> getAllSeriesByGenre(Genre genre) {
-        return seriesDao.getSeriesByGenre(genre);
+    public List<Series> getAllSeriesByGenre(int id) {
+        return seriesDao.getSeriesByGenre(id);
     }
 
     @Override
