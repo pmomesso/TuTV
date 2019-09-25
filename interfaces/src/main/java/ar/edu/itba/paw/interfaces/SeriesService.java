@@ -9,11 +9,11 @@ import java.util.Set;
 
 public interface SeriesService {
 
-    Map<Genre, Set<Series>> getSeriesMapByName(String name);
     List<Series> getSeriesByName(String name);
-    List<Series> getSeriesByGenreAndNumber(Genre genre, int num);
+    Series getSerieById(long id);
+    List<Series> getSeriesByGenreAndNumber(int genreId, int num);
     List<Series> getAllSeriesByGenre(String genreName);
-    List<Series> getAllSeriesByGenre(Genre genre);
+    public List<Series> getAllSeriesByGenre(int id);
     Map<Genre, List<Series>> getSeriesByGenreMap(int lowerNumber, int upperNumber);
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
 

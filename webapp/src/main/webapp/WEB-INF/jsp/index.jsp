@@ -24,11 +24,8 @@
     <script src="<c:url value="/resources/js/popper.min.js"/>"></script>
     <script src="<c:url value="/resources/js/bootstrap.js"/>"></script>
   </head>
-
   <body id="container" class="home no-touch white   reduced-right ">
-
     <div class="body-inner">
-
       <div class="page-left page-sidebar page-column ">
         <div class="scrollable scrolling-element">
           <div class="wrapper">
@@ -37,7 +34,6 @@
             </a> <!--#44d9e6-->
             <%@ include file="../searchForm.html" %>
             <div class="all-left-navs">
-
               <section id="menu">
                 <ul class="menu list-unstyled">
                   <li class="upcoming ">
@@ -67,7 +63,6 @@
                 </ul>
               </section>
               <section id="user-nav">
-
                 <h1>agusosimani</h1>
                 <ul class="menu list-unstyled">
                   <li class="account ">
@@ -83,7 +78,6 @@
                     </a>
                   </li>
                 </ul>
-
               </section>
               <section>
                 <a href="/" class="signout-link" title="Sign out">
@@ -94,7 +88,6 @@
           </div>
         </div>
       </div>
-
       <div class="page-center page-column ">
       <div class="page-center-inner">
         <div class="alt-block"></div>
@@ -103,7 +96,6 @@
             <div id="explore">
               <section id="new-shows">
                 <h1><spring:message code="index.newShows"/></h1>
-
                 <div id="myCarousel" class="carousel slide" data-ride="carousel">
                   <!-- Carousel indicators -->
                   <ol class="carousel-indicators">
@@ -154,27 +146,23 @@
               </section>
               <c:forEach items="${seriesMap}" var="entry">
                 <section id="${entry.key}">
-                  <h2><c:out value="${entry.key.name}"/></h2>
-                  <a href="/series?genre=${entry.key.id}" class="show-all"><spring:message code="index.seeAll"/></a>
+                  <a href="/series?genre=${entry.key.id}">
+                    <h2 class="black-font"><c:out value="${entry.key.name}"/></h2>
+                    <span class="show-all"><spring:message code="index.seeAll"/></span>
+                  </a>
                   <ul class="posters-list shows-list explore-list list-unstyled list-inline">
                     <c:forEach items="${entry.value}" var="serie">
                       <li id="${serie.id}" class=" ">
-                        <div class="image-crop">
-                          <a href="/serie?id=${serie.id}">
-                            <img src="${serie.posterUrl}"
-                                 alt="${serie.name}">
-                          </a>
-                          <div class="overlay">
-                            <a href="/serie?id=${serie.id}" class="zoom-btn overlay-btn" title="info"></a>
+                        <a href="/serie?id=${serie.id}">
+                          <div class="image-crop">
+                            <img src="${serie.posterUrl}" alt="${serie.name}">
+                            <div class="overlay"><span class="zoom-btn overlay-btn"/></div>
                           </div>
-                          <div class="side progress-box">
-                            <div class="loader rotating dark small visible"></div>
+                          <div class="show-details poster-details">
+                            <h2>${serie.name}</h2>
+                            <span class="secondary-link">${serie.numFollowers} <spring:message code="index.followers"/></span>
                           </div>
-                        </div>
-                        <div class="show-details poster-details">
-                          <h2><a href="/serie?id=${serie.id}">${serie.name}</a></h2>
-                          <a href="/serie?id=${serie.id}" class="secondary-link">${serie.numFollowers} <spring:message code="index.followers"/></a>
-                        </div>
+                        </a>
                       </li>
                     </c:forEach>
                   </ul>

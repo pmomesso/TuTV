@@ -1,21 +1,23 @@
 package ar.edu.itba.paw.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Series  {
 
+    private long id;
+    private int tvdbid;
     private String name;
     private String seriesDescription;
-    private String network;
-    private String rating;
+    private Integer networkId;
     private String posterUrl;
     private String bannerUrl;
     private String status;
-    private Rating userRating;
-    private int runningTime;
+    private Double userRating;
+    private Integer runningTime;
     private int numFollowers;
-    private long imbdId;
-    private long id;
+    private String imdbId;
     private Date firstAired;
     private Date added;
     private Date updated;
@@ -32,13 +34,42 @@ public class Series  {
         this.name = name;
         this.seriesDescription = seriesDescription;
     }
-
-    public String getNetwork() {
-        return network;
+    public Series(long id,int tvdbid,String name,String seriesDescription,Integer networkId,String posterUrl,String bannerUrl,Double userRating,
+                  String status,Integer runningTime,int numFollowers,String imdbid,String firstAired,String added,String updated) {
+        this.id = id;
+        this.tvdbid = tvdbid;
+        this.name = name;
+        this.seriesDescription = seriesDescription;
+        this.networkId = networkId;
+        this.posterUrl = posterUrl;
+        this.bannerUrl = bannerUrl;
+        this.status = status;
+        this.userRating = userRating;
+        this.runningTime = runningTime;
+        this.numFollowers = numFollowers;
+        this.imdbId = imdbid;
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            this.firstAired = f.parse(firstAired);
+        } catch (ParseException e) {
+            this.firstAired = null;
+            e.printStackTrace();
+        }
+        try {
+            this.added = f.parse(added);
+        } catch (ParseException e) {
+            this.added = null;
+            e.printStackTrace();
+        }
+        try {
+            this.updated = f.parse(updated);
+        } catch (ParseException e) {
+            this.updated = null;
+            e.printStackTrace();
+        }
     }
-
-    public String getRating() {
-        return rating;
+    public Integer getNetworkId() {
+        return networkId;
     }
 
     public int getRunningTime() {
@@ -49,8 +80,8 @@ public class Series  {
         return status;
     }
 
-    public long getImbdId() {
-        return imbdId;
+    public String getImdbId() {
+        return imdbId;
     }
 
     public Date getFirstAired() {
@@ -65,11 +96,11 @@ public class Series  {
         return updated;
     }
 
-    public Rating getUserRating() {
+    public Double getUserRating() {
         return userRating;
     }
 
-    public void setUserRating(Rating rating) { userRating = rating; }
+    public void setUserRating(Double userRating) { this.userRating = userRating; }
 
     public String getName() {
         return name;
@@ -101,8 +132,8 @@ public class Series  {
         this.runningTime = runningTime;
     }
 
-    public void setNetwork(String network) {
-        this.network = network;
+    public void setNetworkId(Integer networkId) {
+        this.networkId = networkId;
     }
 
     public long getId() {
@@ -150,4 +181,31 @@ public class Series  {
         return Long.valueOf(id).hashCode();
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
+    }
+
+    public void setFirstAired(Date firstAired) {
+        this.firstAired = firstAired;
+    }
+
+    public void setAdded(Date added) {
+        this.added = added;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
+
+    public int getTvdbid() {
+        return tvdbid;
+    }
+
+    public void setTvdbid(int tvdbid) {
+        this.tvdbid = tvdbid;
+    }
 }
