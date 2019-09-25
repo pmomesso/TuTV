@@ -20,7 +20,7 @@ import java.util.*;
 
 @Controller
 public class HelloWorldController {
-	
+
 	@Autowired
 	private UserService userService;
 
@@ -85,7 +85,7 @@ public class HelloWorldController {
 	public ModelAndView showRegister(@ModelAttribute("registerForm") final UserForm form) {
 		return new ModelAndView("register"); // para que si tengo un error en el formulario, poder tener precalculados los valores que el usuario calculo..
 	}
-	
+
 	@RequestMapping("/logout") //Le digo que url mappeo
 	public ModelAndView logout() {
 		final ModelAndView mav = new ModelAndView("logout"); //Seleccionar lista
@@ -94,12 +94,12 @@ public class HelloWorldController {
 	}
 
 	// TODO sacar. Lo puse por testeo inicial del dao de user, no debería ir ésto...
-	@RequestMapping("/createuser")
-	public ModelAndView createUser(@RequestParam(value = "name", required = true) final String userName) {
-		final long id = userService.createUser(userName);
-		final ModelAndView mav = new ModelAndView("index"); //Seleccionar lista
-		mav.addObject("greeting", "PAW"); //Popular model
-		return mav;
-	}
+//	@RequestMapping("/createuser")
+//	public ModelAndView createUser(@RequestParam(value = "name", required = true) final String userName) {
+//		final long id = userService.createUser(userName, "", "");
+//		final ModelAndView mav = new ModelAndView("index"); //Seleccionar lista
+//		mav.addObject("greeting", "PAW"); //Popular model
+//		return mav;
+//	}
 
 }

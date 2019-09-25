@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,11 @@ import ar.edu.itba.paw.interfaces.UserDao;
 public class UserDaoJdbc implements UserDao {
 	
 	private RowMapper<User> rm = (resultSet, i) -> {
-		User user = new User(resultSet.getString("username"));
+		User user = new User();
+		user.setId(resultSet.getLong("id"));
+		user.setMailAddress(resultSet.getString("mail"));
+		user.setUserName(resultSet.getString("username"));
+		user.setPassword(resultSet.getString("password"));
 		return user;
 	};
 	
@@ -44,9 +49,11 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	@Override
-	public long createUser(final String userName) {
+	public long createUser(final String userName, final String password, final String mail) {
 		Map<String, Object> args = new HashMap<>();
-		args.put("userName", userName);
+		args.put("username", userName);
+		args.put("password", password);
+		args.put("mail", mail);
 		final Number userGeneratedId = jdbcInsert.executeAndReturnKey(args);
 		return userGeneratedId.longValue();
 	}

@@ -22,6 +22,8 @@ public class UserDaoImplTest {
 
     private static final long USER_ID = 1;
     private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String MAIL = "mail";
     @Autowired
     private DataSource ds;
     @Autowired
@@ -36,19 +38,22 @@ public class UserDaoImplTest {
     @Test
     public void testCreate(){
         //Ejercitar
-        final long id = userDao.createUser(USERNAME);
+        final long id = userDao.createUser(USERNAME, PASSWORD, MAIL);
         //Asserts
         Assert.assertTrue(id >= 0);
     }
     @Test
     public void testGetUser(){
         //Setup
-        jdbcTemplate.execute(String.format("INSERT INTO users VALUES( %d,'%s','password')", USER_ID, USERNAME));
+        jdbcTemplate.execute(String.format("INSERT INTO users VALUES( %d,'%s','%s', '%s')", USER_ID, USERNAME, PASSWORD, MAIL));
 
         //Ejercitar
         final User user = userDao.getUser(USER_ID);
         //Asserts
         Assert.assertNotNull(user);
         Assert.assertEquals(user.getUserName(),USERNAME);
+        Assert.assertEquals(user.getPassword(), PASSWORD);
+        Assert.assertEquals(user.getMailAddress(), MAIL);
+        Assert.assertEquals(user.getId(), USER_ID);
     }
 }

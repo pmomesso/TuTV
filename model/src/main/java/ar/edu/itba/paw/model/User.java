@@ -20,9 +20,7 @@ public class User {
 
     private String confirmationKey;
 
-    public User(String username) {
-        this.userName = username;
-    }
+    public User() {}
 
     public String getUserName() {
         return userName;
