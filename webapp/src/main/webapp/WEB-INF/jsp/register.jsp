@@ -23,29 +23,33 @@
         <link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/resources/css/tvst.css"/>">
     </head>
     <body>
-        <h2><spring:message code="register.title"/></h2>
-        <form:form modelAttribute="registerForm" action="/create" method="post" enctype="application/x-www-form-urlencoded">
-            <div>
-<%--                el path seria registerForm.username porque vengo de ese modelAtributte--%>
-                <form:label path="username"><spring:message code="register.username"/></form:label>
-                <form:input path="username" type="text"/>
-<%--                le digo que a cada error lo ponga en el elemento <p> con el estilo error--%>
-                <form:errors path="username" element="p" cssClass="error"/>
-            </div>
-            <div>
-                <form:label path="password"><spring:message code="register.password"/></form:label>
-                <form:input path="password" type="password"/>
-                <form:errors path="password" element="p" cssClass="error"/>
-            </div>
-            <div>
-                <form:label path="repeatPassword"><spring:message code="register.repeatPassword"/></form:label>
-                <form:input path="repeatPassword" type="password"/>
-                <form:errors path="repeatPassword" element="p" cssClass="error"/>
-            </div>
-            <div>
-<%--                como no tiene un path de mi modelo no necesito usar el de spring--%>
-                <input type="submit" value="<spring:message code="register.submit"/>"/>
-            </div>
-        </form:form>
+    <div class="full-overlay">
+        <div class="container-center white-background">
+            <h2><spring:message code="register.title"/></h2>
+            <form:form modelAttribute="registerForm" action="/register" method="post" enctype="application/x-www-form-urlencoded">
+                <div>
+                        <%--                el path seria registerForm.username porque vengo de ese modelAtributte--%>
+                    <form:label path="username"><spring:message code="register.username"/></form:label>
+                    <form:input path="username" type="text"/>
+                        <%--                le digo que a cada error lo ponga en el elemento <p> con el estilo error--%>
+                    <form:errors path="username" element="p" cssClass="error"/>
+                </div>
+                <div>
+                    <form:label path="password"><spring:message code="register.password"/></form:label>
+                    <form:input path="password" type="password"/>
+                    <form:errors path="password" element="p" cssClass="error"/>
+                </div>
+                <div>
+                    <form:label path="repeatPassword"><spring:message code="register.repeatPassword"/></form:label>
+                    <form:input path="repeatPassword" type="password"/>
+                    <form:errors path="repeatPassword" element="p" cssClass="error"/>
+                </div>
+                <div>
+                        <%--                como no tiene un path de mi modelo no necesito usar el de spring--%>
+                    <input type="submit" value="<spring:message code="register.submit"/>"/>
+                </div>
+            </form:form>
+        </div>
+    </div>
     </body>
 </html>
