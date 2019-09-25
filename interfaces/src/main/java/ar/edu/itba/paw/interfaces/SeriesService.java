@@ -11,6 +11,7 @@ public interface SeriesService {
 
     Map<Genre, Set<Series>> getSeriesMapByName(String name);
     List<Series> getSeriesByName(String name);
+    Series getSerieById(long id);
     List<Series> getSeriesByGenreAndNumber(Genre genre, int num);
     List<Series> getAllSeriesByGenre(String genreName);
     List<Series> getAllSeriesByGenre(Genre genre);

@@ -31,6 +31,12 @@ public class SeriesServiceImpl implements SeriesService {
     public List<Series> getSeriesByName(String name){
         return seriesDao.getSeriesByName(name);
     }
+
+    @Override
+    public Series getSerieById(long id) {
+        return seriesDao.getSeriesById(id);
+    }
+
     @Override
     public List<Series> getSeriesByGenreAndNumber(Genre genre, int num) {
         return seriesDao.getBestSeriesByGenre(genre, 0, num);
@@ -40,6 +46,7 @@ public class SeriesServiceImpl implements SeriesService {
     public List<Series> getAllSeriesByGenre(String genreName) {
         return seriesDao.getSeriesByGenre(genreName);
     }
+
     @Override
     public List<Series> getAllSeriesByGenre(Genre genre) {
         return seriesDao.getSeriesByGenre(genre);

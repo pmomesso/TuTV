@@ -27,13 +27,14 @@ public class HelloWorldController {
 	@Autowired
 	private SeriesService seriesService;
 
-	@RequestMapping("/") //Le digo que url mappeo
-	public ModelAndView helloWorld() {
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public ModelAndView home() {
 		final ModelAndView mav = new ModelAndView("index");
 		mav.addObject("newShows", seriesService.getNewestSeries(0,4));
-		mav.addObject("seriesMap", seriesService.getSeriesByGenreMap(0,5));
+		mav.addObject("seriesMap", seriesService.getSeriesByGenreMap(0,7));
 		return mav;
 	}
+
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public ModelAndView search(@RequestParam String op,@RequestParam String search) {
 		//Si el parametro es vacio, lo redirecciono al home que tiene todas las series.
@@ -56,7 +57,15 @@ public class HelloWorldController {
 		}
 		return mav;
 	}
-	@RequestMapping(value = "/login", method = RequestMethod.GET) //Le digo que url mappeo
+
+	@RequestMapping(value = "/serie", method = RequestMethod.GET)
+	public ModelAndView serie(@RequestParam("id") long id) {
+		final ModelAndView mav = new ModelAndView("serie");
+		mav.addObject("serie", seriesService.getSerieById(id));
+		return mav;
+	}
+
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public ModelAndView showLogin(@ModelAttribute("loginForm") final LoginForm form) {
 		return new ModelAndView("login");
 	}
@@ -70,22 +79,22 @@ public class HelloWorldController {
 		return new ModelAndView("redirect:/");
 	}
 
-	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public ModelAndView create(@Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors) {
-		 if (errors.hasErrors()) {
-		 	return showRegister(form);
-		 }
-		 // TODO create user
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	public ModelAndView showRegister(@ModelAttribute("registerForm") final UserForm form) {
+		return new ModelAndView("register"); // para que si tengo un error en el formulario, poder tener precalculados los valores que el usuario calculo..
+	}
+
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	public ModelAndView register(@Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors) {
+		if (errors.hasErrors()) {
+			return showRegister(form);
+		}
+		// TODO create user
 //		final User u = us.create(form.getUsername());
 //		return new ModelAndView("redirect:/user/" + u.getId());
 		return null;
 	}
 
-	@RequestMapping(value = "/register", method = RequestMethod.GET)
-	public ModelAndView showRegister(@ModelAttribute("registerForm") final UserForm form) {
-		return new ModelAndView("register"); // para que si tengo un error en el formulario, poder tener precalculados los valores que el usuario calculo..
-	}
-	
 	@RequestMapping("/logout") //Le digo que url mappeo
 	public ModelAndView logout() {
 		final ModelAndView mav = new ModelAndView("logout"); //Seleccionar lista
