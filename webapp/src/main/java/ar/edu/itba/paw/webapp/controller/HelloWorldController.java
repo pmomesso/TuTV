@@ -95,7 +95,7 @@ public class HelloWorldController {
 //		return new ModelAndView("redirect:/user/" + u.getId());
 		return null;
 	}
-	
+
 	@RequestMapping("/logout") //Le digo que url mappeo
 	public ModelAndView logout() {
 		final ModelAndView mav = new ModelAndView("logout"); //Seleccionar lista

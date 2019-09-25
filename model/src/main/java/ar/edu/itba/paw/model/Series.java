@@ -11,6 +11,7 @@ public class Series  {
     private String name;
     private String seriesDescription;
     private Integer networkId;
+    private String network;
     private String posterUrl;
     private String bannerUrl;
     private String status;
@@ -207,5 +208,13 @@ public class Series  {
 
     public void setTvdbid(int tvdbid) {
         this.tvdbid = tvdbid;
+    }
+
+    public String getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(String network) {
+        this.network = network;
     }
 }

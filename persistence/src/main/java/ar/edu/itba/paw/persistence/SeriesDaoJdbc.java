@@ -34,6 +34,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         ret.setBannerUrl(resultSet.getString("bannerurl"));
         ret.setPosterUrl(resultSet.getString("posterurl"));
         ret.setStatus(resultSet.getString("status"));
+        ret.setNetwork(resultSet.getString("networkname"));
         //Seteo las fechas.
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String added = resultSet.getString("added");
@@ -106,32 +107,32 @@ public class SeriesDaoJdbc implements SeriesDao {
     @Override
     public List<Series> getSeriesByName(String seriesName) {
         return groupGenres(jdbcTemplate.query("SELECT * " +
-                "FROM (series LEFT JOIN hasgenre ON series.id = hasgenre.seriesid LEFT JOIN genres ON genres.id = hasgenre.genreid) " +
-                "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre) " +
+                "FROM (series LEFT JOIN hasgenre ON series.id = hasgenre.seriesid LEFT JOIN genres ON genres.id = hasgenre.genreid LEFT JOIN network ON network.networkid = series.networkid) " +
+                "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname) " +
                 "WHERE LOWER(name) LIKE ?",new Object[]{"%"+seriesName.toLowerCase()+"%"}, seriesRowMapper));
     }
 
     @Override
     public List<Series> getSeriesByGenre(String genreName) {
         return groupGenres(jdbcTemplate.query("SELECT * " +
-                "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
-                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.networkid = series.networkid) " +
+                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname)" +
                 "WHERE LOWER(genre) LIKE ?", new Object[]{"%"+genreName.toLowerCase()+"%"}, seriesRowMapper));
     }
 
     @Override
     public List<Series> getSeriesByGenre(int id) {
         return groupGenres(jdbcTemplate.query("SELECT * " +
-                "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
-                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.networkid = series.networkid) " +
+                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname)" +
                 "WHERE genreid = ?", new Object[]{id}, seriesRowMapper));
     }
 
     @Override
     public List<Series> getBestSeriesByGenre(int genreId, int lowerLimit, int upperLimit) {
         return groupGenres(jdbcTemplate.query("SELECT * " +
-                        "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id) " +
-                        "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                        "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.networkid = series.networkid) " +
+                        "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname)" +
                         "WHERE genreid = ?" +
                         "ORDER BY userRating DESC LIMIT ? OFFSET ?",
                 new Object[]{genreId, upperLimit - lowerLimit + 1, lowerLimit}, seriesRowMapper));
@@ -140,8 +141,8 @@ public class SeriesDaoJdbc implements SeriesDao {
     @Override
     public List<Series> getNewSeries(int lowerLimit, int upperLimit) {
         return groupGenres(jdbcTemplate.query("SELECT * " +
-                "FROM (series LEFT JOIN hasGenre ON hasgenre.seriesid = series.id LEFT JOIN genres ON hasgenre.genreid = genres.id) " +
-                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                "FROM (series LEFT JOIN hasGenre ON hasgenre.seriesid = series.id LEFT JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.networkid = series.networkid) " +
+                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname)" +
                 "ORDER BY firstaired DESC LIMIT ? OFFSET ?", new Object[]{upperLimit - lowerLimit + 1, lowerLimit}, seriesRowMapper));
     }
 
@@ -173,8 +174,8 @@ public class SeriesDaoJdbc implements SeriesDao {
     @Override
     public Series getSeriesById(final long id) {
         final List<Series> seriesList = jdbcTemplate.query("SELECT * " +
-                "FROM (series LEFT JOIN hasGenre ON hasgenre.seriesid = series.id LEFT JOIN genres ON hasgenre.genreid = genres.id) " +
-                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre)" +
+                "FROM (series LEFT JOIN hasGenre ON hasgenre.seriesid = series.id LEFT JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.networkid = series.networkid) " +
+                "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname)" +
                 "WHERE id = ?", new Object[]{id}, seriesRowMapper);
         if(seriesList.isEmpty()) {
             return null;

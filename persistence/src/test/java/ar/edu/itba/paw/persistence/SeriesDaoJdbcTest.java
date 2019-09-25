@@ -41,6 +41,7 @@ public class SeriesDaoJdbcTest {
     private static final int GENRE_ID = 7;
     private static final String GENRE = "genre";
     private static final Genre GENRE_OBJ = new Genre(GENRE_ID,GENRE);
+    private static final String NETWORK_NAME = "network";
     @Autowired
     private DataSource ds;
     @Autowired
