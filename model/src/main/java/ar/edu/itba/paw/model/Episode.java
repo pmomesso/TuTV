@@ -7,10 +7,12 @@ public class Episode {
     private int episodeNumber;
     private Rating userRating;
 
-    public Episode(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
+//    public Episode(String name, String description) {
+//        this.name = name;
+//        this.description = description;
+//    }
+
+    public Episode() {}
 
     public int getEpisodeNumber() {
         return episodeNumber;
@@ -34,4 +36,11 @@ public class Episode {
 
     public void setUserRating(Rating rating) { userRating = rating; }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.SeriesDao;
+import ar.edu.itba.paw.model.Episode;
 import ar.edu.itba.paw.model.Genre;
+import ar.edu.itba.paw.model.Season;
 import ar.edu.itba.paw.model.Series;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -181,7 +183,9 @@ public class SeriesDaoJdbc implements SeriesDao {
         if(seriesList.isEmpty()) {
             return null;
         }
-        return groupGenres(seriesList).get(0);
+        Series series = groupGenres(seriesList).get(0);
+        addAllSeasonsToSeries(series);
+        return series;
     }
 
     @Override
@@ -251,10 +255,46 @@ public class SeriesDaoJdbc implements SeriesDao {
         jdbcTemplate.update("UPDATE series SET description = ? WHERE id = ?", description, seriesId);
     }
 
+    @Override
+    public List<Season> getSeasonsBySeriesId(long seriesId) {
+        List<Season> seasonList = jdbcTemplate.query("SELECT * " +
+                "FROM series JOIN season ON series.id = season.seriesId " +
+                "WHERE series.id = ? " +
+                "ORDER BY seasonnumber", new Object[]{seriesId}, (resultSet, i) -> {
+           Season s = new Season();
+           s.setSeasonNumber(resultSet.getInt("seasonnumber"));
+           s.setId(resultSet.getLong("seasonid"));
+           return s;
+        });
+        return seasonList;
+    }
+
+    @Override
+    public List<Episode> getEpisodesBySeasonId(long seasonId) {
+        List<Episode> episodeList = jdbcTemplate.query("SELECT * " +
+                "FROM season JOIN episode ON season.seasonid = episode.seasonid " +
+                "WHERE season.seasonid = ? " +
+                "ORDER BY numepisode", new Object[]{seasonId}, (resultSet, i) -> {
+            Episode ret = new Episode();
+            ret.setEpisodeNumber(resultSet.getInt("numepisode"));
+            ret.setDescription(resultSet.getString("overview"));
+            ret.setName(resultSet.getString("name"));
+            return ret;
+        });
+        return episodeList;
+    }
+
+    private void addAllSeasonsToSeries(Series s) {
+        List<Season> seasonList = getSeasonsBySeriesId(s.getId());
+        for(Season season : seasonList) {
+            season.setEpisodes(getEpisodesBySeasonId(season.getId()));
+        }
+        s.setSeasons(seasonList);
+    }
 
     private long getGenreId(String genre) {
-        List<Long> genreId = jdbcTemplate.query("SELECT id" +
-                        "FROM genres" +
+        List<Long> genreId = jdbcTemplate.query("SELECT id " +
+                        "FROM genres " +
                         "WHERE genre = ?", new Object[]{genre},
                 ((resultSet, i) -> resultSet.getLong("id")));
         return genreId.get(0);

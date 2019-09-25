@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.model.Genre;
+import ar.edu.itba.paw.model.Season;
 import ar.edu.itba.paw.model.Series;
 
 import java.util.List;
@@ -16,5 +17,6 @@ public interface SeriesService {
     public List<Series> getAllSeriesByGenre(int id);
     Map<Genre, List<Series>> getSeriesByGenreMap(int lowerNumber, int upperNumber);
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
+    List<Season> getSeasonsBySeriesId(long seriesId);
 
 }

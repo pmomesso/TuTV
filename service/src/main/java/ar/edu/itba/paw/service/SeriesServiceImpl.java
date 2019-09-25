@@ -3,6 +3,7 @@ package ar.edu.itba.paw.service;
 import ar.edu.itba.paw.interfaces.SeriesDao;
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.model.Genre;
+import ar.edu.itba.paw.model.Season;
 import ar.edu.itba.paw.model.Series;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,10 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public List<Series> getNewestSeries(int lowerNumber, int upperNumber) {
         return seriesDao.getNewSeries(lowerNumber, upperNumber);
+    }
+
+    @Override
+    public List<Season> getSeasonsBySeriesId(long seriesId) {
+        return seriesDao.getSeasonsBySeriesId(seriesId);
     }
 }

@@ -7,6 +7,7 @@ public class Season {
     private String name;
     private List<Episode> episodeList;
     private int seasonNumber;
+    private long seasonId;
     private Rating userRating;
 
     public String getName() {
@@ -41,4 +42,15 @@ public class Season {
 
     }
 
+    public long getId() {
+        return seasonId;
+    }
+
+    public void setId(long seasonId) {
+        this.seasonId = seasonId;
+    }
+
+    public void setEpisodes(List<Episode> episodeList) {
+        this.episodeList = episodeList;
+    }
 }

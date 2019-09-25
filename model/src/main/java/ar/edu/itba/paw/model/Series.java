@@ -23,6 +23,7 @@ public class Series  {
     private Date added;
     private Date updated;
     private List<ActorRole> actorList = new LinkedList<ActorRole>();
+    private List<Season> seasons = new LinkedList<>();
     private Set<Genre> genresList = new HashSet<>();
 
     public Series(String name) {
@@ -216,5 +217,13 @@ public class Series  {
 
     public void setNetwork(String network) {
         this.network = network;
+    }
+
+    public List<Season> getSeasons() {
+        return seasons;
+    }
+
+    public void setSeasons(List<Season> seasons) {
+        this.seasons = seasons;
     }
 }
