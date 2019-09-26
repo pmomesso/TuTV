@@ -1,18 +1,23 @@
 package ar.edu.itba.paw.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Episode {
 
     private String name;
     private String description;
     private int episodeNumber;
     private Rating userRating;
+    private List<Comment> episodeComments = new ArrayList<>();
 
-//    public Episode(String name, String description) {
-//        this.name = name;
-//        this.description = description;
-//    }
+    public List<Comment> getEpisodeComments() {
+        return episodeComments;
+    }
 
-    public Episode() {}
+    public void setEpisodeComments(List<Comment> episodeComments) {
+        this.episodeComments = episodeComments;
+    }
 
     public int getEpisodeNumber() {
         return episodeNumber;

@@ -39,7 +39,7 @@ public class Season {
     }
 
     public void setUserRating() {
-
+        
     }
 
     public long getId() {
