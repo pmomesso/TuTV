@@ -1,4 +1,6 @@
 @charset "UTF-8";
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+
 @font-face {
  font-family: proximaNovaBold;
  src: url(../font/ProximaNova-Bold.ttf);
@@ -17,6 +19,9 @@ html, body {
 }
 body {
  font-family: proximaNova;
+}
+.show-main {
+  background-color: #ededed;
 }
 .black-font {
   color: black;
@@ -63,12 +68,15 @@ body {
     -webkit-transition: all 1s;
 }
 .add-button {
-    background-color: #272727;
-    border-radius: 10%;
-    width: 100px;
-    margin: 10px;
-    padding: 5px;
-    border: 2px solid #272727;
+  background-color: #44d9e6;
+  border-radius: 10%;
+  width: 100px;
+  height: 45px;
+  margin: 10px;
+  padding: 5px;
+  border: none;
+  color: black;
+  font-size: 2rem;
 }
 .follow-btn, .follow-icon {
     position: absolute;
@@ -89,6 +97,38 @@ body {
  transform: translate(-50%, -50%);
  left: 50%;top: 50%;
 }
+.star:before {
+ content: "\f005";
+ color: #ffca08;
+ margin: 2px;
+ font-size: 3em;
+ font-family: FontAwesome;
+ /*display: inline-block;*/
+}
+.rating {
+ margin-top: 1.5rem;
+ padding-left: 1rem;
+}
+.starrating > input {display: none;}  /* Remove radio buttons */
+
+.starrating > label:before {
+ content: "\f005"; /* Star */
+ margin: 2px;
+ font-size: 8em;
+ font-family: FontAwesome;
+ display: inline-block;
+}
+
+.starrating > label
+{
+ color: #222222; /* Start color when not clicked */
+}
+
+.starrating > input:checked ~ label
+{ color: #ffca08 ; } /* Set yellow color when star checked */
+
+.starrating > input:hover ~ label
+{ color: #ffca08 ;  } /* Set yellow color when star hover */
 .label,sub,sup {
  vertical-align:baseline
 }
@@ -299,10 +339,6 @@ th {
   background:0 0!important;
   -webkit-box-shadow:none!important;
   box-shadow:none!important
- }
- a,
- a:visited {
-  text-decoration:underline
  }
  a[href]:after {
   content:" (" attr(href) ")"
@@ -1198,7 +1234,6 @@ a {
 a:focus,
 a:hover {
  color:#23527c;
- text-decoration:underline
 }
 a:focus {
  outline:dotted thin;
@@ -3493,7 +3528,6 @@ fieldset[disabled] .btn-link {
 .btn-link:focus,
 .btn-link:hover {
  color:#23527c;
- text-decoration:underline;
  background-color:transparent
 }
 .btn-link[disabled]:focus,
@@ -6591,9 +6625,6 @@ button.close {
 .medium-editor-toolbar li button:focus {
  outline:0
 }
-.medium-editor-toolbar li .medium-editor-action-underline {
- text-decoration:underline
-}
 .medium-editor-toolbar li .medium-editor-action-pre {
  font-family: proximaNova;
  font-size:12px;
@@ -6877,7 +6908,6 @@ button.close {
  font-size:.9em
 }
 .medium-editor-insert-plugin .medium-insert-buttons a {
- text-decoration:underline;
  cursor:pointer
 }
 .medium-editor-insert-plugin .medium-insert-buttons .medium-insert-buttons-show {
@@ -8595,9 +8625,6 @@ button.close {
  display:block;
  cursor:pointer;
  border:none
-}
-.dropzone .dz-preview .dz-remove:hover {
- text-decoration:underline
 }
 .dropzone .dz-preview .dz-details {
  z-index:20;
@@ -12967,7 +12994,6 @@ body .redactor_box_fullscreen {
 }
 .redactor_editor a {
  color:#15c;
- text-decoration:underline
 }
 .redactor_editor .redactor_placeholder {
  color:#999!important;
@@ -13388,7 +13414,6 @@ body .redactor_air .redactor_toolbar {
 }
 .redactor_editor.redactor-editor-typewriter a {
  color:#000!important;
- text-decoration:underline!important
 }
 .redactor_editor.redactor_editor_wym {
  padding:10px 7px 0!important;
@@ -16756,7 +16781,6 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
 .tvt-message-banner a {
  font-family: proximaNova;
  font-weight:700;
- text-decoration:underline;
  color:#999
 }
 .about-body-text,
@@ -20530,7 +20554,6 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
  font-size:11px;
  font-family: proximaNova;
  color:#aaa;
- text-decoration:underline
 }
 .article.article--display .follow-show__content__title a:hover,
 .article.article--display .follow-show__download-apps .follow-show__button a:hover,
@@ -22350,12 +22373,6 @@ textarea.minimalist-input--text:hover:not([readonly]) {
 .article.article--display .follow-show__download-apps .follow-show__button a {
  color:#000
 }
-#legal-notice em,
-#legal-notice h4,
-#terms em,
-#terms h4 {
- text-decoration:underline
-}
 .article.article--display .follow-show__button {
  width:150px;
  height:48px;
@@ -22617,7 +22634,6 @@ header .mobile-app {
 #legal-notice h2,
 #terms h2 {
  font-size:24px;
- text-decoration:underline
 }
 #legal-notice h3,
 #terms h3 {
@@ -25827,9 +25843,6 @@ body.alt #active-content>.inner-shadow {
 #home .alert strong {
  font-family:ProximaNovaB
 }
-#home .alert a {
- text-decoration:underline
-}
 #home .alert-danger a {
  color:#d65550
 }
@@ -25922,7 +25935,6 @@ body.alt #active-content>.inner-shadow {
  font-size:12px;
  color:#777;
  font-family: proximaNova;
- text-decoration:underline;
  text-align:center;
  margin:0 auto
 }
@@ -26313,9 +26325,6 @@ body.alt #active-content>.inner-shadow {
  background:#fdd700;
  border-radius:4px 0;
  font-size:14px
-}
-#current-shows .highlight-item .image-crop .learn-more-link:hover {
- text-decoration:underline
 }
 #current-shows .highlight-item .zoom-btn {
  position:absolute;
@@ -27841,6 +27850,9 @@ body.alt #current-shows.addon.closed {
 #welcome p.step.no-margin {
  margin-top:0
 }
+.no-margin {
+ margin: 0 !important;
+}
 #signup.ready>.step-info {
  margin-top:79px
 }
@@ -28519,7 +28531,6 @@ body.alt #current-shows.addon.closed {
  color:#999;
  font-family: proximaNova;
  font-size:13px;
- text-decoration:underline
 }
 #set-progress .shows-counter {
  color:#555
@@ -32749,7 +32760,6 @@ body.alt h2.title:first-child {
 #settings.ambassador-page .link {
  display:inline-block;
  font-size:14px;
- text-decoration:underline;
  margin-top:30px
 }
 #settings .left {
@@ -33104,7 +33114,6 @@ body.alt h2.title:first-child {
 }
 #watch-settings .disconnect-putio {
  color:#fff;
- text-decoration:underline;
  font-size:13px;
  text-transform:lowercase
 }
@@ -33117,7 +33126,6 @@ body.alt h2.title:first-child {
 }
 #putio-settings .subscription-options li a {
  color:#ccb123;
- text-decoration:underline;
  font-size:14px
 }
 #putio-settings .rss-exemple,
@@ -33128,7 +33136,6 @@ body.alt h2.title:first-child {
 }
 #putio-settings .rss-exemple a:hover {
  color:#999;
- text-decoration:underline
 }
 #putio-settings .rss-list>li {
  margin:8px 0
@@ -33262,7 +33269,6 @@ body.alt h2.title:first-child {
 #putio-settings .membership-link,
 #putio-settings .resync-putio {
  font-size:12px;
- text-decoration:underline
 }
 #putio-settings .connect-putio {
  display:block;
@@ -33330,9 +33336,6 @@ body.alt h2.title:first-child {
 }
 #reactions h1 a {
  color:#444
-}
-#reactions h1 a:hover {
- text-decoration:underline
 }
 #landing .info-box .watch-video-link:hover,
 #show-leaderboard .user-infos .user-name a,
@@ -33842,7 +33845,6 @@ body.landing header .right-nav a:last-child {
 #putio-vip-welcome p.center.small a {
  background-color:transparent;
  border:none;
- text-decoration:underline
 }
 #putio-vip-welcome .explanation-text {
  padding-left:20px
@@ -34399,9 +34401,6 @@ body.landing header .right-nav a:last-child {
  top:20px;
  left:20px
 }
-#contest-home .overlay .container .nb-entries a {
- text-decoration:underline
-}
 #contest-entries .overlay .container .share-btns,
 #contest-home .overlay .container .share-btns {
  position:absolute;
@@ -34475,7 +34474,6 @@ body.landing header .right-nav a:last-child {
  right:20px;
  top:20px;
  color:#fff;
- text-decoration:underline;
  text-transform:uppercase;
  font-size:14px
 }
@@ -37485,7 +37483,6 @@ body.fixfixedAbs #top-moments-container .bottom-nav-container {
 }
 #pushed-promo .extension-infos .discard-pushed-promo-link {
  font-size:14px;
- text-decoration:underline;
  color:#aaa;
  font-family:ProximaNova
 }

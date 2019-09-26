@@ -30,7 +30,6 @@ public class SeriesDaoJdbc implements SeriesDao {
         ret.setId(resultSet.getLong("id"));
         ret.setUserRating(resultSet.getDouble("userRating"));
         ret.setImdbId(resultSet.getString("id_imdb"));
-        ret.setNetworkId(resultSet.getInt("networkId"));
         ret.setRunningTime(resultSet.getInt("runtime"));
         ret.setNumFollowers(resultSet.getInt("followers"));
         ret.setBannerUrl(resultSet.getString("bannerurl"));

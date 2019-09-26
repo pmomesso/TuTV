@@ -10,7 +10,6 @@ public class Series  {
     private int tvdbid;
     private String name;
     private String seriesDescription;
-    private Integer networkId;
     private String network;
     private String posterUrl;
     private String bannerUrl;
@@ -36,13 +35,13 @@ public class Series  {
         this.name = name;
         this.seriesDescription = seriesDescription;
     }
-    public Series(long id,int tvdbid,String name,String seriesDescription,Integer networkId,String posterUrl,String bannerUrl,Double userRating,
+    public Series(long id,int tvdbid,String name,String seriesDescription,String network,String posterUrl,String bannerUrl,Double userRating,
                   String status,Integer runningTime,int numFollowers,String imdbid,String firstAired,String added,String updated) {
         this.id = id;
         this.tvdbid = tvdbid;
         this.name = name;
         this.seriesDescription = seriesDescription;
-        this.networkId = networkId;
+        this.network = network;
         this.posterUrl = posterUrl;
         this.bannerUrl = bannerUrl;
         this.status = status;
@@ -69,9 +68,6 @@ public class Series  {
             this.updated = null;
             e.printStackTrace();
         }
-    }
-    public Integer getNetworkId() {
-        return networkId;
     }
 
     public int getRunningTime() {
@@ -132,10 +128,6 @@ public class Series  {
     }
     public void setRunningTime(int runningTime) {
         this.runningTime = runningTime;
-    }
-
-    public void setNetworkId(Integer networkId) {
-        this.networkId = networkId;
     }
 
     public long getId() {

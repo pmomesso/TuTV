@@ -19,10 +19,15 @@
     <!-- Bootstrap core CSS -->
     <link href="<c:url value="/resources/css/bootstrap.css"/>" rel="stylesheet">
     <link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/resources/css/tvst.css"/>">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="<c:url value="/resources/css/style.css"/>">
 
+    <script>document.getElementsByTagName("html")[0].className += " js";</script>
     <script src="<c:url value="/resources/js/jquery.min.js"/>"></script>
     <script src="<c:url value="/resources/js/popper.min.js"/>"></script>
     <script src="<c:url value="/resources/js/bootstrap.js"/>"></script>
+    <script src="<c:url value="/resources/js/util.js"/>"></script>
+    <script src="<c:url value="/resources/js/main.js"/>"></script>
 </head>
 <body id="container" class="home no-touch white   reduced-right ">
 <div class="body-inner">
@@ -35,227 +40,41 @@
         <div class="page-center-inner">
             <div class="alt-block"></div>
             <div class="main-block">
-                <div class="main-block-container">
-                    <div id="show-details" class="show" itemscope="" itemtype="http://schema.org/TVSeries">
-                        <meta itemprop="numberOfSeasons" content="1">
-                        <meta itemprop="numberOfEpisodes" content="8">
-                        <div class="hide" itemscope="" itemprop="episode" itemtype="http://schema.org/Episode">
-                            <span itemprop="name">The Name of the Game</span>
-                            <span itemprop="episodeNumber">1</span>
-                            <span itemprop="description"></span>
-                            <span itemprop="datePublished">2019-07-26</span>
-                            <span itemprop="url">/en/show/355567/episode/7140390</span>
-                        </div>
-                        <div class="hide" itemscope="" itemprop="episode" itemtype="http://schema.org/Episode">
-                            <span itemprop="name">Cherry</span>
-                            <span itemprop="episodeNumber">2</span>
-                            <span itemprop="description"></span>
-                            <span itemprop="datePublished">2019-07-26</span>
-                            <span itemprop="url">/en/show/355567/episode/7299045</span>
-                        </div>
-                        <div class="hide" itemscope="" itemprop="episode" itemtype="http://schema.org/Episode">
-                            <span itemprop="name">Get Some</span>
-                            <span itemprop="episodeNumber">3</span>
-                            <span itemprop="description"></span>
-                            <span itemprop="datePublished">2019-07-26</span>
-                            <span itemprop="url">/en/show/355567/episode/7299046</span>
-                        </div>
-                        <div id="top-banner" class="show-header page-header  smaller">
-                            <div class="banner">
-                                <div class="banner-image" data-stellar-ratio="0.5"
-                                     style="transform: translate3d(0px, 0px, 0px); display: block;">
-                                    <img src="https://dg31sz3gwrwan.cloudfront.net/fanart/355567/1370924-0-q80.jpg"
-                                         itemprop="image">
-                                </div>
-                                <div class="overlay"></div>
-                                <div class="info-zone">
-                                    <div class="container-fluid">
-                                        <div class="info-box heading-info">
-                                            <h1 itemprop="name">
-                                                The Boys </h1>
-                                            <h3 class="show-numbers">
-                                                <a href="#" class="score-link popover-link">
-                                                    Score:&nbsp;
-                                                    <span class="rating" itemprop="aggregateRating" itemscope=""
-                                                          itemtype="http://schema.org/AggregateRating">
-                    <span itemprop="ratingValue">9.78</span>
-                    /
-                    <span itemprop="bestRating">10</span>
-                    <meta itemprop="worstRating" content="0">
-                                          <meta itemprop="ratingCount" content="193">
-                                      </span>
-                                                    <i class="icon-tvst-trending-alt"></i>
-                                                </a>
-                                            </h3>
-                                            <div class="btn-group follow-archive-btns ">
-                                                <a href="#" class="cta-btn follow-btn  ">
-                                                    <span class="follow"><i class="icon-tvst-follow"></i>Add to my shows</span>
-                                                    <span class="unfollow"><i
-                                                            class="icon-tvst-small_close"></i>Remove</span>
-                                                    <span class="unarchive"><i class="icon-tvst-small_close"></i>Unarchive</span>
-                                                    <span class="archive"><i
-                                                            class="icon-tvst-archive"></i>Archive</span>
-                                                </a>
-                                                <a href="#" class="cta-btn archive-btn"><i
-                                                        class="icon-tvst-archive"></i></a>
-                                            </div>
+                <div id="explore">
+                    <section id="new-shows">
+                        <h1>${serie.name}</h1>
+                        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="${serie.bannerUrl}" itemprop="image" alt="${serie.bannerUrl}">
+                                    <div class="carousel-caption">
+                                        <div>
+                                            <label class="star"/>
+                                            <h2 class="float-right rating">${serie.userRating}/5</h2>
                                         </div>
-                                    </div> <!-- //container -->
-                                </div><!-- //info-zone -->
-                                <div class="progress">
-                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
-                                         aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+<%--                                        <div class="container h-20">--%>
+<%--                                            <div class="starrating risingstar d-flex justify-content-center flex-row-reverse">--%>
+<%--                                                <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 star"></label>--%>
+<%--                                                <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 star"></label>--%>
+<%--                                                <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 star"></label>--%>
+<%--                                                <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 star"></label>--%>
+<%--                                                <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star"></label>--%>
+<%--                                            </div>--%>
+<%--                                        </div>--%>
+                                        <button class="add-button">Add</button>
                                     </div>
-                                </div><!-- //progress -->
-                            </div><!-- //banner -->
-                        </div><!-- //show-header #top-banner -->
-                        <div id="show-ratings" data-highcharts-chart="0" style=""><a href="#" class="close">×</a>
-                            <div class="highcharts-container" id="highcharts-0"
-                                 style="position: relative; overflow: hidden; width: 584px; height: 300px; text-align: left; line-height: normal; z-index: 0; font-family: helvetica_lt_condensed_medium, sans-serif; font-weight: 300; left: 0px; top: 0px;">
-                                <svg version="1.1"
-                                     style="font-family:helvetica_lt_condensed_medium, sans-serif;font-size:12;font-weight:300;"
-                                     xmlns="http://www.w3.org/2000/svg" width="584" height="300">
-                                    <desc>Created with Highcharts 4.1.7</desc>
-                                    <defs>
-                                        <clipPath id="highcharts-1">
-                                            <rect x="0" y="0" width="502" height="230"></rect>
-                                        </clipPath>
-                                    </defs>
-                                    <rect x="0" y="0" width="584" height="300" strokeWidth="0" fill="#FAFAFA"
-                                          class=" highcharts-background"></rect>
-                                    <path fill="transparent" d="M 71.5 55 L 71.5 285 568.5 285 568.5 55"></path>
-                                    <text x="320" text-anchor="middle" transform="translate(0,0)" style="" y="71"
-                                          visibility="visible">S01
-                                    </text>
-                                    <g class="highcharts-button" style="cursor:default;" stroke-linecap="round"
-                                       transform="translate(550,10)"><title>Chart context menu</title>
-                                        <rect x="0.5" y="0.5" width="24" height="22" strokeWidth="1" fill="white"
-                                              stroke="none" stroke-width="1" rx="2" ry="2"></rect>
-                                        <path fill="#E0E0E0" d="M 6 6.5 L 20 6.5 M 6 11.5 L 20 11.5 M 6 16.5 L 20 16.5"
-                                              stroke="#666" stroke-width="3" zIndex="1"></path>
-                                        <text x="0" zIndex="1" style="color:black;fill:black;" y="15"></text>
-                                    </g>
-                                    <g class="highcharts-grid" zIndex="1"></g>
-                                    <g class="highcharts-grid" zIndex="1">
-                                        <path fill="none" d="M 72 285.5 L 574 285.5" stroke="#D8D8D8" stroke-width="1"
-                                              zIndex="1" opacity="1"></path>
-                                        <path fill="none" d="M 72 227.5 L 574 227.5" stroke="#D8D8D8" stroke-width="1"
-                                              zIndex="1" opacity="1"></path>
-                                        <path fill="none" d="M 72 170.5 L 574 170.5" stroke="#D8D8D8" stroke-width="1"
-                                              zIndex="1" opacity="1"></path>
-                                        <path fill="none" d="M 72 112.5 L 574 112.5" stroke="#D8D8D8" stroke-width="1"
-                                              zIndex="1" opacity="1"></path>
-                                        <path fill="none" d="M 72 55.5 L 574 55.5" stroke="#D8D8D8" stroke-width="1"
-                                              zIndex="1" opacity="1"></path>
-                                    </g>
-                                    <g class="highcharts-axis" zIndex="2"></g>
-                                    <g class="highcharts-axis" zIndex="2">
-                                        <text x="29" zIndex="7" text-anchor="middle"
-                                              transform="translate(0,0) rotate(270 29 170)"
-                                              class=" highcharts-yaxis-title"
-                                              style="color:#AAA;font-weight:300;fill:#AAA;" visibility="visible"
-                                              y="170">ratings
-                                        </text>
-                                    </g>
-                                    <g class="highcharts-series-group" zIndex="3">
-                                        <g class="highcharts-series" visibility="visible" zIndex="9"
-                                           transform="translate(72,55) scale(1 1)" clip-path="url(#highcharts-1)">
-                                            <path fill="none"
-                                                  d="M 0 76.80357142857153 L 497.029702970297 87.20833333333309"
-                                                  stroke="#dcad43" stroke-width="4" zIndex="1" stroke-linejoin="round"
-                                                  stroke-linecap="round"></path>
-                                            <path fill="none"
-                                                  d="M -10 76.80357142857153 L 0 76.80357142857153 L 497.029702970297 87.20833333333309 L 507.029702970297 87.20833333333309"
-                                                  stroke-linejoin="round" visibility="visible"
-                                                  stroke="rgba(192,192,192,0.0001)" stroke-width="24" zIndex="2"
-                                                  class=" highcharts-tracker" style=""></path>
-                                        </g>
-                                        <g class="highcharts-markers highcharts-tracker" visibility="visible" zIndex="9"
-                                           transform="translate(72,55) scale(1 1)" clip-path="url(#highcharts-2)"
-                                           style=""></g>
-                                        <g class="highcharts-series highcharts-tracker" visibility="visible" zIndex="10"
-                                           transform="translate(72,55) scale(1 1)" clip-path="url(#highcharts-1)"
-                                           style=""></g>
-                                        <g class="highcharts-markers highcharts-tracker" visibility="visible"
-                                           zIndex="10" transform="translate(72,55) scale(1 1)"
-                                           clip-path="url(#highcharts-2)" style="">
-                                            <path fill="#CCC"
-                                                  d="M 497 53.499999999999716 C 502.328 53.499999999999716 502.328 61.499999999999716 497 61.499999999999716 C 491.672 61.499999999999716 491.672 53.499999999999716 497 53.499999999999716 Z"></path>
-                                            <path fill="#CCC"
-                                                  d="M 434 59.250000000000114 C 439.328 59.250000000000114 439.328 67.25000000000011 434 67.25000000000011 C 428.672 67.25000000000011 428.672 59.250000000000114 434 59.250000000000114 Z"></path>
-                                            <path fill="#CCC"
-                                                  d="M 372 174.2499999999996 C 377.328 174.2499999999996 377.328 182.2499999999996 372 182.2499999999996 C 366.672 182.2499999999996 366.672 174.2499999999996 372 174.2499999999996 Z"></path>
-                                            <path fill="#CCC"
-                                                  d="M 310 59.250000000000114 C 315.328 59.250000000000114 315.328 67.25000000000011 310 67.25000000000011 C 304.672 67.25000000000011 304.672 59.250000000000114 310 59.250000000000114 Z"></path>
-                                            <path fill="#CCC"
-                                                  d="M 248 70.74999999999986 C 253.328 70.74999999999986 253.328 78.74999999999986 248 78.74999999999986 C 242.672 78.74999999999986 242.672 70.74999999999986 248 70.74999999999986 Z"></path>
-                                            <path fill="#CCC"
-                                                  d="M 186 64.99999999999997 C 191.328 64.99999999999997 191.328 72.99999999999997 186 72.99999999999997 C 180.672 72.99999999999997 180.672 64.99999999999997 186 64.99999999999997 Z"></path>
-                                            <path fill="#CCC"
-                                                  d="M 124 76.49999999999974 C 129.328 76.49999999999974 129.328 84.49999999999974 124 84.49999999999974 C 118.672 84.49999999999974 118.672 76.49999999999974 124 76.49999999999974 Z"></path>
-                                            <path fill="#CCC"
-                                                  d="M 62 70.74999999999986 C 67.328 70.74999999999986 67.328 78.74999999999986 62 78.74999999999986 C 56.672 78.74999999999986 56.672 70.74999999999986 62 70.74999999999986 Z"></path>
-                                        </g>
-                                    </g>
-                                    <g class="highcharts-axis-labels highcharts-xaxis-labels" zIndex="7"></g>
-                                    <g class="highcharts-axis-labels highcharts-yaxis-labels" zIndex="7">
-                                        <text x="57"
-                                              style="color:#606060;cursor:default;font-size:11px;fill:#606060;width:183px;text-overflow:clip;"
-                                              text-anchor="end" transform="translate(0,0)" y="289" opacity="1">9.2
-                                        </text>
-                                        <text x="57"
-                                              style="color:#606060;cursor:default;font-size:11px;fill:#606060;width:183px;text-overflow:clip;"
-                                              text-anchor="end" transform="translate(0,0)" y="231" opacity="1">9.4
-                                        </text>
-                                        <text x="57"
-                                              style="color:#606060;cursor:default;font-size:11px;fill:#606060;width:183px;text-overflow:clip;"
-                                              text-anchor="end" transform="translate(0,0)" y="174" opacity="1">9.6
-                                        </text>
-                                        <text x="57"
-                                              style="color:#606060;cursor:default;font-size:11px;fill:#606060;width:183px;text-overflow:clip;"
-                                              text-anchor="end" transform="translate(0,0)" y="116" opacity="1">9.8
-                                        </text>
-                                        <text x="57"
-                                              style="color:#606060;cursor:default;font-size:11px;fill:#606060;width:183px;text-overflow:clip;"
-                                              text-anchor="end" transform="translate(0,0)" y="59" opacity="1">10
-                                        </text>
-                                    </g>
-                                    <g class="highcharts-tooltip" zIndex="8"
-                                       style="cursor:default;padding:0;white-space:nowrap;"
-                                       transform="translate(0,-9999)">
-                                        <path fill="none"
-                                              d="M 3.5 0.5 L 13.5 0.5 C 16.5 0.5 16.5 0.5 16.5 3.5 L 16.5 13.5 C 16.5 16.5 16.5 16.5 13.5 16.5 L 3.5 16.5 C 0.5 16.5 0.5 16.5 0.5 13.5 L 0.5 3.5 C 0.5 0.5 0.5 0.5 3.5 0.5"
-                                              isShadow="true" stroke="black" stroke-opacity="0.049999999999999996"
-                                              stroke-width="5" transform="translate(1, 1)"></path>
-                                        <path fill="none"
-                                              d="M 3.5 0.5 L 13.5 0.5 C 16.5 0.5 16.5 0.5 16.5 3.5 L 16.5 13.5 C 16.5 16.5 16.5 16.5 13.5 16.5 L 3.5 16.5 C 0.5 16.5 0.5 16.5 0.5 13.5 L 0.5 3.5 C 0.5 0.5 0.5 0.5 3.5 0.5"
-                                              isShadow="true" stroke="black" stroke-opacity="0.09999999999999999"
-                                              stroke-width="3" transform="translate(1, 1)"></path>
-                                        <path fill="none"
-                                              d="M 3.5 0.5 L 13.5 0.5 C 16.5 0.5 16.5 0.5 16.5 3.5 L 16.5 13.5 C 16.5 16.5 16.5 16.5 13.5 16.5 L 3.5 16.5 C 0.5 16.5 0.5 16.5 0.5 13.5 L 0.5 3.5 C 0.5 0.5 0.5 0.5 3.5 0.5"
-                                              isShadow="true" stroke="black" stroke-opacity="0.15" stroke-width="1"
-                                              transform="translate(1, 1)"></path>
-                                        <path fill="rgba(249, 249, 249, .85)"
-                                              d="M 3.5 0.5 L 13.5 0.5 C 16.5 0.5 16.5 0.5 16.5 3.5 L 16.5 13.5 C 16.5 16.5 16.5 16.5 13.5 16.5 L 3.5 16.5 C 0.5 16.5 0.5 16.5 0.5 13.5 L 0.5 3.5 C 0.5 0.5 0.5 0.5 3.5 0.5"></path>
-                                    </g>
-                                    <text x="574" text-anchor="end" zIndex="8"
-                                          style="cursor:pointer;color:#909090;font-size:9px;fill:#909090;" y="295">
-                                        <tspan>'The Boys' ratings - www.tvtime.com</tspan>
-                                    </text>
-                                </svg>
-                                <div class="highcharts-tooltip" style="position: absolute; left: 0px; top: -9999px;">
-                                    <span style="position: absolute; font-family: helvetica_lt_condensed_medium, sans-serif; white-space: nowrap; font-size: 12px; color: rgb(51, 51, 51); margin-left: 0px; margin-top: 0px; left: 8px; top: 8px;"
-                                          zindex="1"></span></div>
-                                <span style="position: absolute; font-family: helvetica_lt_condensed_medium, sans-serif; white-space: nowrap; color: rgb(51, 51, 51); font-size: 18px; margin-left: 0px; margin-top: 0px; left: 0px; top: -1px;"
-                                      class="highcharts-title" zindex="4" transform="translate(0,0)"><h1 class="title">Show Ratings</h1></span>
+                                </div>
                             </div>
                         </div>
+                </section>
+                    <div class="main-block-container">
+                    <div id="show-details" class="show" itemscope="" itemtype="http://schema.org/TVSeries">
                         <div class="row show-nav">
                             <div class="col-lg-7">
                                 <div class="basic-infos">
                                     <span>Friday at <time datetime="04:00">04:00</time></span>
                                     <span class="separator">•</span>
-                                    <span>Amazon</span>
+                                    <span>${serie.network}</span>
                                     <span class="separator">•</span>
                                     <span>
             1 seasons          </span>
@@ -263,368 +82,34 @@
                                     <span>Still Running</span>
                                 </div>
                                 <div class="overview">
-                                    The Boys is a 60 minute action-adventure-science-fiction starring Karl Urban as
-                                    Billy Butcher "El Carnicero", Jack Quaid as Hughie Campbell and Antony Starr as
-                                    Homelander. The series was released Fri Jul 26, 2019 on Amazon and is in its first
-                                    season.
+                                    ${serie.seriesDescription}
                                 </div>
                                 <div class="followers">
-                                    233,788 people follow this show
+                                    ${serie.numFollowers} <spring:message code="index.followers"/>
                                 </div>
                             </div>
                             <div class="col-lg-1"></div>
-                            <div class="col-lg-4">
-                                <div class="progression-setup  transparent">
-                                    <label>Set up your progression:</label>
-                                    <select class="progression-setup-select select2-hidden-accessible" tabindex="-1"
-                                            aria-hidden="true">
-                                        <option value="1-0" alt="I haven't started this show yet">I haven't started this
-                                            show yet
-                                        </option>
-                                        <option value="1-8" alt="The last aired (I'm up to date)">The last aired (I'm up
-                                            to date)
-                                        </option>
-                                        <optgroup label="Season 1">
-                                            <option value="1-1" alt="S01E01">
-                                                Episode 1
-                                            </option>
-                                            <option value="1-2" alt="S01E02">
-                                                Episode 2
-                                            </option>
-                                            <option value="1-3" alt="S01E03">
-                                                Episode 3
-                                            </option>
-                                            <option value="1-4" alt="S01E04">
-                                                Episode 4
-                                            </option>
-                                            <option value="1-5" alt="S01E05">
-                                                Episode 5
-                                            </option>
-                                            <option value="1-6" alt="S01E06">
-                                                Episode 6
-                                            </option>
-                                            <option value="1-7" alt="S01E07">
-                                                Episode 7
-                                            </option>
-                                            <option value="1-8" alt="S01E08">
-                                                Episode 8
-                                            </option>
-                                        </optgroup>
-                                    </select><span class="select2 select2-container select2-container--default"
-                                                   dir="ltr" style="width: auto;"><span class="selection"><span
-                                        class="select2-selection select2-selection--single" role="combobox"
-                                        aria-haspopup="true" aria-expanded="false" tabindex="0"
-                                        aria-labelledby="select2-84ot-container"><span
-                                        class="select2-selection__rendered" id="select2-84ot-container"
-                                        title="I haven't started this show yet">I haven't started this show yet</span><span
-                                        class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span
-                                        class="dropdown-wrapper" aria-hidden="true"></span></span>
-                                </div>
-                            </div>
+                            <div class="col-lg-4"></div>
                         </div>
-                        <div id="tracking-support" data-is-mobile=""
-                             data-tracking-link="https://tvtime.onelink.me/3966595826?c=shared_show&amp;pid=tvshowtimeweb"
-                             data-deep-link="https://tvtime.onelink.me/3966595826?c=shared_show&amp;pid=tvshowtimeweb&amp;af_dp=tvst://show/355567&amp;af_web_dp=tvst://show/355567"></div>
                         <div id="content" class="show-main alt">
                             <div class="content-container">
                                 <div class="left">
-                                    <div id="seasons">
-                                        <div class="row">
-                                            <h2 id="seasons-title" class="title col-lg-3"><i class="fa fa-list"></i>Episodes
-                                            </h2>
-                                            <div class="col-lg-9">
-                                                <div class="filters">
-                                                    <div class="dropdown">
-                                                        <a id="dSeasons" class="current dropdown-toggle"
-                                                           data-toggle="dropdown" href="#" aria-haspopup="true"
-                                                           aria-expanded="false">
-						      <span class="current-label">
-						        Season 1						      </span>
-                                                            <i class="icon-tvst-arrow_down"></i>
-                                                        </a>
-                                                        <ul class="dropdown-menu" role="menu"
-                                                            aria-labelledby="dSeasons">
-                                                            <li class="top active">
-                                                                <a href="#" data-season="1">
-                                                                    <i class="icon-tvst-check-small"></i>
-                                                                    Season 1 </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="show-seasons">
+                                    <div class="container max-width-sm no-padding no-margin">
+                                        <ul class="cd-accordion cd-accordion--animated">
+                                            <c:forEach items="${serie.seasons}" var="season" varStatus="item">
+                                                <li class="cd-accordion__item cd-accordion__item--has-children">
+                                                    <input class="cd-accordion__input" type="checkbox" name ="group-${item.index}" id="group-${item.index}">
+                                                    <label class="cd-accordion__label cd-accordion__label--icon-folder drop" for="group-${item.index}"><span class="big-size">Season ${season.seasonNumber}</span></label>
 
-                                            <div class="seasons">
-
-                                                <div id="season1-content" class="row season-content active" itemscope=""
-                                                     itemprop="season" itemtype="http://schema.org/TVSeason">
-                                                    <span class="hide" itemprop="name">Season 1</span>
-                                                    <span class="hide" itemprop="numberOfEpisodes">8</span>
-                                                    <meta itemprop="startDate" content="2019-07-26">
-                                                    <div class="col-lg-3 season-img">
-                                                        <div class="image-crop">
-                                                            <img src="//d36rlb2fgh8cjd.cloudfront.net/default-images/web/poster-340x500/1.png"
-                                                                 alt="The Boys">
-                                                            <a href="#" class="season-watched-btn watched-btn btn "
-                                                               data-season="1">
-                                                                <i class="to-watch-icon icon-tvst-watch"></i>
-                                                                <i class="watched-icon icon-tvst-check"></i>
-                                                                <!-- <div class="watched-label">Season watched</div> -->
-                                                                <div class="not-watched-label">Mark season as watched
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                    <ul class="list-unstyled episode-list col-lg-9">
-                                                        <li id="episode-item-7140390" class="row episode-wrapper odd">
-                                                            <div class="col-sm-10 infos">
-                                                                <div class="row">
-                                                                    <a href="/en/show/355567/episode/7140390"
-                                                                       class="col-sm-1">
-              <span class="episode-nb-label">
-                1              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7140390"
-                                                                       class="col-sm-6">
-              <span class="episode-name">
-                The Name of the Game              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7140390"
-                                                                       class="col-sm-4">
-              <span class="episode-air-date">
-                                  2019-07-26                              </span>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="actions col-sm-2">
-                                                                <div class="row">
-                                                                    <a href="#"
-                                                                       class="col-sm-6 col-sm-offset-4 watched-btn "
-                                                                       alt="mark watched">
-                                                                        <i class="icon-tvst-watch"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </li> <!-- // .episode-wrapper -->
-                                                        <li id="episode-item-7299045" class="row episode-wrapper">
-                                                            <div class="col-sm-10 infos">
-                                                                <div class="row">
-                                                                    <a href="/en/show/355567/episode/7299045"
-                                                                       class="col-sm-1">
-              <span class="episode-nb-label">
-                2              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299045"
-                                                                       class="col-sm-6">
-              <span class="episode-name">
-                Cherry              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299045"
-                                                                       class="col-sm-4">
-              <span class="episode-air-date">
-                                  2019-07-26                              </span>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="actions col-sm-2">
-                                                                <div class="row">
-                                                                    <a href="#"
-                                                                       class="col-sm-6 col-sm-offset-4 watched-btn "
-                                                                       alt="mark watched">
-                                                                        <i class="icon-tvst-watch"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </li> <!-- // .episode-wrapper -->
-                                                        <li id="episode-item-7299046" class="row episode-wrapper odd">
-                                                            <div class="col-sm-10 infos">
-                                                                <div class="row">
-                                                                    <a href="/en/show/355567/episode/7299046"
-                                                                       class="col-sm-1">
-              <span class="episode-nb-label">
-                3              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299046"
-                                                                       class="col-sm-6">
-              <span class="episode-name">
-                Get Some              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299046"
-                                                                       class="col-sm-4">
-              <span class="episode-air-date">
-                                  2019-07-26                              </span>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="actions col-sm-2">
-                                                                <div class="row">
-                                                                    <a href="#"
-                                                                       class="col-sm-6 col-sm-offset-4 watched-btn "
-                                                                       alt="mark watched">
-                                                                        <i class="icon-tvst-watch"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </li> <!-- // .episode-wrapper -->
-                                                        <li id="episode-item-7299047" class="row episode-wrapper">
-                                                            <div class="col-sm-10 infos">
-                                                                <div class="row">
-                                                                    <a href="/en/show/355567/episode/7299047"
-                                                                       class="col-sm-1">
-              <span class="episode-nb-label">
-                4              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299047"
-                                                                       class="col-sm-6">
-              <span class="episode-name">
-                The Female of the Species              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299047"
-                                                                       class="col-sm-4">
-              <span class="episode-air-date">
-                                  2019-07-26                              </span>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="actions col-sm-2">
-                                                                <div class="row">
-                                                                    <a href="#"
-                                                                       class="col-sm-6 col-sm-offset-4 watched-btn "
-                                                                       alt="mark watched">
-                                                                        <i class="icon-tvst-watch"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </li> <!-- // .episode-wrapper -->
-                                                        <li id="episode-item-7299048" class="row episode-wrapper odd">
-                                                            <div class="col-sm-10 infos">
-                                                                <div class="row">
-                                                                    <a href="/en/show/355567/episode/7299048"
-                                                                       class="col-sm-1">
-              <span class="episode-nb-label">
-                5              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299048"
-                                                                       class="col-sm-6">
-              <span class="episode-name">
-                Good for the Soul              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299048"
-                                                                       class="col-sm-4">
-              <span class="episode-air-date">
-                                  2019-07-26                              </span>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="actions col-sm-2">
-                                                                <div class="row">
-                                                                    <a href="#"
-                                                                       class="col-sm-6 col-sm-offset-4 watched-btn "
-                                                                       alt="mark watched">
-                                                                        <i class="icon-tvst-watch"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </li> <!-- // .episode-wrapper -->
-                                                        <li id="episode-item-7299049" class="row episode-wrapper">
-                                                            <div class="col-sm-10 infos">
-                                                                <div class="row">
-                                                                    <a href="/en/show/355567/episode/7299049"
-                                                                       class="col-sm-1">
-              <span class="episode-nb-label">
-                6              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299049"
-                                                                       class="col-sm-6">
-              <span class="episode-name">
-                The Innocents              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299049"
-                                                                       class="col-sm-4">
-              <span class="episode-air-date">
-                                  2019-07-26                              </span>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="actions col-sm-2">
-                                                                <div class="row">
-                                                                    <a href="#"
-                                                                       class="col-sm-6 col-sm-offset-4 watched-btn "
-                                                                       alt="mark watched">
-                                                                        <i class="icon-tvst-watch"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </li> <!-- // .episode-wrapper -->
-                                                        <li id="episode-item-7299050" class="row episode-wrapper odd">
-                                                            <div class="col-sm-10 infos">
-                                                                <div class="row">
-                                                                    <a href="/en/show/355567/episode/7299050"
-                                                                       class="col-sm-1">
-              <span class="episode-nb-label">
-                7              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299050"
-                                                                       class="col-sm-6">
-              <span class="episode-name">
-                The Self-Preservation Society               </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299050"
-                                                                       class="col-sm-4">
-              <span class="episode-air-date">
-                                  2019-07-26                              </span>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="actions col-sm-2">
-                                                                <div class="row">
-                                                                    <a href="#"
-                                                                       class="col-sm-6 col-sm-offset-4 watched-btn "
-                                                                       alt="mark watched">
-                                                                        <i class="icon-tvst-watch"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </li> <!-- // .episode-wrapper -->
-                                                        <li id="episode-item-7299052" class="row episode-wrapper">
-                                                            <div class="col-sm-10 infos">
-                                                                <div class="row">
-                                                                    <a href="/en/show/355567/episode/7299052"
-                                                                       class="col-sm-1">
-              <span class="episode-nb-label">
-                8              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299052"
-                                                                       class="col-sm-6">
-              <span class="episode-name">
-                You Found Me              </span>
-                                                                    </a>
-                                                                    <a href="/en/show/355567/episode/7299052"
-                                                                       class="col-sm-4">
-              <span class="episode-air-date">
-                                  2019-07-26                              </span>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                            <div class="actions col-sm-2">
-                                                                <div class="row">
-                                                                    <a href="#"
-                                                                       class="col-sm-6 col-sm-offset-4 watched-btn "
-                                                                       alt="mark watched">
-                                                                        <i class="icon-tvst-watch"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </li> <!-- // .episode-wrapper -->
+                                                    <ul class="cd-accordion__sub cd-accordion__sub--l1">
+                                                        <c:forEach items="${season.episodeList}" var="episode">
+                                                            <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="#0"><h3>${episode.episodeNumber} - ${episode.name}</h3></a></li>
+                                                        </c:forEach>
                                                     </ul>
-                                                </div>
-
-                                            </div>
-                                        </div>
+                                                </li>
+                                            </c:forEach>
+                                        </ul>
                                     </div>
-                                    <!-- Comments -->
                                     <div id="discussion">
                                         <h2 id="community-title" class="title"><i class="fa fa-smile-o"></i>Discussion
                                         </h2>
@@ -1144,238 +629,10 @@
                                         </div>
                                     </div>
                                 </div> <!-- //.col -->
-                                <div class="right">
-                                    <section>
-                                        <h1 class="title all-actors">Favorite characters</h1>
-                                        <a class="all-actors-link" href="#">See all</a>
-                                        <div id="show-casting" class="cast cast-ranking">
-                                            <ul class="actors-list clearfix list-unstyled list-inline">
-                                                <li class="actor-item popular" itemprop="actor" itemscope=""
-                                                    itemtype="http://schema.org/Person">
-                                                    <a href="/en/actor/47398">
-                                                        <div class="image-crop">
-                                                            <img itemprop="image"
-                                                                 src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/524144_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>Annie January / S...</h3>
-                                                            <span itemprop="name">Erin Moriarty</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        53465 votes
-                                                    </div>
-                                                    <div class="rank-sticker rank-1">1</div>
-                                                </li>
-                                                <li class="actor-item popular" itemprop="actor" itemscope=""
-                                                    itemtype="http://schema.org/Person">
-                                                    <a href="/en/actor/11778">
-                                                        <div class="image-crop">
-                                                            <img itemprop="image"
-                                                                 src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/524159_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>Frenchie</h3>
-                                                            <span itemprop="name">Tomer Kapon</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        34696 votes
-                                                    </div>
-                                                    <div class="rank-sticker rank-2">2</div>
-                                                </li>
-                                                <li class="actor-item popular" itemprop="actor" itemscope=""
-                                                    itemtype="http://schema.org/Person">
-                                                    <a href="/en/actor/4901">
-                                                        <div class="image-crop">
-                                                            <img itemprop="image"
-                                                                 src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/551656_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>Billy Butcher "El...</h3>
-                                                            <span itemprop="name">Karl Urban</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        25292 votes
-                                                    </div>
-                                                    <div class="rank-sticker rank-3">3</div>
-                                                </li>
-                                                <li class="actor-item other">
-                                                    <a href="/en/actor/73580">
-                                                        <div class="image-crop">
-                                                            <img src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/551655_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>Hughie Campbell</h3>
-                                                            <span>Jack Quaid</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        17763 votes
-                                                    </div>
-                                                </li>
-                                                <li class="actor-item other">
-                                                    <a href="/en/actor/576">
-                                                        <div class="image-crop">
-                                                            <img src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/524160_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>Hugh Campbell Sr.</h3>
-                                                            <span>Simon Pegg</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        11376 votes
-                                                    </div>
-                                                </li>
-                                                <li class="actor-item other">
-                                                    <a href="/en/actor/17879">
-                                                        <div class="image-crop">
-                                                            <img src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/551654_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>Homelander</h3>
-                                                            <span>Antony Starr</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        6473 votes
-                                                    </div>
-                                                </li>
-                                                <li class="actor-item other">
-                                                    <a href="/en/actor/127334">
-                                                        <div class="image-crop">
-                                                            <img src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/550993_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>The Female</h3>
-                                                            <span>Karen Fukuhara</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        3733 votes
-                                                    </div>
-                                                </li>
-                                                <li class="actor-item other">
-                                                    <a href="/en/actor/44337">
-                                                        <div class="image-crop">
-                                                            <img src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/524148_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>Queen Maeve</h3>
-                                                            <span>Dominique McElligott</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        2123 votes
-                                                    </div>
-                                                </li>
-                                                <li class="actor-item other">
-                                                    <a href="/en/actor/28897">
-                                                        <div class="image-crop">
-                                                            <img src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/524152_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>The Deep</h3>
-                                                            <span>Chace Crawford</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        1199 votes
-                                                    </div>
-                                                </li>
-                                                <li class="actor-item other">
-                                                    <a href="/en/actor/40559">
-                                                        <div class="image-crop">
-                                                            <img src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/550992_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>Mother's Milk</h3>
-                                                            <span>Laz Alonso</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        1164 votes
-                                                    </div>
-                                                </li>
-                                                <li class="actor-item other">
-                                                    <a href="/en/actor/135278">
-                                                        <div class="image-crop">
-                                                            <img src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/524154_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>Black Noir</h3>
-                                                            <span>Nathan Mitchell</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        188 votes
-                                                    </div>
-                                                </li>
-                                                <li class="actor-item other">
-                                                    <a href="/en/actor/17568">
-                                                        <div class="image-crop">
-                                                            <img src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/524143_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>Madelyn Stillwell</h3>
-                                                            <span>Elisabeth Shue</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        177 votes
-                                                    </div>
-                                                </li>
-                                                <li class="actor-item other">
-                                                    <a href="/en/actor/47008">
-                                                        <div class="image-crop">
-                                                            <img src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/524150_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>A-Train</h3>
-                                                            <span>Jessie Usher</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        67 votes
-                                                    </div>
-                                                </li>
-                                                <li class="actor-item other">
-                                                    <a href="/en/actor/18201">
-                                                        <div class="image-crop">
-                                                            <img src="https://dg31sz3gwrwan.cloudfront.net/actor/355567/560647_medium-optimized-2.jpg"
-                                                                 alt="image description" width="160">
-                                                        </div>
-                                                        <div class="content">
-                                                            <h3>Becca Butcher</h3>
-                                                            <span>Shantel VanSanten</span>
-                                                        </div>
-                                                    </a>
-                                                    <div class="nb-votes">
-                                                        0 vote
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </section>
-                                </div><!-- //.col -->
                             </div>
                         </div> <!-- //#content -->
                     </div>
+                </div>
                 </div>
             </div>
         </div>
