@@ -3516,12 +3516,6 @@ mark {
     align-items: center;
     padding: 0.75em 1.25em;
     padding: var(--space-sm) var(--space-md);
-    /*background: hsl(218, 7%, 32%);*/
-    /*background: var(--cd-color-1);*/
-    /*--color-shadow: lightness(hsl(218, 7%, 32%), 1.2);*/
-    /*--color-shadow: lightness(var(--cd-color-1), 1.2);*/
-    /*box-shadow: inset 0 -1px lightness(hsl(218, 7%, 32%), 1.2);*/
-    /*box-shadow: inset 0 -1px var(--color-shadow);*/
     background-color: white;
     color: hsl(0, 0%, 100%);
     color: var(--color-black)
@@ -3535,12 +3529,6 @@ mark {
     align-items: center;
     padding: 0.75em 1.25em;
     padding: var(--space-sm) var(--space-md);
-    /*background: hsl(218, 7%, 32%);*/
-    /*background: var(--cd-color-1);*/
-    /*--color-shadow: lightness(hsl(218, 7%, 32%), 1.2);*/
-    /*--color-shadow: lightness(var(--cd-color-1), 1.2);*/
-    /*box-shadow: inset 0 -1px lightness(hsl(218, 7%, 32%), 1.2);*/
-    /*box-shadow: inset 0 -1px var(--color-shadow);*/
     background-color: white;
     color: hsl(0, 0%, 100%);
     color: var(--color-black)
@@ -3552,8 +3540,7 @@ mark {
 }
 
 .cd-accordion__label:hover {
-    background: hsl(218, 7%, 35.2%);
-    background: hsl(var(--cd-color-1-h), var(--cd-color-1-s), calc(var(--cd-color-1-l) * 1.1))
+    background: #efefef;
 }
 
 .cd-accordion__label::after, .cd-accordion__label--icon-folder::before {
@@ -3606,20 +3593,8 @@ mark {
     display: block
 }
 
-.cd-accordion__sub--l1 .cd-accordion__label {
-    background: hsl(218, 7%, 20.8%);
-    background: hsl(var(--cd-color-1-h), var(--cd-color-1-s), calc(var(--cd-color-1-l) * 0.65));
-    --color-shadow: lightness(hsl(218, 7%, 32%), 0.85);
-    --color-shadow: lightness(var(--cd-color-1), 0.85);
-    box-shadow: inset 0 -1px lightness(hsl(218, 7%, 32%), 0.85);
-    box-shadow: inset 0 -1px var(--color-shadow);
-    padding-left: calc(1.25em + 16px);
-    padding-left: calc(var(--space-md) + 16px)
-}
-
 .cd-accordion__sub--l1 .cd-accordion__label:hover {
-    background: hsl(218, 7%, 24%);
-    background: hsl(var(--cd-color-1-h), var(--cd-color-1-s), calc(var(--cd-color-1-l) * 0.75))
+    background: #ededed;
 }
 
 .cd-accordion__item:last-child .cd-accordion__label {

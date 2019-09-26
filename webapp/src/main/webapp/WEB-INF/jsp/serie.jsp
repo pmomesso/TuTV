@@ -103,7 +103,8 @@
 
                                                     <ul class="cd-accordion__sub cd-accordion__sub--l1">
                                                         <c:forEach items="${season.episodeList}" var="episode">
-                                                            <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="#0"><h3>${episode.episodeNumber} - ${episode.name}</h3></a></li>
+<%--                                                            TODO tener el id del episodio en vez del primer episodeNumber--%>
+                                                            <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="/episode?id=${episode.episodeNumber}"><h3>${episode.episodeNumber} - ${episode.name}</h3></a></li>
                                                         </c:forEach>
                                                     </ul>
                                                 </li>
