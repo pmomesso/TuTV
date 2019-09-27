@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.SeriesDao;
-import ar.edu.itba.paw.model.Episode;
-import ar.edu.itba.paw.model.Genre;
-import ar.edu.itba.paw.model.Season;
-import ar.edu.itba.paw.model.Series;
+import ar.edu.itba.paw.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -282,6 +279,12 @@ public class SeriesDaoJdbc implements SeriesDao {
             return ret;
         });
         return episodeList;
+    }
+
+    @Override
+    public List<Comment> getSeriesCommentsById(long seriesId) {
+        //Todo...
+        return null;
     }
 
     private void addAllSeasonsToSeries(Series s) {

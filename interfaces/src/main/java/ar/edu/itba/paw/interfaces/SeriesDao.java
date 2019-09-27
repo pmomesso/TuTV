@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.model.Episode;
-import ar.edu.itba.paw.model.Genre;
-import ar.edu.itba.paw.model.Season;
-import ar.edu.itba.paw.model.Series;
+import ar.edu.itba.paw.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -35,4 +32,6 @@ public interface SeriesDao {
     List<Season> getSeasonsBySeriesId(long seriesId);
 
     List<Episode> getEpisodesBySeasonId(long seasonId);
+    List<Comment> getSeriesCommentsById(long seriesId);
+
 }

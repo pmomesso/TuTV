@@ -1,22 +1,10 @@
 package ar.edu.itba.paw.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Comment {
 
     private long commentId;
     private String body;
     private User user;
-    private List<Comment> commentsList = new ArrayList<>();
-
-    public List<Comment> getCommentsList() {
-        return commentsList;
-    }
-
-    public void setCommentsList(List<Comment> commentsList) {
-        this.commentsList = commentsList;
-    }
 
     public long getCommentId() {
         return commentId;
