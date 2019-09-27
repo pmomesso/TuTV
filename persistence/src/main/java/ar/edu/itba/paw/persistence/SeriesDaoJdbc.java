@@ -236,7 +236,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     private void addUserToPosts(List<Post> postList) {
         for(Post post : postList) {
-            post.setUserPoster(userDao.getUser(post.getUserId()));
+            post.setUserPoster(userDao.getUserById(post.getUserId()));
         }
     }
 
