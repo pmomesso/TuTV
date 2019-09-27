@@ -11,7 +11,9 @@ import java.util.Set;
 public interface SeriesService {
 
     List<Series> getSeriesByName(String name);
-    Series getSerieById(long id);
+
+    Series getSerieById(long id, long userId);
+
     List<Series> getSeriesByGenreAndNumber(int genreId, int num);
     List<Series> getAllSeriesByGenre(String genreName);
     public List<Series> getAllSeriesByGenre(int id);

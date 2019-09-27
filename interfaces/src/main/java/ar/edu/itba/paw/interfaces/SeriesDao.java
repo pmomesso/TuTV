@@ -4,7 +4,6 @@ import ar.edu.itba.paw.model.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface SeriesDao {
 
@@ -19,10 +18,10 @@ public interface SeriesDao {
 
     Map<Genre, List<Series>> getBestSeriesByGenres(int lowerLimit, int upperLimit);
 
-    Series getSeriesById(final long id);
+    Series getSeriesById(long id, long userId);
 
-    long createSeries(Integer tvdbid,String seriesName, String seriesDescription,Double userRating,String status,Integer runtime,
-                      Integer networkId,String firstAired,String idImdb,String added,String updated,String posterUrl,String bannerUrl,Integer followers);
+    long createSeries(Integer tvdbid, String seriesName, String seriesDescription, Double userRating, String status, Integer runtime,
+                      Integer networkId, String firstAired, String idImdb, String added, String updated, String posterUrl, String bannerUrl, Integer followers);
 
     long addSeriesGenre(String genre,List<Series> series);
     void setSeriesRunningTime(long seriesId, int runningTime);
@@ -31,7 +30,7 @@ public interface SeriesDao {
 
     List<Season> getSeasonsBySeriesId(long seriesId);
 
-    List<Episode> getEpisodesBySeasonId(long seasonId);
+    List<Episode> getEpisodesBySeasonId(long seasonId, long userId);
     List<Comment> getSeriesCommentsById(long seriesId);
 
 }

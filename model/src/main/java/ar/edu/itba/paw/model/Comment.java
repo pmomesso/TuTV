@@ -5,6 +5,25 @@ public class Comment {
     private long commentId;
     private String body;
     private User user;
+    private long userId;
+    private int points;
+    private boolean liked = false;
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
 
     public long getCommentId() {
         return commentId;
@@ -28,5 +47,13 @@ public class Comment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public long getUserId() {
+        return userId;
     }
 }

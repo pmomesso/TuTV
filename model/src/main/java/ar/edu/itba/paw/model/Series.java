@@ -24,15 +24,7 @@ public class Series  {
     private List<ActorRole> actorList = new LinkedList<ActorRole>();
     private List<Season> seasons = new LinkedList<>();
     private Set<Genre> genresList = new HashSet<>();
-    private List<Comment> seriesComments = new ArrayList<>();
-
-    public List<Comment> getSeriesComments() {
-        return seriesComments;
-    }
-
-    public void setSeriesComments(List<Comment> seriesComments) {
-        this.seriesComments = seriesComments;
-    }
+    private List<Post> postList;
 
     public Series(String name) {
         this.name = name;
@@ -226,5 +218,13 @@ public class Series  {
 
     public void setSeasons(List<Season> seasons) {
         this.seasons = seasons;
+    }
+
+    public void setSeriesPostList(List<Post> postList) {
+        this.postList = postList;
+    }
+
+    public List<Post> getPostList() {
+        return postList;
     }
 }

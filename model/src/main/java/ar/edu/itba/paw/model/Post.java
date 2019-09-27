@@ -7,7 +7,26 @@ public class Post {
     private long postId;
     private String body;
     private List<Comment> comments;
-    private User poster;
+    private User userPoster;
+    private long userId;
+    private int points;
+    private boolean liked = false;
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
 
     public long getPostId() {
         return postId;
@@ -33,11 +52,20 @@ public class Post {
         this.comments = comments;
     }
 
-    public User getPoster() {
-        return poster;
+    public User getUserPoster() {
+        return userPoster;
     }
 
-    public void setPoster(User poster) {
-        this.poster = poster;
+    public void setUserPoster(User userPoster) {
+        this.userPoster = userPoster;
     }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
 }

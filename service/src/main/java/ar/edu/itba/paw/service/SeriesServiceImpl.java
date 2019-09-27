@@ -29,8 +29,8 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public Series getSerieById(long id) {
-        return seriesDao.getSeriesById(id);
+    public Series getSerieById(long id, long userId) {
+        return seriesDao.getSeriesById(id, userId);
     }
 
     @Override

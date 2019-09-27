@@ -66,7 +66,7 @@ public class HelloWorldController {
 	@RequestMapping(value = "/serie", method = RequestMethod.GET)
 	public ModelAndView serie(@RequestParam("id") long id) {
 		final ModelAndView mav = new ModelAndView("serie");
-		mav.addObject("serie", seriesService.getSerieById(id));
+		mav.addObject("serie", seriesService.getSerieById(id, -1));
 		return mav;
 	}
 

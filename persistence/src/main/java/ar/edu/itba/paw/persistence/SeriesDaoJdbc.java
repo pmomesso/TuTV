@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.SeriesDao;
+import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -67,6 +68,9 @@ public class SeriesDaoJdbc implements SeriesDao {
     private SimpleJdbcInsert seriesjdbcInsert;
     private SimpleJdbcInsert genresjdbcInsert;
     private SimpleJdbcInsert hasGenrejdbcInsert;
+
+    @Autowired
+    private UserDao userDao;
 
     private Series getById(List<Series> series,long id){
         for(Series s : series){
@@ -172,7 +176,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     @Override
-    public Series getSeriesById(final long id) {
+    public Series getSeriesById(final long id, final long userId) {
         final List<Series> seriesList = jdbcTemplate.query("SELECT * " +
                 "FROM (series LEFT JOIN hasGenre ON hasgenre.seriesid = series.id LEFT JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.networkid = series.networkid) " +
                 "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname)" +
@@ -181,8 +185,59 @@ public class SeriesDaoJdbc implements SeriesDao {
             return null;
         }
         Series series = groupGenres(seriesList).get(0);
-        addAllSeasonsToSeries(series);
+        addAllSeasonsToSeries(series, userId);
+        addAllPostsToSeries(series);
         return series;
+    }
+
+    private void addAllPostsToSeries(Series series) {
+        final List<Post> postList = jdbcTemplate.query("SELECT seriesreview.id, seriesreview.body, seriesreview.numlikes, seriesreview.userid " +
+                "FROM seriesreview JOIN series ON seriesreview.seriesid = series.id ", new Object[]{series.getId()},
+                (resultSet, i) -> {
+                    Post post = new Post();
+                    post.setBody(resultSet.getString("body"));
+                    post.setPoints(resultSet.getInt("numlikes"));
+                    post.setPostId(resultSet.getInt("id"));
+                    post.setUserId(resultSet.getLong("userid"));
+                    return post;
+                });
+        addUserToPosts(postList);
+        addAllCommentsToPosts(postList);
+        series.setSeriesPostList(postList);
+    }
+
+    private void addAllCommentsToPosts(List<Post> postList) {
+        for(Post post : postList) {
+            addAllCommentsToPost(post);
+        }
+    }
+
+    private void addAllCommentsToPost(Post post) {
+        List<Comment> commentsList = jdbcTemplate.query("SELECT * " +
+                "FROM seriesreviewcomments " +
+                "WHERE postid = ?", new Object[]{post.getPostId()},
+                (resultSet, i) -> {
+                    Comment comment = new Comment();
+                    comment.setCommentId(resultSet.getInt("id"));
+                    comment.setBody(resultSet.getString("body"));
+                    comment.setPoints(resultSet.getInt("numlikes"));
+                    comment.setUserId(resultSet.getLong("userid"));
+                    return comment;
+                });
+        addUsersToComments(commentsList);
+        post.setComments(commentsList);
+    }
+
+    private void addUsersToComments(List<Comment> commentsList) {
+        for(Comment comment : commentsList) {
+            comment.setUser(userDao.getUser(comment.getUserId()));
+        }
+    }
+
+    private void addUserToPosts(List<Post> postList) {
+        for(Post post : postList) {
+            post.setUserPoster(userDao.getUser(post.getUserId()));
+        }
     }
 
     @Override
@@ -267,15 +322,16 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     @Override
-    public List<Episode> getEpisodesBySeasonId(long seasonId) {
-        List<Episode> episodeList = jdbcTemplate.query("SELECT * " +
-                "FROM season JOIN episode ON season.seasonid = episode.seasonid " +
-                "WHERE season.seasonid = ? " +
-                "ORDER BY numepisode", new Object[]{seasonId}, (resultSet, i) -> {
+    public List<Episode> getEpisodesBySeasonId(long seasonId, long userId) {
+        List<Episode> episodeList = jdbcTemplate.query("SELECT episode.*, exists(SELECT * FROM hasviewedepisode WHERE userid = ?) as viewed " +
+                "FROM episode  " +
+                "WHERE episode.seasonid = ? " +
+                "ORDER BY numepisode", new Object[]{userId, seasonId}, (resultSet, i) -> {
             Episode ret = new Episode();
             ret.setEpisodeNumber(resultSet.getInt("numepisode"));
             ret.setDescription(resultSet.getString("overview"));
             ret.setName(resultSet.getString("name"));
+            ret.setViewed(resultSet.getBoolean("viewed"));
             return ret;
         });
         return episodeList;
@@ -287,20 +343,12 @@ public class SeriesDaoJdbc implements SeriesDao {
         return null;
     }
 
-    private void addAllSeasonsToSeries(Series s) {
+    private void addAllSeasonsToSeries(Series s, long userId) {
         List<Season> seasonList = getSeasonsBySeriesId(s.getId());
         for(Season season : seasonList) {
-            season.setEpisodes(getEpisodesBySeasonId(season.getId()));
+            season.setEpisodes(getEpisodesBySeasonId(season.getId(), userId));
         }
         s.setSeasons(seasonList);
-    }
-
-    private long getGenreId(String genre) {
-        List<Long> genreId = jdbcTemplate.query("SELECT id " +
-                        "FROM genres " +
-                        "WHERE genre = ?", new Object[]{genre},
-                ((resultSet, i) -> resultSet.getLong("id")));
-        return genreId.get(0);
     }
 
 }

@@ -10,6 +10,15 @@ public class Episode {
     private int episodeNumber;
     private Rating userRating;
     private List<Comment> episodeComments = new ArrayList<>();
+    private boolean viewed = false;
+
+    public boolean isViewed() {
+        return viewed;
+    }
+
+    public void setViewed(boolean viewed) {
+        this.viewed = viewed;
+    }
 
     public List<Comment> getEpisodeComments() {
         return episodeComments;

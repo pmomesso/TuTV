@@ -44,23 +44,20 @@ create table if not exists actor
 
 alter table actor owner to root;
 
-create table if not exists commentepisode
+create table if not exists episodereview
 (
     userid integer
         constraint commentepisode_users_id_fk
             references users,
     body varchar(256),
     episodeid integer,
-    parent integer,
-    points integer,
+    numlikes integer,
     id serial not null
         constraint commentepisode_pk
             primary key
-        constraint commentepisode_commentepisode_id_fk
-            references commentepisode
 );
 
-alter table commentepisode owner to root;
+alter table episodereview owner to root;
 
 create table if not exists network
 (
@@ -138,10 +135,10 @@ create table if not exists seriesreview
     seriesid integer
         constraint seriesreview_series_id_fk
             references series,
-    points integer,
     id serial not null
         constraint seriesreview_pk
-            primary key
+            primary key,
+    numlikes serial not null
 );
 
 alter table seriesreview owner to root;
@@ -214,8 +211,34 @@ create table if not exists seriesreviewcomments
     postid integer
         constraint seriesreviewcomments_seriesreview_id_fk
             references seriesreview,
-    points integer default 0
+    numlikes integer default 0
 );
 
 alter table seriesreviewcomments owner to root;
+
+create table if not exists episodereviewcomment
+(
+    id serial not null
+        constraint episodereviewcomment_pk
+            primary key,
+    body varchar(512),
+    numlikes integer default 0,
+    episodereview integer
+        constraint episodereviewcomment_episodereview_id_fk
+            references episodereview
+);
+
+alter table episodereviewcomment owner to root;
+
+create table if not exists hasviewedepisode
+(
+    userid integer
+        constraint hasviewedepisode_users_id_fk
+            references users,
+    episodeid integer
+        constraint hasviewedepisode_episode_id_fk
+            references episode
+);
+
+alter table hasviewedepisode owner to root;
 
