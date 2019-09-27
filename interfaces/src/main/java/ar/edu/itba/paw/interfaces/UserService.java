@@ -4,5 +4,10 @@ import ar.edu.itba.paw.model.User;
 
 public interface UserService {
 	User findById(long id);
+
+	User findByMail(String mail);
+
 	long createUser(String userName, String password, String mail);
+
+	User getLoggedUser();
 }

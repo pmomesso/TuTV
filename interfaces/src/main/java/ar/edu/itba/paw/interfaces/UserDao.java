@@ -6,7 +6,9 @@ import java.util.Date;
 
 public interface UserDao {
 
-    User getUser(long id);
+    User getUserById(long id);
+
+    User getUserByMail(String mail);
 
     long createUser(String userName, String password, String mail);
 }

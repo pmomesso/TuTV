@@ -48,7 +48,7 @@ public class UserDaoImplTest {
         jdbcTemplate.execute(String.format("INSERT INTO users(id, username, password, mail) VALUES( %d,'%s','%s', '%s')", USER_ID, USERNAME, PASSWORD, MAIL));
 
         //Ejercitar
-        final User user = userDao.getUser(USER_ID);
+        final User user = userDao.getUserById(USER_ID);
         //Asserts
         Assert.assertNotNull(user);
         Assert.assertEquals(user.getUserName(),USERNAME);

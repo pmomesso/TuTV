@@ -39,7 +39,7 @@ public class UserServiceImplTest {
         mockUser.setId(USER_ID);
         mockUser.setPassword(PASSWORD);
         mockUser.setMailAddress(MAIL);
-        Mockito.when(mockDao.getUser(USER_ID))
+        Mockito.when(mockDao.getUserById(USER_ID))
                 .thenReturn(mockUser);
         // 2. "ejercito" la class under test
         User user = userService.findById(USER_ID);
