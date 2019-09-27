@@ -230,7 +230,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     private void addUsersToComments(List<Comment> commentsList) {
         for(Comment comment : commentsList) {
-            comment.setUser(userDao.getUser(comment.getUserId()));
+            comment.setUser(userDao.getUserById(comment.getUserId()));
         }
     }
 

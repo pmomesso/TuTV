@@ -6,7 +6,6 @@ import ar.edu.itba.paw.model.Series;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface SeriesService {
 
