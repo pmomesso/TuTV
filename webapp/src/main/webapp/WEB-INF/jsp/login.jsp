@@ -21,30 +21,29 @@
     <link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/resources/css/tvst.css"/>">
 </head>
 <body>
+<c:url value="/login" var="loginUrl" />
 <div class="full-overlay">
     <div class="container-center white-background">
         <h2><spring:message code="login.title"/></h2>
-        <form:form action="/login" method="post" enctype="application/x-www-form-urlencoded">
+        <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
             <div>
-                <form:label path="username"><spring:message code="login.username"/></form:label>
-                <form:input path="username" type="text"/>
-                <form:errors path="username" element="p" cssClass="error"/>
+                <label for="username"><spring:message code="login.username"/></label>
+                <input id="username" name="username" type="text"/>
             </div>
             <div>
-                <form:label path="password"><spring:message code="login.password"/></form:label>
-                <form:input path="password" type="password"/>
-                <form:errors path="password" element="p" cssClass="error"/>
+                <label for="password"><spring:message code="login.password"/></label>
+                <input id="password" name="password" type="password"/>
             </div>
             <div>
-                <form:label path="rememberme">
-                    <form:checkbox path="rememberme"/>
+                <label path="rememberme">
+                    <input name="rememberme" type="checkbox"/>
                     <spring:message code="login.rememberme"/>
-                </form:label>
+                </label>
             </div>
             <div>
                 <input type="submit" value="<spring:message code="login.submit"/>"/>
             </div>
-        </form:form>
+        </form>
         <div>
             <span><spring:message code="login.noaccount"/></span>
             <a href="<c:url value="/register"/>"><spring:message code="login.createaccount"/></a>

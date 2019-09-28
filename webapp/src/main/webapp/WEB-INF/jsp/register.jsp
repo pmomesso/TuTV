@@ -49,6 +49,10 @@
                     <input type="submit" value="<spring:message code="register.submit"/>"/>
                 </div>
             </form:form>
+            <div>
+                <span><spring:message code="register.haveaccount"/></span>
+                <a href="<c:url value="/login"/>"><spring:message code="register.login"/></a>
+            </div>
         </div>
     </div>
     </body>
