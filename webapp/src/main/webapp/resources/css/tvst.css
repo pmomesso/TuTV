@@ -20584,9 +20584,7 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
 }
 #episode-details .comment,
 #show-details .comment {
- padding-bottom:0;
- padding-left:0;
- padding-right:0
+ padding: 20px 12px 0;
 }
 #episode-details.episode .comments {
  padding:30px 0 30px 10px
@@ -20982,7 +20980,6 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
 .comment .reply .author-label {
  font-size:13px;
  color:#000;
- margin-left:50px
 }
 .comment .reply .author-label a {
  color:#000
@@ -21007,10 +21004,9 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
  border:1px solid #ddd
 }
 .comment form.reply>.holder .textarea-wrapper {
- padding:0 10px 0 40px;
+ padding:0 10px 0 10px;
  float:left;
  width:100%;
- margin-top:-25px
 }
 .comment form.reply>.holder textarea {
  background:0 0;
@@ -21038,7 +21034,7 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
 }
 .comment .reply>.holder blockquote {
  border-left:none;
- margin:0 20px 0 50px;
+ margin:0 20px 0 0;
  padding:5px 0 10px
 }
 #community-feed-container .comment .reply>.holder blockquote {
@@ -21189,7 +21185,7 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
 }
 .comment .post>.top .holder {
  position:relative;
- margin-left:80px;
+ margin-left:2rem;
  color:#fff;
  border-radius:4px
 }
@@ -30385,9 +30381,6 @@ body.alt h2.title:first-child {
 }
 .cast .next {
  right:-14px
-}
-#show-details.show .comments {
- margin-top: 2rem;
 }
 #show-details #discussion {
  margin-top: 3.5rem;
