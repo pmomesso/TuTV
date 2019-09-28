@@ -192,7 +192,8 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     private void addAllPostsToSeries(Series series) {
         final List<Post> postList = jdbcTemplate.query("SELECT seriesreview.id, seriesreview.body, seriesreview.numlikes, seriesreview.userid " +
-                "FROM seriesreview JOIN series ON seriesreview.seriesid = series.id ", new Object[]{series.getId()},
+                "FROM seriesreview JOIN series ON seriesreview.seriesid = series.id " +
+                        "WHERE series.id = ?", new Object[]{series.getId()},
                 (resultSet, i) -> {
                     Post post = new Post();
                     post.setBody(resultSet.getString("body"));
