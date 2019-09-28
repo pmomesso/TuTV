@@ -227,4 +227,9 @@ public class Series  {
     public List<Post> getPostList() {
         return postList;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

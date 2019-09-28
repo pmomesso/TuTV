@@ -190,6 +190,14 @@ public class SeriesDaoJdbc implements SeriesDao {
         return series;
     }
 
+    private void addAllSeasonsToSeries(Series s, long userId) {
+        List<Season> seasonList = getSeasonsBySeriesId(s.getId());
+        for(Season season : seasonList) {
+            season.setEpisodes(getEpisodesBySeasonId(season.getId(), userId));
+        }
+        s.setSeasons(seasonList);
+    }
+
     private void addAllPostsToSeries(Series series) {
         final List<Post> postList = jdbcTemplate.query("SELECT seriesreview.id, seriesreview.body, seriesreview.numlikes, seriesreview.userid " +
                 "FROM seriesreview JOIN series ON seriesreview.seriesid = series.id " +
@@ -333,6 +341,7 @@ public class SeriesDaoJdbc implements SeriesDao {
             ret.setDescription(resultSet.getString("overview"));
             ret.setName(resultSet.getString("name"));
             ret.setViewed(resultSet.getBoolean("viewed"));
+            ret.setId(resultSet.getLong("id"));
             return ret;
         });
         return episodeList;
@@ -344,12 +353,47 @@ public class SeriesDaoJdbc implements SeriesDao {
         return null;
     }
 
-    private void addAllSeasonsToSeries(Series s, long userId) {
-        List<Season> seasonList = getSeasonsBySeriesId(s.getId());
-        for(Season season : seasonList) {
-            season.setEpisodes(getEpisodesBySeasonId(season.getId(), userId));
-        }
-        s.setSeasons(seasonList);
+    @Override
+    public List<Series> getNextToBeSeen(long userId) {
+        List<Series> seriesList = jdbcTemplate.query("SELECT episode.id AS episodeid,\n" +
+                        "episode.name AS episodename,\n" +
+                        "episode.numepisode AS episodenumber,\n" +
+                        "(SELECT series.id FROM series WHERE series.id = episode.seriesid) AS seriesid,\n" +
+                        "(SELECT series.name FROM series WHERE series.id = episode.seriesid) AS seriesname,\n" +
+                        "(SELECT series.bannerurl FROM series WHERE series.id = episode.seriesid) AS seriesbannerurl,\n" +
+                        "(SELECT season.seasonid FROM season WHERE season.seasonid = episode.seasonid) AS seasonid,\n" +
+                        "(SELECT season.seasonnumber FROM season WHERE season.seasonid = episode.seasonid) AS seasonnumber\n" +
+                        "FROM episode\n" +
+                        "WHERE NOT EXISTS(SELECT * FROM hasviewedepisode WHERE hasviewedepisode.episodeid = episode.id AND hasviewedepisode.userid = 1)\n" +
+                        "AND NOT EXISTS(SELECT e1.id FROM episode AS e1 WHERE NOT EXISTS(SELECT hasviewedepisode.episodeid\n" +
+                        "FROM hasviewedepisode\n" +
+                        "WHERE hasviewedepisode.episodeid = e1.id AND hasviewedepisode.userid = 1) AND e1.seriesid = episode.seriesid AND e1.lastAired < episode.lastAired)\n" +
+                        "AND episode.seriesid IN (SELECT follows.seriesid FROM follows WHERE follows.userid = 1)",
+                new Object[]{userId, userId}, (resultSet, i) -> {
+                    Series series = new Series();
+                    series.setName(resultSet.getString("seriesname"));
+                    series.setId(resultSet.getLong("seriesid"));
+                    series.setBannerUrl(resultSet.getString("seriesbannerurl"));
+
+                    List<Season> auxSeasonList = new ArrayList<>(1);
+                    Season season = new Season();
+                    season.setId(resultSet.getLong("seasonid"));
+                    season.setSeasonNumber(resultSet.getInt("seasonnumber"));
+
+                    List<Episode> auxEpisodeList = new ArrayList<>(1);
+                    Episode episode = new Episode();
+                    episode.setId(resultSet.getLong("episodeid"));
+                    episode.setName(resultSet.getString("episodename"));
+                    episode.setEpisodeNumber(resultSet.getInt("episodenumber"));
+
+                    auxEpisodeList.add(episode);
+                    season.setEpisodeList(auxEpisodeList);
+                    series.setSeasons(auxSeasonList);
+
+                    return series;
+                });
+        //Todo: process list
+        return seriesList;
     }
 
 }

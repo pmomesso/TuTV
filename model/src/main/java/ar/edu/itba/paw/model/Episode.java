@@ -8,9 +8,10 @@ public class Episode {
     private String name;
     private String description;
     private int episodeNumber;
+    private long id;
+    private boolean viewed = false;
     private Rating userRating;
     private List<Comment> episodeComments = new ArrayList<>();
-    private boolean viewed = false;
 
     public boolean isViewed() {
         return viewed;
@@ -56,5 +57,13 @@ public class Episode {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

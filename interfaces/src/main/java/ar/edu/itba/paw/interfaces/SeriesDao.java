@@ -33,4 +33,5 @@ public interface SeriesDao {
     List<Episode> getEpisodesBySeasonId(long seasonId, long userId);
     List<Comment> getSeriesCommentsById(long seriesId);
 
+    List<Series> getNextToBeSeen(long userId);
 }
