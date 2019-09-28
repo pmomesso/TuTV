@@ -57,7 +57,7 @@
                   <!-- Wrapper for carousel items -->
                   <div class="carousel-inner">
                     <c:forEach items="${newShows}" var="newShow" varStatus="status">
-                      <a href="<c:url value="/serie?id=${newShow.id}"/>">
+                      <a href="<c:url value="/series?id=${newShow.id}"/>">
                       <c:choose>
                         <c:when test="${status.index == 0}">
                           <div class="carousel-item active">
@@ -93,21 +93,21 @@
               <c:forEach items="${seriesMap}" var="entry">
                 <section id="${entry.key}">
 <%--                  TODO tenemos pagina genre?--%>
-<%--                  <a href="<c:url value="/serie?genre=${entry.key.id}"/>">--%>
+<%--                  <a href="<c:url value="/series?genre=${entry.key.id}"/>">--%>
                     <h2 class="black-font"><c:out value="${entry.key.name}"/></h2>
 <%--                    <span class="show-all"><spring:message code="index.seeAll"/></span>--%>
 <%--                  </a>--%>
                   <ul class="posters-list shows-list explore-list list-unstyled list-inline">
-                    <c:forEach items="${entry.value}" var="serie">
-                      <li id="${serie.id}" class=" ">
-                        <a href="<c:url value="/serie?id=${serie.id}"/>">
+                    <c:forEach items="${entry.value}" var="series">
+                      <li id="${series.id}" class=" ">
+                        <a href="<c:url value="/series?id=${series.id}"/>">
                           <div class="image-crop">
-                            <img src="${serie.posterUrl}" alt="${serie.name}">
+                            <img src="${series.posterUrl}" alt="${series.name}">
                             <div class="overlay"><span class="zoom-btn overlay-btn"/></div>
                           </div>
                           <div class="show-details poster-details">
-                            <h2>${serie.name}</h2>
-                            <span class="secondary-link">${serie.numFollowers} <spring:message code="index.followers"/></span>
+                            <h2>${series.name}</h2>
+                            <span class="secondary-link">${series.numFollowers} <spring:message code="index.followers"/></span>
                           </div>
                         </a>
                       </li>

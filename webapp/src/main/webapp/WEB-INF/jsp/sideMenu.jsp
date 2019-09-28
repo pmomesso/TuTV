@@ -29,7 +29,7 @@
             </ul>
         </section>
         <section id="user-nav">
-            <h1>agusosimani</h1>
+            <h1>${user.userName}</h1>
             <ul class="menu list-unstyled">
                 <li class="profile ">
                     <a href="/profile" title="Profile">

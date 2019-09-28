@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.webapp.form.PostForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -62,27 +63,38 @@ public class HelloWorldController {
 		return mav;
 	}
 
-	@RequestMapping(value = "/serie", method = RequestMethod.GET)
-	public ModelAndView serie(@RequestParam("id") long id) {
-		final ModelAndView mav = new ModelAndView("serie");
+	@RequestMapping(value = "/series", method = RequestMethod.GET)
+	public ModelAndView series(@ModelAttribute("postForm") final PostForm form, @RequestParam("id") long id) {
+		final ModelAndView mav = new ModelAndView("series");
 		User u = userService.getLoggedUser();
 //		TODO agus tener el user global
 		mav.addObject("user", u);
-		mav.addObject("serie", seriesService.getSerieById(id, u.getId()));
+		mav.addObject("series", seriesService.getSerieById(id, u.getId()));
 		return mav;
 	}
 
-	@RequestMapping(value = "/addSerie", method = RequestMethod.POST)
-    public ModelAndView addSerie(@RequestParam("serieId") long serieId, @RequestParam("userId") long userId) {
+	@RequestMapping(value = "/addSeries", method = RequestMethod.POST)
+    public ModelAndView addSeries(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) {
 //	    TODO pedro llamar a metodo de agregar serie a usuario
-	    return new ModelAndView("redirect:/serie?id=" + serieId);
+	    return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
-    public ModelAndView viewEpisode(@RequestParam("serieId") long serieId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) {
+    public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) {
 //	    TODO pedro llamar a metodo de ver episode
-        return new ModelAndView("redirect:/serie?id=" + serieId);
+        return new ModelAndView("redirect:/series?id=" + seriesId);
     }
+
+    @RequestMapping(value = "/post", method = RequestMethod.POST)
+	public ModelAndView post(@Valid @ModelAttribute("postForm") final PostForm form, final BindingResult errors) {
+		if (errors.hasErrors()) {
+			return series(form, form.getSeriesId());
+		}
+//		DENTRO DE FORM HAY: form.getDescription() form.getSeriesId() form.getUserId()
+//		TODO pedro llamar a metodo que postea en una serie
+//		TODO devolver lo necesario para que aparezca el post
+		return new ModelAndView("redirect:/series?id=" + form.getSeriesId());
+	}
 
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public ModelAndView profile() {

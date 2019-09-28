@@ -56,20 +56,20 @@
                                         <c:forEach items="${entry.value}" var="serie">
                                             <li id="${serie.id}" class="">
                                                 <div class="image-crop">
-                                                    <a href="<c:url value="/serie?genre=${entry.key.id}"/>">
+                                                    <a href="<c:url value="/series?genre=${entry.key.id}"/>">
                                                         <img src="${serie.posterUrl}"
                                                              alt="${serie.name}">
                                                     </a>
                                                     <div class="overlay">
-                                                        <a href="<c:url value="/serie?id=${serie.id}"/>" class="zoom-btn overlay-btn" title="info"></a>
+                                                        <a href="<c:url value="/series?id=${serie.id}"/>" class="zoom-btn overlay-btn" title="info"></a>
                                                     </div>
                                                     <div class="side progress-box">
                                                         <div class="loader rotating dark small visible"></div>
                                                     </div>
                                                 </div>
                                                 <div class="show-details poster-details">
-                                                    <h2><a href="<c:url value="/serie?id=${serie.id}"/>">${serie.name}</a></h2>
-                                                    <a href="<c:url value="/serie?id=${serie.id}"/>" class="secondary-link">${serie.numFollowers} <spring:message code="index.followers"/></a>
+                                                    <h2><a href="<c:url value="/series?id=${serie.id}"/>">${serie.name}</a></h2>
+                                                    <a href="<c:url value="/series?id=${serie.id}"/>" class="secondary-link">${serie.numFollowers} <spring:message code="index.followers"/></a>
                                                 </div>
                                             </li>
                                         </c:forEach>
@@ -83,20 +83,20 @@
                                     <c:forEach items="${searchResults}" var="serie">
                                         <li id="${serie.id}">
                                             <div class="image-crop">
-                                                <a href="<c:url value="/serie?id=${serie.id}"/>">
+                                                <a href="<c:url value="/series?id=${serie.id}"/>">
                                                     <img src="${serie.posterUrl}"
                                                          alt="${serie.name}">
                                                 </a>
                                                 <div class="overlay">
-                                                    <a href="<c:url value="/serie?id=${serie.id}"/>" class="zoom-btn overlay-btn" title="info"></a>
+                                                    <a href="<c:url value="/series?id=${serie.id}"/>" class="zoom-btn overlay-btn" title="info"></a>
                                                 </div>
                                                 <div class="side progress-box">
                                                     <div class="loader rotating dark small visible"></div>
                                                 </div>
                                             </div>
                                             <div class="show-details poster-details">
-                                                <h2><a href="<c:url value="/serie?id=${serie.id}"/>">${serie.name}</a></h2>
-                                                <a href="<c:url value="/serie?id=${serie.id}"/>" class="secondary-link">${serie.numFollowers} <spring:message code="index.followers"/></a>
+                                                <h2><a href="<c:url value="/series?id=${serie.id}"/>">${serie.name}</a></h2>
+                                                <a href="<c:url value="/series?id=${serie.id}"/>" class="secondary-link">${serie.numFollowers} <spring:message code="index.followers"/></a>
                                             </div>
                                         </li>
                                     </c:forEach>

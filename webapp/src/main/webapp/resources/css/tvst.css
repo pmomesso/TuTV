@@ -19181,7 +19181,7 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
  text-align:center;
  height:35px;
  line-height:37px;
- background-color:gold;
+ background-color: #44d9e6;
  font-size:17px;
  padding:0 25px;
  border:none;
@@ -29425,10 +29425,6 @@ section .title {
  margin:0;
  letter-spacing:1px
 }
-.left h2.title,
-.left section .title {
- padding:0 10px
-}
 h2.title i,
 section .title i {
  margin-right:10px
@@ -30391,11 +30387,10 @@ body.alt h2.title:first-child {
  right:-14px
 }
 #show-details.show .comments {
- padding:0 0 30px 10px;
- margin-top:30px
+ margin-top: 2rem;
 }
 #show-details #discussion {
- margin-top:50px
+ margin-top: 3.5rem;
 }
 #community-feed-container .filters .dropdown,
 #discussion .filters .dropdown,
