@@ -65,14 +65,29 @@ public class HelloWorldController {
 	@RequestMapping(value = "/serie", method = RequestMethod.GET)
 	public ModelAndView serie(@RequestParam("id") long id) {
 		final ModelAndView mav = new ModelAndView("serie");
-		mav.addObject("serie", seriesService.getSerieById(id, -1));
+		User u = userService.getLoggedUser();
+//		TODO agus tener el user global
+		mav.addObject("user", u);
+		mav.addObject("serie", seriesService.getSerieById(id, u.getId()));
 		return mav;
 	}
+
+	@RequestMapping(value = "/addSerie", method = RequestMethod.POST)
+    public ModelAndView addSerie(@RequestParam("serieId") long serieId, @RequestParam("userId") long userId) {
+//	    TODO pedro llamar a metodo de agregar serie a usuario
+	    return new ModelAndView("redirect:/serie?id=" + serieId);
+    }
+
+    @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
+    public ModelAndView viewEpisode(@RequestParam("serieId") long serieId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) {
+//	    TODO pedro llamar a metodo de ver episode
+        return new ModelAndView("redirect:/serie?id=" + serieId);
+    }
 
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public ModelAndView profile() {
 		final ModelAndView mav = new ModelAndView("profile");
-		// TODO tener el user global
+		// TODO agus tener el user global
 		mav.addObject("user", userService.getLoggedUser());
 		return mav;
 	}

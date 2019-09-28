@@ -73,7 +73,10 @@ body {
  position: absolute;
  font-size: 30px;
  right: 10%;
+ top: 0;
  color: gray;
+ background-color: inherit;
+ border: none;
 }
 .viewed {
  color: #44d9e6;

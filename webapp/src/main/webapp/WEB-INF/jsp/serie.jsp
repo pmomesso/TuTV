@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -39,7 +40,6 @@
     </div>
     <div class="page-center page-column ">
         <div class="page-center-inner">
-            <div class="alt-block"></div>
             <div class="main-block">
                 <div id="explore">
                     <section id="new-shows">
@@ -62,25 +62,22 @@
 <%--                                                <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star"></label>--%>
 <%--                                            </div>--%>
 <%--                                        </div>--%>
-                                        <button class="add-button">Add</button>
+                                        <form action="/addSerie?serieId=${serie.id}&userId=${user.id}" method="post">
+                                            <button class="add-button" type="submit">Add</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
                 </section>
                     <div class="main-block-container">
-                    <div id="show-details" class="show" itemscope="" itemtype="http://schema.org/TVSeries">
+                    <div id="show-details" class="show">
                         <div class="row show-nav">
                             <div class="col-lg-7">
                                 <div class="basic-infos">
-                                    <span>Friday at <time datetime="04:00">04:00</time></span>
-                                    <span class="separator">•</span>
                                     <span>${serie.network}</span>
                                     <span class="separator">•</span>
-                                    <span>
-            1 seasons          </span>
-                                    <span class="separator">•</span>
-                                    <span>Still Running</span>
+                                    <span>${fn:length(serie.seasons)} <spring:message code="serie.season"/><c:if test="${fn:length(serie.seasons) gt 1}">s</c:if></span>
                                 </div>
                                 <div class="overview">
                                     ${serie.seriesDescription}
@@ -95,7 +92,7 @@
                         <div id="content" class="show-main alt">
                             <div class="content-container">
                                 <div class="left">
-                                    <div class="container max-width-sm no-padding no-margin">
+                                    <div class="w-100 no-padding no-margin">
                                         <ul class="cd-accordion cd-accordion--animated">
                                             <c:forEach items="${serie.seasons}" var="season" varStatus="item">
                                                 <li class="cd-accordion__item cd-accordion__item--has-children">
@@ -105,22 +102,24 @@
                                                     <ul class="cd-accordion__sub cd-accordion__sub--l1">
                                                         <c:forEach items="${season.episodeList}" var="episode">
 <%--                                                            TODO tener el id del episodio en vez del primer episodeNumber--%>
-                                                            <li class="cd-accordion__item">
-                                                                <h3>${episode.episodeNumber} - ${episode.name}</h3>
 <%--                                                                TODO este a deberia llevar a un post de chequear elemento..--%>
-                                                                <a class="cd-accordion__label cd-accordion__label--icon-img" href="/episode?id=${episode.episodeNumber}">
-                                                                <c:if test="${not empty user}">
-                                                                    <c:choose>
-                                                                        <c:when test="${episode.viewed}">
-                                                                            <span style="font-family: FontAwesome; font-style: normal" class="check viewed">&#xf058</span>
-                                                                        </c:when>
-                                                                        <c:otherwise>
-                                                                            <span style="font-family: FontAwesome; font-style: normal" class="check">&#xf058</span>
-                                                                        </c:otherwise>
-                                                                    </c:choose>
-                                                                </c:if>
-                                                                </a>
-                                                            </li>
+                                                            <div class="cd-accordion__label cd-accordion__label--icon-img">
+                                                                <li class="cd-accordion__item">
+                                                                    <h3>${episode.episodeNumber} - ${episode.name}</h3>
+                                                                    <c:if test="${not empty user}">
+                                                                        <c:choose>
+                                                                            <c:when test="${episode.viewed}">
+                                                                                <span style="font-family: FontAwesome; font-style: normal" class="check viewed">&#xf058</span>
+                                                                            </c:when>
+                                                                            <c:otherwise>
+                                                                                <form action="/viewEpisode?episodeId=${episode.episodeNumber}&userId=${user.id}" method="post">
+                                                                                    <button type="submit" style="font-family: FontAwesome; font-style: normal" class="check">&#xf058</button>
+                                                                                </form>
+                                                                            </c:otherwise>
+                                                                        </c:choose>
+                                                                    </c:if>
+                                                                </li>
+                                                            </div>
                                                         </c:forEach>
                                                     </ul>
                                                 </li>
