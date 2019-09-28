@@ -5,7 +5,6 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.webapp.form.LoginForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -70,19 +69,18 @@ public class HelloWorldController {
 		return mav;
 	}
 
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public ModelAndView showLogin(@ModelAttribute("loginForm") final LoginForm form) {
-		return new ModelAndView("login");
+	@RequestMapping(value = "/profile", method = RequestMethod.GET)
+	public ModelAndView profile() {
+		final ModelAndView mav = new ModelAndView("profile");
+		// TODO tener el user global
+		mav.addObject("user", userService.getLoggedUser());
+		return mav;
 	}
 
-//	@RequestMapping(value = "/login", method = RequestMethod.POST)
-//	public ModelAndView login(@Valid @ModelAttribute("loginForm") final LoginForm form, final BindingResult errors) {
-//		if (errors.hasErrors()) {
-//			return showLogin(form);
-//		}
-//		// TODO loggear usuario
-//		return new ModelAndView("redirect:/");
-//	}
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public ModelAndView showLogin(@RequestParam(required = false) String error) {
+		return new ModelAndView("login");
+	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public ModelAndView showRegister(@ModelAttribute("registerForm") final UserForm form) {

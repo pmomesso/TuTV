@@ -225,9 +225,7 @@ img, video, svg {
 }
 
 [class*="grid-gap"] {
-    margin-bottom: 1em *-1;
     margin-bottom: calc(var(--grid-gap, 1em) * -1);
-    margin-right: 1em *-1;
     margin-right: calc(var(--grid-gap, 1em) * -1)
 }
 
@@ -1008,7 +1006,7 @@ img, video, svg {
 
 body {
     font-size: 1em;
-    font-size: var(--text-base-size, 1em);
+    font-size: var(--text-base-size);
     font-family: 'Jaldi', sans-serif;
     font-family: var(--font-primary, sans-serif);
     color: hsl(240, 4%, 20%);
@@ -1018,7 +1016,7 @@ body {
 
 .text-xxxl {
     font-size: 2.48832em;
-    font-size: var(--text-xxxl, 2.488em)
+    font-size: var(--text-xxxl)
 }
 
 .text-component {
@@ -1244,7 +1242,7 @@ body {
     text-decoration: none;
     line-height: 1;
     font-size: 1em;
-    font-size: var(--btn-font-size, 1em);
+    font-size: var(--btn-font-size);
     padding-top: 0.5em;
     padding-top: var(--btn-padding-y, 0.5em);
     padding-bottom: 0.5em;
@@ -1284,17 +1282,17 @@ body {
 
 .btn--sm {
     font-size: 0.8em;
-    font-size: var(--btn-font-size-sm, 0.8em)
+    font-size: var(--btn-font-size-sm)
 }
 
 .btn--md {
     font-size: 1.2em;
-    font-size: var(--btn-font-size-md, 1.2em)
+    font-size: var(--btn-font-size-md)
 }
 
 .btn--lg {
     font-size: 1.4em;
-    font-size: var(--btn-font-size-lg, 1.4em)
+    font-size: var(--btn-font-size-lg)
 }
 
 .btn--icon {
@@ -1347,7 +1345,7 @@ body {
     color: var(--color-contrast-higher, #1c1c21);
     line-height: 1.2;
     font-size: 1.2em;
-    font-size: var(--text-md, 1.2em);
+    font-size: var(--text-md);
     margin-bottom: 0.375em;
     margin-bottom: var(--space-xxs)
 }
@@ -1362,7 +1360,7 @@ body {
     color: hsl(0, 0%, 100%);
     color: var(--color-white, #fff);
     font-size: 0.83333em;
-    font-size: var(--text-sm, 0.833em);
+    font-size: var(--text-sm);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     padding: 0.5em;
@@ -3417,7 +3415,6 @@ mark {
     border-color: var(--color-primary);
     --color-shadow: hsla(220, 90%, 56%, 0.2);
     --color-shadow: hsla(var(--color-primary-h), var(--color-primary-s), var(--color-primary-l), 0.2);
-    box-shadow: undefined;
     box-shadow: 0 0 0 3px var(--color-shadow)
 }
 
@@ -3434,7 +3431,6 @@ mark {
 .form-control[aria-invalid="true"]:focus {
     --color-shadow: hsla(355, 90%, 61%, 0.2);
     --color-shadow: hsla(var(--color-error-h), var(--color-error-s), var(--color-error-l), 0.2);
-    box-shadow: undefined;
     box-shadow: 0 0 0 3px var(--color-shadow)
 }
 

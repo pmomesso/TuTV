@@ -9,26 +9,20 @@
         <section id="menu">
             <ul class="menu list-unstyled">
                 <li class="upcoming ">
-                    <a href="/" title="Upcoming">
+                    <a href="/upcoming" title="Upcoming">
                         <img class="logo logo_icon" src="<c:url value="/resources/img/upcoming.png"/>" alt="Upcoming">
                         <span><spring:message code="index.upcoming"/></span>
                     </a>
                 </li>
                 <li class="home ">
-                    <a href="/" title="Watchlist">
+                    <a href="/watchlist" title="Watchlist">
                         <img class="logo logo_icon" src="<c:url value="/resources/img/watchlist.png"/>" alt="Watchlist">
                         <span><spring:message code="index.watchlist"/></span>
                     </a>
                 </li>
-                <li class="profile ">
-                    <a href="/" title="Profile">
-                        <img class="logo logo_icon" src="<c:url value="/resources/img/profile.png"/>" alt="Profile">
-                        <span><spring:message code="index.profile"/></span>
-                    </a>
-                </li>
-                <li class="explore active">
+                <li class="explore">
                     <a href="/" title="Explore">
-                        <img class="logo logo_icon" src="<c:url value="/resources/img/explore_active.png"/>" alt="Explore">
+                        <img class="logo logo_icon" src="<c:url value="/resources/img/explore.png"/>" alt="Explore">
                         <span><spring:message code="index.explore"/></span>
                     </a>
                 </li>
@@ -37,23 +31,17 @@
         <section id="user-nav">
             <h1>agusosimani</h1>
             <ul class="menu list-unstyled">
-                <li class="account ">
-                    <a href="/" title="Settings">
-                        <img class="logo logo_icon" src="<c:url value="/resources/img/settings.png"/>" alt="Settings">
-                        <span><spring:message code="index.settings"/></span>
-                    </a>
-                </li>
-                <li class="help">
-                    <a href="/" class="help-btn" title="Help">
-                        <img class="logo logo_icon" src="<c:url value="/resources/img/help.png"/>" alt="Help">
-                        <span><spring:message code="index.help"/></span>
+                <li class="profile ">
+                    <a href="/profile" title="Profile">
+                        <img class="logo logo_icon" src="<c:url value="/resources/img/profile.png"/>" alt="Profile">
+                        <span><spring:message code="index.profile"/></span>
                     </a>
                 </li>
             </ul>
         </section>
         <section>
-            <a href="/" class="signout-link" title="Sign out">
-                <img class="logo logo_icon" src="<c:url value="/resources/img/sign_out.png"/>" alt="Sign out">
+            <a href="/logout" class="signout-link" title="<spring:message code="index.signout"/>">
+                <img class="logo logo_icon" src="<c:url value="/resources/img/sign_out.png"/>" alt="<spring:message code="index.signout"/>">
                 <span><spring:message code="index.signout"/></span>
             </a>
         </section>

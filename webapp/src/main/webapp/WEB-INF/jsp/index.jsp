@@ -12,7 +12,7 @@
     <meta name="MobileOptimized" content="1040">
     <meta http-equiv="content-language" content="en">
 
-    <meta name="title" content="TUTV - Watch and track TV shows online">
+    <meta name="title" content="TUTV">
     <title>TUTV - Watch and track TV shows online</title>
     <link rel="shortcut icon" type="image/x-icon" href="<c:url value="/resources/img/shortcuticon.png"/>">
 
@@ -23,6 +23,7 @@
     <script src="<c:url value="/resources/js/jquery.min.js"/>"></script>
     <script src="<c:url value="/resources/js/popper.min.js"/>"></script>
     <script src="<c:url value="/resources/js/bootstrap.js"/>"></script>
+    <script src="<c:url value="/resources/js/navigator.js"/>"></script>
   </head>
   <body id="container" class="home no-touch white   reduced-right ">
     <div class="body-inner">
@@ -56,6 +57,7 @@
                   <!-- Wrapper for carousel items -->
                   <div class="carousel-inner">
                     <c:forEach items="${newShows}" var="newShow" varStatus="status">
+                      <a href="<c:url value="/serie?id=${newShow.id}"/>">
                       <c:choose>
                         <c:when test="${status.index == 0}">
                           <div class="carousel-item active">
@@ -76,6 +78,7 @@
                           </div>
                         </c:otherwise>
                       </c:choose>
+                      </a>
                     </c:forEach>
                   </div>
                   <!-- Carousel controls -->
@@ -89,10 +92,11 @@
               </section>
               <c:forEach items="${seriesMap}" var="entry">
                 <section id="${entry.key}">
-                  <a href="<c:url value="/serie?genre=${entry.key.id}"/>">
+<%--                  TODO tenemos pagina genre?--%>
+<%--                  <a href="<c:url value="/serie?genre=${entry.key.id}"/>">--%>
                     <h2 class="black-font"><c:out value="${entry.key.name}"/></h2>
-                    <span class="show-all"><spring:message code="index.seeAll"/></span>
-                  </a>
+<%--                    <span class="show-all"><spring:message code="index.seeAll"/></span>--%>
+<%--                  </a>--%>
                   <ul class="posters-list shows-list explore-list list-unstyled list-inline">
                     <c:forEach items="${entry.value}" var="serie">
                       <li id="${serie.id}" class=" ">

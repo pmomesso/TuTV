@@ -28,6 +28,7 @@
     <script src="<c:url value="/resources/js/bootstrap.js"/>"></script>
     <script src="<c:url value="/resources/js/util.js"/>"></script>
     <script src="<c:url value="/resources/js/main.js"/>"></script>
+    <script src="<c:url value="/resources/js/navigator.js"/>"></script>
 </head>
 <body id="container" class="home no-touch white   reduced-right ">
 <div class="body-inner">
@@ -104,7 +105,22 @@
                                                     <ul class="cd-accordion__sub cd-accordion__sub--l1">
                                                         <c:forEach items="${season.episodeList}" var="episode">
 <%--                                                            TODO tener el id del episodio en vez del primer episodeNumber--%>
-                                                            <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="/episode?id=${episode.episodeNumber}"><h3>${episode.episodeNumber} - ${episode.name}</h3></a></li>
+                                                            <li class="cd-accordion__item">
+                                                                <h3>${episode.episodeNumber} - ${episode.name}</h3>
+<%--                                                                TODO este a deberia llevar a un post de chequear elemento..--%>
+                                                                <a class="cd-accordion__label cd-accordion__label--icon-img" href="/episode?id=${episode.episodeNumber}">
+                                                                <c:if test="${not empty user}">
+                                                                    <c:choose>
+                                                                        <c:when test="${episode.viewed}">
+                                                                            <span style="font-family: FontAwesome; font-style: normal" class="check viewed">&#xf058</span>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <span style="font-family: FontAwesome; font-style: normal" class="check">&#xf058</span>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </c:if>
+                                                                </a>
+                                                            </li>
                                                         </c:forEach>
                                                     </ul>
                                                 </li>

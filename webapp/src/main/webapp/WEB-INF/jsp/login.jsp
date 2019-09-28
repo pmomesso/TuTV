@@ -24,7 +24,7 @@
 <div class="full-overlay">
     <div class="container-center white-background">
         <h2><spring:message code="login.title"/></h2>
-        <form:form modelAttribute="loginForm" action="/login" method="post" enctype="application/x-www-form-urlencoded">
+        <form:form action="/login" method="post" enctype="application/x-www-form-urlencoded">
             <div>
                 <form:label path="username"><spring:message code="login.username"/></form:label>
                 <form:input path="username" type="text"/>
@@ -45,6 +45,10 @@
                 <input type="submit" value="<spring:message code="login.submit"/>"/>
             </div>
         </form:form>
+        <div>
+            <span><spring:message code="login.noaccount"/></span>
+            <a href="<c:url value="/register"/>"><spring:message code="login.createaccount"/></a>
+        </div>
     </div>
 </div>
 </body>
