@@ -149,7 +149,7 @@
                                                                    method="post"
                                                                    enctype="application/x-www-form-urlencoded">
                                                             <div class="top">
-                                                                <form:errors path="description" element="p" cssClass="error text-left"/>
+                                                                <form:errors path="body" element="p" cssClass="error text-left"/>
                                                                 <div class="holder mode-comment mode">
                                                                     <div class="comment-mode mode">
                                                                         <div class="textarea-wrapper">
@@ -157,7 +157,7 @@
                                                                                 <spring:message code="series.enterComment" var="placeholder"/>
                                                                                 <form:textarea
                                                                                         placeholder="${placeholder}"
-                                                                                        path="description"
+                                                                                        path="body"
                                                                                         style="overflow: hidden; height: 40px;"/>
                                                                                 <form:input type="hidden" path="userId"
                                                                                             value="${user.id}"/>
@@ -181,110 +181,78 @@
                                                         </form:form>
                                                     </div>
                                                     <div class="comments-list">
-                                                        <div class="comment clearfix extended">
-                                                            <article class="post">
-                                                                <div class="top">
-                                                                    <div class="remove-zone">
-                                                                        <a class="report-btn popover-link" href="#"
-                                                                           data-toggle="tooltip" data-placement="right"
-                                                                           title="" rel="popover"
-                                                                           data-original-title="Report"><i
-                                                                                class="icon-tvst-flag"></i></a>
-                                                                    </div>
-                                                                    <div class="holder">
-                                                                        <div class="author-label mb-3">
-                                                                            <span>EDUarduuh™</span>
-                                                                            <div class="float-right mr-5">
-                                                                                <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
-                                                                                <span>30</span>
+                                                        <c:forEach var="post" items="${series.postList}">
+                                                            <div class="comment clearfix extended">
+                                                                <article class="post">
+                                                                    <div class="top">
+<%--                                                                        TODO remove for admin--%>
+<%--                                                                        <div class="remove-zone">--%>
+<%--                                                                            <a class="report-btn popover-link" href="#"--%>
+<%--                                                                               data-toggle="tooltip" data-placement="right"--%>
+<%--                                                                               title="" rel="popover"--%>
+<%--                                                                               data-original-title="Report"><i--%>
+<%--                                                                                    class="icon-tvst-flag"></i></a>--%>
+<%--                                                                        </div>--%>
+                                                                        <div class="holder">
+                                                                            <div class="author-label mb-3">
+                                                                                <span>${post.user.userName}</span>
+                                                                                <div class="float-right mr-5">
+                                                                                    <c:choose>
+                                                                                        <c:when test="${post.liked}">
+                                                                                            <span class="post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
+                                                                                        </c:when>
+                                                                                        <c:otherwise>
+                                                                                            <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
+                                                                                        </c:otherwise>
+                                                                                    </c:choose>
+                                                                                    <span>${post.points}</span>
+                                                                                </div>
                                                                             </div>
+                                                                            <blockquote class="original">
+                                                                                <p>${post.body}</p>
+                                                                            </blockquote>
                                                                         </div>
-                                                                        <blockquote class="original">
-                                                                            <p>Really Fantastic Show!
-                                                                                <br>I believe that if humans get
-                                                                                superpower
-                                                                                they will definitely kill, not save
-                                                                                people.
-                                                                            </p>
-
-                                                                            <p>(Already renewed for season 2 😃)</p>
-                                                                        </blockquote>
-                                                                    </div>
-                                                                </div>
-                                                            </article>
-                                                            <div class="replies sub-comment">
-                                                                <article class="reply clearfix initialized">
-                                                                    <div class="holder">
-                                                                        <div class="author-label">
-                                                                            <span>Sassy Jacksun</span>
-                                                                            <div class="float-right">
-                                                                                <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
-                                                                                <span>30</span>
-                                                                            </div>
-                                                                        </div>
-                                                                        <blockquote>
-                                                                            <p>Season 2: Yasss!! 😁</p>
-                                                                        </blockquote>
                                                                     </div>
                                                                 </article>
-                                                                <article class="reply clearfix initialized">
-                                                                    <div class="holder">
-                                                                        <div class="author-label">
-                                                                            <span>BurningFirebird</span>
-                                                                            <div class="float-right">
-                                                                                <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
-                                                                                <span>30</span>
+                                                                <div class="replies sub-comment">
+                                                                    <c:forEach var="comment" items="${post.comments}">
+                                                                        <article class="reply clearfix initialized">
+                                                                            <div class="holder">
+                                                                                <div class="author-label">
+                                                                                    <span>${comment.user.userName}</span>
+                                                                                    <div class="float-right">
+                                                                                        <c:choose>
+                                                                                            <c:when test="${comment.liked}">
+                                                                                                <span class="post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
+                                                                                            </c:when>
+                                                                                            <c:otherwise>
+                                                                                                <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
+                                                                                            </c:otherwise>
+                                                                                        </c:choose>
+                                                                                        <span>${comment.points}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <blockquote>
+                                                                                    <p>${comment.body}</p>
+                                                                                </blockquote>
                                                                             </div>
-                                                                        </div>
-                                                                        <blockquote>
-                                                                            <p>Exactly!</p>
-                                                                        </blockquote>
-                                                                    </div>
-                                                                </article>
-                                                                <article class="reply clearfix initialized">
-                                                                    <div class="holder">
-                                                                        <div class="author-label">
-                                                                            <span>BléuBlane🇫🇷</span>
-                                                                            <div class="float-right">
-                                                                                <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
-                                                                                <span>30</span>
-                                                                            </div>
-                                                                        </div>
-                                                                        <blockquote>
-                                                                            <p>So true...I'm waiting to see how they'll
-                                                                                take
-                                                                                Homekander dwn</p>
-                                                                        </blockquote>
-                                                                    </div>
-                                                                </article>
-                                                                <article class="reply clearfix initialized">
-                                                                    <div class="holder">
-                                                                        <div class="author-label">
-                                                                            <span>Tjdor</span>
-                                                                            <div class="float-right">
-                                                                                <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
-                                                                                <span>30</span>
-                                                                            </div>
-                                                                        </div>
-                                                                        <blockquote>
-                                                                            <p>Increíble!!!!</p>
-                                                                        </blockquote>
-                                                                    </div>
-                                                                </article>
-                                                                <form class="reply clearfix">
-                                                                    <div class="holder">
-                                                                        <div class="textarea-wrapper">
-                                                                            <div class="mentions-input-box">
+                                                                        </article>
+                                                                    </c:forEach>
+                                                                    <form class="reply clearfix">
+                                                                        <div class="holder">
+                                                                            <div class="textarea-wrapper">
+                                                                                <div class="mentions-input-box">
                                                                                 <textarea rows="1"
                                                                                           placeholder="Enter your reply here"
                                                                                           style="overflow: hidden; height: 50px;"></textarea>
+                                                                                </div>
                                                                             </div>
+                                                                            <div class="clearfix"></div>
                                                                         </div>
-                                                                        <div class="clearfix"></div>
-                                                                    </div>
-                                                                </form>
+                                                                    </form>
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        </c:forEach>
                                                     </div>
                                                 </div>
                                             </div>

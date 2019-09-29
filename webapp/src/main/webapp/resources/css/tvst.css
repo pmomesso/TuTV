@@ -81,6 +81,9 @@ body {
 .viewed {
  color: #44d9e6;
 }
+.post-liked {
+ color: firebrick;
+}
 .carousel{
  background: #2f4357;
  margin-top: 20px;

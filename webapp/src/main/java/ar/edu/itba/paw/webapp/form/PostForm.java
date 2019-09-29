@@ -4,12 +4,12 @@ import javax.validation.constraints.Size;
 
 public class PostForm {
     @Size(min = 6, max = 255)
-    private String description;
+    private String body;
     private long userId;
     private long seriesId;
 
-    public String getDescription() {
-        return description;
+    public String getBody() {
+        return body;
     }
 
     public long getUserId() {
@@ -20,8 +20,8 @@ public class PostForm {
         return seriesId;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setBody(String body) {
+        this.body = body;
     }
 
     public void setUserId(long userId) {

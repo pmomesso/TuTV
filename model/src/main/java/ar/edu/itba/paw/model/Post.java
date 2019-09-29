@@ -7,7 +7,7 @@ public class Post {
     private long postId;
     private String body;
     private List<Comment> comments;
-    private User userPoster;
+    private User user;
     private long userId;
     private int points;
     private boolean liked = false;
@@ -52,12 +52,12 @@ public class Post {
         this.comments = comments;
     }
 
-    public User getUserPoster() {
-        return userPoster;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserPoster(User userPoster) {
-        this.userPoster = userPoster;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setUserId(long userId) {
