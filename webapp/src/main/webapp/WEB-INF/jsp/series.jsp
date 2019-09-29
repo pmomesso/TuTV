@@ -243,7 +243,7 @@
                                                                         <div class="holder">
                                                                             <div class="textarea-wrapper">
                                                                                 <div class="mentions-input-box">
-<%--                                                                                    TODO necesito el postId para hacer el CommentForm--%>
+<%--                                                                                    TODO pedro necesito el id en Post para hacer el CommentForm--%>
                                                                                 <textarea rows="1"
                                                                                           placeholder="Enter your reply here"
                                                                                           style="overflow: hidden; height: 50px;"></textarea>
