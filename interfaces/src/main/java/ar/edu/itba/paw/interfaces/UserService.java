@@ -7,7 +7,7 @@ public interface UserService {
 
 	User findByMail(String mail);
 
-	long createUser(String userName, String password, String mail);
+	User createUser(String userName, String password, String mail);
 
 	User getLoggedUser();
 }

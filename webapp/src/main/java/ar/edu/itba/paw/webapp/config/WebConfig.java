@@ -12,6 +12,8 @@ import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -22,6 +24,7 @@ import org.springframework.web.servlet.view.JstlView;
 import javax.sql.DataSource;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
 @EnableWebMvc
 @ComponentScan({"ar.edu.itba.paw.service", "ar.edu.itba.paw.persistence", "ar.edu.itba.paw.webapp.controller"})
@@ -75,5 +78,23 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
 		messageSource.setCacheSeconds(5);
 		return messageSource;
+	}
+
+	@Bean
+	public JavaMailSender javaMailSender() {
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		mailSender.setHost("smtp.gmail.com");
+		mailSender.setPort(587);
+		mailSender.setUsername("noreplytutv@gmail.com");
+		mailSender.setPassword("asdasd1111!");
+
+		Properties mailProperties = mailSender.getJavaMailProperties();
+
+		mailProperties.put("mail.transport.protocol", "smtp");
+		mailProperties.put("mail.smtp.starttls.enable", true);
+		mailProperties.put("mail.smtp.auth", true);
+		mailProperties.put("mail.smtp.debug", true);
+
+		return mailSender;
 	}
 }

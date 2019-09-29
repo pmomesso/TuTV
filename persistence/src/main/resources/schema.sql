@@ -3,9 +3,10 @@ create table if not exists users
     id serial not null
         constraint users_pkey
             primary key,
-    username varchar(32),
-    password varchar(32),
-    mail varchar(32)
+    username varchar(50),
+    password varchar(255),
+    mail varchar(32),
+    confirmation_key varchar(60)
 );
 
 alter table users owner to root;

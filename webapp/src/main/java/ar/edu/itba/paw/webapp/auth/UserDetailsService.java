@@ -26,6 +26,8 @@ public class UserDetailsService implements org.springframework.security.core.use
         final Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-        return new UserDetails(user.getMailAddress(), user.getPassword(), authorities);
+        boolean isUserEnabled = (user.getConfirmationKey() == null || user.getConfirmationKey().isEmpty()); //TODO AGREGAR SI ESTA BANEADO
+
+        return new UserDetails(user.getMailAddress(), user.getPassword(), isUserEnabled, authorities);
     }
 }

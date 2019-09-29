@@ -40,6 +40,11 @@
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
     </dependency>
+      <dependency>
+          <groupId>com.sun.mail</groupId>
+          <artifactId>javax.mail</artifactId>
+          <version>1.6.0</version>
+      </dependency>
   </dependencies>
 
   <build>

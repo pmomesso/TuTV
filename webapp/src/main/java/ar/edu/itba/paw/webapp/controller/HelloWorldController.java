@@ -8,6 +8,7 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.webapp.form.PostForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -118,6 +119,8 @@ public class HelloWorldController {
 		if (errors.hasErrors()) {
 			return showRegister(form);
 		}
+
+		userService.createUser(form.getUsername(), form.getPassword(), form.getMail());
 		// TODO create user
 //		final User u = us.create(form.getUsername());
 //		return new ModelAndView("redirect:/user/" + u.getId());

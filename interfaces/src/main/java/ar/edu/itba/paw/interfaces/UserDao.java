@@ -10,5 +10,9 @@ public interface UserDao {
 
     User getUserByMail(String mail);
 
-    long createUser(String userName, String password, String mail);
+    User createUser(String userName, String password, String mail);
+
+    boolean checkIfValidationKeyExists(String key);
+
+    void setValidationKey(User u, String key);
 }

@@ -38,9 +38,9 @@ public class UserDaoImplTest {
     @Test
     public void testCreate(){
         //Ejercitar
-        final long id = userDao.createUser(USERNAME, PASSWORD, MAIL);
+        final User u = userDao.createUser(USERNAME, PASSWORD, MAIL);
         //Asserts
-        Assert.assertTrue(id >= 0);
+        Assert.assertTrue(u.getId() > 0);
     }
     @Test
     public void testGetUser(){
