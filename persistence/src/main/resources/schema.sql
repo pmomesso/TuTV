@@ -244,3 +244,27 @@ create table if not exists hasviewedepisode
 
 alter table hasviewedepisode owner to root;
 
+create table if not exists haslikedseriesreview
+(
+    seriesreview integer
+        constraint haslikedseriesreview_seriesreview_id_fk
+            references seriesreview,
+    userid integer
+        constraint haslikedseriesreview_users_id_fk
+            references users
+);
+
+alter table haslikedseriesreview owner to root;
+
+create table if not exists haslikedseriesreviewcomment
+(
+    seriesreviewcomment integer
+        constraint haslikedseriesreviewcomment_seriesreviewcomments_id_fk
+            references seriesreviewcomments,
+    userid integer
+        constraint haslikedseriesreviewcomment_users_id_fk
+            references users
+);
+
+alter table haslikedseriesreviewcomment owner to root;
+
