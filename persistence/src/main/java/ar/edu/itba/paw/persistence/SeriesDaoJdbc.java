@@ -367,7 +367,7 @@ public class SeriesDaoJdbc implements SeriesDao {
                         "WHERE NOT EXISTS(SELECT * FROM hasviewedepisode WHERE hasviewedepisode.episodeid = episode.id AND hasviewedepisode.userid = 1)\n" +
                         "AND NOT EXISTS(SELECT e1.id FROM episode AS e1 WHERE NOT EXISTS(SELECT hasviewedepisode.episodeid\n" +
                         "FROM hasviewedepisode\n" +
-                        "WHERE hasviewedepisode.episodeid = e1.id AND hasviewedepisode.userid = 1) AND e1.seriesid = episode.seriesid AND e1.lastAired < episode.lastAired)\n" +
+                        "WHERE hasviewedepisode.episodeid = e1.id AND hasviewedepisode.userid = 1) AND e1.seriesid = episode.seriesid AND e1.aired < episode.aired)\n" +
                         "AND episode.seriesid IN (SELECT follows.seriesid FROM follows WHERE follows.userid = 1)",
                 new Object[]{userId, userId}, (resultSet, i) -> {
                     Series series = new Series();

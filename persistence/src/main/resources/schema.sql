@@ -139,7 +139,7 @@ create table if not exists seriesreview
     id serial not null
         constraint seriesreview_pk
             primary key,
-    numlikes serial not null
+    numlikes integer default 0 not null
 );
 
 alter table seriesreview owner to root;
@@ -171,7 +171,8 @@ create table if not exists episode
     tvdbid integer not null,
     seasonid integer not null
         constraint episode_season_seasonid_fk
-            references season
+            references season,
+    aired date
 );
 
 alter table episode owner to root;
