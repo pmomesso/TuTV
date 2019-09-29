@@ -1,171 +1,213 @@
 create table if not exists users
 (
-	id identity not null
-		constraint users_pkey
-			primary key,
-	username varchar(32),
-	password varchar(32),
-	mail varchar(32)
+    id identity not null
+        constraint users_pkey
+            primary key,
+    username varchar(50),
+    password varchar(255),
+    mail varchar(32),
+    confirmation_key varchar(60)
 );
 
 create table if not exists genres
 (
-	id identity not null
-		constraint genres_pk
-			primary key,
-	genre varchar(255),
-	constraint genres_id_genre_key
-		unique (id, genre)
+    id identity not null
+        constraint genres_pk
+            primary key,
+    genre varchar(255),
+    constraint genres_id_genre_key
+        unique (id, genre)
 );
 
-create table if not exists seriesGenre
+create table if not exists seriesgenre
 (
-	genreid integer
-		constraint genreid
-			references genres
+    genreid integer
+        constraint genreid
+            references genres
 );
 
 create table if not exists actor
 (
-	id identity not null
-		constraint actor_pk
-			primary key,
-	name varchar(255),
-	created date,
-	updated varchar(32),
-	status varchar(32)
+    id identity not null
+        constraint actor_pk
+            primary key,
+    name varchar(255),
+    created date,
+    updated varchar(32),
+    status varchar(32)
 );
 
-create table if not exists commentEpisode
+create table if not exists episodereview
 (
-	userid integer
-		constraint commentepisode_users_id_fk
-			references users,
-	body varchar(256),
-	episodeid integer,
-	parent integer,
-	points integer,
-	id identity not null
-		constraint commentepisode_pk
-			primary key
-		constraint commentepisode_commentepisode_id_fk
-			references commentEpisode
+    userid integer
+        constraint commentepisode_users_id_fk
+            references users,
+    body varchar(256),
+    episodeid integer,
+    numlikes integer,
+    id identity not null
+        constraint commentepisode_pk
+            primary key
 );
 
 create table if not exists network
 (
-	networkid identity not null
-		constraint network_pk
-			primary key,
-	name varchar(255)
+    networkid identity not null
+        constraint network_pk
+            primary key,
+    name varchar(255)
 );
 
 create table if not exists series
 (
-	id identity not null
-		constraint series_pkey
-			primary key,
-	tvDbId integer,
-	name varchar(255),
-	description varchar(512),
-	userRating double precision,
-	status varchar(16),
-	runtime integer,
-	networkId integer
-		constraint series_network_networkid_fk
-			references network,
-	firstaired date,
-	id_imdb varchar(64),
-	added date,
-	updated date,
-	posterurl varchar(256),
-	followers integer default 0 not null,
-	bannerurl varchar(256)
+    id identity not null
+        constraint series_pkey
+            primary key,
+    tvdbid integer,
+    name varchar(255),
+    description varchar(255),
+    userrating double precision,
+    status varchar(16),
+    runtime integer,
+    networkid integer
+        constraint series_network_networkid_fk
+            references network,
+    firstaired date,
+    id_imdb varchar(64),
+    added date,
+    updated date,
+    posterurl varchar(256),
+    followers integer default 0 not null,
+    bannerurl varchar(256)
 );
 
-create table if not exists seriesAiring
+create table if not exists seriesairing
 (
-	seriesid integer not null
-		constraint seriesid
-			references series,
-	dayofweek integer,
-	time time,
-	country varchar(255)
+    seriesid integer not null
+        constraint seriesid
+            references series,
+    dayofweek integer,
+    time time,
+    country varchar(255)
 );
 
-create table if not exists actorRoles
+create table if not exists actorroles
 (
     id identity not null
-	    primary key,
-	seriesrole varchar(255),
-	actorid integer
-		constraint actor
-			references actor,
-	tvDbId integer,
-	seriesid integer
-		constraint seriesid_constraint
-			references series,
-	created date,
-	updated date
+        constraint actorroles_pkey
+            primary key,
+    seriesrole varchar(255),
+    actorid integer
+        constraint actor
+            references actor,
+    tvdbid integer,
+    seriesid integer
+        constraint seriesid_constraint
+            references series,
+    created date,
+    updated date
 );
 
-create table if not exists seriesReview
+create table if not exists seriesreview
 (
-	userid integer
-		constraint seriesreview_users_id_fk
-			references users,
-	language varchar(255),
-	body varchar(256),
-	seriesid integer
-		constraint seriesreview_series_id_fk
-			references series,
-	points integer,
-	new_column integer
+    userid integer
+        constraint seriesreview_users_id_fk
+            references users,
+    language varchar(255),
+    body varchar(256),
+    seriesid integer
+        constraint seriesreview_series_id_fk
+            references series,
+    id identity not null
+        constraint seriesreview_pk
+            primary key,
+    numlikes integer not null
 );
 
 create table if not exists season
 (
-	seasonid identity not null
-		constraint season_pk
-			primary key,
-	seriesid integer not null
-		constraint season_series_id_fk
-			references series,
-	seasonNumber integer not null
+    seasonid identity not null
+        constraint season_pk
+            primary key,
+    seriesid integer not null
+        constraint season_series_id_fk
+            references series,
+    seasonnumber integer not null
 );
 
 create table if not exists episode
 (
     id identity not null
-		primary key,
-	name varchar(255),
-	overview varchar(512),
-	seriesid integer
-		constraint episode_series_id_fk
-			references series,
-	numepisode integer not null,
-	tvdbid integer not null,
-	seasonid integer not null
-		constraint episode_season_seasonid_fk
-			references season
+        constraint episode_pkey
+            primary key,
+    name varchar(255),
+    overview varchar(255),
+    seriesid integer
+        constraint episode_series_id_fk
+            references series,
+    numepisode integer not null,
+    tvdbid integer not null,
+    seasonid integer not null
+        constraint episode_season_seasonid_fk
+            references season
 );
 
 create table if not exists follows
 (
-	userid integer not null
-		constraint follows_users_id_fk
-			references users,
-	seriesid integer not null
-		constraint follows_series_id_fk
-			references series
+    userid integer not null
+        constraint follows_users_id_fk
+            references users,
+    seriesid integer not null
+        constraint follows_series_id_fk
+            references series
 );
 
 create table if not exists hasgenre
 (
-	seriesid integer
-		constraint hasgenre_series_id_fk
-			references series,
-	genreid integer
-		constraint hasgenre_genres_id_fk
-			references genres
+    seriesid integer
+        constraint hasgenre_series_id_fk
+            references series,
+    genreid integer
+        constraint hasgenre_genres_id_fk
+            references genres
 );
+
+create table if not exists seriesreviewcomments
+(
+    id identity not null
+        constraint seriesreviewcomments_pk
+            primary key,
+    body varchar(512),
+    userid integer
+        constraint seriesreviewcomments_users_id_fk
+            references users,
+    postid integer
+        constraint seriesreviewcomments_seriesreview_id_fk
+            references seriesreview,
+    numlikes integer default 0
+);
+
+create table if not exists episodereviewcomment
+(
+    id identity not null
+        constraint episodereviewcomment_pk
+            primary key,
+    body varchar(512),
+    numlikes integer default 0,
+    episodereview integer
+        constraint episodereviewcomment_episodereview_id_fk
+            references episodereview
+);
+
+create table if not exists hasviewedepisode
+(
+    userid integer
+        constraint hasviewedepisode_users_id_fk
+            references users,
+    episodeid integer
+        constraint hasviewedepisode_episode_id_fk
+            references episode
+);
+
+
+
