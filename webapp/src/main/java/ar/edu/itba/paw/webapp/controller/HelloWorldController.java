@@ -92,7 +92,6 @@ public class HelloWorldController {
 		}
 //		DENTRO DE FORM HAY: form.getDescription() form.getSeriesId() form.getUserId()
 //		TODO pedro llamar a metodo que postea en una serie
-//		TODO devolver lo necesario para que aparezca el post
 		return new ModelAndView("redirect:/series?id=" + form.getSeriesId());
 	}
 

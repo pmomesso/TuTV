@@ -124,12 +124,18 @@ body {
     right: 5px;
 }
 .full-overlay {
- background-color: rgba(0, 0, 0, 0.7) !important;
- background-image: url("../img/background.jpg");
- /*filter: blur(8px);*/
- /*-webkit-filter: blur(8px);*/
- background-blend-mode: color;
- background-size: cover;
+ background: url("../img/background.jpg");
+ -webkit-filter: blur(6px);
+ -moz-filter: blur(6px);
+ -o-filter: blur(6px);
+ -ms-filter: blur(6px);
+ filter: blur(6px);
+ position: fixed;
+ width: 100%;
+ height: 100%;
+ top: 0;
+ left: 0;
+ z-index: -1;
 }
 .container-center {
  position: absolute;
