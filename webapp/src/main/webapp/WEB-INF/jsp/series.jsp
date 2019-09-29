@@ -55,6 +55,7 @@
                                             <span class="star"></span>
                                             <h2>${series.userRating}/5</h2>
                                         </div>
+                                        <%-- TODO rate if user logged--%>
                                         <%--                                        <div class="container h-20">--%>
                                         <%--                                            <div class="starrating risingstar d-flex justify-content-center flex-row-reverse">--%>
                                         <%--                                                <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 star"></label>--%>
@@ -185,7 +186,7 @@
                                                             <div class="comment clearfix extended">
                                                                 <article class="post">
                                                                     <div class="top">
-<%--                                                                        TODO remove for admin--%>
+<%--                                                                        TODO remove comment if admin--%>
 <%--                                                                        <div class="remove-zone">--%>
 <%--                                                                            <a class="report-btn popover-link" href="#"--%>
 <%--                                                                               data-toggle="tooltip" data-placement="right"--%>
@@ -242,6 +243,7 @@
                                                                         <div class="holder">
                                                                             <div class="textarea-wrapper">
                                                                                 <div class="mentions-input-box">
+<%--                                                                                    TODO necesito el postId para hacer el CommentForm--%>
                                                                                 <textarea rows="1"
                                                                                           placeholder="Enter your reply here"
                                                                                           style="overflow: hidden; height: 50px;"></textarea>
