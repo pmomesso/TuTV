@@ -5,9 +5,8 @@ import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpSession;
 
 // atributos que quiero entre todos los controllers.. que se agregue a cualquier model and view ese atributo
 
@@ -17,18 +16,14 @@ public class ControllerAdvice {
     @Autowired
     private UserService userService;
 
-//    NO MOSTRAR STACK TRACE AL USUARIO
-//    @ExceptionHandler
-//    public ModelAndView internalError() {
-//        // TODO log it
-//        return new ModelAndView("error");
-//    }
-
-//    @ExceptionHandler(UserNotFoundException.class)
-//    public ModelAndView userNotFound() {
-//        // TODO log it
-//        return new ModelAndView("missing-user");
-//    }
+    //Handler para excepcion generica.
+    @ExceptionHandler(Exception.class)
+    public final ModelAndView globalExceptionHandler(Exception ex, WebRequest request) {
+        final ModelAndView mav = new ModelAndView("error");
+        mav.addObject("status","error.500status");
+        mav.addObject("body","error.500body");
+        return mav;
+    }
 
     @ModelAttribute("user")
     public User loggedUser() {
