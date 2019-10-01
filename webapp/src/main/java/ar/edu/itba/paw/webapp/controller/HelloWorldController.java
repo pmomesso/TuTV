@@ -5,10 +5,10 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.webapp.form.CommentForm;
 import ar.edu.itba.paw.webapp.form.PostForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -65,11 +65,9 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/series", method = RequestMethod.GET)
-	public ModelAndView series(@ModelAttribute("postForm") final PostForm form, @RequestParam("id") long id) {
+	public ModelAndView series(@ModelAttribute("postForm") final PostForm postForm, @ModelAttribute("commentForm") final CommentForm commentForm, @RequestParam("id") long id) {
 		final ModelAndView mav = new ModelAndView("series");
 		User u = userService.getLoggedUser();
-//		TODO agus tener el user global
-		mav.addObject("user", u);
 		mav.addObject("series", seriesService.getSerieById(id, u.getId()));
 		return mav;
 	}
@@ -89,19 +87,32 @@ public class HelloWorldController {
     @RequestMapping(value = "/post", method = RequestMethod.POST)
 	public ModelAndView post(@Valid @ModelAttribute("postForm") final PostForm form, final BindingResult errors) {
 		if (errors.hasErrors()) {
-			return series(form, form.getSeriesId());
+			return series(form, new CommentForm(), form.getSeriesId());
 		}
 //		DENTRO DE FORM HAY: form.getDescription() form.getSeriesId() form.getUserId()
 //		TODO pedro llamar a metodo que postea en una serie
 		return new ModelAndView("redirect:/series?id=" + form.getSeriesId());
 	}
 
+	@RequestMapping(value = "/likePost", method = RequestMethod.POST)
+	public ModelAndView likePost(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId) {
+		// TODO pedro llamar a metodo que likea ese post
+		return new ModelAndView("redirect:/series?id=" + seriesId);
+	}
+
+	@RequestMapping(value = "/comment", method = RequestMethod.POST)
+	public ModelAndView comment(@Valid @ModelAttribute("commentForm") final CommentForm form, final BindingResult errors) {
+		if (errors.hasErrors()) {
+			return series(new PostForm(), form, form.getCommentSeriesId());
+		}
+//		DENTRO DE COMMENT FORM HAY: getDescription() getSeriesId() getUserId() getUserId()
+//		TODO pedro llamar a metodo que comenta un post de una serie
+		return new ModelAndView("redirect:/series?id=" + form.getCommentSeriesId());
+	}
+
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public ModelAndView profile() {
-		final ModelAndView mav = new ModelAndView("profile");
-		// TODO agus tener el user global
-		mav.addObject("user", userService.getLoggedUser());
-		return mav;
+		return new ModelAndView("profile");
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)

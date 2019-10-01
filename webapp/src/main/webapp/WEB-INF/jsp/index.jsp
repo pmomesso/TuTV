@@ -103,7 +103,7 @@
                         <a href="<c:url value="/series?id=${series.id}"/>">
                           <div class="image-crop">
                             <img src="${series.posterUrl}" alt="${series.name}">
-                            <div class="overlay"><span class="zoom-btn overlay-btn"/></div>
+                            <div class="overlay"><span class="zoom-btn overlay-btn"></span></div>
                           </div>
                           <div class="show-details poster-details">
                             <h2>${series.name}</h2>

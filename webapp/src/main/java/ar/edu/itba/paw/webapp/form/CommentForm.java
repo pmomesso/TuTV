@@ -4,32 +4,40 @@ import javax.validation.constraints.Size;
 
 public class CommentForm {
     @Size(min = 6, max = 255)
-    private String body;
-    private long userId;
-    private long seriesId;
-    private long postId;
+    private String commentBody;
+    private long commentUserId;
+    private long commentSeriesId;
+    private long commentPostId;
 
-    public String getBody() {
-        return body;
+    public String getCommentBody() {
+        return commentBody;
     }
 
-    public long getUserId() {
-        return userId;
+    public long getCommentUserId() {
+        return commentUserId;
     }
 
-    public long getSeriesId() {
-        return seriesId;
+    public long getCommentSeriesId() {
+        return commentSeriesId;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public long getCommentPostId() {
+        return commentPostId;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setCommentBody(String commentBody) {
+        this.commentBody = commentBody;
     }
 
-    public void setSeriesId(long seriesId) {
-        this.seriesId = seriesId;
+    public void setCommentUserId(long commentUserId) {
+        this.commentUserId = commentUserId;
+    }
+
+    public void setCommentSeriesId(long commentSeriesId) {
+        this.commentSeriesId = commentSeriesId;
+    }
+
+    public void setCommentPostId(long commentPostId) {
+        this.commentPostId = commentPostId;
     }
 }

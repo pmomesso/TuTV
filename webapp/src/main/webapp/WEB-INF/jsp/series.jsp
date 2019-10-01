@@ -200,13 +200,18 @@
                                                                                 <div class="float-right mr-5">
                                                                                     <c:choose>
                                                                                         <c:when test="${post.liked}">
+<%--                                                                                            TODO hacemos un unlike?--%>
                                                                                             <span class="post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
+                                                                                            <span>${post.points}</span>
                                                                                         </c:when>
                                                                                         <c:otherwise>
-                                                                                            <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
+                                                                                            <form action="<c:url value="/likePost?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}"/>"
+                                                                                                  method="post">
+                                                                                                <button type="submit" class="heart" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                <span>${post.points}</span>
+                                                                                            </form>
                                                                                         </c:otherwise>
                                                                                     </c:choose>
-                                                                                    <span>${post.points}</span>
                                                                                 </div>
                                                                             </div>
                                                                             <blockquote class="original">
@@ -227,7 +232,7 @@
                                                                                                 <span class="post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
                                                                                             </c:when>
                                                                                             <c:otherwise>
-                                                                                                <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
+                                                                                                <button style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
                                                                                             </c:otherwise>
                                                                                         </c:choose>
                                                                                         <span>${comment.points}</span>
@@ -239,19 +244,35 @@
                                                                             </div>
                                                                         </article>
                                                                     </c:forEach>
-                                                                    <form class="reply clearfix">
+                                                                    <form:form class="reply clearfix" modelAttribute="commentForm" action="/comment"
+                                                                               method="post"
+                                                                               enctype="application/x-www-form-urlencoded">
                                                                         <div class="holder">
-                                                                            <div class="textarea-wrapper">
-                                                                                <div class="mentions-input-box">
-<%--                                                                                    TODO pedro necesito el id en Post para hacer el CommentForm--%>
-                                                                                <textarea rows="1"
-                                                                                          placeholder="Enter your reply here"
-                                                                                          style="overflow: hidden; height: 50px;"></textarea>
+                                                                            <form:errors path="commentBody" element="p" cssClass="error text-left"/>
+                                                                                <div class="textarea-wrapper">
+                                                                                    <div class="mentions-input-box">
+                                                                                        <spring:message code="series.enterReply" var="placeholder_reply"/>
+                                                                                        <form:textarea
+                                                                                                rows="1"
+                                                                                                placeholder="${placeholder_reply}"
+                                                                                                path="commentBody"
+                                                                                                style="overflow: hidden; height: 50px;"/>
+                                                                                        <form:input type="hidden" path="commentUserId"
+                                                                                                    value="${user.id}"/>
+                                                                                        <form:input type="hidden"
+                                                                                                    path="commentSeriesId"
+                                                                                                    value="${series.id}"/>
+                                                                                        <form:input type="hidden"
+                                                                                                    path="commentPostId"
+                                                                                                    value="${post.postId}"/>
+<%--                                                                                        <div class="submit-comment">--%>
+                                                                                        <button type="submit" class="post-comment"><spring:message code="series.post"/></button>
+<%--                                                                                        </div>--%>
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                            <div class="clearfix"></div>
+                                                                                <div class="clearfix"></div>
                                                                         </div>
-                                                                    </form>
+                                                                    </form:form>
                                                                 </div>
                                                             </div>
                                                         </c:forEach>

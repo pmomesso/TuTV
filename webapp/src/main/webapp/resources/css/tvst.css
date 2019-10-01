@@ -81,6 +81,11 @@ body {
 .viewed {
  color: #44d9e6;
 }
+.heart {
+ color: gray;
+ background-color: inherit;
+ border: none;
+}
 .post-liked {
  color: firebrick;
 }
@@ -6284,9 +6289,6 @@ button.close {
 .affix {
  position:fixed
 }
-@-ms-viewport {
- width:device-width
-}
 @media (max-width:767px) {
  .visible-xs {
   display:block!important
@@ -8312,20 +8314,6 @@ button.close {
 .iti-flag.zw {
  height:14px;
  background-position:-7647px 0
-}
-.iti-flag {
- height:21px;
- box-shadow:0 0 1px 0 #888;
- background-image:url(/images/flags.png);
- background-repeat:no-repeat;
- background-color:#DBDBDB;
- background-position:28px 0
-}
-@media only screen and (-webkit-min-device-pixel-ratio:2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:2 / 1),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
- .iti-flag {
-  background-size:7675px 21px;
-  background-image:url(/images/flags@2x.png)
- }
 }
 .iti-flag.np {
  background-color:transparent
@@ -10790,18 +10778,6 @@ body.vjs-full-window {
  text-decoration:none;
  text-align:right
 }
-.editable-clear-x {
- background:url(/images/clear.png) center center no-repeat;
- display:block;
- width:13px;
- height:13px;
- position:absolute;
- opacity:.6;
- z-index:100;
- top:50%;
- right:6px;
- margin-top:-6px
-}
 .editable-clear-x:hover {
  opacity:1
 }
@@ -11590,12 +11566,6 @@ input.ui-button::-moz-focus-inner {
  margin:-1px;
  height:100%
 }
-.ui-progressbar .ui-progressbar-overlay {
- background:url(/images/animated-overlay.gif);
- height:100%;
- filter:alpha(opacity=25);
- opacity:.25
-}
 .ui-progressbar-indeterminate .ui-progressbar-value {
  background-image:none
 }
@@ -11803,7 +11773,6 @@ body .ui-tooltip {
 .ui-widget-header .ui-state-focus,
 .ui-widget-header .ui-state-hover {
  border:1px solid #999;
- background:url(/images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x #dadada;
  font-weight:400;
  color:#212121
 }
@@ -11818,7 +11787,6 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active {
  border:1px solid #aaa;
- background:url(/images/ui-bg_glass_65_ffffff_1x400.png) 50% 50% repeat-x #fff;
  font-weight:400;
  color:#212121
 }
@@ -11832,7 +11800,6 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-highlight,
 .ui-widget-header .ui-state-highlight {
  border:1px solid #fcefa1;
- background:url(/images/ui-bg_glass_55_fbf9ee_1x400.png) 50% 50% repeat-x #fbf9ee;
  color:#363636
 }
 .ui-state-highlight a,
@@ -11844,7 +11811,6 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-error,
 .ui-widget-header .ui-state-error {
  border:1px solid #cd0a0a;
- background:url(/images/ui-bg_glass_95_fef1ec_1x400.png) 50% 50% repeat-x #fef1ec;
  color:#cd0a0a
 }
 .ui-state-error a,
@@ -11880,26 +11846,6 @@ body .ui-tooltip {
 .ui-icon {
  width:16px;
  height:16px
-}
-.ui-icon,
-.ui-widget-content .ui-icon,
-.ui-widget-header .ui-icon {
- background-image:url(/images/ui-icons_222222_256x240.png)
-}
-.ui-state-default .ui-icon {
- background-image:url(/images/ui-icons_888888_256x240.png)
-}
-.ui-state-active .ui-icon,
-.ui-state-focus .ui-icon,
-.ui-state-hover .ui-icon {
- background-image:url(/images/ui-icons_454545_256x240.png)
-}
-.ui-state-highlight .ui-icon {
- background-image:url(/images/ui-icons_2e83ff_256x240.png)
-}
-.ui-state-error .ui-icon,
-.ui-state-error-text .ui-icon {
- background-image:url(/images/ui-icons_cd0a0a_256x240.png)
 }
 .ui-icon-blank {
  background-position:16px 16px
@@ -12633,7 +12579,6 @@ input.ui-editRangeSlider-inputValue {
 }
 .simple-autocompleter ul>li.item em {
  font-weight:700;
- font-style:none
 }
 .simple-autocompleter ul>li.item img {
  display:block;
@@ -19198,6 +19143,19 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
  -webkit-transition:box-shadow .1s;
  -o-transition:box-shadow .1s;
  transition:box-shadow .1s
+}
+.post-comment {
+ color:#555;
+ font-family: proximaNova;
+ text-transform:uppercase;
+ border-radius:4px;
+ text-align:center;
+ border:none;
+ -moz-transition:box-shadow .1s;
+ -webkit-transition:box-shadow .1s;
+ -o-transition:box-shadow .1s;
+ transition:box-shadow .1s;
+ background-color: #44d9e6;
 }
 #meme-wizard .submit-meme .submit-meme-btn:hover {
  text-decoration:none;
