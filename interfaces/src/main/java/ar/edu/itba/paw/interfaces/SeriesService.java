@@ -20,4 +20,7 @@ public interface SeriesService {
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
     List<Season> getSeasonsBySeriesId(long seriesId);
 
+    void followSeries(long seriesId,long userId);
+    void setViewedEpisode(long episodeId,long userId);
+
 }

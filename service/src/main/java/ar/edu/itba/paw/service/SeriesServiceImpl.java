@@ -61,4 +61,14 @@ public class SeriesServiceImpl implements SeriesService {
     public List<Season> getSeasonsBySeriesId(long seriesId) {
         return seriesDao.getSeasonsBySeriesId(seriesId);
     }
+
+    @Override
+    public void followSeries(long seriesId, long userId) {
+        seriesDao.followSeries(seriesId, userId);
+    }
+
+    @Override
+    public void setViewedEpisode(long episodeId, long userId) {
+        seriesDao.setViewedEpisode(episodeId,userId);
+    }
 }

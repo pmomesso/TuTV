@@ -84,9 +84,14 @@ public class SeriesDaoJdbcTest {
     public void setUp(){
         jdbcTemplate = new JdbcTemplate(ds);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "hasgenre");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "hasviewedepisode");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "follows");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "episode");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "season");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "series");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "genres");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "network");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
     }
 
     @Test
@@ -96,7 +101,7 @@ public class SeriesDaoJdbcTest {
                 ID_IMDB,ADDED,UPDATED,POSTER_URL,BANNER_URL,FOLLOWERS);
         //Asserts
         Assert.assertTrue(id >= 0);
-        Assert.assertEquals(JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","id = " + id),1);
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","id = " + id));
     }
 
 //    @Test
@@ -117,7 +122,7 @@ public class SeriesDaoJdbcTest {
         final List<Series> seriesList = seriesDao.getSeriesByName(NAME);
         //Asserts
         Assert.assertNotNull(seriesList);
-        Assert.assertEquals(seriesList.size(),1);
+        Assert.assertEquals(1,seriesList.size());
         final Series series = seriesList.get(0);
         assertSeries(series);
     }
@@ -129,7 +134,7 @@ public class SeriesDaoJdbcTest {
         final List<Series> seriesList = seriesDao.getSeriesByGenre(GENRE);
         //Asserts
         Assert.assertNotNull(seriesList);
-        Assert.assertEquals(seriesList.size(),1);
+        Assert.assertEquals(1,seriesList.size());
         final Series series = seriesList.get(0);
         assertSeries(series);
     }
@@ -141,7 +146,7 @@ public class SeriesDaoJdbcTest {
         final List<Series> seriesList = seriesDao.getSeriesByGenre(GENRE_ID);
         //Asserts
         Assert.assertNotNull(seriesList);
-        Assert.assertEquals(seriesList.size(),1);
+        Assert.assertEquals(1,seriesList.size());
         final Series series = seriesList.get(0);
         assertSeries(series);
     }
@@ -153,7 +158,7 @@ public class SeriesDaoJdbcTest {
         final List<Series> seriesList = seriesDao.getBestSeriesByGenre(GENRE_ID,0,5);
         //Asserts
         Assert.assertNotNull(seriesList);
-        Assert.assertEquals(seriesList.size(),1);
+        Assert.assertEquals(1,seriesList.size());
         final Series series = seriesList.get(0);
         assertSeries(series);
     }
@@ -165,9 +170,9 @@ public class SeriesDaoJdbcTest {
         final Map<Genre,List<Series>> genres = seriesDao.getBestSeriesByGenres(0,5);
         //Asserts
         Assert.assertNotNull(genres);
-        Assert.assertEquals(genres.size(),1);
+        Assert.assertEquals(1,genres.size());
         Assert.assertTrue(genres.containsKey(GENRE_OBJ));
-        Assert.assertEquals(genres.get(GENRE_OBJ).size(),1);
+        Assert.assertEquals(1,genres.get(GENRE_OBJ).size());
         final Series series = genres.get(GENRE_OBJ).get(0);
         assertSeries(series);
     }
@@ -179,7 +184,7 @@ public class SeriesDaoJdbcTest {
         final List<Series> seriesList = seriesDao.getNewSeries(0,5);
         //Asserts
         Assert.assertNotNull(seriesList);
-        Assert.assertEquals(seriesList.size(),1);
+        Assert.assertEquals(1,seriesList.size());
         final Series series = seriesList.get(0);
         assertSeries(series);
     }
@@ -197,8 +202,8 @@ public class SeriesDaoJdbcTest {
         final long id = seriesDao.addSeriesGenre(GENRE,genreSeries);
         //Asserts
         Assert.assertTrue(id >= 0);
-        Assert.assertEquals(JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"genres","id = " + id),1);
-        Assert.assertEquals(JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"hasgenre","seriesid = " + ID + " AND genreid = " + id),1);
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"genres","id = " + id));
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"hasgenre","seriesid = " + ID + " AND genreid = " + id));
     }
     @Test
     public void setSeriesRunningTimeTest(){
@@ -208,7 +213,7 @@ public class SeriesDaoJdbcTest {
         //Ejercitar
         seriesDao.setSeriesRunningTime(ID,newRuntime);
         //Asserts
-        Assert.assertEquals(JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","runtime = " + newRuntime),1);
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","runtime = " + newRuntime));
     }
     @Test
     public void setSeriesNetworkTest(){
@@ -217,7 +222,7 @@ public class SeriesDaoJdbcTest {
         //Ejercitar
         seriesDao.setSeriesNetwork(ID,NETWORK_ID);
         //Asserts
-        Assert.assertEquals(JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","networkId = " + NETWORK_ID),1);
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","networkId = " + NETWORK_ID));
     }
     @Test
     public void setSeriesDescriptionTest(){
@@ -227,7 +232,55 @@ public class SeriesDaoJdbcTest {
         //Ejercitar
         seriesDao.setSeriesDescription(ID,newDescription);
         //Asserts
-        Assert.assertEquals(JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","description = '" + newDescription + "'"),1);
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","description = '" + newDescription + "'"));
+    }
+
+    @Test
+    public void followSeriesTest(){
+        //Setup
+        populateDatabase();
+        final long userId = 1;
+        final String username = "username";
+        final String password = "password";
+        final String mail = "mail@mail.com";
+        final String confirmationKey = "confirmation_key";
+        jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO users " +
+                        "(id,username,password,mail,confirmation_key) " +
+                        "VALUES(%d,'%s','%s','%s','%s')",
+                userId, username, password,mail,confirmationKey));
+        //Ejercitar
+        seriesDao.followSeries(ID,userId);
+        //Asserts
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"follows"));
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","followers="+(FOLLOWERS + 1)));
+    }
+    @Test
+    public void setViewedEpisodeTest(){
+        //Setup
+        populateDatabase();
+        final long userId = 1;
+        final String username = "username";
+        final String password = "password";
+        final String mail = "mail@mail.com";
+        final String confirmationKey = "confirmation_key";
+        jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO users " +
+                        "(id,username,password,mail,confirmation_key) " +
+                        "VALUES(%d,'%s','%s','%s','%s')",
+                userId, username, password,mail,confirmationKey));
+        final long seasonId = 1;
+        jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO season " +
+                        "(seasonid,seriesid,seasonnumber) " +
+                        "VALUES(%d,%d,%d)",
+                seasonId,ID,1));
+        final long episodeId = 1;
+        jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO episode " +
+                        "(id,name,seriesId,numEpisode,tvdbid,seasonid) " +
+                        "VALUES(%d,'%s',%d,%d,%d,%d)",
+                episodeId, NAME,ID,1,TVDB_ID,seasonId));
+        //Ejercitar
+        seriesDao.setViewedEpisode(episodeId,userId);
+        //Asserts
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"hasviewedepisode"));
     }
     @Test
     public void getSeriesByWrongId(){

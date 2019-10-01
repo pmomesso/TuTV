@@ -68,6 +68,8 @@ public class SeriesDaoJdbc implements SeriesDao {
     private SimpleJdbcInsert seriesjdbcInsert;
     private SimpleJdbcInsert genresjdbcInsert;
     private SimpleJdbcInsert hasGenrejdbcInsert;
+    private SimpleJdbcInsert followsjdbcInsert;
+    private SimpleJdbcInsert viewedEpisodesjdbcInsert;
 
     @Autowired
     private UserDao userDao;
@@ -105,6 +107,10 @@ public class SeriesDaoJdbc implements SeriesDao {
                 .usingGeneratedKeyColumns("id");
         hasGenrejdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("hasgenre");
+        followsjdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("follows");
+        viewedEpisodesjdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("hasviewedepisode");
     }
 
     @Override
@@ -394,6 +400,25 @@ public class SeriesDaoJdbc implements SeriesDao {
                 });
         //Todo: process list
         return seriesList;
+    }
+
+    @Override
+    public void followSeries(long seriesId, long userId) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("userId",userId);
+        args.put("seriesId", seriesId);
+
+        followsjdbcInsert.execute(args);
+        jdbcTemplate.update("UPDATE series SET followers = (followers + 1) WHERE id = ?", seriesId);
+    }
+
+    @Override
+    public void setViewedEpisode(long episodeId, long userId) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("userId",userId);
+        args.put("episodeId", episodeId);
+
+        viewedEpisodesjdbcInsert.execute(args);
     }
 
 }

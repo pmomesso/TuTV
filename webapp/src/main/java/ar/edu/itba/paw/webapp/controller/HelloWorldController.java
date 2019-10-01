@@ -74,13 +74,13 @@ public class HelloWorldController {
 
 	@RequestMapping(value = "/addSeries", method = RequestMethod.POST)
     public ModelAndView addSeries(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) {
-//	    TODO pedro llamar a metodo de agregar serie a usuario
+	    seriesService.followSeries(seriesId,userId);
 	    return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
     public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) {
-//	    TODO pedro llamar a metodo de ver episode
+		seriesService.setViewedEpisode(episodeId,userId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
@@ -90,7 +90,6 @@ public class HelloWorldController {
 			return series(form, new CommentForm(), form.getSeriesId());
 		}
 //		DENTRO DE FORM HAY: form.getDescription() form.getSeriesId() form.getUserId()
-//		TODO pedro llamar a metodo que postea en una serie
 		return new ModelAndView("redirect:/series?id=" + form.getSeriesId());
 	}
 

@@ -34,4 +34,7 @@ public interface SeriesDao {
     List<Comment> getSeriesCommentsById(long seriesId);
 
     List<Series> getNextToBeSeen(long userId);
+
+    void followSeries(long seriesId,long userId);
+    void setViewedEpisode(long episodeId,long userId);
 }
