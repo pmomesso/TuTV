@@ -24,4 +24,5 @@ public interface SeriesService {
     void followSeries(long seriesId,long userId);
     void setViewedEpisode(long episodeId,long userId);
 
+    void unviewEpisode(long seriesId, long episodeId);
 }

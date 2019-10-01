@@ -79,6 +79,7 @@ public class HelloWorldController {
     @RequestMapping(value = "/unviewEpisode", method = RequestMethod.POST)
     public ModelAndView unviewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) {
 //        TODO pedro llamar a metodo de unview episode
+		seriesService.unviewEpisode(userId, episodeId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 

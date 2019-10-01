@@ -82,4 +82,9 @@ public class SeriesServiceImpl implements SeriesService {
     public void setViewedEpisode(long episodeId, long userId) {
         seriesDao.setViewedEpisode(episodeId,userId);
     }
+
+    @Override
+    public void unviewEpisode(long userId, long episodeId) {
+        seriesDao.unviewEpisode(userId, episodeId);
+    }
 }

@@ -40,4 +40,6 @@ public interface SeriesDao {
 
     void followSeries(long seriesId,long userId);
     void setViewedEpisode(long episodeId,long userId);
+
+    void unviewEpisode(long userId, long episodeId);
 }

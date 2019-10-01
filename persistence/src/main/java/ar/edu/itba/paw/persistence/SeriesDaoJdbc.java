@@ -460,4 +460,9 @@ public class SeriesDaoJdbc implements SeriesDao {
         viewedEpisodesjdbcInsert.execute(args);
     }
 
+    @Override
+    public void unviewEpisode(long userId, long episodeId) {
+        jdbcTemplate.update("DELETE FROM hasviewedepisode WHERE hasviewedepisode.userid = ? AND hasviewedepisode.episodeid = ?", new Object[]{userId, episodeId});
+    }
+
 }
