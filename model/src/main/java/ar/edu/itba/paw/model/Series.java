@@ -233,7 +233,7 @@ public class Series  {
         this.name = name;
     }
 
-    public boolean follows() {
+    public boolean getFollows() {
         return follows;
     }
 
