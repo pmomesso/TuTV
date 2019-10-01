@@ -203,6 +203,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         Series series = groupGenres(seriesList).get(0);
         addAllSeasonsToSeries(series, userId);
         addAllPostsToSeries(series);
+        series.setFollows(userFollows(id, userId));
         return series;
     }
 
@@ -431,12 +432,23 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public void followSeries(long seriesId, long userId) {
+
+        //Todo: ask if there is a utility method for this.
+        if(userFollows(seriesId, userId)) return;
+
         Map<String, Object> args = new HashMap<>();
         args.put("userId",userId);
         args.put("seriesId", seriesId);
 
         followsjdbcInsert.execute(args);
         jdbcTemplate.update("UPDATE series SET followers = (followers + 1) WHERE id = ?", seriesId);
+    }
+
+    private boolean userFollows(long seriesId, long userId) {
+        List<Boolean> series = jdbcTemplate.query("SELECT exists(SELECT * " +
+                "FROM follows WHERE follows.userid = ? AND follows.seriesid = ?) AS viewed", new Object[]{userId, seriesId},
+                (resultSet, i) -> resultSet.getBoolean("viewed"));
+        return series.get(0);
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.util.*;
 
 public class Series  {
 
+    private boolean follows;
     private long id;
     private int tvdbid;
     private String name;
@@ -232,4 +233,11 @@ public class Series  {
         this.name = name;
     }
 
+    public boolean follows() {
+        return follows;
+    }
+
+    public void setFollows(boolean follows) {
+        this.follows = follows;
+    }
 }
