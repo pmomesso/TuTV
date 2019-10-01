@@ -65,7 +65,7 @@
                                         <%--                                                <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star"></label>--%>
                                         <%--                                            </div>--%>
                                         <%--                                        </div>--%>
-                                        <c:if test="${isLogged} && not ${series.follows}">
+                                        <c:if test="${isLogged && not series.follows}">
                                             <form action="<c:url value="/addSeries?seriesId=${series.id}&userId=${user.id}"/>"
                                                   method="post">
                                                 <button class="add-button" type="submit">Add</button>
@@ -115,7 +115,7 @@
                                                                     <div class="cd-accordion__item">
                                                                         <h3>${episode.episodeNumber}
                                                                             - ${episode.name}</h3>
-                                                                        <c:if test="${isLogged}">
+                                                                        <c:if test="${isLogged && series.follows}">
                                                                             <c:choose>
                                                                                 <c:when test="${episode.viewed}">
                                                                                     <form action="<c:url value="/unviewEpisode?seriesId=${series.id}&episodeId=${episode.id}&userId=${user.id}"/>"
@@ -191,7 +191,7 @@
                                                         </div>
                                                     </c:if>
                                                     <div class="comments-list">
-                                                        <c:if test="not ${isLogged} && empty ${series.postList}">
+                                                        <c:if test="${not isLogged && empty series.postList}">
                                                             <spring:message code="series.noPosts"/>
                                                         </c:if>
                                                         <c:forEach var="post" items="${series.postList}">
@@ -242,7 +242,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </article>
-                                                                <c:if test="${isLogged} || not empty ${post.comments}">
+                                                                <c:if test="${isLogged} || ${not empty post.comments}">
                                                                     <div class="replies sub-comment">
                                                                         <c:forEach var="comment" items="${post.comments}">
                                                                             <article class="reply clearfix initialized">
