@@ -14,8 +14,8 @@
     <meta name="MobileOptimized" content="1040">
     <meta http-equiv="content-language" content="en">
 
-    <meta name="title" content="TUTV - Watch and track TV shows online">
-    <title>TUTV - Watch and track TV shows online</title>
+    <meta name="title" content="TUTV">
+    <title>TUTV</title>
     <link rel="shortcut icon" type="image/x-icon" href="<c:url value="/resources/img/shortcuticon.png"/>">
 
     <!-- Bootstrap core CSS -->
@@ -116,8 +116,13 @@
                                                                         <c:if test="${not empty user}">
                                                                             <c:choose>
                                                                                 <c:when test="${episode.viewed}">
-                                                                                    <span style="font-family: FontAwesome,serif; font-style: normal"
-                                                                                          class="check viewed">&#xf058</span>
+                                                                                    <form action="<c:url value="/unviewEpisode?seriesId=${series.id}&episodeId=${episode.id}&userId=${user.id}"/>"
+                                                                                          method="post">
+                                                                                        <button type="submit"
+                                                                                                style="font-family: FontAwesome,serif; font-style: normal"
+                                                                                                class="check viewed">&#xf058
+                                                                                        </button>
+                                                                                    </form>
                                                                                 </c:when>
                                                                                 <c:otherwise>
                                                                                     <form action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${episode.id}&userId=${user.id}"/>"
@@ -200,9 +205,11 @@
                                                                                 <div class="float-right mr-5">
                                                                                     <c:choose>
                                                                                         <c:when test="${post.liked}">
-<%--                                                                                            TODO hacemos un unlike?--%>
-                                                                                            <span class="post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
-                                                                                            <span>${post.points}</span>
+                                                                                            <form action="<c:url value="/unlikePost?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}"/>"
+                                                                                                  method="post">
+                                                                                                <button type="submit" class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                <span>${post.points}</span>
+                                                                                            </form>
                                                                                         </c:when>
                                                                                         <c:otherwise>
                                                                                             <form action="<c:url value="/likePost?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}"/>"
@@ -229,10 +236,16 @@
                                                                                     <div class="float-right">
                                                                                         <c:choose>
                                                                                             <c:when test="${comment.liked}">
-                                                                                                <span class="post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
+                                                                                                <form action="<c:url value="/unlikeComment?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
+                                                                                                      method="post">
+                                                                                                    <button type="submit" class="post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                </form>
                                                                                             </c:when>
                                                                                             <c:otherwise>
-                                                                                                <button style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                <form action="<c:url value="/likeComment?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
+                                                                                                      method="post">
+                                                                                                    <button type="submit" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                </form>
                                                                                             </c:otherwise>
                                                                                         </c:choose>
                                                                                         <span>${comment.points}</span>
@@ -265,9 +278,7 @@
                                                                                         <form:input type="hidden"
                                                                                                     path="commentPostId"
                                                                                                     value="${post.postId}"/>
-<%--                                                                                        <div class="submit-comment">--%>
                                                                                         <button type="submit" class="post-comment"><spring:message code="series.post"/></button>
-<%--                                                                                        </div>--%>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="clearfix"></div>

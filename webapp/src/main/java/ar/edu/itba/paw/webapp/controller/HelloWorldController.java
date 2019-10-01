@@ -76,6 +76,12 @@ public class HelloWorldController {
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
+    @RequestMapping(value = "/unviewEpisode", method = RequestMethod.POST)
+    public ModelAndView unviewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) {
+//        TODO pedro llamar a metodo de unview episode
+        return new ModelAndView("redirect:/series?id=" + seriesId);
+    }
+
     @RequestMapping(value = "/post", method = RequestMethod.POST)
 	public ModelAndView post(@Valid @ModelAttribute("postForm") final PostForm form, final BindingResult errors) {
 		if (errors.hasErrors()) {
@@ -92,6 +98,12 @@ public class HelloWorldController {
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 
+    @RequestMapping(value = "/unlikePost", method = RequestMethod.POST)
+    public ModelAndView unlikePost(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId) {
+        // TODO pedro llamar a metodo que unlikea ese post
+        return new ModelAndView("redirect:/series?id=" + seriesId);
+    }
+
 	@RequestMapping(value = "/comment", method = RequestMethod.POST)
 	public ModelAndView comment(@Valid @ModelAttribute("commentForm") final CommentForm form, final BindingResult errors) {
 		if (errors.hasErrors()) {
@@ -101,6 +113,18 @@ public class HelloWorldController {
 //		TODO pedro llamar a metodo que comenta un post de una serie
 		return new ModelAndView("redirect:/series?id=" + form.getCommentSeriesId());
 	}
+
+    @RequestMapping(value = "/likeComment", method = RequestMethod.POST)
+    public ModelAndView likeComment(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+        // TODO pedro llamar a metodo que likea ese comment
+        return new ModelAndView("redirect:/series?id=" + seriesId);
+    }
+
+    @RequestMapping(value = "/unlikeComment", method = RequestMethod.POST)
+    public ModelAndView unlikeComment(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+        // TODO pedro llamar a metodo que unlikea ese comment
+        return new ModelAndView("redirect:/series?id=" + seriesId);
+    }
 
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public ModelAndView profile() {
@@ -136,14 +160,5 @@ public class HelloWorldController {
 		mav.addObject("greeting", "PAW"); //Popular model
 		return mav;
 	}
-
-	// TODO sacar. Lo puse por testeo inicial del dao de user, no debería ir ésto...
-//	@RequestMapping("/createuser")
-//	public ModelAndView createUser(@RequestParam(value = "name", required = true) final String userName) {
-//		final long id = userService.createUser(userName, "", "");
-//		final ModelAndView mav = new ModelAndView("index"); //Seleccionar lista
-//		mav.addObject("greeting", "PAW"); //Popular model
-//		return mav;
-//	}
 
 }

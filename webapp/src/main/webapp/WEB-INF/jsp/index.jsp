@@ -13,7 +13,7 @@
     <meta http-equiv="content-language" content="en">
 
     <meta name="title" content="TUTV">
-    <title>TUTV - Watch and track TV shows online</title>
+    <title>TUTV</title>
     <link rel="shortcut icon" type="image/x-icon" href="<c:url value="/resources/img/shortcuticon.png"/>">
 
     <!-- Bootstrap core CSS -->

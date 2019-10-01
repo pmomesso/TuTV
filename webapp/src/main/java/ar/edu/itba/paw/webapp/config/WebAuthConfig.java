@@ -53,7 +53,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .failureHandler(new UrlAuthenticationFailureHandler())
                 .and().rememberMe()
                     .rememberMeParameter("rememberme")
-                    //.userDetailsService(userDetailsService).key(getEncryptationKey()) //	no	hacer	esto,	crear	una aleatoria	segura	suficiente mente	grande	y	colocarla	bajo	src/main/resources
+                    //.userDetailsService(userDetailsService).key(getEncryptationKey()) // TODO	no	hacer	esto,	crear	una aleatoria	segura	suficiente mente	grande	y	colocarla	bajo	src/main/resources
                     .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
                 .and().logout()
                     .logoutUrl("/logout")
