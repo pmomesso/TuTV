@@ -9,6 +9,7 @@ import java.util.Map;
 
 public interface SeriesService {
 
+    List<Series> searchSeries(String seriesName,String genreName,String networkName);
     List<Series> getSeriesByName(String name);
 
     Series getSerieById(long id, long userId);
@@ -19,7 +20,7 @@ public interface SeriesService {
     Map<Genre, List<Series>> getSeriesByGenreMap(int lowerNumber, int upperNumber);
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
     List<Season> getSeasonsBySeriesId(long seriesId);
-
+    List<Genre> getAllGenres();
     void followSeries(long seriesId,long userId);
     void setViewedEpisode(long episodeId,long userId);
 

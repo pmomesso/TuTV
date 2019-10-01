@@ -7,6 +7,7 @@ import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.webapp.form.CommentForm;
 import ar.edu.itba.paw.webapp.form.PostForm;
+import ar.edu.itba.paw.webapp.form.SearchForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,29 +42,20 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public ModelAndView search(@RequestParam String op,@RequestParam String search) {
-		//Si el parametro es vacio, lo redirecciono al home que tiene todas las series.
-		if(search.length() == 0){
-			return new ModelAndView("redirect:/");
-		}
+	public ModelAndView search() {
 		final ModelAndView mav = new ModelAndView("search");
-        mav.addObject("op",op);
-		if(op.equals("genre")){
-			Map<Genre,List<Series>> genres = seriesService.getSeriesByGenreMap(0,5);
-			Map<Genre,List<Series>> searchResults = new HashMap<>();
-			for(Map.Entry<Genre,List<Series>> entry : genres.entrySet()){
-				if(entry.getKey().getName().toLowerCase().contains(search.toLowerCase())){
-					searchResults.put(entry.getKey(),entry.getValue());
-				}
-			}
-			mav.addObject("searchResults",searchResults);
-		}
-		else{
-			mav.addObject("searchResults",seriesService.getSeriesByName(search));
-		}
+		mav.addObject("genres",seriesService.getAllGenres());
 		return mav;
 	}
-
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    public ModelAndView search(@Valid @ModelAttribute("searchForm") final SearchForm form, final BindingResult errors) {
+	    if(errors.hasErrors()){
+	        return search();
+        }
+        final ModelAndView mav = new ModelAndView("searchResults");
+        mav.addObject("searchResults",seriesService.searchSeries(form.getName(),form.getGenre(),form.getNetwork()));
+        return mav;
+    }
 	@RequestMapping(value = "/series", method = RequestMethod.GET)
 	public ModelAndView series(@ModelAttribute("postForm") final PostForm postForm, @ModelAttribute("commentForm") final CommentForm commentForm, @RequestParam("id") long id) {
 		final ModelAndView mav = new ModelAndView("series");

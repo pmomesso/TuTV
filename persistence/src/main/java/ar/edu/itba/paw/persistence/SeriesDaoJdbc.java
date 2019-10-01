@@ -114,6 +114,15 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     @Override
+    public List<Series> searchSeries(String seriesName, String genreName, String networkName) {
+        return groupGenres(jdbcTemplate.query("SELECT * " +
+                "FROM (series LEFT JOIN hasgenre ON series.id = hasgenre.seriesid LEFT JOIN genres ON genres.id = hasgenre.genreid LEFT JOIN network ON network.networkid = series.networkid) " +
+                "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname) " +
+                "WHERE LOWER(name) LIKE ? AND LOWER(genre) LIKE ? AND LOWER(networkname) LIKE ?",
+                new Object[]{"%"+seriesName.toLowerCase()+"%","%"+genreName.toLowerCase()+"%","%"+networkName.toLowerCase()+"%"}, seriesRowMapper));
+    }
+
+    @Override
     public List<Series> getSeriesByName(String seriesName) {
         return groupGenres(jdbcTemplate.query("SELECT * " +
                 "FROM (series LEFT JOIN hasgenre ON series.id = hasgenre.seriesid LEFT JOIN genres ON genres.id = hasgenre.genreid LEFT JOIN network ON network.networkid = series.networkid) " +
@@ -169,8 +178,8 @@ public class SeriesDaoJdbc implements SeriesDao {
 
         return ret;
     }
-
-    private List<Genre> getAllGenres() {
+    @Override
+    public List<Genre> getAllGenres() {
         return jdbcTemplate.query("SELECT * " +
                                 "FROM genres",
                           (resultSet, i) -> {

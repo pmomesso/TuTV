@@ -104,15 +104,15 @@ public class SeriesDaoJdbcTest {
         Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","id = " + id));
     }
 
-//    @Test
-//    public void getSeriesByIdTest() {
-//        //Setup
-//        populateDatabase();
-//        //Ejercitar
-//        final Series series = seriesDao.getSeriesById(ID);
-//        //Asserts
-//        assertSeries(series);
-//    }
+    @Test
+    public void getSeriesByIdTest() {
+        //Setup
+        populateDatabase();
+        //Ejercitar
+        final Series series = seriesDao.getSeriesById(ID,0);
+        //Asserts
+        assertSeries(series);
+    }
 
     @Test
     public void getSeriesByNameTest() {

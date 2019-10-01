@@ -4,7 +4,20 @@
     <a id="home-link" href="<c:url value="/"/>">
         <img class="logo tutv" src="<c:url value="/resources/img/Tutv.png"/>" alt="TUTV"> <span id="home-text">TUTV</span>
     </a> <!--#44d9e6-->
-    <%@ include file="searchForm.jsp" %>
+    <form id="global-search" method="post" class="navbar-form form-search" action="<c:url value="/search"/>">
+        <div class="form-group">
+            <img class="logo logo_icon" src="<c:url value="/resources/img/search.png"/>" alt="Search">
+        </div>
+        <div class="form-group">
+            <input type="text" id="global-search-input" name="name" class="show-search" placeholder="<spring:message code="search.search"/>">
+        </div>
+        <div class="form-group" style="margin-top: 10px">
+            <a id="advancedSearchLink" href="<c:url value="/search"/>">
+                <spring:message code="search.advancedSearch"/>
+            </a>
+        </div>
+        <input type="submit" style="visibility: hidden;" />
+    </form>
     <div class="all-left-navs">
         <section id="menu">
             <ul class="menu list-unstyled">

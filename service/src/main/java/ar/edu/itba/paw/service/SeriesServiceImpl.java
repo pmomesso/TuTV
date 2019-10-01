@@ -8,9 +8,7 @@ import ar.edu.itba.paw.model.Series;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class SeriesServiceImpl implements SeriesService {
@@ -21,6 +19,14 @@ public class SeriesServiceImpl implements SeriesService {
     @Autowired
     public SeriesServiceImpl(SeriesDao seriesDao) {
         this.seriesDao = seriesDao;
+    }
+
+    @Override
+    public List<Series> searchSeries(String seriesName, String genreName, String networkName) {
+        String name = seriesName == null ? "" : seriesName;
+        String genre = genreName == null ? "" : genreName;
+        String network = networkName == null ? "" : networkName;
+        return seriesDao.searchSeries(name,genre,network);
     }
 
     @Override
@@ -60,6 +66,11 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public List<Season> getSeasonsBySeriesId(long seriesId) {
         return seriesDao.getSeasonsBySeriesId(seriesId);
+    }
+
+    @Override
+    public List<Genre> getAllGenres() {
+        return seriesDao.getAllGenres();
     }
 
     @Override
