@@ -244,9 +244,13 @@ public class SeriesDaoJdbc implements SeriesDao {
                     post.setLiked(resultSet.getBoolean("liked"));
                     return post;
                 });
-        addUserToPosts(postList);
-        addAllCommentsToPosts(postList);
-        series.setSeriesPostList(postList);
+        if(!postList.isEmpty()) {
+            addUserToPosts(postList);
+            addAllCommentsToPosts(postList);
+            series.setSeriesPostList(postList);
+        } else {
+            series.setSeriesPostList(Collections.emptyList());
+        }
     }
 
     private void addAllCommentsToPosts(List<Post> postList) {
