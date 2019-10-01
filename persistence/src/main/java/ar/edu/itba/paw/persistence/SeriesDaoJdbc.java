@@ -211,7 +211,14 @@ public class SeriesDaoJdbc implements SeriesDao {
         for(Season season : seasonList) {
             season.setEpisodes(getEpisodesBySeasonId(season.getId(), userId));
         }
+        setSeasonsViewed(seasonList);
         s.setSeasons(seasonList);
+    }
+
+    private void setSeasonsViewed(List<Season> seasonList) {
+        for(Season season : seasonList) {
+            season.setViewed(season.getEpisodeList().stream().allMatch(episode -> episode.isViewed()));
+        }
     }
 
     private void addAllPostsToSeries(Series series) {
@@ -348,7 +355,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Episode> getEpisodesBySeasonId(long seasonId, long userId) {
-        List<Episode> episodeList = jdbcTemplate.query("SELECT episode.*, exists(SELECT * FROM hasviewedepisode WHERE userid = ?) as viewed " +
+        List<Episode> episodeList = jdbcTemplate.query("SELECT episode.*, exists(SELECT * FROM hasviewedepisode WHERE userid = ? AND hasviewedepisode.episodeid = episode.id) as viewed " +
                 "FROM episode  " +
                 "WHERE episode.seasonid = ? " +
                 "ORDER BY numepisode", new Object[]{userId, seasonId}, (resultSet, i) -> {

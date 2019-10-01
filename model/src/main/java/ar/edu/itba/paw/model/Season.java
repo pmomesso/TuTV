@@ -8,6 +8,7 @@ public class Season {
     private List<Episode> episodeList;
     private int seasonNumber;
     private long seasonId;
+    private boolean viewed;
     private Rating userRating;
 
     public String getName() {
@@ -52,5 +53,13 @@ public class Season {
 
     public void setEpisodes(List<Episode> episodeList) {
         this.episodeList = episodeList;
+    }
+
+    public void setViewed(boolean viewed) {
+        this.viewed = viewed;
+    }
+
+    public boolean isViewed() {
+        return viewed;
     }
 }
