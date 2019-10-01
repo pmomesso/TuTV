@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface SeriesService {
 
-    List<Series> searchSeries(String seriesName,String genreName,String networkName);
+    List<Series> searchSeries(String seriesName,String genreName,String networkName,int minRating,int maxRating);
     List<Series> getSeriesByName(String name);
 
     Series getSerieById(long id, long userId);

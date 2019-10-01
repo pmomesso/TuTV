@@ -22,11 +22,11 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Series> searchSeries(String seriesName, String genreName, String networkName) {
+    public List<Series> searchSeries(String seriesName, String genreName, String networkName,int minRating,int maxRating) {
         String name = seriesName == null ? "" : seriesName;
         String genre = genreName == null ? "" : genreName;
         String network = networkName == null ? "" : networkName;
-        return seriesDao.searchSeries(name,genre,network);
+        return seriesDao.searchSeries(name,genre,network,minRating,maxRating);
     }
 
     @Override

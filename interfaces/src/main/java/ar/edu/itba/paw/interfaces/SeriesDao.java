@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface SeriesDao {
 
-    List<Series> searchSeries(String seriesName,String genreName,String networkName);
+    List<Series> searchSeries(String seriesName,String genreName,String networkName,int minRating,int maxRating);
     List<Series> getSeriesByName(String seriesName);
 
     List<Series> getSeriesByGenre(String genreName);

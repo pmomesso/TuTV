@@ -114,7 +114,8 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     @Override
-    public List<Series> searchSeries(String seriesName, String genreName, String networkName) {
+    public List<Series> searchSeries(String seriesName, String genreName, String networkName,int minRating,int maxRating) {
+        //TODO agregar "userRating BETWEEN minRating AND maxRating" a la query cuando los puntajes en la base no esten en null.
         return groupGenres(jdbcTemplate.query("SELECT * " +
                 "FROM (series LEFT JOIN hasgenre ON series.id = hasgenre.seriesid LEFT JOIN genres ON genres.id = hasgenre.genreid LEFT JOIN network ON network.networkid = series.networkid) " +
                 "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname) " +
@@ -364,8 +365,18 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Comment> getSeriesCommentsById(long seriesId) {
-        //Todo...
-        return null;
+        return jdbcTemplate.query("SELECT * " +
+                "FROM seriesreview " +
+                "WHERE seriesId = ?",
+                new Object[]{seriesId},(resultSet,i) -> {
+                   Comment comment = new Comment();
+                   comment.setCommentId(resultSet.getLong("id"));
+                   comment.setUserId(resultSet.getLong("userId"));
+                   comment.setBody(resultSet.getString("body"));
+                   comment.setPoints(resultSet.getInt("numLikes"));
+                   comment.setUser(userDao.getUserById(comment.getUserId()));
+                   return comment;
+                });
     }
 
     @Override

@@ -1,13 +1,13 @@
 package ar.edu.itba.paw.persistence;
 
 
-import ar.edu.itba.paw.model.Genre;
-import ar.edu.itba.paw.model.Series;
+import ar.edu.itba.paw.model.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -42,7 +41,11 @@ public class SeriesDaoJdbcTest {
     private static final String GENRE = "genre";
     private static final Genre GENRE_OBJ = new Genre(GENRE_ID,GENRE);
     private static final String NETWORK_NAME = "network";
-    private static final int NETWORK_ID = 1;
+    private static final int NETWORK_ID = 8;
+    private static final int SEASON_ID = 9;
+    private static final int EPISODE_ID = 10;
+    private static final int USER_ID = 11;
+
     @Autowired
     private DataSource ds;
     @Autowired
@@ -57,6 +60,19 @@ public class SeriesDaoJdbcTest {
                 "VALUES(%d,%d,'%s','%s',%f,'%s',%d,%d,'%s','%s','%s','%s','%s','%s',%d)",
                 ID, TVDB_ID, NAME,DESCRIPTION,USER_RATING,STATUS,RUNTIME,NETWORK_ID,FIRST_AIRED,ID_IMDB,ADDED,UPDATED,POSTER_URL,BANNER_URL,FOLLOWERS));
         jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO hasgenre (seriesid,genreid) VALUES(%d,%d)",ID,GENRE_ID));
+        jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO season (seasonid,seriesid,seasonnumber) VALUES(%d,%d,%d)",SEASON_ID,ID,1));
+        jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO episode (id,name,seriesId,overview,numEpisode,tvdbid,seasonid)VALUES(%d,'%s',%d,'%s',%d,%d,%d)",
+                EPISODE_ID, NAME,ID,DESCRIPTION,1,TVDB_ID,SEASON_ID));
+    }
+    private void insertUser(){
+        final String username = "username";
+        final String password = "password";
+        final String mail = "mail@mail.com";
+        final String confirmationKey = "confirmation_key";
+        jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO users " +
+                        "(id,username,password,mail,confirmation_key) " +
+                        "VALUES(%d,'%s','%s','%s','%s')",
+                USER_ID, username, password,mail,confirmationKey));
     }
     private void assertSeries(Series series){
         Assert.assertNotNull(series);
@@ -234,22 +250,13 @@ public class SeriesDaoJdbcTest {
         //Asserts
         Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","description = '" + newDescription + "'"));
     }
-
     @Test
     public void followSeriesTest(){
         //Setup
         populateDatabase();
-        final long userId = 1;
-        final String username = "username";
-        final String password = "password";
-        final String mail = "mail@mail.com";
-        final String confirmationKey = "confirmation_key";
-        jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO users " +
-                        "(id,username,password,mail,confirmation_key) " +
-                        "VALUES(%d,'%s','%s','%s','%s')",
-                userId, username, password,mail,confirmationKey));
+        insertUser();
         //Ejercitar
-        seriesDao.followSeries(ID,userId);
+        seriesDao.followSeries(ID,USER_ID);
         //Asserts
         Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"follows"));
         Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","followers="+(FOLLOWERS + 1)));
@@ -258,29 +265,95 @@ public class SeriesDaoJdbcTest {
     public void setViewedEpisodeTest(){
         //Setup
         populateDatabase();
-        final long userId = 1;
-        final String username = "username";
-        final String password = "password";
-        final String mail = "mail@mail.com";
-        final String confirmationKey = "confirmation_key";
-        jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO users " +
-                        "(id,username,password,mail,confirmation_key) " +
-                        "VALUES(%d,'%s','%s','%s','%s')",
-                userId, username, password,mail,confirmationKey));
-        final long seasonId = 1;
-        jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO season " +
-                        "(seasonid,seriesid,seasonnumber) " +
-                        "VALUES(%d,%d,%d)",
-                seasonId,ID,1));
-        final long episodeId = 1;
-        jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO episode " +
-                        "(id,name,seriesId,numEpisode,tvdbid,seasonid) " +
-                        "VALUES(%d,'%s',%d,%d,%d,%d)",
-                episodeId, NAME,ID,1,TVDB_ID,seasonId));
+        insertUser();
         //Ejercitar
-        seriesDao.setViewedEpisode(episodeId,userId);
+        seriesDao.setViewedEpisode(EPISODE_ID,USER_ID);
         //Asserts
         Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"hasviewedepisode"));
+    }
+    @Test
+    public void searchSeriesTest(){
+        //Setup
+        populateDatabase();
+        //Ejercitar
+        List<Series> series = seriesDao.searchSeries(NAME,GENRE,NETWORK_NAME,0,(int)USER_RATING + 1);
+        //Asserts
+        Assert.assertEquals(1,series.size());
+        assertSeries(series.get(0));
+    }
+    @Test
+    public void getSeasonsBySeriesIdTest(){
+        //Setup
+        populateDatabase();
+        //Ejercitar
+        List<Season> seasons = seriesDao.getSeasonsBySeriesId(ID);
+        //Asserts
+        Assert.assertEquals(1,seasons.size());
+        Season s = seasons.get(0);
+        Assert.assertEquals(SEASON_ID,s.getId());
+        Assert.assertEquals(1,s.getSeasonNumber());
+    }
+    @Test
+    public void getEpisodesBySeasonIdTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        //Ejercitar
+        List<Episode> episodes = seriesDao.getEpisodesBySeasonId(SEASON_ID,USER_ID);
+        //Asserts
+        Assert.assertEquals(1,episodes.size());
+        Episode e = episodes.get(0);
+        Assert.assertEquals(EPISODE_ID,e.getId());
+        Assert.assertEquals(NAME,e.getName());
+        Assert.assertEquals(DESCRIPTION,e.getDescription());
+        Assert.assertEquals(1,e.getEpisodeNumber());
+    }
+    @Test
+    public void getSeriesCommentsByIdTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        long commentId = 1;
+        long numLikes = 1;
+        String body = "body";
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,body,seriesid,numLikes) VALUES (%d,%d,'%s',%d,%d)",
+                commentId,USER_ID,body,ID,numLikes));
+        //Ejercitar
+        List<Comment> comments = seriesDao.getSeriesCommentsById(ID);
+        //Asserts
+        Assert.assertEquals(1,comments.size());
+        Comment c = comments.get(0);
+        Assert.assertEquals(commentId,c.getCommentId());
+        Assert.assertEquals(USER_ID,c.getUserId());
+        Assert.assertEquals(numLikes,c.getPoints());
+        Assert.assertEquals(body,c.getBody());
+        Assert.assertNotNull(c.getUser());
+        Assert.assertEquals(USER_ID,c.getUser().getId());
+    }
+    @Test
+    public void getNextToBeSeenTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        jdbcTemplate.execute(String.format("INSERT INTO follows (userid,seriesid) VALUES (%d,%d)", USER_ID,ID));
+        //TODO
+        //Ejercitar
+//      List<Series> series = seriesDao.getNextToBeSeen(USER_ID);
+        //Asserts
+//      Assert.assertEquals(1,series.size());
+//      assertSeries(series.get(0));
+    }
+    @Test
+    public void getAllGenresTest(){
+        //Setup
+        populateDatabase();
+        //Ejercitar
+        List<Genre> genres = seriesDao.getAllGenres();
+        //Asserts
+        Assert.assertEquals(1,genres.size());
+        Genre g = genres.get(0);
+        Assert.assertEquals(GENRE,g.getName());
+        Assert.assertEquals(GENRE_ID,g.getId());
     }
     @Test
     public void getSeriesByWrongId(){
@@ -335,5 +408,84 @@ public class SeriesDaoJdbcTest {
         final List<Series> series = seriesDao.getNewSeries(3,9);
         //Asserts
         Assert.assertEquals(series.size(),0);
+    }
+    @Test
+    public void followSeriesByWrongSeriesIdTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        //Ejercitar
+        try {
+            seriesDao.followSeries(ID + 1, USER_ID);
+        }catch(DataIntegrityViolationException e){
+            //Asserts
+            Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"follows"));
+            Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series","followers="+(FOLLOWERS)));
+            return;
+        }
+        //Si no lanzo una excepcion, falla el test.
+        Assert.fail();
+    }
+    @Test
+    public void searchSeriesByWrongNameTest(){
+        //Setup
+        populateDatabase();
+        //Ejercitar
+        List<Series> series = seriesDao.searchSeries(NAME + "extra",GENRE,NETWORK_NAME,0,(int)USER_RATING + 1);
+        //Asserts
+        Assert.assertEquals(0,series.size());
+    }
+    @Test
+    public void searchSeriesByWrongGenreTest(){
+        //Setup
+        populateDatabase();
+        //Ejercitar
+        List<Series> series = seriesDao.searchSeries(NAME,GENRE + "extra",NETWORK_NAME,0,(int)USER_RATING + 1);
+        //Asserts
+        Assert.assertEquals(0,series.size());
+    }
+    @Test
+    public void searchSeriesByWrongNetworkTest(){
+        //Setup
+        populateDatabase();
+        //Ejercitar
+        List<Series> series = seriesDao.searchSeries(NAME,GENRE,NETWORK_NAME + "extra",0,(int)USER_RATING + 1);
+        //Asserts
+        Assert.assertEquals(0,series.size());
+    }
+    @Test
+    public void setViewedEpisodeWithWrongIdTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        //Ejercitar
+        try {
+            seriesDao.setViewedEpisode(EPISODE_ID + 1, USER_ID);
+        }catch(DataIntegrityViolationException e){
+            //Asserts
+            Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"hasviewedepisode"));
+            return;
+        }
+        //Si no lanzo excepcion, falla el test.
+        Assert.fail();
+    }
+    @Test
+    public void getSeasonsByWrongSeriesIdTest(){
+        //Setup
+        populateDatabase();
+        //Ejercitar
+        List<Season> seasons = seriesDao.getSeasonsBySeriesId(ID + 1);
+        //Asserts
+        Assert.assertEquals(0,seasons.size());
+    }
+    @Test
+    public void getEpisodesByWrongSeasonIdTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        //Ejercitar
+        List<Episode> episodes = seriesDao.getEpisodesBySeasonId(SEASON_ID + 1,USER_ID);
+        //Asserts
+        Assert.assertEquals(0,episodes.size());
     }
 }

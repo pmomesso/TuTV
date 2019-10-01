@@ -53,7 +53,7 @@ public class HelloWorldController {
 	        return search();
         }
         final ModelAndView mav = new ModelAndView("searchResults");
-        mav.addObject("searchResults",seriesService.searchSeries(form.getName(),form.getGenre(),form.getNetwork()));
+        mav.addObject("searchResults",seriesService.searchSeries(form.getName(),form.getGenre(),form.getNetwork(),form.getMin(),form.getMax()));
         return mav;
     }
 	@RequestMapping(value = "/series", method = RequestMethod.GET)
@@ -81,6 +81,7 @@ public class HelloWorldController {
 		if (errors.hasErrors()) {
 			return series(form, new CommentForm(), form.getSeriesId());
 		}
+		//TODO llamar a metodo que guarde el post.
 //		DENTRO DE FORM HAY: form.getDescription() form.getSeriesId() form.getUserId()
 		return new ModelAndView("redirect:/series?id=" + form.getSeriesId());
 	}
