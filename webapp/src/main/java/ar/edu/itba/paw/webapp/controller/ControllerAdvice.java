@@ -25,6 +25,9 @@ public class ControllerAdvice {
         return mav;
     }
 
+    @ModelAttribute("isLogged")
+    public boolean isLogged() { return userService.getLoggedUser() != null; }
+
     @ModelAttribute("user")
     public User loggedUser() {
         return userService.getLoggedUser();

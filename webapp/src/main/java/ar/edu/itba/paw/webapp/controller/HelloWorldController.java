@@ -60,7 +60,11 @@ public class HelloWorldController {
 	public ModelAndView series(@ModelAttribute("postForm") final PostForm postForm, @ModelAttribute("commentForm") final CommentForm commentForm, @RequestParam("id") long id) {
 		final ModelAndView mav = new ModelAndView("series");
 		User u = userService.getLoggedUser();
-		mav.addObject("series", seriesService.getSerieById(id, u.getId()));
+		long userId = -1;
+		if (u != null) {
+			userId = u.getId();
+		}
+		mav.addObject("series", seriesService.getSerieById(id, userId));
 		return mav;
 	}
 
@@ -87,7 +91,6 @@ public class HelloWorldController {
 		if (errors.hasErrors()) {
 			return series(form, new CommentForm(), form.getSeriesId());
 		}
-//		DENTRO DE FORM HAY: form.getDescription() form.getSeriesId() form.getUserId()
 		//Todo: que el método reciba un form más que los campos de form...
 		seriesService.addSeriesReview(form.getBody(), form.getSeriesId(), form.getUserId());
 		return new ModelAndView("redirect:/series?id=" + form.getSeriesId());
@@ -95,7 +98,6 @@ public class HelloWorldController {
 
 	@RequestMapping(value = "/likePost", method = RequestMethod.POST)
 	public ModelAndView likePost(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId) {
-		// TODO pedro llamar a metodo que likea ese post
 		seriesService.likePost(userId, postId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
@@ -155,12 +157,4 @@ public class HelloWorldController {
 //		return new ModelAndView("redirect:/user/" + u.getId());
 		return null;
 	}
-
-	@RequestMapping("/logout") //Le digo que url mappeo
-	public ModelAndView logout() {
-		final ModelAndView mav = new ModelAndView("logout"); //Seleccionar lista
-		mav.addObject("greeting", "PAW"); //Popular model
-		return mav;
-	}
-
 }

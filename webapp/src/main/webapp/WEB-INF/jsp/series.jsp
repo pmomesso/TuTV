@@ -65,10 +65,12 @@
                                         <%--                                                <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star"></label>--%>
                                         <%--                                            </div>--%>
                                         <%--                                        </div>--%>
-                                        <form action="<c:url value="/addSeries?seriesId=${series.id}&userId=${user.id}"/>"
-                                              method="post">
-                                            <button class="add-button" type="submit">Add</button>
-                                        </form>
+                                        <c:if test="${isLogged} && not ${series.follows}">
+                                            <form action="<c:url value="/addSeries?seriesId=${series.id}&userId=${user.id}"/>"
+                                                  method="post">
+                                                <button class="add-button" type="submit">Add</button>
+                                            </form>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>
@@ -105,7 +107,7 @@
                                                                name="group-${item.index}" id="group-${item.index}">
                                                         <label class="cd-accordion__label cd-accordion__label--icon-folder drop"
                                                                for="group-${item.index}"><span
-                                                                class="big-size">Season ${season.seasonNumber}</span></label>
+                                                                class="big-size"><spring:message code="series.Season"/> ${season.seasonNumber}</span></label>
 
                                                         <ul class="cd-accordion__sub cd-accordion__sub--l1">
                                                             <c:forEach items="${season.episodeList}" var="episode">
@@ -113,7 +115,7 @@
                                                                     <div class="cd-accordion__item">
                                                                         <h3>${episode.episodeNumber}
                                                                             - ${episode.name}</h3>
-                                                                        <c:if test="${not empty user}">
+                                                                        <c:if test="${isLogged}">
                                                                             <c:choose>
                                                                                 <c:when test="${episode.viewed}">
                                                                                     <form action="<c:url value="/unviewEpisode?seriesId=${series.id}&episodeId=${episode.id}&userId=${user.id}"/>"
@@ -147,46 +149,51 @@
                                             <h2 id="community-title" class="title"><spring:message code="series.discussion"/></h2>
                                             <div id="show-comments">
                                                 <div class="comments">
-                                                    <div class="new-comment comment">
-                                                        <div class="disclaimer">
-                                                            <p class="disclaimer-title"><spring:message code="series.spoil"/></p>
-                                                        </div>
-                                                        <form:form class="post" modelAttribute="postForm" action="/post"
-                                                                   method="post"
-                                                                   enctype="application/x-www-form-urlencoded">
-                                                            <div class="top">
-                                                                <form:errors path="body" element="p" cssClass="error text-left"/>
-                                                                <div class="holder mode-comment mode">
-                                                                    <div class="comment-mode mode">
-                                                                        <div class="textarea-wrapper">
-                                                                            <div class="mentions-input-box">
-                                                                                <spring:message code="series.enterComment" var="placeholder"/>
-                                                                                <form:textarea
-                                                                                        placeholder="${placeholder}"
-                                                                                        path="body"
-                                                                                        style="overflow: hidden; height: 40px;"/>
-                                                                                <form:input type="hidden" path="userId"
-                                                                                            value="${user.id}"/>
-                                                                                <form:input type="hidden"
-                                                                                            path="seriesId"
-                                                                                            value="${series.id}"/>
+                                                    <c:if test="${isLogged}">
+                                                        <div class="new-comment comment">
+                                                            <div class="disclaimer">
+                                                                <p class="disclaimer-title"><spring:message code="series.spoil"/></p>
+                                                            </div>
+                                                            <form:form class="post" modelAttribute="postForm" action="/post"
+                                                                       method="post"
+                                                                       enctype="application/x-www-form-urlencoded">
+                                                                <div class="top">
+                                                                    <form:errors path="body" element="p" cssClass="error text-left"/>
+                                                                    <div class="holder mode-comment mode">
+                                                                        <div class="comment-mode mode">
+                                                                            <div class="textarea-wrapper">
+                                                                                <div class="mentions-input-box">
+                                                                                    <spring:message code="series.enterComment" var="placeholder"/>
+                                                                                    <form:textarea
+                                                                                            placeholder="${placeholder}"
+                                                                                            path="body"
+                                                                                            style="overflow: hidden; height: 40px;"/>
+                                                                                    <form:input type="hidden" path="userId"
+                                                                                                value="${user.id}"/>
+                                                                                    <form:input type="hidden"
+                                                                                                path="seriesId"
+                                                                                                value="${series.id}"/>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                    <div class="author">
+                                                                        <img class="author-picture img-circle"
+                                                                             src="https://d1zfszn0v5ya99.cloudfront.net/user/15629037/profile_picture/5d0d499d718d5_square.png"
+                                                                             alt="${user.userName}">
+                                                                    </div>
                                                                 </div>
-                                                                <div class="author">
-                                                                    <img class="author-picture img-circle"
-                                                                         src="https://d1zfszn0v5ya99.cloudfront.net/user/15629037/profile_picture/5d0d499d718d5_square.png"
-                                                                         alt="${user.userName}">
+                                                                <div class="submit-comment">
+                                                                    <button type="submit" class="submit-comment-btn">
+                                                                        <spring:message code="series.post"/></button>
                                                                 </div>
-                                                            </div>
-                                                            <div class="submit-comment">
-                                                                <button type="submit" class="submit-comment-btn">
-                                                                    <spring:message code="series.post"/></button>
-                                                            </div>
-                                                        </form:form>
-                                                    </div>
+                                                            </form:form>
+                                                        </div>
+                                                    </c:if>
                                                     <div class="comments-list">
+                                                        <c:if test="not ${isLogged} && empty ${series.postList}">
+                                                            <spring:message code="series.noPosts"/>
+                                                        </c:if>
                                                         <c:forEach var="post" items="${series.postList}">
                                                             <div class="comment clearfix extended">
                                                                 <article class="post">
@@ -204,19 +211,27 @@
                                                                                 <span>${post.user.userName}</span>
                                                                                 <div class="float-right mr-5">
                                                                                     <c:choose>
-                                                                                        <c:when test="${post.liked}">
-                                                                                            <form action="<c:url value="/unlikePost?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}"/>"
-                                                                                                  method="post">
-                                                                                                <button type="submit" class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
-                                                                                                <span>${post.points}</span>
-                                                                                            </form>
+                                                                                        <c:when test="${isLogged}">
+                                                                                            <c:choose>
+                                                                                                <c:when test="${post.liked}">
+                                                                                                    <form action="<c:url value="/unlikePost?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}"/>"
+                                                                                                          method="post">
+                                                                                                        <button type="submit" class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                        <span>${post.points}</span>
+                                                                                                    </form>
+                                                                                                </c:when>
+                                                                                                <c:otherwise>
+                                                                                                    <form action="<c:url value="/likePost?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}"/>"
+                                                                                                          method="post">
+                                                                                                        <button type="submit" class="heart" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                        <span>${post.points}</span>
+                                                                                                    </form>
+                                                                                                </c:otherwise>
+                                                                                            </c:choose>
                                                                                         </c:when>
                                                                                         <c:otherwise>
-                                                                                            <form action="<c:url value="/likePost?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}"/>"
-                                                                                                  method="post">
-                                                                                                <button type="submit" class="heart" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
-                                                                                                <span>${post.points}</span>
-                                                                                            </form>
+                                                                                            <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
+                                                                                            <span>${post.points}</span>
                                                                                         </c:otherwise>
                                                                                     </c:choose>
                                                                                 </div>
@@ -227,64 +242,75 @@
                                                                         </div>
                                                                     </div>
                                                                 </article>
-                                                                <div class="replies sub-comment">
-                                                                    <c:forEach var="comment" items="${post.comments}">
-                                                                        <article class="reply clearfix initialized">
-                                                                            <div class="holder">
-                                                                                <div class="author-label">
-                                                                                    <span>${comment.user.userName}</span>
-                                                                                    <div class="float-right">
-                                                                                        <c:choose>
-                                                                                            <c:when test="${comment.liked}">
-                                                                                                <form action="<c:url value="/unlikeComment?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
-                                                                                                      method="post">
-                                                                                                    <button type="submit" class="post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
-                                                                                                </form>
-                                                                                            </c:when>
-                                                                                            <c:otherwise>
-                                                                                                <form action="<c:url value="/likeComment?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
-                                                                                                      method="post">
-                                                                                                    <button type="submit" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
-                                                                                                </form>
-                                                                                            </c:otherwise>
-                                                                                        </c:choose>
-                                                                                        <span>${comment.points}</span>
+                                                                <c:if test="${isLogged} || not empty ${post.comments}">
+                                                                    <div class="replies sub-comment">
+                                                                        <c:forEach var="comment" items="${post.comments}">
+                                                                            <article class="reply clearfix initialized">
+                                                                                <div class="holder">
+                                                                                    <div class="author-label">
+                                                                                        <span>${comment.user.userName}</span>
+                                                                                        <div class="float-right">
+                                                                                            <c:choose>
+                                                                                                <c:when test="${isLogged}">
+                                                                                                    <c:choose>
+                                                                                                        <c:when test="${comment.liked}">
+                                                                                                            <form action="<c:url value="/unlikeComment?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
+                                                                                                                  method="post">
+                                                                                                                <button type="submit" class="post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                            </form>
+                                                                                                        </c:when>
+                                                                                                        <c:otherwise>
+                                                                                                            <form action="<c:url value="/likeComment?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
+                                                                                                                  method="post">
+                                                                                                                <button type="submit" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                            </form>
+                                                                                                        </c:otherwise>
+                                                                                                    </c:choose>
+                                                                                                </c:when>
+                                                                                                <c:otherwise>
+                                                                                                    <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
+                                                                                                </c:otherwise>
+                                                                                            </c:choose>
+                                                                                            <span>${comment.points}</span>
+                                                                                        </div>
                                                                                     </div>
+                                                                                    <blockquote>
+                                                                                        <p>${comment.body}</p>
+                                                                                    </blockquote>
                                                                                 </div>
-                                                                                <blockquote>
-                                                                                    <p>${comment.body}</p>
-                                                                                </blockquote>
-                                                                            </div>
-                                                                        </article>
-                                                                    </c:forEach>
-                                                                    <form:form class="reply clearfix" modelAttribute="commentForm" action="/comment"
-                                                                               method="post"
-                                                                               enctype="application/x-www-form-urlencoded">
-                                                                        <div class="holder">
-                                                                            <form:errors path="commentBody" element="p" cssClass="error text-left"/>
-                                                                                <div class="textarea-wrapper">
-                                                                                    <div class="mentions-input-box">
-                                                                                        <spring:message code="series.enterReply" var="placeholder_reply"/>
-                                                                                        <form:textarea
-                                                                                                rows="1"
-                                                                                                placeholder="${placeholder_reply}"
-                                                                                                path="commentBody"
-                                                                                                style="overflow: hidden; height: 50px;"/>
-                                                                                        <form:input type="hidden" path="commentUserId"
-                                                                                                    value="${user.id}"/>
-                                                                                        <form:input type="hidden"
-                                                                                                    path="commentSeriesId"
-                                                                                                    value="${series.id}"/>
-                                                                                        <form:input type="hidden"
-                                                                                                    path="commentPostId"
-                                                                                                    value="${post.postId}"/>
-                                                                                        <button type="submit" class="post-comment"><spring:message code="series.post"/></button>
+                                                                            </article>
+                                                                        </c:forEach>
+                                                                        <c:if test="${isLogged}">
+                                                                            <form:form class="reply clearfix" modelAttribute="commentForm" action="/comment"
+                                                                                       method="post"
+                                                                                       enctype="application/x-www-form-urlencoded">
+                                                                                <div class="holder">
+                                                                                    <form:errors path="commentBody" element="p" cssClass="error text-left"/>
+                                                                                    <div class="textarea-wrapper">
+                                                                                        <div class="mentions-input-box">
+                                                                                            <spring:message code="series.enterReply" var="placeholder_reply"/>
+                                                                                            <form:textarea
+                                                                                                    rows="1"
+                                                                                                    placeholder="${placeholder_reply}"
+                                                                                                    path="commentBody"
+                                                                                                    style="overflow: hidden; height: 50px;"/>
+                                                                                            <form:input type="hidden" path="commentUserId"
+                                                                                                        value="${user.id}"/>
+                                                                                            <form:input type="hidden"
+                                                                                                        path="commentSeriesId"
+                                                                                                        value="${series.id}"/>
+                                                                                            <form:input type="hidden"
+                                                                                                        path="commentPostId"
+                                                                                                        value="${post.postId}"/>
+                                                                                            <button type="submit" class="post-comment"><spring:message code="series.post"/></button>
+                                                                                        </div>
                                                                                     </div>
+                                                                                    <div class="clearfix"></div>
                                                                                 </div>
-                                                                                <div class="clearfix"></div>
-                                                                        </div>
-                                                                    </form:form>
-                                                                </div>
+                                                                            </form:form>
+                                                                        </c:if>
+                                                                    </div>
+                                                                </c:if>
                                                             </div>
                                                         </c:forEach>
                                                     </div>

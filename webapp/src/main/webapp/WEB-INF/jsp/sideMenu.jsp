@@ -21,18 +21,20 @@
     <div class="all-left-navs">
         <section id="menu">
             <ul class="menu list-unstyled">
-                <li class="upcoming ">
-                    <a href="/upcoming" title="Upcoming">
-                        <img class="logo logo_icon" src="<c:url value="/resources/img/upcoming.png"/>" alt="Upcoming">
-                        <span><spring:message code="index.upcoming"/></span>
-                    </a>
-                </li>
-                <li class="home ">
-                    <a href="/watchlist" title="Watchlist">
-                        <img class="logo logo_icon" src="<c:url value="/resources/img/watchlist.png"/>" alt="Watchlist">
-                        <span><spring:message code="index.watchlist"/></span>
-                    </a>
-                </li>
+                <c:if test="${isLogged}">
+                    <li class="upcoming ">
+                        <a href="/upcoming" title="Upcoming">
+                            <img class="logo logo_icon" src="<c:url value="/resources/img/upcoming.png"/>" alt="Upcoming">
+                            <span><spring:message code="index.upcoming"/></span>
+                        </a>
+                    </li>
+                    <li class="home ">
+                        <a href="/watchlist" title="Watchlist">
+                            <img class="logo logo_icon" src="<c:url value="/resources/img/watchlist.png"/>" alt="Watchlist">
+                            <span><spring:message code="index.watchlist"/></span>
+                        </a>
+                    </li>
+                </c:if>
                 <li class="explore">
                     <a href="/" title="Explore">
                         <img class="logo logo_icon" src="<c:url value="/resources/img/explore.png"/>" alt="Explore">
@@ -41,22 +43,34 @@
                 </li>
             </ul>
         </section>
-        <section id="user-nav">
-            <h1>${user.userName}</h1>
-            <ul class="menu list-unstyled">
-                <li class="profile ">
-                    <a href="/profile" title="Profile">
-                        <img class="logo logo_icon" src="<c:url value="/resources/img/profile.png"/>" alt="Profile">
-                        <span><spring:message code="index.profile"/></span>
-                    </a>
-                </li>
-            </ul>
-        </section>
+        <c:if test="${isLogged}">
+            <section id="user-nav">
+                <h1>${user.userName}</h1>
+                <ul class="menu list-unstyled">
+                    <li class="profile ">
+                        <a href="/profile" title="Profile">
+                            <img class="logo logo_icon" src="<c:url value="/resources/img/profile.png"/>" alt="Profile">
+                            <span><spring:message code="index.profile"/></span>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+        </c:if>
         <section>
-            <a href="/logout" class="signout-link" title="<spring:message code="index.signout"/>">
-                <img class="logo logo_icon" src="<c:url value="/resources/img/sign_out.png"/>" alt="<spring:message code="index.signout"/>">
-                <span><spring:message code="index.signout"/></span>
-            </a>
+            <c:choose>
+                <c:when test="${isLogged}">
+                    <a href="/logout" class="signout-link" title="<spring:message code="index.signout"/>">
+                        <img class="logo logo_icon" src="<c:url value="/resources/img/sign_out.png"/>" alt="<spring:message code="index.signout"/>">
+                        <span><spring:message code="index.signout"/></span>
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a href="/login" class="signout-link" title="<spring:message code="index.signin"/>">
+                        <img class="logo logo_icon" src="<c:url value="/resources/img/sign_in.png"/>" alt="<spring:message code="index.signin"/>">
+                        <span><spring:message code="index.signin"/></span>
+                    </a>
+                </c:otherwise>
+            </c:choose>
         </section>
     </div>
 </div>
