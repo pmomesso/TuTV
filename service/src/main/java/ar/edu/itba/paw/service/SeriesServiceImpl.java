@@ -92,4 +92,9 @@ public class SeriesServiceImpl implements SeriesService {
     public void addSeriesReview(String body, long seriesId, long userId) {
         seriesDao.addSeriesReview(body, seriesId, userId);
     }
+
+    @Override
+    public void likePost(long userId, long postId) {
+        seriesDao.likePost(userId, postId);
+    }
 }

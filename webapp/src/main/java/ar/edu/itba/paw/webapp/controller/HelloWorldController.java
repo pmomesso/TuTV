@@ -87,8 +87,8 @@ public class HelloWorldController {
 		if (errors.hasErrors()) {
 			return series(form, new CommentForm(), form.getSeriesId());
 		}
-		//TODO llamar a metodo que guarde el post.
 //		DENTRO DE FORM HAY: form.getDescription() form.getSeriesId() form.getUserId()
+		//Todo: que el método reciba un form más que los campos de form...
 		seriesService.addSeriesReview(form.getBody(), form.getSeriesId(), form.getUserId());
 		return new ModelAndView("redirect:/series?id=" + form.getSeriesId());
 	}
@@ -96,6 +96,7 @@ public class HelloWorldController {
 	@RequestMapping(value = "/likePost", method = RequestMethod.POST)
 	public ModelAndView likePost(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId) {
 		// TODO pedro llamar a metodo que likea ese post
+		seriesService.likePost(userId, postId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 

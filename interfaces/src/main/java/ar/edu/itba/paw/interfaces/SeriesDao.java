@@ -44,4 +44,6 @@ public interface SeriesDao {
     void unviewEpisode(long userId, long episodeId);
 
     void addSeriesReview(String body, long seriesId, long userId);
+
+    void likePost(long userId, long postId);
 }

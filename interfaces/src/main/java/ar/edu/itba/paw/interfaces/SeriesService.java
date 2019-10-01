@@ -27,4 +27,6 @@ public interface SeriesService {
     void unviewEpisode(long seriesId, long episodeId);
 
     void addSeriesReview(String body, long seriesId, long userId);
+
+    void likePost(long userId, long postId);
 }

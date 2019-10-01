@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -71,6 +72,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     private SimpleJdbcInsert followsjdbcInsert;
     private SimpleJdbcInsert viewedEpisodesjdbcInsert;
     private SimpleJdbcInsert seriesReviewJdbcInsert;
+    private SimpleJdbcInsert hasLikedSeriesReviewJdbcInsert;
 
     @Autowired
     private UserDao userDao;
@@ -113,8 +115,11 @@ public class SeriesDaoJdbc implements SeriesDao {
         viewedEpisodesjdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("hasviewedepisode");
         seriesReviewJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("seriesreview");
-        seriesReviewJdbcInsert.usingColumns("userid", "seriesid", "body");
+                .withTableName("seriesreview")
+                .usingColumns("userid", "seriesid", "body");
+        hasLikedSeriesReviewJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("haslikedseriesreview")
+                .usingColumns("userid", "seriesreview");
     }
 
     @Override
@@ -206,7 +211,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         }
         Series series = groupGenres(seriesList).get(0);
         addAllSeasonsToSeries(series, userId);
-        addAllPostsToSeries(series);
+        addAllPostsToSeries(series, userId);
         series.setFollows(userFollows(id, userId));
         return series;
     }
@@ -226,16 +231,17 @@ public class SeriesDaoJdbc implements SeriesDao {
         }
     }
 
-    private void addAllPostsToSeries(Series series) {
-        final List<Post> postList = jdbcTemplate.query("SELECT seriesreview.id, seriesreview.body, seriesreview.numlikes, seriesreview.userid " +
+    private void addAllPostsToSeries(Series series, long userId) {
+        final List<Post> postList = jdbcTemplate.query("SELECT seriesreview.id, seriesreview.body, seriesreview.numlikes, seriesreview.userid, exists(SELECT * FROM haslikedseriesreview WHERE userid = ? AND seriesreview = seriesreview.id) AS liked " +
                 "FROM seriesreview JOIN series ON seriesreview.seriesid = series.id " +
-                        "WHERE series.id = ?", new Object[]{series.getId()},
+                        "WHERE series.id = ?", new Object[]{userId, series.getId()},
                 (resultSet, i) -> {
                     Post post = new Post();
                     post.setBody(resultSet.getString("body"));
                     post.setPoints(resultSet.getInt("numlikes"));
                     post.setPostId(resultSet.getInt("id"));
                     post.setUserId(resultSet.getLong("userid"));
+                    post.setLiked(resultSet.getBoolean("liked"));
                     return post;
                 });
         addUserToPosts(postList);
@@ -460,7 +466,6 @@ public class SeriesDaoJdbc implements SeriesDao {
         Map<String, Object> args = new HashMap<>();
         args.put("userId",userId);
         args.put("episodeId", episodeId);
-
         viewedEpisodesjdbcInsert.execute(args);
     }
 
@@ -476,6 +481,23 @@ public class SeriesDaoJdbc implements SeriesDao {
         args.put("seriesid", seriesId);
         args.put("body", body);
         seriesReviewJdbcInsert.execute(args);
+    }
+
+    @Override
+    public void likePost(long userId, long postId) {
+        if(hasLikedPost(userId, postId)) return;
+        Map<String, Object> args = new HashMap<>();
+        args.put("userid", userId);
+        args.put("seriesreview", postId);
+        hasLikedSeriesReviewJdbcInsert.execute(args);
+    }
+
+    private boolean hasLikedPost(long userId, long postId) {
+        List<Boolean> list = jdbcTemplate.query("SELECT exists(SELECT * FROM haslikedseriesreview " +
+                "WHERE userid = ? AND seriesreview = ?) AS liked", new Object[]{userId, postId}, (resultSet, i) -> {
+            return resultSet.getBoolean("liked");
+        });
+        return list.get(0);
     }
 
 }
