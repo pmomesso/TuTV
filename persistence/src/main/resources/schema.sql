@@ -136,10 +136,10 @@ create table if not exists seriesreview
     seriesid integer
         constraint seriesreview_series_id_fk
             references series,
+    numlikes integer default 0,
     id serial not null
         constraint seriesreview_pk
-            primary key,
-    numlikes integer default 0 not null
+            primary key
 );
 
 alter table seriesreview owner to root;

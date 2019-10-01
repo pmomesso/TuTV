@@ -70,6 +70,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     private SimpleJdbcInsert hasGenrejdbcInsert;
     private SimpleJdbcInsert followsjdbcInsert;
     private SimpleJdbcInsert viewedEpisodesjdbcInsert;
+    private SimpleJdbcInsert seriesReviewJdbcInsert;
 
     @Autowired
     private UserDao userDao;
@@ -111,6 +112,9 @@ public class SeriesDaoJdbc implements SeriesDao {
                 .withTableName("follows");
         viewedEpisodesjdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("hasviewedepisode");
+        seriesReviewJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("seriesreview");
+        seriesReviewJdbcInsert.usingColumns("userid", "seriesid", "body");
     }
 
     @Override
@@ -463,6 +467,15 @@ public class SeriesDaoJdbc implements SeriesDao {
     @Override
     public void unviewEpisode(long userId, long episodeId) {
         jdbcTemplate.update("DELETE FROM hasviewedepisode WHERE hasviewedepisode.userid = ? AND hasviewedepisode.episodeid = ?", new Object[]{userId, episodeId});
+    }
+
+    @Override
+    public void addSeriesReview(String body, long seriesId, long userId) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("userid", userId);
+        args.put("seriesid", seriesId);
+        args.put("body", body);
+        seriesReviewJdbcInsert.execute(args);
     }
 
 }

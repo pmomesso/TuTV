@@ -42,4 +42,6 @@ public interface SeriesDao {
     void setViewedEpisode(long episodeId,long userId);
 
     void unviewEpisode(long userId, long episodeId);
+
+    void addSeriesReview(String body, long seriesId, long userId);
 }
