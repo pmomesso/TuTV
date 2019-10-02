@@ -36,11 +36,13 @@
         <div class="container h-100">
             <div class="row justify-content-center h-100">
                 <div class="col-3 align-self-center white-background">
+<%--                    COMO MODEL ATTRIBUTE ESTA: "user" (user loggeado) y "userProfile" (de quien se pide el profile)--%>
+<%--                    Si coinciden sus ids, habria que dejarlo modificar sus campos--%>
                     <div class="text-center">
-                        ${user.userName}
+                        ${userProfile.userName}
                     </div>
                     <div class="text-center">
-                        ${user.mailAddress}
+                        ${userProfile.mailAddress}
                     </div>
                 </div>
             </div>

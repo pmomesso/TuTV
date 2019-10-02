@@ -209,7 +209,9 @@
                                                                     <div class="top">
                                                                         <div class="holder">
                                                                             <div class="author-label mb-3">
-                                                                                <span>${post.user.userName}</span>
+                                                                                <a href="<c:url value="/profile?id=${post.userId}"/>" title="<spring:message code="index.profile"/>">
+                                                                                    <span>${post.user.userName}</span>
+                                                                                </a>
                                                                                 <div class="float-right mr-5">
                                                                                     <c:choose>
                                                                                         <c:when test="${isLogged}">
@@ -257,7 +259,9 @@
                                                                             <article class="reply clearfix initialized">
                                                                                 <div class="holder">
                                                                                     <div class="author-label">
-                                                                                        <span>${comment.user.userName}</span>
+                                                                                        <a href="<c:url value="/profile?id=${comment.userId}"/>" title="<spring:message code="index.profile"/>">
+                                                                                            <span>${comment.user.userName}</span>
+                                                                                        </a>
                                                                                         <div class="float-right">
                                                                                             <c:choose>
                                                                                                 <c:when test="${isLogged}">
