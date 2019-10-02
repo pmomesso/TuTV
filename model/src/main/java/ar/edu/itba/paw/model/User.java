@@ -11,6 +11,7 @@ public class User {
     private Date birthDate;
     private String confirmationKey;
     private boolean isAdmin = false;
+    private boolean isBanned = false;
 
     public User() {}
 
@@ -64,5 +65,21 @@ public class User {
 
     public void setIsAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
+    public boolean isBanned() {
+        return isBanned;
+    }
+
+    public void setBanned(boolean banned) {
+        isBanned = banned;
     }
 }

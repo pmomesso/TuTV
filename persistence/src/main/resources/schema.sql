@@ -7,7 +7,7 @@ create table if not exists users
     password varchar(255),
     mail varchar(32),
     confirmation_key varchar(60),
-    banned boolean default false,
+    isbanned boolean default false,
     isadmin boolean default false
 );
 
