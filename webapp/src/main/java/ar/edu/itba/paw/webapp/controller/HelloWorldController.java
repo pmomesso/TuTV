@@ -143,6 +143,12 @@ public class HelloWorldController {
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 
+    @RequestMapping(value = "/banUser", method = RequestMethod.POST)
+    public ModelAndView banUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) {
+//		TODO pedro ban user
+        return new ModelAndView("redirect:/series?id=" + seriesId);
+    }
+
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public ModelAndView profile(@RequestParam("id") long userId) {
 		User u = userService.findById(userId);
@@ -151,6 +157,20 @@ public class HelloWorldController {
 		mav.addObject("userProfile", u);
 		return mav;
 	}
+
+    @RequestMapping(value = "/upcoming", method = RequestMethod.GET)
+    public ModelAndView upcoming() {
+        ModelAndView mav = new ModelAndView("upcoming");
+//        TODO add upcoming series to model
+        return mav;
+    }
+
+    @RequestMapping(value = "/watchlist", method = RequestMethod.GET)
+    public ModelAndView watchlist() {
+        ModelAndView mav = new ModelAndView("watchlist");
+//        TODO add watchlist to model
+        return mav;
+    }
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public ModelAndView showLogin(@RequestParam(required = false) String error) {

@@ -212,7 +212,21 @@
                                                                                 <a href="<c:url value="/profile?id=${post.userId}"/>" title="<spring:message code="index.profile"/>">
                                                                                     <span>${post.user.userName}</span>
                                                                                 </a>
+                                                                                <c:if test="${user.isAdmin && user.id ne post.userId}">
+                                                                                    <form action="<c:url value="/banUser?seriesId=${series.id}&userId=${post.userId}"/>"
+                                                                                          method="post" class="float-left">
+                                                                                        <button class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf05e</button>
+                                                                                    </form>
+                                                                                </c:if>
                                                                                 <div class="float-right mr-5">
+                                                                                    <c:if test="${user.isAdmin || user.id eq post.userId}">
+                                                                                        <form action="<c:url value="/removePost?seriesId=${series.id}&postId=${post.postId}"/>"
+                                                                                              method="post" class="float-left">
+                                                                                            <button type="submit" class="remove">
+                                                                                                <img src="<c:url value="/resources/img/remove.png"/>" alt="<spring:message code="series.remove"/>">
+                                                                                            </button>
+                                                                                        </form>
+                                                                                    </c:if>
                                                                                     <c:choose>
                                                                                         <c:when test="${isLogged}">
                                                                                             <c:choose>
@@ -237,14 +251,6 @@
                                                                                             <span>${post.points}</span>
                                                                                         </c:otherwise>
                                                                                     </c:choose>
-                                                                                    <c:if test="${user.isAdmin || user.id eq post.userId}">
-                                                                                        <form action="<c:url value="/removePost?seriesId=${series.id}&postId=${post.postId}"/>"
-                                                                                              method="post" class="float-left">
-                                                                                            <button type="submit" class="remove">
-                                                                                                <img src="<c:url value="/resources/img/remove.png"/>" alt="<spring:message code="series.remove"/>">
-                                                                                            </button>
-                                                                                        </form>
-                                                                                    </c:if>
                                                                                 </div>
                                                                             </div>
                                                                             <blockquote class="original">
@@ -260,9 +266,23 @@
                                                                                 <div class="holder">
                                                                                     <div class="author-label">
                                                                                         <a href="<c:url value="/profile?id=${comment.userId}"/>" title="<spring:message code="index.profile"/>">
-                                                                                            <span>${comment.user.userName}</span>
+                                                                                            <span style="font-family: proximaNova; color: #777;">${comment.user.userName}</span>
                                                                                         </a>
+                                                                                        <c:if test="${user.isAdmin && user.id ne comment.userId}">
+                                                                                            <form action="<c:url value="/banUser?seriesId=${series.id}&userId=${comment.userId}"/>"
+                                                                                                  method="post" class="float-left">
+                                                                                                <button class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf05e</button>
+                                                                                            </form>
+                                                                                        </c:if>
                                                                                         <div class="float-right">
+                                                                                            <c:if test="${user.isAdmin || user.id eq comment.userId}">
+                                                                                                <form action="<c:url value="/removeComment?seriesId=${series.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
+                                                                                                      method="post" class="float-left">
+                                                                                                    <button type="submit" class="remove-small">
+                                                                                                        <img src="<c:url value="/resources/img/remove.png"/>" alt="<spring:message code="series.remove"/>">
+                                                                                                    </button>
+                                                                                                </form>
+                                                                                            </c:if>
                                                                                             <c:choose>
                                                                                                 <c:when test="${isLogged}">
                                                                                                     <c:choose>
@@ -287,14 +307,6 @@
                                                                                                     <span>${comment.points}</span>
                                                                                                 </c:otherwise>
                                                                                             </c:choose>
-                                                                                            <c:if test="${user.isAdmin || user.id eq comment.userId}">
-                                                                                                <form action="<c:url value="/removeComment?seriesId=${series.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
-                                                                                                      method="post" class="float-left">
-                                                                                                    <button type="submit" class="remove-small">
-                                                                                                        <img src="<c:url value="/resources/img/remove.png"/>" alt="<spring:message code="series.remove"/>">
-                                                                                                    </button>
-                                                                                                </form>
-                                                                                            </c:if>
                                                                                         </div>
                                                                                     </div>
                                                                                     <blockquote>
