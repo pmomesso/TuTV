@@ -58,6 +58,9 @@ public class HelloWorldController {
 	@RequestMapping(value = "/series", method = RequestMethod.GET)
 	public ModelAndView series(@ModelAttribute("postForm") final PostForm postForm, @ModelAttribute("commentForm") final CommentForm commentForm, @RequestParam("id") long id) {
 		final ModelAndView mav = new ModelAndView("series");
+		User u = userService.getLoggedUser();
+//		TODO manejar mejor el error de que no haya user
+		long userId = (u != null) ? u.getId() : -1;
 		mav.addObject("series", seriesService.getSerieById(id));
 		mav.addObject("postForm", postForm);
 		mav.addObject("commentForm", commentForm);
@@ -65,25 +68,25 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/addSeries", method = RequestMethod.POST)
-    public ModelAndView addSeries(@RequestParam("seriesId") long seriesId) {
+    public ModelAndView addSeries(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) {
 	    seriesService.followSeries(seriesId);
 	    return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
-    public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId) {
+    public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) {
 		seriesService.setViewedEpisode(episodeId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/unviewEpisode", method = RequestMethod.POST)
-    public ModelAndView unviewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId) {
+    public ModelAndView unviewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) {
 		seriesService.unviewEpisode(episodeId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/rate")
-    public ModelAndView rate(@RequestParam("seriesId") long seriesId, @RequestParam("rating") int rating) {
+    public ModelAndView rate(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("rating") int rating) {
 		seriesService.rateSeries(seriesId, rating);
 	    return new ModelAndView("redirect:/series?id=" + seriesId);
     }
@@ -99,13 +102,13 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/likePost", method = RequestMethod.POST)
-	public ModelAndView likePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) {
+	public ModelAndView likePost(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId) {
 		seriesService.likePost(postId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 
     @RequestMapping(value = "/unlikePost", method = RequestMethod.POST)
-    public ModelAndView unlikePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) {
+    public ModelAndView unlikePost(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId) {
 		seriesService.unlikePost(postId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
@@ -126,18 +129,21 @@ public class HelloWorldController {
 			return series(new PostForm(), form, form.getCommentSeriesId());
 		}
 		//TODO que este metodo tome el form y no los parámetros directamente... (sería más correcto??)
+		//Todo: validate that this is requested by the same userc
 		seriesService.addCommentToPost(form.getCommentPostId(), form.getCommentBody());
 		return new ModelAndView("redirect:/series?id=" + form.getCommentSeriesId());
 	}
 
     @RequestMapping(value = "/likeComment", method = RequestMethod.POST)
-    public ModelAndView likeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+    public ModelAndView likeComment(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+		//Todo: validate that the like is requested by the same user
 		seriesService.likeComment(commentId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/unlikeComment", method = RequestMethod.POST)
-    public ModelAndView unlikeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+    public ModelAndView unlikeComment(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+		//Todo: validate that the unlike is requested by the same user
 		seriesService.unlikeComment(commentId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
