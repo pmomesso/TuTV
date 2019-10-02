@@ -286,13 +286,14 @@ public class SeriesDaoJdbcTest {
         //Setup
         populateDatabase();
         insertUser();
-        final double userRating = 3.4;
+        jdbcTemplate.update("UPDATE series SET userRating = null");
+        final double userRating = 4;
         //Ejercitar
         seriesDao.rateSeries(ID,USER_ID,userRating);
         //Asserts
         Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"userseriesrating"));
         Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series",
-                String.format(Locale.US,"id=%d AND ABS(userRating-%f) < 0.001",ID,TOTAL_RATING + userRating)));
+                String.format(Locale.US,"id=%d AND ABS(userRating-%f) < 0.1",ID,userRating)));
     }
     @Test
     public void getSeasonsBySeriesIdTest(){

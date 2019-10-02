@@ -1,11 +1,12 @@
 package ar.edu.itba.paw.model.exceptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ApiException extends Exception{
     protected String status;
     protected String body;
-    protected List<String> details;
+    protected List<String> details = new ArrayList<>();
 
     public String getStatus() {
         return status;

@@ -604,7 +604,8 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public void rateSeries(long seriesId, long userId, double rating) {
-        if(hasRatedSeries(userId,seriesId)){
+        Double oldRating = getUserSeriesRating(userId,seriesId);
+        if(oldRating != null){
             jdbcTemplate.update("UPDATE userseriesrating SET rating = ? WHERE userid = ? AND seriesid = ?",
                     new Object[]{rating,userId,seriesId});
         }
@@ -616,7 +617,8 @@ public class SeriesDaoJdbc implements SeriesDao {
             userSeriesRatingJdbcInsert.execute(args);
         }
         Integer count = jdbcTemplate.queryForObject("SELECT count(rating) FROM userseriesrating WHERE seriesid = ?",new Object[]{seriesId},Integer.class);
-        jdbcTemplate.update("UPDATE series SET userRating = (COALESCE(userRating,0) + ?)/?  WHERE id = ?",new Object[]{rating,count,seriesId});
+        double rateChange = (oldRating != null) ? (rating - oldRating) : rating;
+        jdbcTemplate.update("UPDATE series SET userRating = ROUND((COALESCE(userRating,0) + ?)/?,1)  WHERE id = ?",new Object[]{rateChange,count,seriesId});
     }
 
     private void addPointsToComment(long commentId, int points) {
@@ -643,11 +645,11 @@ public class SeriesDaoJdbc implements SeriesDao {
         return series.size() > 0;
     }
 
-    private boolean hasRatedSeries(long userId,long seriesId) {
-        List<Integer> series = jdbcTemplate.query("SELECT * " +
+    private Double getUserSeriesRating(long userId,long seriesId) {
+        List<Double> series = jdbcTemplate.query("SELECT * " +
                         "FROM userseriesrating " +
                         "WHERE userid = ? AND seriesid = ?", new Object[]{userId, seriesId},
-                (resultSet, i) -> resultSet.getInt("seriesid"));
-        return series.size() > 0;
+                (resultSet, i) -> resultSet.getDouble("rating"));
+        return (series.size() > 0) ? series.get(0) : null;
     }
 }
