@@ -46,4 +46,6 @@ public interface SeriesDao {
     void addSeriesReview(String body, long seriesId, long userId);
 
     void likePost(long userId, long postId);
+
+    void unlikePost(long userId, long postId);
 }

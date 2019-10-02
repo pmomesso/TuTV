@@ -244,13 +244,9 @@ public class SeriesDaoJdbc implements SeriesDao {
                     post.setLiked(resultSet.getBoolean("liked"));
                     return post;
                 });
-        if(!postList.isEmpty()) {
-            addUserToPosts(postList);
-            addAllCommentsToPosts(postList);
-            series.setSeriesPostList(postList);
-        } else {
-            series.setSeriesPostList(Collections.emptyList());
-        }
+        addUserToPosts(postList);
+        addAllCommentsToPosts(postList);
+        series.setSeriesPostList(postList);
     }
 
     private void addAllCommentsToPosts(List<Post> postList) {
@@ -494,6 +490,17 @@ public class SeriesDaoJdbc implements SeriesDao {
         args.put("userid", userId);
         args.put("seriesreview", postId);
         hasLikedSeriesReviewJdbcInsert.execute(args);
+        addPointsToPost(postId, 1);
+    }
+
+    @Override
+    public void unlikePost(long userId, long postId) {
+        jdbcTemplate.update("DELETE FROM haslikedseriesreview WHERE userid = ? AND seriesreview = ?", new Object[]{userId, postId});
+        addPointsToPost(postId, -1);
+    }
+
+    private void addPointsToPost(long postId, int points) {
+        jdbcTemplate.update("UPDATE seriesreview SET numlikes = numlikes + (?) WHERE id = ?", new Object[]{points, postId});
     }
 
     private boolean hasLikedPost(long userId, long postId) {

@@ -107,6 +107,7 @@ public class HelloWorldController {
     @RequestMapping(value = "/unlikePost", method = RequestMethod.POST)
     public ModelAndView unlikePost(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId) {
         // TODO pedro llamar a metodo que unlikea ese post
+		seriesService.unlikePost(userId, postId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 

@@ -97,4 +97,9 @@ public class SeriesServiceImpl implements SeriesService {
     public void likePost(long userId, long postId) {
         seriesDao.likePost(userId, postId);
     }
+
+    @Override
+    public void unlikePost(long userId, long postId) {
+        seriesDao.unlikePost(userId, postId);
+    }
 }
