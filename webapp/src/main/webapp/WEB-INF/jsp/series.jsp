@@ -162,7 +162,6 @@
                                                             <div class="disclaimer">
                                                                 <p class="disclaimer-title"><spring:message code="series.spoil"/></p>
                                                             </div>
-                                                                <%--  TODO rompe con multipart-form-data pero sino no encodea--%>
                                                             <form:form class="post" modelAttribute="postForm" action="/post"
                                                                        method="post"
                                                                        enctype="application/x-www-form-urlencoded">

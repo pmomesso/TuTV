@@ -37,6 +37,24 @@
     </servlet-mapping>
 
     <filter>
+        <filter-name>encoding-filter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>encoding-filter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
@@ -44,9 +62,9 @@
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-
+<!--TODO-->
     <error-page>
         <error-code>404</error-code>
-        <location>//TODO path a pagina de error (no mostrar stack trace porque doy info de mi pagina)</location>
+        <location>// path a pagina de error (no mostrar stack trace porque doy info de mi pagina)</location>
     </error-page>
 </web-app>
