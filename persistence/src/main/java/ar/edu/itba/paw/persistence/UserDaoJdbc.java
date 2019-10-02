@@ -26,7 +26,7 @@ public class UserDaoJdbc implements UserDao {
 		user.setPassword(resultSet.getString("password"));
 		user.setConfirmationKey(resultSet.getString("confirmation_key"));
 		user.setIsAdmin(resultSet.getBoolean("isAdmin"));
-		user.setBanned(resultSet.getBoolean("isBanned"));
+		user.setIsBanned(resultSet.getBoolean("isBanned"));
 		return user;
 	};
 	
