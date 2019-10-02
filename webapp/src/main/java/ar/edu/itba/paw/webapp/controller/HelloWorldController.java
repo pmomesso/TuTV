@@ -56,10 +56,7 @@ public class HelloWorldController {
 	@RequestMapping(value = "/series", method = RequestMethod.GET)
 	public ModelAndView series(@ModelAttribute("postForm") final PostForm postForm, @ModelAttribute("commentForm") final CommentForm commentForm, @RequestParam("id") long id) {
 		final ModelAndView mav = new ModelAndView("series");
-		User u = userService.getLoggedUser();
-//		TODO manejar mejor el error de que no haya user
-		long userId = (u != null) ? u.getId() : -1;
-		mav.addObject("series", seriesService.getSerieById(id, userId));
+		mav.addObject("series", seriesService.getSerieById(id));
 		mav.addObject("postForm", postForm);
 		mav.addObject("commentForm", commentForm);
 		return mav;
