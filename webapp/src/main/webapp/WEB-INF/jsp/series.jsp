@@ -55,16 +55,6 @@
                                             <span class="star"></span>
                                             <h2>${series.userRating}/5</h2>
                                         </div>
-                                        <%-- TODO rate if user logged--%>
-                                        <%--                                        <div class="container h-20">--%>
-                                        <%--                                            <div class="starrating risingstar d-flex justify-content-center flex-row-reverse">--%>
-                                        <%--                                                <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 star"></label>--%>
-                                        <%--                                                <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 star"></label>--%>
-                                        <%--                                                <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 star"></label>--%>
-                                        <%--                                                <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 star"></label>--%>
-                                        <%--                                                <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star"></label>--%>
-                                        <%--                                            </div>--%>
-                                        <%--                                        </div>--%>
                                         <c:if test="${isLogged && not series.follows}">
                                             <form action="<c:url value="/addSeries?seriesId=${series.id}&userId=${user.id}"/>"
                                                   method="post">
@@ -79,7 +69,7 @@
                     <div class="main-block-container">
                         <div id="show-details" class="show">
                             <div class="row show-nav">
-                                <div class="col-lg-7">
+                                <div class="col-lg-8">
                                     <div class="basic-infos">
                                         <span>${series.network}</span>
                                         <span class="separator">•</span>
@@ -93,8 +83,18 @@
                                         ${series.numFollowers} <spring:message code="index.followers"/>
                                     </div>
                                 </div>
-                                <div class="col-lg-1"></div>
-                                <div class="col-lg-4"></div>
+                                <div class="col-lg-4">
+                                    <div class="container h-20">
+<%--                                        TODO form endpoint--%>
+                                        <div class="starrating risingstar d-flex justify-content-center flex-row-reverse">
+                                            <input id="star5" name="rating" type="radio" value="5"/><label for="star5" title="5 star"></label>
+                                            <input id="star4" name="rating" type="radio" value="4"/><label for="star4" title="4 star"></label>
+                                            <input id="star3" name="rating" type="radio" value="3"/><label for="star3" title="3 star"></label>
+                                            <input id="star2" name="rating" type="radio" value="2"/><label for="star2" title="2 star"></label>
+                                            <input id="star1" name="rating" type="radio" value="1"/><label for="star1" title="1 star"></label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div id="content" class="show-main alt">
                                 <div class="content-container">
@@ -162,6 +162,7 @@
                                                             <div class="disclaimer">
                                                                 <p class="disclaimer-title"><spring:message code="series.spoil"/></p>
                                                             </div>
+                                                                <%--  TODO rompe con multipart-form-data pero sino no encodea--%>
                                                             <form:form class="post" modelAttribute="postForm" action="/post"
                                                                        method="post"
                                                                        enctype="application/x-www-form-urlencoded">

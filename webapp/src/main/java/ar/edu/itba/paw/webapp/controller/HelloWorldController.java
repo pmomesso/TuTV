@@ -93,7 +93,7 @@ public class HelloWorldController {
 		if (errors.hasErrors()) {
 			return series(form, new CommentForm(), form.getSeriesId());
 		}
-		//Todo: que el método reciba un form más que los campos de form...
+		//TODO pedro que el método reciba un form más que los campos de form...
 		seriesService.addSeriesReview(form.getBody(), form.getSeriesId(), form.getUserId());
 		return new ModelAndView("redirect:/series?id=" + form.getSeriesId());
 	}
@@ -106,7 +106,6 @@ public class HelloWorldController {
 
     @RequestMapping(value = "/unlikePost", method = RequestMethod.POST)
     public ModelAndView unlikePost(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId) {
-        // TODO pedro llamar a metodo que unlikea ese post
 		seriesService.unlikePost(userId, postId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }

@@ -164,14 +164,14 @@ body {
 .starrating > label:before {
  content: "\f005"; /* Star */
  margin: 2px;
- font-size: 8em;
+ font-size: 4em;
  font-family: FontAwesome;
  display: inline-block;
 }
 
 .starrating > label
 {
- color: #222222; /* Start color when not clicked */
+ color: gray; /* Start color when not clicked */
 }
 
 .starrating > input:checked ~ label

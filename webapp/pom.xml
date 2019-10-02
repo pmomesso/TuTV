@@ -119,7 +119,6 @@
             <artifactId>spring-context-support</artifactId>
             <version>4.0.5.RELEASE</version>
         </dependency>
-        <!--  TODO   falta la dependency de bind aca y en pom padre-->
     </dependencies>
 
     <build>

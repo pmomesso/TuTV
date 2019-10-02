@@ -6,13 +6,14 @@ function getRelativeURL() {
 
 function selectCurrentMenuItem() {
     var relativeURL = getRelativeURL();
-    if (relativeURL == "") relativeURL = "";
-    var link = $(".all-left-navs").find("a[href=\"\/" + relativeURL + "\"]");
+    if (relativeURL != "series") {
+        var link = $(".all-left-navs").find("a[href=\"\/" + relativeURL + "\"]");
 
-    var previousImg = $(link).find("img").attr("src");
-    var newImg = previousImg.replace(".png", "_active.png");
-    $(link).find("img").attr("src", newImg);
-    link.parent().addClass("active");
+        var previousImg = $(link).find("img").attr("src");
+        var newImg = previousImg.replace(".png", "_active.png");
+        $(link).find("img").attr("src", newImg);
+        link.parent().addClass("active");
+    }
 }
 
 $( document ).ready(function() {
