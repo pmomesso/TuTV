@@ -105,10 +105,18 @@
                                                     <li class="cd-accordion__item cd-accordion__item--has-children">
                                                         <input class="cd-accordion__input" type="checkbox"
                                                                name="group-${item.index}" id="group-${item.index}">
-                                                        <label class="cd-accordion__label cd-accordion__label--icon-folder drop"
-                                                               for="group-${item.index}"><span
-                                                                class="big-size"><spring:message code="series.Season"/> ${season.seasonNumber}</span></label>
-
+                                                        <c:choose>
+                                                            <c:when test="${isLogged && season.viewed}">
+                                                                <label class="cd-accordion__label cd-accordion__label--icon-folder drop drop-watched" for="group-${item.index}">
+                                                                    <span class="big-size"><spring:message code="series.Season"/> ${season.seasonNumber}</span>
+                                                                </label>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <label class="cd-accordion__label cd-accordion__label--icon-folder drop" for="group-${item.index}">
+                                                                    <span class="big-size"><spring:message code="series.Season"/> ${season.seasonNumber}</span>
+                                                                </label>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                         <ul class="cd-accordion__sub cd-accordion__sub--l1">
                                                             <c:forEach items="${season.episodeList}" var="episode">
                                                                 <li class="cd-accordion__label cd-accordion__label--icon-img">
@@ -242,7 +250,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </article>
-                                                                <c:if test="${isLogged} || ${not empty post.comments}">
+                                                                <c:if test="${isLogged || not empty post.comments}">
                                                                     <div class="replies sub-comment">
                                                                         <c:forEach var="comment" items="${post.comments}">
                                                                             <article class="reply clearfix initialized">
@@ -284,8 +292,8 @@
                                                                             <form:form class="reply clearfix" modelAttribute="commentForm" action="/comment"
                                                                                        method="post"
                                                                                        enctype="application/x-www-form-urlencoded">
+                                                                                <form:errors path="commentBody" element="p" cssClass="error text-left"/>
                                                                                 <div class="holder">
-                                                                                    <form:errors path="commentBody" element="p" cssClass="error text-left"/>
                                                                                     <div class="textarea-wrapper">
                                                                                         <div class="mentions-input-box">
                                                                                             <spring:message code="series.enterReply" var="placeholder_reply"/>

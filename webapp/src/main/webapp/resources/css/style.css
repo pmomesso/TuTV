@@ -3517,6 +3517,10 @@ mark {
     color: var(--color-black)
 }
 
+.drop-watched {
+    border-bottom: #95eb34 solid 3px !important;
+}
+
 .cd-accordion__label  {
     position: relative;
     display: -ms-flexbox;

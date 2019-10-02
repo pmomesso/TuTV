@@ -65,6 +65,8 @@ public class HelloWorldController {
 			userId = u.getId();
 		}
 		mav.addObject("series", seriesService.getSerieById(id, userId));
+		mav.addObject("postForm", postForm);
+		mav.addObject("commentForm", commentForm);
 		return mav;
 	}
 

@@ -79,7 +79,7 @@ body {
  border: none;
 }
 .viewed {
- color: #44d9e6;
+ color: #95eb34;
 }
 .heart {
  color: gray;
@@ -11744,19 +11744,16 @@ body .ui-tooltip {
 }
 .ui-widget-content {
  border:1px solid #aaa;
- background:url(/images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x #fff;
  color:#222
 }
 .ui-widget-header {
  border:1px solid #aaa;
- background:url(/images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x #ccc;
  font-weight:700
 }
 .ui-state-default,
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
  border:1px solid #d3d3d3;
- background:url(/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x #e6e6e6;
  font-weight:400;
  color:#555
 }
