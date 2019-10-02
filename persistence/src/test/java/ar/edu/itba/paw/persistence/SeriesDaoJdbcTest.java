@@ -27,7 +27,7 @@ public class SeriesDaoJdbcTest {
     private static final int TVDB_ID = 2;
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
-    private static final double TOTAL_RATING = 3;
+    private static final double TOTAL_RATING = 3.4;
     private static final String STATUS = "status";
     private static final int RUNTIME = 4;
     private static final String FIRST_AIRED = "2000-01-01";

@@ -27,7 +27,7 @@ public class SeriesDaoJdbc implements SeriesDao {
             ret.setDescription(description);
         }
         ret.setId(resultSet.getLong("id"));
-        ret.setTotalRating(resultSet.getDouble("userRating"));
+        ret.setTotalRating(Math.round(resultSet.getDouble("userRating") * 10.0) / 10.0);
         ret.setImdbId(resultSet.getString("id_imdb"));
         ret.setRunningTime(resultSet.getInt("runtime"));
         ret.setNumFollowers(resultSet.getInt("followers"));
@@ -618,7 +618,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         }
         Integer count = jdbcTemplate.queryForObject("SELECT count(rating) FROM userseriesrating WHERE seriesid = ?",new Object[]{seriesId},Integer.class);
         double rateChange = (oldRating != null) ? (rating - oldRating) : rating;
-        jdbcTemplate.update("UPDATE series SET userRating = ROUND((COALESCE(userRating,0) + ?)/?,1)  WHERE id = ?",new Object[]{rateChange,count,seriesId});
+        jdbcTemplate.update("UPDATE series SET userRating = (COALESCE(userRating,0) + ?)/?  WHERE id = ?",new Object[]{rateChange,count,seriesId});
     }
 
     private void addPointsToComment(long commentId, int points) {
