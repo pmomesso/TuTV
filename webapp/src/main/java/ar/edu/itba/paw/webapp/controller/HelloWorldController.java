@@ -2,8 +2,6 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.model.Genre;
-import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.webapp.form.CommentForm;
 import ar.edu.itba.paw.webapp.form.PostForm;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.*;
 
 @Controller
 public class HelloWorldController {
@@ -86,6 +83,12 @@ public class HelloWorldController {
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
+    @RequestMapping(value = "/rate")
+    public ModelAndView rate(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("rating") int rating) {
+//	    TODO pedro user rate serie
+	    return new ModelAndView("redirect:/series?id=" + seriesId);
+    }
+
     @RequestMapping(value = "/post", method = RequestMethod.POST)
 	public ModelAndView post(@Valid @ModelAttribute("postForm") final PostForm form, final BindingResult errors) {
 		if (errors.hasErrors()) {
@@ -119,7 +122,6 @@ public class HelloWorldController {
 		if (errors.hasErrors()) {
 			return series(new PostForm(), form, form.getCommentSeriesId());
 		}
-//		DENTRO DE COMMENT FORM HAY: getDescription() getSeriesId() getUserId() getUserId()
 		//TODO que este metodo tome el form y no los parámetros directamente... (sería más correcto??)
 		seriesService.addCommentToPost(form.getCommentPostId(), form.getCommentBody(), form.getCommentUserId());
 		return new ModelAndView("redirect:/series?id=" + form.getCommentSeriesId());
@@ -185,7 +187,7 @@ public class HelloWorldController {
 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public ModelAndView showRegister(@ModelAttribute("registerForm") final UserForm form) {
-		return new ModelAndView("register"); // para que si tengo un error en el formulario, poder tener precalculados los valores que el usuario calculo..
+		return new ModelAndView("register");
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)

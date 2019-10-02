@@ -86,13 +86,13 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="container h-20">
-<%--                                        TODO form endpoint--%>
                                         <div class="starrating risingstar d-flex justify-content-center flex-row-reverse">
-                                            <input id="star5" name="rating" type="radio" value="5"/><label for="star5" title="5 star"></label>
-                                            <input id="star4" name="rating" type="radio" value="4"/><label for="star4" title="4 star"></label>
-                                            <input id="star3" name="rating" type="radio" value="3"/><label for="star3" title="3 star"></label>
-                                            <input id="star2" name="rating" type="radio" value="2"/><label for="star2" title="2 star"></label>
-                                            <input id="star1" name="rating" type="radio" value="1"/><label for="star1" title="1 star"></label>
+<%--                                            TODO set checked input depending on UserRating--%>
+                                            <input id="star5" name="rating" type="radio" value="5" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&userId=${user.id}&rating=5"/>'"/><label for="star5" title="5 <spring:message code="series.star"/>s"></label>
+                                            <input id="star4" name="rating" type="radio" value="4" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&userId=${user.id}&rating=4"/>'"/><label for="star4" title="4 <spring:message code="series.star"/>s"></label>
+                                            <input id="star3" name="rating" type="radio" value="3" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&userId=${user.id}&rating=3"/>'"/><label for="star3" title="3 <spring:message code="series.star"/>s"></label>
+                                            <input id="star2" name="rating" type="radio" value="2" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&userId=${user.id}&rating=2"/>'"/><label for="star2" title="2 <spring:message code="series.star"/>s"></label>
+                                            <input id="star1" name="rating" type="radio" value="1" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&userId=${user.id}&rating=1"/>'"/><label for="star1" title="1 <spring:message code="series.star"/>"></label>
                                         </div>
                                     </div>
                                 </div>
