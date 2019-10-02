@@ -66,26 +66,26 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/addSeries", method = RequestMethod.POST)
-    public ModelAndView addSeries(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) {
-	    seriesService.followSeries(seriesId, userId);
+    public ModelAndView addSeries(@RequestParam("seriesId") long seriesId) {
+	    seriesService.followSeries(seriesId);
 	    return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
-    public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) {
-		seriesService.setViewedEpisode(episodeId, userId);
+    public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId) {
+		seriesService.setViewedEpisode(episodeId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/unviewEpisode", method = RequestMethod.POST)
-    public ModelAndView unviewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) {
-		seriesService.unviewEpisode(userId, episodeId);
+    public ModelAndView unviewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId) {
+		seriesService.unviewEpisode(episodeId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/rate")
-    public ModelAndView rate(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("rating") int rating) {
-		seriesService.rateSeries(seriesId, userId, rating);
+    public ModelAndView rate(@RequestParam("seriesId") long seriesId, @RequestParam("rating") int rating) {
+		seriesService.rateSeries(seriesId, rating);
 	    return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
@@ -95,19 +95,19 @@ public class HelloWorldController {
 			return series(form, new CommentForm(), form.getSeriesId());
 		}
 		//TODO pedro que el método reciba un form más que los campos de form...
-		seriesService.addSeriesReview(form.getBody(), form.getSeriesId(), form.getUserId());
+		seriesService.addSeriesReview(form.getBody(), form.getSeriesId());
 		return new ModelAndView("redirect:/series?id=" + form.getSeriesId());
 	}
 
 	@RequestMapping(value = "/likePost", method = RequestMethod.POST)
-	public ModelAndView likePost(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId) {
-		seriesService.likePost(userId, postId);
+	public ModelAndView likePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) {
+		seriesService.likePost(postId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 
     @RequestMapping(value = "/unlikePost", method = RequestMethod.POST)
-    public ModelAndView unlikePost(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId) {
-		seriesService.unlikePost(userId, postId);
+    public ModelAndView unlikePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) {
+		seriesService.unlikePost(postId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
@@ -123,19 +123,19 @@ public class HelloWorldController {
 			return series(new PostForm(), form, form.getCommentSeriesId());
 		}
 		//TODO que este metodo tome el form y no los parámetros directamente... (sería más correcto??)
-		seriesService.addCommentToPost(form.getCommentPostId(), form.getCommentBody(), form.getCommentUserId());
+		seriesService.addCommentToPost(form.getCommentPostId(), form.getCommentBody());
 		return new ModelAndView("redirect:/series?id=" + form.getCommentSeriesId());
 	}
 
     @RequestMapping(value = "/likeComment", method = RequestMethod.POST)
-    public ModelAndView likeComment(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
-		seriesService.likeComment(userId, commentId);
+    public ModelAndView likeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+		seriesService.likeComment(commentId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/unlikeComment", method = RequestMethod.POST)
-    public ModelAndView unlikeComment(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
-		seriesService.unlikeComment(userId, commentId);
+    public ModelAndView unlikeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+		seriesService.unlikeComment(commentId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 

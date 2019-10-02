@@ -5,16 +5,11 @@ import javax.validation.constraints.Size;
 public class CommentForm {
     @Size(min = 6, max = 255)
     private String commentBody;
-    private long commentUserId;
     private long commentSeriesId;
     private long commentPostId;
 
     public String getCommentBody() {
         return commentBody;
-    }
-
-    public long getCommentUserId() {
-        return commentUserId;
     }
 
     public long getCommentSeriesId() {
@@ -27,10 +22,6 @@ public class CommentForm {
 
     public void setCommentBody(String commentBody) {
         this.commentBody = commentBody;
-    }
-
-    public void setCommentUserId(long commentUserId) {
-        this.commentUserId = commentUserId;
     }
 
     public void setCommentSeriesId(long commentSeriesId) {

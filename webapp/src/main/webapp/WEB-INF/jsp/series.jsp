@@ -56,7 +56,7 @@
                                             <h2>${series.totalRating} / 5.0</h2>
                                         </div>
                                         <c:if test="${isLogged && not series.follows}">
-                                            <form action="<c:url value="/addSeries?seriesId=${series.id}&userId=${user.id}"/>"
+                                            <form action="<c:url value="/addSeries?seriesId=${series.id}"/>"
                                                   method="post">
                                                 <button class="add-button" type="submit">Add</button>
                                             </form>
@@ -90,10 +90,10 @@
                                             <c:forEach var="index" begin="0" end="4">
                                                 <c:choose>
                                                     <c:when test="${series.userRating eq (5-index)}">
-                                                        <input id="star${5-index}" name="rating" type="radio" checked value="${5-index}" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&userId=${user.id}&rating=${5-index}"/>'"/>
+                                                        <input id="star${5-index}" name="rating" type="radio" checked value="${5-index}" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&rating=${5-index}"/>'"/>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <input id="star${5-index}" name="rating" type="radio" value="${5-index}" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&userId=${user.id}&rating=${5-index}"/>'"/>
+                                                        <input id="star${5-index}" name="rating" type="radio" value="${5-index}" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&rating=${5-index}"/>'"/>
                                                     </c:otherwise>
                                                 </c:choose>
                                                 <label for="star${5-index}" title="${5-index} <spring:message code="series.star"/><c:if test="${series.numFollowers ne 1}">s</c:if>"></label>
@@ -132,7 +132,7 @@
                                                                         <c:if test="${isLogged && series.follows}">
                                                                             <c:choose>
                                                                                 <c:when test="${episode.viewed}">
-                                                                                    <form action="<c:url value="/unviewEpisode?seriesId=${series.id}&episodeId=${episode.id}&userId=${user.id}"/>"
+                                                                                    <form action="<c:url value="/unviewEpisode?seriesId=${series.id}&episodeId=${episode.id}"/>"
                                                                                           method="post">
                                                                                         <button type="submit"
                                                                                                 style="font-family: FontAwesome,serif; font-style: normal"
@@ -141,7 +141,7 @@
                                                                                     </form>
                                                                                 </c:when>
                                                                                 <c:otherwise>
-                                                                                    <form action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${episode.id}&userId=${user.id}"/>"
+                                                                                    <form action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${episode.id}"/>"
                                                                                           method="post">
                                                                                         <button type="submit"
                                                                                                 style="font-family: FontAwesome,serif; font-style: normal"
@@ -182,8 +182,6 @@
                                                                                             placeholder="${placeholder}"
                                                                                             path="body"
                                                                                             style="overflow: hidden; height: 40px;"/>
-                                                                                    <form:input type="hidden" path="userId"
-                                                                                                value="${user.id}"/>
                                                                                     <form:input type="hidden"
                                                                                                 path="seriesId"
                                                                                                 value="${series.id}"/>
@@ -249,14 +247,14 @@
                                                                                         <c:when test="${isLogged}">
                                                                                             <c:choose>
                                                                                                 <c:when test="${post.liked}">
-                                                                                                    <form action="<c:url value="/unlikePost?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}"/>"
+                                                                                                    <form action="<c:url value="/unlikePost?seriesId=${series.id}&postId=${post.postId}"/>"
                                                                                                           method="post" class="float-left">
                                                                                                         <button type="submit" class="heart post-liked no-padding" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
                                                                                                         <span>${post.points}</span>
                                                                                                     </form>
                                                                                                 </c:when>
                                                                                                 <c:otherwise>
-                                                                                                    <form action="<c:url value="/likePost?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}"/>"
+                                                                                                    <form action="<c:url value="/likePost?seriesId=${series.id}&postId=${post.postId}"/>"
                                                                                                           method="post" class="float-left">
                                                                                                         <button type="submit" class="heart no-padding" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
                                                                                                         <span>${post.points}</span>
@@ -317,14 +315,14 @@
                                                                                                 <c:when test="${isLogged}">
                                                                                                     <c:choose>
                                                                                                         <c:when test="${comment.liked}">
-                                                                                                            <form action="<c:url value="/unlikeComment?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
+                                                                                                            <form action="<c:url value="/unlikeComment?seriesId=${series.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
                                                                                                                   method="post" class="float-left">
                                                                                                                 <button type="submit" class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
                                                                                                                 <span>${comment.points}</span>
                                                                                                             </form>
                                                                                                         </c:when>
                                                                                                         <c:otherwise>
-                                                                                                            <form action="<c:url value="/likeComment?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
+                                                                                                            <form action="<c:url value="/likeComment?seriesId=${series.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
                                                                                                                   method="post" class="float-left">
                                                                                                                 <button type="submit" class="heart" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
                                                                                                                 <span>${comment.points}</span>
@@ -359,8 +357,6 @@
                                                                                                     placeholder="${placeholder_reply}"
                                                                                                     path="commentBody"
                                                                                                     style="overflow: hidden; height: 50px;"/>
-                                                                                            <form:input type="hidden" path="commentUserId"
-                                                                                                        value="${user.id}"/>
                                                                                             <form:input type="hidden"
                                                                                                         path="commentSeriesId"
                                                                                                         value="${series.id}"/>
