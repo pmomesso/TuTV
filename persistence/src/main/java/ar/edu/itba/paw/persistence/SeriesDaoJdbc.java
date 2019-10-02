@@ -616,9 +616,8 @@ public class SeriesDaoJdbc implements SeriesDao {
             args.put("rating",rating);
             userSeriesRatingJdbcInsert.execute(args);
         }
-        Integer count = jdbcTemplate.queryForObject("SELECT count(rating) FROM userseriesrating WHERE seriesid = ?",new Object[]{seriesId},Integer.class);
-        double rateChange = (oldRating != null) ? (rating - oldRating) : rating;
-        jdbcTemplate.update("UPDATE series SET userRating = (COALESCE(userRating,0) + ?)/?  WHERE id = ?",new Object[]{rateChange,count,seriesId});
+        Double avg = jdbcTemplate.queryForObject("SELECT avg(rating) FROM userseriesrating WHERE seriesid = ?",new Object[]{seriesId},Double.class);
+        jdbcTemplate.update("UPDATE series SET userRating = ?  WHERE id = ?",new Object[]{avg,seriesId});
     }
 
     private void addPointsToComment(long commentId, int points) {
