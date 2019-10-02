@@ -74,13 +74,14 @@
                                         <span>${series.network}</span>
                                         <span class="separator">•</span>
                                         <span>${fn:length(series.seasons)} <spring:message code="series.season"/><c:if
-                                                test="${fn:length(series.seasons) gt 1}">s</c:if></span>
+                                                test="${fn:length(series.seasons) ne 1}">s</c:if></span>
                                     </div>
                                     <div class="overview">
                                         ${series.seriesDescription}
                                     </div>
                                     <div class="followers">
-                                        ${series.numFollowers} <spring:message code="index.followers"/>
+                                        ${series.numFollowers} <spring:message code="index.followers"/><c:if
+                                                test="${series.numFollowers ne 1}"><spring:message code="index.sufix"/></c:if>
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
