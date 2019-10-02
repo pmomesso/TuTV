@@ -17,4 +17,6 @@ public interface UserDao {
     void setValidationKey(User u, String key);
 
     void banUser(long userId);
+
+    void unbanUser(long userId);
 }

@@ -2,9 +2,11 @@ package ar.edu.itba.paw.service;
 
 import ar.edu.itba.paw.interfaces.SeriesDao;
 import ar.edu.itba.paw.interfaces.SeriesService;
+import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Season;
 import ar.edu.itba.paw.model.Series;
+import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Autowired
     private SeriesDao seriesDao;
+    @Autowired
+    private UserService userService;
 
     @Autowired
     public SeriesServiceImpl(SeriesDao seriesDao) {
@@ -35,8 +39,8 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public Series getSerieById(long id, long userId) {
-        return seriesDao.getSeriesById(id, userId);
+    public Series getSerieById(long id) {
+        return seriesDao.getSeriesById(id, userService.getLoggedUser().getId());
     }
 
     @Override
@@ -74,62 +78,64 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public void followSeries(long seriesId, long userId) {
-        seriesDao.followSeries(seriesId, userId);
+    public void followSeries(long seriesId) {
+        seriesDao.followSeries(seriesId, userService.getLoggedUser().getId());
     }
 
     @Override
-    public void setViewedEpisode(long episodeId, long userId) {
-        seriesDao.setViewedEpisode(episodeId,userId);
+    public void setViewedEpisode(long episodeId) {
+        seriesDao.setViewedEpisode(episodeId, userService.getLoggedUser().getId());
     }
 
     @Override
-    public void rateSeries(long seriesId, long userId, double rating) {
-        seriesDao.rateSeries(seriesId,userId,rating);
+    public void rateSeries(long seriesId, double rating) {
+        seriesDao.rateSeries(seriesId,userService.getLoggedUser().getId(),rating);
     }
 
     @Override
-    public void unviewEpisode(long userId, long episodeId) {
-        seriesDao.unviewEpisode(userId, episodeId);
+    public void unviewEpisode(long episodeId) {
+        seriesDao.unviewEpisode(userService.getLoggedUser().getId(), episodeId);
     }
 
     @Override
-    public void addSeriesReview(String body, long seriesId, long userId) {
-        seriesDao.addSeriesReview(body, seriesId, userId);
+    public void addSeriesReview(String body, long seriesId) {
+        seriesDao.addSeriesReview(body, seriesId, userService.getLoggedUser().getId());
     }
 
     @Override
-    public void likePost(long userId, long postId) {
-        seriesDao.likePost(userId, postId);
+    public void likePost(long postId) {
+        seriesDao.likePost(userService.getLoggedUser().getId(), postId);
     }
 
     @Override
-    public void unlikePost(long userId, long postId) {
-        seriesDao.unlikePost(userId, postId);
+    public void unlikePost(long postId) {
+        seriesDao.unlikePost(userService.getLoggedUser().getId(), postId);
     }
 
     @Override
-    public void addCommentToPost(long commentPostId, String commentBody, long commentUserId) {
-        seriesDao.addCommentToPost(commentPostId, commentBody, commentUserId);
+    public void addCommentToPost(long commentPostId, String commentBody) {
+        seriesDao.addCommentToPost(commentPostId, commentBody, userService.getLoggedUser().getId());
     }
 
     @Override
-    public void likeComment(long userId, long commentId) {
-        seriesDao.likeComment(userId, commentId);
+    public void likeComment(long commentId) {
+        seriesDao.likeComment(userService.getLoggedUser().getId(), commentId);
     }
 
     @Override
-    public void unlikeComment(long userId, long commentId) {
-        seriesDao.unlikeComment(userId, commentId);
+    public void unlikeComment(long commentId) {
+        seriesDao.unlikeComment(userService.getLoggedUser().getId(), commentId);
     }
 
     @Override
-    public void removeComment(long commentId) {
+    public void removeComment(long commentId) throws BadRequestException {
+        if(!userService.getLoggedUser().getIsAdmin()) throw new BadRequestException();
         seriesDao.removeComment(commentId);
     }
 
     @Override
-    public void removePost(long postId) {
+    public void removePost(long postId) throws BadRequestException {
+        if(!userService.getLoggedUser().getIsAdmin()) throw new BadRequestException();
         seriesDao.removePost(postId);
     }
 }

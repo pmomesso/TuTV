@@ -89,4 +89,9 @@ public class UserDaoJdbc implements UserDao {
 		jdbcTemplate.update("UPDATE users SET isbanned = TRUE WHERE id = ?", new Object[]{userId});
 	}
 
+	@Override
+	public void unbanUser(long userId) {
+		jdbcTemplate.update("UPDATE users SET isbanned = TRUE WHERE id = ?", new Object[]{userId});
+	}
+
 }

@@ -3,6 +3,7 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Season;
 import ar.edu.itba.paw.model.Series;
+import ar.edu.itba.paw.model.exceptions.BadRequestException;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ public interface SeriesService {
     List<Series> searchSeries(String seriesName,String genreName,String networkName,int minRating,int maxRating);
     List<Series> getSeriesByName(String name);
 
-    Series getSerieById(long id, long userId);
+    Series getSerieById(long id);
 
     List<Series> getSeriesByGenreAndNumber(int genreId, int num);
     List<Series> getAllSeriesByGenre(String genreName);
@@ -21,25 +22,25 @@ public interface SeriesService {
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
     List<Season> getSeasonsBySeriesId(long seriesId);
     List<Genre> getAllGenres();
-    void followSeries(long seriesId,long userId);
-    void setViewedEpisode(long episodeId,long userId);
+    void followSeries(long seriesId);
+    void setViewedEpisode(long episodeId);
 
-    void rateSeries(long seriesId,long userId,double rating);
-    void unviewEpisode(long seriesId, long episodeId);
+    void rateSeries(long seriesId,double rating);
+    void unviewEpisode(long episodeId);
 
-    void addSeriesReview(String body, long seriesId, long userId);
+    void addSeriesReview(String body, long seriesId);
 
-    void likePost(long userId, long postId);
+    void likePost(long postId);
 
-    void unlikePost(long userId, long postId);
+    void unlikePost(long postId);
 
-    void addCommentToPost(long commentPostId, String commentBody, long commentUserId);
+    void addCommentToPost(long commentPostId, String commentBody);
 
-    void likeComment(long userId, long commentId);
+    void likeComment(long commentId);
 
-    void unlikeComment(long userId, long commentId);
+    void unlikeComment(long commentId);
 
-    void removeComment(long commentId);
+    void removeComment(long commentId) throws BadRequestException;
 
-    void removePost(long postId);
+    void removePost(long postId) throws BadRequestException;
 }

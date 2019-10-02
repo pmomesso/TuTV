@@ -2,6 +2,7 @@ package ar.edu.itba.paw.service;
 
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +44,12 @@ public class UserServiceImplTest {
         Mockito.when(mockDao.getUserById(USER_ID))
                 .thenReturn(mockUser);
         // 2. "ejercito" la class under test
-        User user = userService.findById(USER_ID);
+        User user = null;
+        try {
+            user = userService.findById(USER_ID);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
         // 3. Asserts!
         Assert.assertNotNull(user);
         Assert.assertEquals(user.getUserName(),USERNAME);

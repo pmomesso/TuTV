@@ -1,9 +1,11 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.exceptions.BadRequestException;
+import ar.edu.itba.paw.model.exceptions.NotFoundException;
 
 public interface UserService {
-	User findById(long id);
+	User findById(long id) throws NotFoundException;
 
 	User findByMail(String mail);
 
@@ -11,5 +13,7 @@ public interface UserService {
 
 	User getLoggedUser();
 
-    void banUser(long userId);
+    void banUser(long userId) throws BadRequestException;
+
+    void unbanUser(long userId) throws BadRequestException;
 }
