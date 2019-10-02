@@ -58,4 +58,6 @@ public interface SeriesDao {
     void removeComment(long commentId);
 
     void removePost(long postId);
+
+    void rateSeries(long seriesId,long userId,double rating);
 }

@@ -276,3 +276,18 @@ create table if not exists haslikedseriesreviewcomment
 
 alter table haslikedseriesreviewcomment owner to root;
 
+create table if not exists userseriesrating
+(
+    userid integer
+        constraint userseriesrating_users_id_fk
+            references users
+            on delete cascade,
+    seriesid integer
+        constraint userseriesrating_series_id_fk
+            references series
+            on delete cascade,
+    rating double precision not null,
+    constraint user_series_rating_unique unique (userid,seriesid)
+);
+
+alter table userseriesrating owner to root;

@@ -7,7 +7,8 @@ create table if not exists users
     password varchar(255),
     mail varchar(32),
     confirmation_key varchar(60),
-    isAdmin boolean default false not null
+    isAdmin boolean default false not null,
+    isbanned boolean default false,
 );
 
 create table if not exists genres
@@ -208,6 +209,44 @@ create table if not exists hasviewedepisode
     episodeid integer
         constraint hasviewedepisode_episode_id_fk
             references episode
+);
+
+create table if not exists haslikedseriesreview
+(
+    seriesreview integer
+        constraint haslikedseriesreview_seriesreview_id_fk
+            references seriesreview
+            on delete cascade,
+    userid integer
+        constraint haslikedseriesreview_users_id_fk
+            references users
+            on delete cascade
+);
+
+create table if not exists haslikedseriesreviewcomment
+(
+    seriesreviewcomment integer
+        constraint haslikedseriesreviewcomment_seriesreviewcomments_id_fk
+            references seriesreviewcomments
+            on delete cascade,
+    userid integer
+        constraint haslikedseriesreviewcomment_users_id_fk
+            references users
+            on delete cascade
+);
+
+create table if not exists userseriesrating
+(
+    userid integer
+        constraint userseriesrating_users_id_fk
+            references users
+            on delete cascade,
+    seriesid integer
+        constraint userseriesrating_series_id_fk
+            references series
+            on delete cascade,
+    rating double precision not null,
+    constraint user_series_rating_unique unique (userid,seriesid)
 );
 
 

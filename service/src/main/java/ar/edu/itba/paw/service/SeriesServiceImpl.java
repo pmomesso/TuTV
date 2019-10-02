@@ -84,6 +84,11 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
+    public void rateSeries(long seriesId, long userId, double rating) {
+        seriesDao.rateSeries(seriesId,userId,rating);
+    }
+
+    @Override
     public void unviewEpisode(long userId, long episodeId) {
         seriesDao.unviewEpisode(userId, episodeId);
     }

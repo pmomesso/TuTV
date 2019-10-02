@@ -16,6 +16,7 @@ public class Series  {
     private String bannerUrl;
     private String status;
     private Double userRating;
+    private Double totalRating;
     private Integer runningTime;
     private int numFollowers;
     private String imdbId;
@@ -239,5 +240,13 @@ public class Series  {
 
     public void setFollows(boolean follows) {
         this.follows = follows;
+    }
+
+    public Double getTotalRating() {
+        return totalRating;
+    }
+
+    public void setTotalRating(Double totalRating) {
+        this.totalRating = totalRating;
     }
 }

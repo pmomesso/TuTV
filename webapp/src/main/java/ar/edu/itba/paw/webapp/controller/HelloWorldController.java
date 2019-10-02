@@ -85,7 +85,7 @@ public class HelloWorldController {
 
     @RequestMapping(value = "/rate")
     public ModelAndView rate(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("rating") int rating) {
-//	    TODO pedro user rate serie
+		seriesService.rateSeries(seriesId,userId,rating);
 	    return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 

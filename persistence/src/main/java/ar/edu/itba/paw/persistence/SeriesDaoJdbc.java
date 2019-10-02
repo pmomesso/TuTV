@@ -27,7 +27,7 @@ public class SeriesDaoJdbc implements SeriesDao {
             ret.setDescription(description);
         }
         ret.setId(resultSet.getLong("id"));
-        ret.setUserRating(resultSet.getDouble("userRating"));
+        ret.setTotalRating(resultSet.getDouble("userRating"));
         ret.setImdbId(resultSet.getString("id_imdb"));
         ret.setRunningTime(resultSet.getInt("runtime"));
         ret.setNumFollowers(resultSet.getInt("followers"));
@@ -81,6 +81,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     private SimpleJdbcInsert hasLikedSeriesReviewJdbcInsert;
     private SimpleJdbcInsert seriesReviewCommentsJdbcInsert;
     private SimpleJdbcInsert hasLikedSeriesReviewCommentsJdbcInsert;
+    private SimpleJdbcInsert userSeriesRatingJdbcInsert;
 
     @Autowired
     private UserDao userDao;
@@ -134,6 +135,8 @@ public class SeriesDaoJdbc implements SeriesDao {
         hasLikedSeriesReviewCommentsJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("haslikedseriesreviewcomment")
                 .usingColumns("seriesreviewcomment", "userid");
+        userSeriesRatingJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("userseriesrating");
     }
 
     @Override
@@ -228,7 +231,16 @@ public class SeriesDaoJdbc implements SeriesDao {
         addAllSeasonsToSeries(series, userId);
         addAllPostsToSeries(series, userId);
         series.setFollows(userFollows(id, userId));
+        series.setUserRating(getSeriesRating(id,userId));
         return series;
+    }
+
+    private Double getSeriesRating(long id, long userId) {
+        List<Double> rating = jdbcTemplate.query("SELECT rating " +
+                "FROM userseriesrating " +
+                "WHERE seriesid = ? AND userid = ?",
+                new Object[]{id,userId},(resultSet,i)->resultSet.getDouble("rating"));
+        return (rating.size() > 0) ? rating.get(0) : null;
     }
 
     private void addAllSeasonsToSeries(Series s, long userId) {
@@ -507,13 +519,6 @@ public class SeriesDaoJdbc implements SeriesDao {
         jdbcTemplate.update("UPDATE series SET followers = (followers + 1) WHERE id = ?", seriesId);
     }
 
-    private boolean userFollows(long seriesId, long userId) {
-        List<Boolean> series = jdbcTemplate.query("SELECT exists(SELECT * " +
-                "FROM follows WHERE follows.userid = ? AND follows.seriesid = ?) AS viewed", new Object[]{userId, seriesId},
-                (resultSet, i) -> resultSet.getBoolean("viewed"));
-        return series.get(0);
-    }
-
     @Override
     public void setViewedEpisode(long episodeId, long userId) {
         Map<String, Object> args = new HashMap<>();
@@ -597,6 +602,23 @@ public class SeriesDaoJdbc implements SeriesDao {
         jdbcTemplate.update("DELETE FROM seriesreview WHERE id = ?", new Object[]{postId});
     }
 
+    @Override
+    public void rateSeries(long seriesId, long userId, double rating) {
+        if(hasRatedSeries(userId,seriesId)){
+            jdbcTemplate.update("UPDATE userseriesrating SET rating = ? WHERE userid = ? AND seriesid = ?",
+                    new Object[]{rating,userId,seriesId});
+        }
+        else{
+            Map<String, Object> args = new HashMap<>();
+            args.put("userid", userId);
+            args.put("seriesid", seriesId);
+            args.put("rating",rating);
+            userSeriesRatingJdbcInsert.execute(args);
+        }
+        Integer count = jdbcTemplate.queryForObject("SELECT count(rating) FROM userseriesrating WHERE seriesid = ?",new Object[]{seriesId},Integer.class);
+        jdbcTemplate.update("UPDATE series SET userRating = (COALESCE(userRating,0) + ?)/?  WHERE id = ?",new Object[]{rating,count,seriesId});
+    }
+
     private void addPointsToComment(long commentId, int points) {
         jdbcTemplate.update("UPDATE seriesreviewcomments SET numlikes = numlikes + (?) WHERE id = ?", new Object[]{points, commentId});
     }
@@ -613,4 +635,19 @@ public class SeriesDaoJdbc implements SeriesDao {
         return list.get(0);
     }
 
+    private boolean userFollows(long seriesId, long userId) {
+        List<Integer> series = jdbcTemplate.query("SELECT * " +
+                        "FROM follows " +
+                        "WHERE follows.userid = ? AND follows.seriesid = ?", new Object[]{userId, seriesId},
+                (resultSet, i) -> resultSet.getInt("seriesid"));
+        return series.size() > 0;
+    }
+
+    private boolean hasRatedSeries(long userId,long seriesId) {
+        List<Integer> series = jdbcTemplate.query("SELECT * " +
+                        "FROM userseriesrating " +
+                        "WHERE userid = ? AND seriesid = ?", new Object[]{userId, seriesId},
+                (resultSet, i) -> resultSet.getInt("seriesid"));
+        return series.size() > 0;
+    }
 }

@@ -27,7 +27,7 @@ public class SeriesDaoJdbcTest {
     private static final int TVDB_ID = 2;
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
-    private static final double USER_RATING = 3;
+    private static final double TOTAL_RATING = 3;
     private static final String STATUS = "status";
     private static final int RUNTIME = 4;
     private static final String FIRST_AIRED = "2000-01-01";
@@ -58,7 +58,7 @@ public class SeriesDaoJdbcTest {
         jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO series " +
                 "(id,tvDbId,name,description,userRating,status,runtime,networkid,firstaired,id_imdb,added,updated,posterUrl,bannerUrl,followers) " +
                 "VALUES(%d,%d,'%s','%s',%f,'%s',%d,%d,'%s','%s','%s','%s','%s','%s',%d)",
-                ID, TVDB_ID, NAME,DESCRIPTION,USER_RATING,STATUS,RUNTIME,NETWORK_ID,FIRST_AIRED,ID_IMDB,ADDED,UPDATED,POSTER_URL,BANNER_URL,FOLLOWERS));
+                ID, TVDB_ID, NAME,DESCRIPTION, TOTAL_RATING,STATUS,RUNTIME,NETWORK_ID,FIRST_AIRED,ID_IMDB,ADDED,UPDATED,POSTER_URL,BANNER_URL,FOLLOWERS));
         jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO hasgenre (seriesid,genreid) VALUES(%d,%d)",ID,GENRE_ID));
         jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO season (seasonid,seriesid,seasonnumber) VALUES(%d,%d,%d)",SEASON_ID,ID,1));
         jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO episode (id,name,seriesId,overview,numEpisode,tvdbid,seasonid)VALUES(%d,'%s',%d,'%s',%d,%d,%d)",
@@ -79,7 +79,7 @@ public class SeriesDaoJdbcTest {
         Assert.assertEquals(series.getId(),ID);
         Assert.assertEquals(series.getName(),NAME);
         Assert.assertEquals(series.getSeriesDescription(),DESCRIPTION);
-        Assert.assertEquals(series.getUserRating(),USER_RATING,0);
+        Assert.assertEquals(series.getTotalRating(), TOTAL_RATING,0);
         Assert.assertEquals(series.getStatus(),STATUS);
         Assert.assertEquals(series.getRunningTime(),RUNTIME);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -113,7 +113,7 @@ public class SeriesDaoJdbcTest {
     @Test
     public void createSeriesTest(){
         //Ejercitar
-        final long id = seriesDao.createSeries(TVDB_ID,NAME,DESCRIPTION,USER_RATING,STATUS,RUNTIME,null,FIRST_AIRED,
+        final long id = seriesDao.createSeries(TVDB_ID,NAME,DESCRIPTION, TOTAL_RATING,STATUS,RUNTIME,null,FIRST_AIRED,
                 ID_IMDB,ADDED,UPDATED,POSTER_URL,BANNER_URL,FOLLOWERS);
         //Asserts
         Assert.assertTrue(id >= 0);
@@ -207,13 +207,13 @@ public class SeriesDaoJdbcTest {
     @Test
     public void addSeriesGenreTest() {
         //Setup
-        Series s = new Series(ID, TVDB_ID, NAME,DESCRIPTION,null,POSTER_URL,BANNER_URL,USER_RATING,STATUS,RUNTIME,FOLLOWERS,ID_IMDB,FIRST_AIRED,ADDED,UPDATED);
+        Series s = new Series(ID, TVDB_ID, NAME,DESCRIPTION,null,POSTER_URL,BANNER_URL, TOTAL_RATING,STATUS,RUNTIME,FOLLOWERS,ID_IMDB,FIRST_AIRED,ADDED,UPDATED);
         List<Series> genreSeries = new ArrayList<>();
         genreSeries.add(s);
         jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO series " +
                         "(id,tvDbId,name,description,userRating,status,runtime,firstaired,id_imdb,added,updated,posterUrl,bannerUrl,followers) " +
                         "VALUES(%d,%d,'%s','%s',%f,'%s',%d,'%s','%s','%s','%s','%s','%s',%d)",
-                ID, TVDB_ID, NAME,DESCRIPTION,USER_RATING,STATUS,RUNTIME,FIRST_AIRED,ID_IMDB,ADDED,UPDATED,POSTER_URL,BANNER_URL,FOLLOWERS));
+                ID, TVDB_ID, NAME,DESCRIPTION, TOTAL_RATING,STATUS,RUNTIME,FIRST_AIRED,ID_IMDB,ADDED,UPDATED,POSTER_URL,BANNER_URL,FOLLOWERS));
         //Ejercitar
         final long id = seriesDao.addSeriesGenre(GENRE,genreSeries);
         //Asserts
@@ -276,10 +276,23 @@ public class SeriesDaoJdbcTest {
         //Setup
         populateDatabase();
         //Ejercitar
-        List<Series> series = seriesDao.searchSeries(NAME,GENRE,NETWORK_NAME,0,(int)USER_RATING + 1);
+        List<Series> series = seriesDao.searchSeries(NAME,GENRE,NETWORK_NAME,0,(int) TOTAL_RATING + 1);
         //Asserts
         Assert.assertEquals(1,series.size());
         assertSeries(series.get(0));
+    }
+    @Test
+    public void rateSeriesTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        final double userRating = 3.4;
+        //Ejercitar
+        seriesDao.rateSeries(ID,USER_ID,userRating);
+        //Asserts
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"userseriesrating"));
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"series",
+                String.format(Locale.US,"id=%d AND ABS(userRating-%f) < 0.001",ID,TOTAL_RATING + userRating)));
     }
     @Test
     public void getSeasonsBySeriesIdTest(){
@@ -431,7 +444,7 @@ public class SeriesDaoJdbcTest {
         //Setup
         populateDatabase();
         //Ejercitar
-        List<Series> series = seriesDao.searchSeries(NAME + "extra",GENRE,NETWORK_NAME,0,(int)USER_RATING + 1);
+        List<Series> series = seriesDao.searchSeries(NAME + "extra",GENRE,NETWORK_NAME,0,(int) TOTAL_RATING + 1);
         //Asserts
         Assert.assertEquals(0,series.size());
     }
@@ -440,7 +453,7 @@ public class SeriesDaoJdbcTest {
         //Setup
         populateDatabase();
         //Ejercitar
-        List<Series> series = seriesDao.searchSeries(NAME,GENRE + "extra",NETWORK_NAME,0,(int)USER_RATING + 1);
+        List<Series> series = seriesDao.searchSeries(NAME,GENRE + "extra",NETWORK_NAME,0,(int) TOTAL_RATING + 1);
         //Asserts
         Assert.assertEquals(0,series.size());
     }
@@ -449,7 +462,7 @@ public class SeriesDaoJdbcTest {
         //Setup
         populateDatabase();
         //Ejercitar
-        List<Series> series = seriesDao.searchSeries(NAME,GENRE,NETWORK_NAME + "extra",0,(int)USER_RATING + 1);
+        List<Series> series = seriesDao.searchSeries(NAME,GENRE,NETWORK_NAME + "extra",0,(int) TOTAL_RATING + 1);
         //Asserts
         Assert.assertEquals(0,series.size());
     }
