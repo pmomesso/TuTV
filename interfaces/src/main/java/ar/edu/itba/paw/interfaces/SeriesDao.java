@@ -48,4 +48,10 @@ public interface SeriesDao {
     void likePost(long userId, long postId);
 
     void unlikePost(long userId, long postId);
+
+    void addCommentToPost(long commentPostId, String commentBody, long commentUserId);
+
+    void likeComment(long userId, long commentId);
+
+    void unlikeComment(long userId, long commentId);
 }

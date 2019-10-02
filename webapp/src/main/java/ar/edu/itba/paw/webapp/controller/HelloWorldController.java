@@ -116,19 +116,21 @@ public class HelloWorldController {
 			return series(new PostForm(), form, form.getCommentSeriesId());
 		}
 //		DENTRO DE COMMENT FORM HAY: getDescription() getSeriesId() getUserId() getUserId()
-//		TODO pedro llamar a metodo que comenta un post de una serie
+		//TODO que este metodo tome el form y no los parámetros directamente... (sería más correcto??)
+		seriesService.addCommentToPost(form.getCommentPostId(), form.getCommentBody(), form.getCommentUserId());
 		return new ModelAndView("redirect:/series?id=" + form.getCommentSeriesId());
 	}
 
     @RequestMapping(value = "/likeComment", method = RequestMethod.POST)
     public ModelAndView likeComment(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
-        // TODO pedro llamar a metodo que likea ese comment
+		seriesService.likeComment(userId, commentId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/unlikeComment", method = RequestMethod.POST)
     public ModelAndView unlikeComment(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
         // TODO pedro llamar a metodo que unlikea ese comment
+		seriesService.unlikeComment(userId, commentId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 

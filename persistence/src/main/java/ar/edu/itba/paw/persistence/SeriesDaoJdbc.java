@@ -73,6 +73,8 @@ public class SeriesDaoJdbc implements SeriesDao {
     private SimpleJdbcInsert viewedEpisodesjdbcInsert;
     private SimpleJdbcInsert seriesReviewJdbcInsert;
     private SimpleJdbcInsert hasLikedSeriesReviewJdbcInsert;
+    private SimpleJdbcInsert seriesReviewCommentsJdbcInsert;
+    private SimpleJdbcInsert hasLikedSeriesReviewCommentsJdbcInsert;
 
     @Autowired
     private UserDao userDao;
@@ -120,6 +122,12 @@ public class SeriesDaoJdbc implements SeriesDao {
         hasLikedSeriesReviewJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("haslikedseriesreview")
                 .usingColumns("userid", "seriesreview");
+        seriesReviewCommentsJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("seriesreviewcomments")
+                .usingColumns("body", "userid", "postid");
+        hasLikedSeriesReviewCommentsJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("haslikedseriesreviewcomment")
+                .usingColumns("seriesreviewcomment", "userid");
     }
 
     @Override
@@ -497,6 +505,45 @@ public class SeriesDaoJdbc implements SeriesDao {
     public void unlikePost(long userId, long postId) {
         jdbcTemplate.update("DELETE FROM haslikedseriesreview WHERE userid = ? AND seriesreview = ?", new Object[]{userId, postId});
         addPointsToPost(postId, -1);
+    }
+
+    @Override
+    public void addCommentToPost(long commentPostId, String commentBody, long commentUserId) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("body", commentBody);
+        args.put("postid", commentPostId);
+        args.put("userid", commentUserId);
+
+        seriesReviewCommentsJdbcInsert.execute(args);
+    }
+
+    @Override
+    public void likeComment(long userId, long commentId) {
+        if(likedComment(userId, commentId)) return;
+        Map<String, Object> args = new HashMap<>();
+        args.put("userid", userId);
+        args.put("seriesreviewcomment", commentId);
+
+        hasLikedSeriesReviewCommentsJdbcInsert.execute(args);
+        addPointsToComment(commentId, 1);
+    }
+
+    private boolean likedComment(long userId, long commentId) {
+        List<Boolean> list = jdbcTemplate.query("SELECT exists(SELECT * FROM haslikedseriesreviewcomment WHERE seriesreviewcomment = ? AND userid = ?) AS liked",
+                new Object[]{commentId, userId}, (resultSet, i) -> {
+                    return resultSet.getBoolean("liked");
+                });
+        return list.get(0);
+    }
+
+    @Override
+    public void unlikeComment(long userId, long commentId) {
+        jdbcTemplate.update("DELETE FROM haslikedseriesreviewcomment WHERE seriesreviewcomment = ? AND userid = ?", new Object[]{commentId, userId});
+        addPointsToComment(commentId, -1);
+    }
+
+    private void addPointsToComment(long commentId, int points) {
+        jdbcTemplate.update("UPDATE seriesreviewcomments SET numlikes = numlikes + (?) WHERE id = ?", new Object[]{points, commentId});
     }
 
     private void addPointsToPost(long postId, int points) {
