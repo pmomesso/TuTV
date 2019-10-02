@@ -10,7 +10,7 @@ public class User {
     private long id;
     private Date birthDate;
     private String confirmationKey;
-
+    private boolean isAdmin = false;
     public User() {}
 
 
@@ -58,4 +58,11 @@ public class User {
         this.birthDate = birthDate;
     }
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
 }

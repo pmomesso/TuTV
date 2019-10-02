@@ -155,8 +155,8 @@ public class HelloWorldController {
 			return showRegister(form);
 		}
 
-		userService.createUser(form.getUsername(), form.getPassword(), form.getMail());
-		// TODO create user
+		userService.createUser(form.getUsername(), form.getPassword(), form.getMail(),false);
+		// TODO create user y setear admin.
 //		final User u = us.create(form.getUsername());
 //		return new ModelAndView("redirect:/user/" + u.getId());
 		return null;

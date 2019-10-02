@@ -51,9 +51,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(String userName, String password, String mail) {
+    public User createUser(String userName, String password, String mail,boolean isAdmin) {
         //String hashedPassword = passwordEncoder.encode(password);
-        User u = userDao.createUser(userName, password, mail);
+        User u = userDao.createUser(userName, password, mail,isAdmin);
         //TODO CHEQUEAR QUE NO CONCIDAN MAILS O USERNAMES CON OTROS USUARIOS EXISTENTES
         String token = null;
         boolean flag = false;

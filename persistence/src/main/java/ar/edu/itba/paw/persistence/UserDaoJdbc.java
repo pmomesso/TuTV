@@ -26,6 +26,7 @@ public class UserDaoJdbc implements UserDao {
 		user.setUserName(resultSet.getString("username"));
 		user.setPassword(resultSet.getString("password"));
 		user.setConfirmationKey(resultSet.getString("confirmation_key"));
+		user.setAdmin(resultSet.getBoolean("isAdmin"));
 		return user;
 	};
 	
@@ -59,11 +60,12 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	@Override
-	public User createUser(final String userName, final String password, final String mail) {
+	public User createUser(final String userName, final String password, final String mail,boolean isAdmin) {
 		Map<String, Object> args = new HashMap<>();
 		args.put("username", userName);
 		args.put("password", password);
 		args.put("mail", mail);
+		args.put("isAdmin",isAdmin);
 		final Number userGeneratedId = jdbcInsert.executeAndReturnKey(args);
 		long insertedId = userGeneratedId.longValue();
 		return getUserById(insertedId);

@@ -6,7 +6,8 @@ create table if not exists users
     username varchar(50),
     password varchar(255),
     mail varchar(32),
-    confirmation_key varchar(60)
+    confirmation_key varchar(60),
+    isAdmin boolean default false not null
 );
 
 alter table users owner to root;

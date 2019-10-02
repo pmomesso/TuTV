@@ -10,7 +10,7 @@ public interface UserDao {
 
     User getUserByMail(String mail);
 
-    User createUser(String userName, String password, String mail);
+    User createUser(String userName, String password, String mail,boolean isAdmin);
 
     boolean checkIfValidationKeyExists(String key);
 

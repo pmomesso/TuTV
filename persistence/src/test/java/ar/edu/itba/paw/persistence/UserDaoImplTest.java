@@ -24,6 +24,7 @@ public class UserDaoImplTest {
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
     private static final String MAIL = "mail";
+    private static final boolean IS_ADMIN = true;
     @Autowired
     private DataSource ds;
     @Autowired
@@ -38,14 +39,18 @@ public class UserDaoImplTest {
     @Test
     public void testCreate(){
         //Ejercitar
-        final User u = userDao.createUser(USERNAME, PASSWORD, MAIL);
+        final User u = userDao.createUser(USERNAME, PASSWORD, MAIL,IS_ADMIN);
         //Asserts
         Assert.assertTrue(u.getId() > 0);
+        Assert.assertEquals(USERNAME,u.getUserName());
+        Assert.assertEquals(PASSWORD,u.getPassword());
+        Assert.assertEquals(MAIL,u.getMailAddress());
+        Assert.assertEquals(IS_ADMIN,u.isAdmin());
     }
     @Test
     public void testGetUser(){
         //Setup
-        jdbcTemplate.execute(String.format("INSERT INTO users(id, username, password, mail) VALUES( %d,'%s','%s', '%s')", USER_ID, USERNAME, PASSWORD, MAIL));
+        jdbcTemplate.execute(String.format("INSERT INTO users(id, username, password, mail,isAdmin) VALUES( %d,'%s','%s','%s',%b)", USER_ID, USERNAME, PASSWORD, MAIL,IS_ADMIN));
 
         //Ejercitar
         final User user = userDao.getUserById(USER_ID);
@@ -55,5 +60,6 @@ public class UserDaoImplTest {
         Assert.assertEquals(user.getPassword(), PASSWORD);
         Assert.assertEquals(user.getMailAddress(), MAIL);
         Assert.assertEquals(user.getId(), USER_ID);
+        Assert.assertEquals(IS_ADMIN,user.isAdmin());
     }
 }
