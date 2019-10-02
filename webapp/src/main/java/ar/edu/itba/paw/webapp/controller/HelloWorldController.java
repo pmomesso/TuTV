@@ -67,13 +67,13 @@ public class HelloWorldController {
 
 	@RequestMapping(value = "/addSeries", method = RequestMethod.POST)
     public ModelAndView addSeries(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) {
-	    seriesService.followSeries(seriesId,userId);
+	    seriesService.followSeries(seriesId, userId);
 	    return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
     public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) {
-		seriesService.setViewedEpisode(episodeId,userId);
+		seriesService.setViewedEpisode(episodeId, userId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
@@ -85,7 +85,7 @@ public class HelloWorldController {
 
     @RequestMapping(value = "/rate")
     public ModelAndView rate(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("rating") int rating) {
-		seriesService.rateSeries(seriesId,userId,rating);
+		seriesService.rateSeries(seriesId, userId, rating);
 	    return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 

@@ -92,11 +92,7 @@
               </section>
               <c:forEach items="${seriesMap}" var="entry">
                 <section id="${entry.key}">
-<%--                  TODO tenemos pagina genre?--%>
-<%--                  <a href="<c:url value="/series?genre=${entry.key.id}"/>">--%>
-                    <h2 class="black-font"><c:out value="${entry.key.name}"/></h2>
-<%--                    <span class="show-all"><spring:message code="index.seeAll"/></span>--%>
-<%--                  </a>--%>
+                  <h2 class="black-font"><c:out value="${entry.key.name}"/></h2>
                   <ul class="posters-list shows-list explore-list list-unstyled list-inline">
                     <c:forEach items="${entry.value}" var="series">
                       <li id="${series.id}" class=" ">

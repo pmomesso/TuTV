@@ -62,9 +62,4 @@
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-<!--TODO-->
-    <error-page>
-        <error-code>404</error-code>
-        <location>// path a pagina de error (no mostrar stack trace porque doy info de mi pagina)</location>
-    </error-page>
 </web-app>
