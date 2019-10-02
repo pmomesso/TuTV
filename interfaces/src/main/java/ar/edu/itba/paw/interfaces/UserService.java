@@ -3,6 +3,7 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
+import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 
 public interface UserService {
 	User findById(long id) throws NotFoundException;
@@ -13,7 +14,7 @@ public interface UserService {
 
 	User getLoggedUser();
 
-    void banUser(long userId) throws BadRequestException;
+    void banUser(long userId) throws UnauthorizedException;
 
-    void unbanUser(long userId) throws BadRequestException;
+    void unbanUser(long userId) throws UnauthorizedException;
 }

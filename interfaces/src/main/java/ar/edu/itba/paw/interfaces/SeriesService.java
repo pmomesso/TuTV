@@ -4,6 +4,7 @@ import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Season;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
+import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public interface SeriesService {
 
     void unlikeComment(long commentId);
 
-    void removeComment(long commentId) throws BadRequestException;
+    void removeComment(long commentId) throws UnauthorizedException;
 
-    void removePost(long postId) throws BadRequestException;
+    void removePost(long postId) throws UnauthorizedException;
 }

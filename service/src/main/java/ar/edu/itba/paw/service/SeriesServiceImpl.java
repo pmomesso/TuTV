@@ -7,6 +7,7 @@ import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Season;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
+import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -128,14 +129,14 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public void removeComment(long commentId) throws BadRequestException {
-        if(!userService.getLoggedUser().getIsAdmin()) throw new BadRequestException();
+    public void removeComment(long commentId) throws UnauthorizedException {
+        if(!userService.getLoggedUser().getIsAdmin()) throw new UnauthorizedException();
         seriesDao.removeComment(commentId);
     }
 
     @Override
-    public void removePost(long postId) throws BadRequestException {
-        if(!userService.getLoggedUser().getIsAdmin()) throw new BadRequestException();
+    public void removePost(long postId) throws UnauthorizedException {
+        if(!userService.getLoggedUser().getIsAdmin()) throw new UnauthorizedException();
         seriesDao.removePost(postId);
     }
 }

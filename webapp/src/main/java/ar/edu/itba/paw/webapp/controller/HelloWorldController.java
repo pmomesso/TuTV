@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
+import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.form.CommentForm;
 import ar.edu.itba.paw.webapp.form.PostForm;
 import ar.edu.itba.paw.webapp.form.SearchForm;
@@ -114,12 +115,8 @@ public class HelloWorldController {
     }
 
 	@RequestMapping(value = "/removePost", method = RequestMethod.POST)
-	public ModelAndView removePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) {
-		try {
-			seriesService.removePost(postId);
-		} catch (BadRequestException e) {
-			e.printStackTrace();
-		}
+	public ModelAndView removePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) throws UnauthorizedException {
+		seriesService.removePost(postId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 
@@ -149,48 +146,29 @@ public class HelloWorldController {
     }
 
 	@RequestMapping(value = "/removeComment", method = RequestMethod.POST)
-	public ModelAndView removeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+	public ModelAndView removeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws UnauthorizedException {
 		//Todo: validate that the removal is requested by admin
-
-		try {
-			seriesService.removeComment(commentId);
-		} catch (BadRequestException e) {
-			e.printStackTrace();
-		}
+		seriesService.removeComment(commentId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 
     @RequestMapping(value = "/banUser", method = RequestMethod.POST)
-    public ModelAndView banUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) {
+    public ModelAndView banUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException {
 		//Todo: validate that the ban is requested by admin.
-		try {
-			userService.banUser(userId);
-		} catch (BadRequestException e) {
-			e.printStackTrace();
-		}
+		userService.banUser(userId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/unbanUser", method = RequestMethod.POST)
-    public ModelAndView unbanUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) {
+    public ModelAndView unbanUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException {
 		//Todo: validate that the unban is requested by admin.
-		try {
-			userService.unbanUser(userId);
-		} catch (BadRequestException e) {
-			//Todo: handle
-			e.printStackTrace();
-		}
+		userService.unbanUser(userId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
-	public ModelAndView profile(@RequestParam("id") long userId) {
-		User u = null;
-		try {
-			u = userService.findById(userId);
-		} catch (NotFoundException e) {
-			e.printStackTrace();
-		}
+	public ModelAndView profile(@RequestParam("id") long userId) throws NotFoundException {
+		User u = userService.findById(userId);
 //		TODO manejar error de si no hay user
 		ModelAndView mav = new ModelAndView("profile");
 		mav.addObject("userProfile", u);

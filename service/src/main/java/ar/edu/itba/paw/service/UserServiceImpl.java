@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
+import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -88,14 +89,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void banUser(long userId) throws BadRequestException {
-        if(!getLoggedUser().getIsAdmin()) throw new BadRequestException();
+    public void banUser(long userId) throws UnauthorizedException {
+        if(!getLoggedUser().getIsAdmin()) throw new UnauthorizedException();
         userDao.banUser(userId);
     }
 
     @Override
-    public void unbanUser(long userId) throws BadRequestException {
-        if(!getLoggedUser().getIsAdmin()) throw new BadRequestException();
+    public void unbanUser(long userId) throws UnauthorizedException {
+        if(!getLoggedUser().getIsAdmin()) throw new UnauthorizedException();
         userDao.unbanUser(userId);
     }
 }
