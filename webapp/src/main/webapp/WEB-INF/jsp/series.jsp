@@ -158,7 +158,7 @@
                                             <h2 id="community-title" class="title"><spring:message code="series.discussion"/></h2>
                                             <div id="show-comments">
                                                 <div class="comments">
-                                                    <c:if test="${isLogged}">
+                                                    <c:if test="${isLogged && not user.isBanned}">
                                                         <div class="new-comment comment">
                                                             <div class="disclaimer">
                                                                 <p class="disclaimer-title"><spring:message code="series.spoil"/></p>
@@ -187,6 +187,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="author">
+<%--                                                                        TODO poner img correspondiente al user actual--%>
                                                                         <img class="author-picture img-circle"
                                                                              src="https://d1zfszn0v5ya99.cloudfront.net/user/15629037/profile_picture/5d0d499d718d5_square.png"
                                                                              alt="${user.userName}">
@@ -213,10 +214,22 @@
                                                                                     <span>${post.user.userName}</span>
                                                                                 </a>
                                                                                 <c:if test="${user.isAdmin && user.id ne post.userId}">
-                                                                                    <form action="<c:url value="/banUser?seriesId=${series.id}&userId=${post.userId}"/>"
-                                                                                          method="post" class="float-left">
-                                                                                        <button class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf05e</button>
-                                                                                    </form>
+                                                                                    <c:choose>
+                                                                                        <c:when test="${post.user.isBanned}">
+                                                                                            <form action="<c:url value="/unbanUser?seriesId=${series.id}&userId=${post.userId}"/>"
+                                                                                                  method="post" class="float-left">
+                                                                                                <button type="submit" class="remove">
+                                                                                                    <img src="<c:url value="/resources/img/unban.png"/>" title="<spring:message code="series.unban"/>" alt="<spring:message code="series.unban"/>">
+                                                                                                </button>
+                                                                                            </form>
+                                                                                        </c:when>
+                                                                                        <c:otherwise>
+                                                                                            <form action="<c:url value="/banUser?seriesId=${series.id}&userId=${post.userId}"/>"
+                                                                                                  method="post" class="float-left">
+                                                                                                <button class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf05e</button>
+                                                                                            </form>
+                                                                                        </c:otherwise>
+                                                                                    </c:choose>
                                                                                 </c:if>
                                                                                 <div class="float-right mr-5">
                                                                                     <c:if test="${user.isAdmin || user.id eq post.userId}">
@@ -259,7 +272,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </article>
-                                                                <c:if test="${isLogged || not empty post.comments}">
+                                                                <c:if test="${(isLogged && not user.isBanned)|| not empty post.comments}">
                                                                     <div class="replies sub-comment">
                                                                         <c:forEach var="comment" items="${post.comments}">
                                                                             <article class="reply clearfix initialized">
@@ -269,10 +282,22 @@
                                                                                             <span style="font-family: proximaNova; color: #777;">${comment.user.userName}</span>
                                                                                         </a>
                                                                                         <c:if test="${user.isAdmin && user.id ne comment.userId}">
-                                                                                            <form action="<c:url value="/banUser?seriesId=${series.id}&userId=${comment.userId}"/>"
-                                                                                                  method="post" class="float-left">
-                                                                                                <button class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf05e</button>
-                                                                                            </form>
+                                                                                            <c:choose>
+                                                                                                <c:when test="${comment.user.isBanned}">
+                                                                                                    <form action="<c:url value="/unbanUser?seriesId=${series.id}&userId=${comment.userId}"/>"
+                                                                                                          method="post" class="float-left">
+                                                                                                        <button type="submit" class="remove">
+                                                                                                            <img src="<c:url value="/resources/img/unban.png"/>" title="<spring:message code="series.unban"/>" alt="<spring:message code="series.unban"/>">
+                                                                                                        </button>
+                                                                                                    </form>
+                                                                                                </c:when>
+                                                                                                <c:otherwise>
+                                                                                                    <form action="<c:url value="/banUser?seriesId=${series.id}&userId=${comment.userId}"/>"
+                                                                                                          method="post" class="float-left">
+                                                                                                        <button class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf05e</button>
+                                                                                                    </form>
+                                                                                                </c:otherwise>
+                                                                                            </c:choose>
                                                                                         </c:if>
                                                                                         <div class="float-right">
                                                                                             <c:if test="${user.isAdmin || user.id eq comment.userId}">
@@ -315,7 +340,7 @@
                                                                                 </div>
                                                                             </article>
                                                                         </c:forEach>
-                                                                        <c:if test="${isLogged}">
+                                                                        <c:if test="${isLogged && not user.isBanned}">
                                                                             <form:form class="reply clearfix" modelAttribute="commentForm" action="/comment"
                                                                                        method="post"
                                                                                        enctype="application/x-www-form-urlencoded">

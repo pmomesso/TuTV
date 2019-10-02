@@ -149,6 +149,12 @@ public class HelloWorldController {
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
+    @RequestMapping(value = "/unbanUser", method = RequestMethod.POST)
+    public ModelAndView unbanUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) {
+//        TODO pedro unban user
+        return new ModelAndView("redirect:/series?id=" + seriesId);
+    }
+
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public ModelAndView profile(@RequestParam("id") long userId) {
 		User u = userService.findById(userId);
