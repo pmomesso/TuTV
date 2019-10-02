@@ -7,7 +7,8 @@ create table if not exists users
     password varchar(255),
     mail varchar(32),
     confirmation_key varchar(60),
-    isAdmin boolean default false not null
+    banned boolean default false,
+    isadmin boolean default false
 );
 
 alter table users owner to root;
@@ -210,10 +211,12 @@ create table if not exists seriesreviewcomments
     body varchar(512),
     userid integer
         constraint seriesreviewcomments_users_id_fk
-            references users,
+            references users
+            on delete cascade,
     postid integer
         constraint seriesreviewcomments_seriesreview_id_fk
-            references seriesreview,
+            references seriesreview
+            on delete cascade,
     numlikes integer default 0
 );
 
@@ -249,10 +252,12 @@ create table if not exists haslikedseriesreview
 (
     seriesreview integer
         constraint haslikedseriesreview_seriesreview_id_fk
-            references seriesreview,
+            references seriesreview
+            on delete cascade,
     userid integer
         constraint haslikedseriesreview_users_id_fk
             references users
+            on delete cascade
 );
 
 alter table haslikedseriesreview owner to root;
@@ -261,10 +266,12 @@ create table if not exists haslikedseriesreviewcomment
 (
     seriesreviewcomment integer
         constraint haslikedseriesreviewcomment_seriesreviewcomments_id_fk
-            references seriesreviewcomments,
+            references seriesreviewcomments
+            on delete cascade,
     userid integer
         constraint haslikedseriesreviewcomment_users_id_fk
             references users
+            on delete cascade
 );
 
 alter table haslikedseriesreviewcomment owner to root;

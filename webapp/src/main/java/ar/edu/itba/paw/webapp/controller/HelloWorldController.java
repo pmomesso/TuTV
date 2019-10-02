@@ -111,6 +111,7 @@ public class HelloWorldController {
 	@RequestMapping(value = "/removePost", method = RequestMethod.POST)
 	public ModelAndView removePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) {
 //		TODO pedro remove post
+		seriesService.removePost(postId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 
@@ -140,12 +141,14 @@ public class HelloWorldController {
 	@RequestMapping(value = "/removeComment", method = RequestMethod.POST)
 	public ModelAndView removeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
 //		TODO pedro remove comment
+		seriesService.removeComment(commentId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 
     @RequestMapping(value = "/banUser", method = RequestMethod.POST)
     public ModelAndView banUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) {
 //		TODO pedro ban user
+		userService.banUser(userId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 

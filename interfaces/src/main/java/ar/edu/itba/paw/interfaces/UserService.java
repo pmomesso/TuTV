@@ -10,4 +10,6 @@ public interface UserService {
 	User createUser(String userName, String password, String mail,boolean isAdmin);
 
 	User getLoggedUser();
+
+    void banUser(long userId);
 }

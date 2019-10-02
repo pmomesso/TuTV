@@ -542,6 +542,16 @@ public class SeriesDaoJdbc implements SeriesDao {
         addPointsToComment(commentId, -1);
     }
 
+    @Override
+    public void removeComment(long commentId) {
+        jdbcTemplate.update("DELETE FROM seriesreviewcomments WHERE id = ?", new Object[]{commentId});
+    }
+
+    @Override
+    public void removePost(long postId) {
+        jdbcTemplate.update("DELETE FROM seriesreview WHERE id = ?", new Object[]{postId});
+    }
+
     private void addPointsToComment(long commentId, int points) {
         jdbcTemplate.update("UPDATE seriesreviewcomments SET numlikes = numlikes + (?) WHERE id = ?", new Object[]{points, commentId});
     }

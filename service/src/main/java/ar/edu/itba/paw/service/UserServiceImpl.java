@@ -82,4 +82,9 @@ public class UserServiceImpl implements UserService {
 
         return null;
     }
+
+    @Override
+    public void banUser(long userId) {
+        userDao.banUser(userId);
+    }
 }

@@ -117,4 +117,14 @@ public class SeriesServiceImpl implements SeriesService {
     public void unlikeComment(long userId, long commentId) {
         seriesDao.unlikeComment(userId, commentId);
     }
+
+    @Override
+    public void removeComment(long commentId) {
+        seriesDao.removeComment(commentId);
+    }
+
+    @Override
+    public void removePost(long postId) {
+        seriesDao.removePost(postId);
+    }
 }

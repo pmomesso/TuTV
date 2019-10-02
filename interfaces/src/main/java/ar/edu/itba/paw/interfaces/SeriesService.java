@@ -37,4 +37,8 @@ public interface SeriesService {
     void likeComment(long userId, long commentId);
 
     void unlikeComment(long userId, long commentId);
+
+    void removeComment(long commentId);
+
+    void removePost(long postId);
 }

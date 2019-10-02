@@ -15,4 +15,6 @@ public interface UserDao {
     boolean checkIfValidationKeyExists(String key);
 
     void setValidationKey(User u, String key);
+
+    void banUser(long userId);
 }
