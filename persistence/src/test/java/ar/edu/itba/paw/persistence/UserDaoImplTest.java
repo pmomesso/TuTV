@@ -45,7 +45,7 @@ public class UserDaoImplTest {
         Assert.assertEquals(USERNAME,u.getUserName());
         Assert.assertEquals(PASSWORD,u.getPassword());
         Assert.assertEquals(MAIL,u.getMailAddress());
-        Assert.assertEquals(IS_ADMIN,u.isAdmin());
+        Assert.assertEquals(IS_ADMIN,u.getIsAdmin());
     }
     @Test
     public void testGetUser(){
@@ -60,6 +60,6 @@ public class UserDaoImplTest {
         Assert.assertEquals(user.getPassword(), PASSWORD);
         Assert.assertEquals(user.getMailAddress(), MAIL);
         Assert.assertEquals(user.getId(), USER_ID);
-        Assert.assertEquals(IS_ADMIN,user.isAdmin());
+        Assert.assertEquals(IS_ADMIN,user.getIsAdmin());
     }
 }

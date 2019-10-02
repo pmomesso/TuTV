@@ -110,6 +110,12 @@ public class HelloWorldController {
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
+	@RequestMapping(value = "/removePost", method = RequestMethod.POST)
+	public ModelAndView removePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) {
+//		TODO pedro remove post
+		return new ModelAndView("redirect:/series?id=" + seriesId);
+	}
+
 	@RequestMapping(value = "/comment", method = RequestMethod.POST)
 	public ModelAndView comment(@Valid @ModelAttribute("commentForm") final CommentForm form, final BindingResult errors) {
 		if (errors.hasErrors()) {
@@ -129,10 +135,15 @@ public class HelloWorldController {
 
     @RequestMapping(value = "/unlikeComment", method = RequestMethod.POST)
     public ModelAndView unlikeComment(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
-        // TODO pedro llamar a metodo que unlikea ese comment
 		seriesService.unlikeComment(userId, commentId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
+
+	@RequestMapping(value = "/removeComment", method = RequestMethod.POST)
+	public ModelAndView removeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+//		TODO pedro remove comment
+		return new ModelAndView("redirect:/series?id=" + seriesId);
+	}
 
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public ModelAndView profile() {

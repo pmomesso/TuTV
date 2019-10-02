@@ -81,10 +81,18 @@ body {
 .viewed {
  color: #95eb34;
 }
-.heart {
+.heart, .remove, .remove-small {
  color: gray;
  background-color: inherit;
  border: none;
+}
+.remove img {
+    height: 20px;
+    margin-bottom: 0.5rem;
+}
+.remove-small img {
+    height: 15px;
+    margin-bottom: 0.5rem;
 }
 .post-liked {
  color: firebrick;

@@ -11,8 +11,8 @@ public class User {
     private Date birthDate;
     private String confirmationKey;
     private boolean isAdmin = false;
-    public User() {}
 
+    public User() {}
 
     public String getConfirmationKey() {
         return confirmationKey;
@@ -58,11 +58,11 @@ public class User {
         this.birthDate = birthDate;
     }
 
-    public boolean isAdmin() {
+    public boolean getIsAdmin() {
         return isAdmin;
     }
 
-    public void setAdmin(boolean admin) {
+    public void setIsAdmin(boolean admin) {
         isAdmin = admin;
     }
 }

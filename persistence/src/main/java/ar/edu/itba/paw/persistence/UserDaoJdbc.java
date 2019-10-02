@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.persistence;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,7 @@ public class UserDaoJdbc implements UserDao {
 		user.setUserName(resultSet.getString("username"));
 		user.setPassword(resultSet.getString("password"));
 		user.setConfirmationKey(resultSet.getString("confirmation_key"));
-		user.setAdmin(resultSet.getBoolean("isAdmin"));
+		user.setIsAdmin(resultSet.getBoolean("isAdmin"));
 		return user;
 	};
 	

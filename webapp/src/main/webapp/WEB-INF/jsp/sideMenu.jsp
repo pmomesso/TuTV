@@ -48,8 +48,8 @@
                 <h1>${user.userName}</h1>
                 <ul class="menu list-unstyled">
                     <li class="profile ">
-                        <a href="/profile" title="Profile">
-                            <img class="logo logo_icon" src="<c:url value="/resources/img/profile.png"/>" alt="Profile">
+                        <a href="/profile" title="<spring:message code="index.profile"/>">
+                            <img class="logo logo_icon" src="<c:url value="/resources/img/profile.png"/>" alt="<spring:message code="index.profile"/>">
                             <span><spring:message code="index.profile"/></span>
                         </a>
                     </li>

@@ -207,14 +207,6 @@
                                                             <div class="comment clearfix extended">
                                                                 <article class="post">
                                                                     <div class="top">
-<%--                                                                        TODO remove comment if admin--%>
-<%--                                                                        <div class="remove-zone">--%>
-<%--                                                                            <a class="report-btn popover-link" href="#"--%>
-<%--                                                                               data-toggle="tooltip" data-placement="right"--%>
-<%--                                                                               title="" rel="popover"--%>
-<%--                                                                               data-original-title="Report"><i--%>
-<%--                                                                                    class="icon-tvst-flag"></i></a>--%>
-<%--                                                                        </div>--%>
                                                                         <div class="holder">
                                                                             <div class="author-label mb-3">
                                                                                 <span>${post.user.userName}</span>
@@ -224,15 +216,15 @@
                                                                                             <c:choose>
                                                                                                 <c:when test="${post.liked}">
                                                                                                     <form action="<c:url value="/unlikePost?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}"/>"
-                                                                                                          method="post">
-                                                                                                        <button type="submit" class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                          method="post" class="float-left">
+                                                                                                        <button type="submit" class="heart post-liked no-padding" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
                                                                                                         <span>${post.points}</span>
                                                                                                     </form>
                                                                                                 </c:when>
                                                                                                 <c:otherwise>
                                                                                                     <form action="<c:url value="/likePost?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}"/>"
-                                                                                                          method="post">
-                                                                                                        <button type="submit" class="heart" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                          method="post" class="float-left">
+                                                                                                        <button type="submit" class="heart no-padding" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
                                                                                                         <span>${post.points}</span>
                                                                                                     </form>
                                                                                                 </c:otherwise>
@@ -243,6 +235,14 @@
                                                                                             <span>${post.points}</span>
                                                                                         </c:otherwise>
                                                                                     </c:choose>
+                                                                                    <c:if test="${user.isAdmin || user.id eq post.userId}">
+                                                                                        <form action="<c:url value="/removePost?seriesId=${series.id}&postId=${post.postId}"/>"
+                                                                                              method="post" class="float-left">
+                                                                                            <button type="submit" class="remove">
+                                                                                                <img src="<c:url value="/resources/img/remove.png"/>" alt="<spring:message code="series.remove"/>">
+                                                                                            </button>
+                                                                                        </form>
+                                                                                    </c:if>
                                                                                 </div>
                                                                             </div>
                                                                             <blockquote class="original">
@@ -264,23 +264,33 @@
                                                                                                     <c:choose>
                                                                                                         <c:when test="${comment.liked}">
                                                                                                             <form action="<c:url value="/unlikeComment?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
-                                                                                                                  method="post">
-                                                                                                                <button type="submit" class="post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                                  method="post" class="float-left">
+                                                                                                                <button type="submit" class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                                <span>${comment.points}</span>
                                                                                                             </form>
                                                                                                         </c:when>
                                                                                                         <c:otherwise>
                                                                                                             <form action="<c:url value="/likeComment?seriesId=${series.id}&userId=${user.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
-                                                                                                                  method="post">
-                                                                                                                <button type="submit" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                                  method="post" class="float-left">
+                                                                                                                <button type="submit" class="heart" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
+                                                                                                                <span>${comment.points}</span>
                                                                                                             </form>
                                                                                                         </c:otherwise>
                                                                                                     </c:choose>
                                                                                                 </c:when>
                                                                                                 <c:otherwise>
                                                                                                     <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
+                                                                                                    <span>${comment.points}</span>
                                                                                                 </c:otherwise>
                                                                                             </c:choose>
-                                                                                            <span>${comment.points}</span>
+                                                                                            <c:if test="${user.isAdmin || user.id eq comment.userId}">
+                                                                                                <form action="<c:url value="/removeComment?seriesId=${series.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
+                                                                                                      method="post" class="float-left">
+                                                                                                    <button type="submit" class="remove-small">
+                                                                                                        <img src="<c:url value="/resources/img/remove.png"/>" alt="<spring:message code="series.remove"/>">
+                                                                                                    </button>
+                                                                                                </form>
+                                                                                            </c:if>
                                                                                         </div>
                                                                                     </div>
                                                                                     <blockquote>
