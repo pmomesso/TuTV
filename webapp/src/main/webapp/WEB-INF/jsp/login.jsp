@@ -24,7 +24,7 @@
 <div class="full-overlay"></div>
 <div class="container h-100">
     <div class="row justify-content-center h-100">
-        <div class="col-lg-5 col-sm-11 align-self-center white-background">
+        <div class="col-lg-6 col-sm-11 align-self-center white-background">
             <div class="w-100 divide-section-bottom text-center">
                 <img src="<c:url value="/resources/img/shortcuticon.png"/>" alt="TUTV">
                 <span class="title-page"><spring:message code="login.title"/></span>
@@ -32,29 +32,19 @@
             <form action="${loginUrl}" method="post" enctype="application/x-www-form-urlencoded">
                 <div class="container">
                     <div class="row w-100">
-                        <div class="col-3 align-self-center">
-                            <div class="container">
-                                <div class="row">
-                                    <label class="ml-lg-4 mb-2" for="username"><spring:message code="login.username"/></label>
-                                </div>
-                                <div class="row">
-                                    <label class="ml-lg-4 mt-5" for="password"><spring:message code="login.password"/></label>
-                                </div>
-                            </div>
+                        <div class="col-4 align-self-center">
+                            <label class="ml-lg-4" for="username"><spring:message code="login.username"/></label>
                         </div>
-                        <div class="col-9 align-self-center">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col">
-                                        <input class="m-3 w-100" id="username" name="username" type="text"/>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <input class="m-3 w-100" id="password" name="password" type="password"/>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-8 align-self-center">
+                            <input class="m-3 w-100" id="username" name="username" type="text"/>
+                        </div>
+                    </div>
+                    <div class="row w-100">
+                        <div class="col-4 align-self-center">
+                            <label class="ml-lg-4" for="password"><spring:message code="login.password"/></label>
+                        </div>
+                        <div class="col-8 align-self-center">
+                            <input class="m-3 w-100" id="password" name="password" type="password"/>
                         </div>
                     </div>
                 </div>

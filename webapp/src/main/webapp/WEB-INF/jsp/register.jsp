@@ -26,7 +26,7 @@
 <div class="full-overlay"></div>
 <div class="container h-100">
     <div class="row justify-content-center h-100">
-        <div class="col-lg-6 col-sm-11 align-self-center white-background">
+        <div class="col-lg-8 col-sm-11 align-self-center white-background">
             <div class="w-100 divide-section-bottom text-center">
                 <img src="<c:url value="/resources/img/shortcuticon.png"/>" alt="TUTV">
                 <span class="title-page"><spring:message code="register.title"/></span>
@@ -35,49 +35,40 @@
             <form:form modelAttribute="registerForm" action="${myVar}" method="post" enctype="application/x-www-form-urlencoded">
                 <div class="container">
                     <div class="row w-100">
-                        <div class="col-4 h-100 align-self-center">
-                            <div class="container h-100">
-                                <div class="row w-100">
-                                    <form:label class="ml-lg-5 mb-4" path="mail"><spring:message code="register.mail"/></form:label>
-                                </div>
-                                <div class="row w-100">
-                                    <form:label class="ml-lg-5 mb-4" path="username"><spring:message code="register.username"/></form:label>
-                                </div>
-                                <div class="row w-100">
-                                    <form:label class="ml-lg-5 mt-4" path="password"><spring:message code="register.password"/></form:label>
-                                </div>
-                                <div class="row w-100">
-                                    <form:label class="ml-lg-5 mt-4" path="repeatPassword"><spring:message code="register.repeatPassword"/></form:label>
-                                </div>
-                            </div>
+                        <div class="col-5 h-100 align-self-center">
+                            <form:label class="ml-lg-5" path="mail"><spring:message code="register.mail"/></form:label>
                         </div>
-                        <div class="col-8 align-self-center">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col">
-                                        <form:input class="m-3 w-100" path="mail" type="text"/>
-                                        <form:errors path="mail" element="p" cssClass="error"/>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <form:input class="m-3 w-100" path="username" type="text"/>
-                                        <form:errors path="username" element="p" cssClass="error"/>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <form:input class="m-3 w-100" path="password" type="password"/>
-                                        <form:errors path="password" element="p" cssClass="error"/>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <form:input class="m-3 w-100" path="repeatPassword" type="password"/>
-                                        <form:errors path="repeatPassword" element="p" cssClass="error"/>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-7 align-self-center">
+                            <form:input class="m-3 w-100" path="mail" type="text"/>
+                            <form:errors path="mail" element="p" cssClass="m-3 error"/>
+
+                        </div>
+                    </div>
+                    <div class="row w-100">
+                        <div class="col-5 h-100 align-self-center">
+                            <form:label class="ml-lg-5" path="username"><spring:message code="register.username"/></form:label>
+                        </div>
+                        <div class="col-7 align-self-center">
+                            <form:input class="m-3 w-100" path="username" type="text"/>
+                            <form:errors path="username" element="p" cssClass="m-3 error"/>
+                        </div>
+                    </div>
+                    <div class="row w-100">
+                        <div class="col-5 h-100 align-self-center">
+                            <form:label class="ml-lg-5" path="password"><spring:message code="register.password"/></form:label>
+                        </div>
+                        <div class="col-7 align-self-center">
+                            <form:input class="m-3 w-100" path="password" type="password"/>
+                            <form:errors path="password" element="p" cssClass="m-3 error"/>
+                        </div>
+                    </div>
+                    <div class="row w-100">
+                        <div class="col-5 h-100 align-self-center">
+                            <form:label class="ml-lg-5" path="repeatPassword"><spring:message code="register.repeatPassword"/></form:label>
+                        </div>
+                        <div class="col-7 align-self-center">
+                            <form:input class="m-3 w-100" path="repeatPassword" type="password"/>
+                            <form:errors path="repeatPassword" element="p" cssClass="m-3 error"/>
                         </div>
                     </div>
                 </div>
