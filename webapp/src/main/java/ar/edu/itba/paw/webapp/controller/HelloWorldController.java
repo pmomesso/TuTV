@@ -162,6 +162,7 @@ public class HelloWorldController {
     @RequestMapping(value = "/unbanUser", method = RequestMethod.POST)
     public ModelAndView unbanUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException {
 		//Todo: validate that the unban is requested by admin.
+		
 		userService.unbanUser(userId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
     }

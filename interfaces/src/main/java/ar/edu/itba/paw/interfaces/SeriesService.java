@@ -41,7 +41,7 @@ public interface SeriesService {
 
     void unlikeComment(long commentId);
 
-    void removeComment(long commentId) throws UnauthorizedException;
-
-    void removePost(long postId) throws UnauthorizedException;
+    void removeComment(long commentId);
+    
+    void removePost(long postId);
 }

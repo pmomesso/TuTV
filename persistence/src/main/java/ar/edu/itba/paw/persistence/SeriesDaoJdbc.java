@@ -272,26 +272,28 @@ public class SeriesDaoJdbc implements SeriesDao {
                     return post;
                 });
         addUserToPosts(postList);
-        addAllCommentsToPosts(postList);
+        addAllCommentsToPosts(postList, userId);
         series.setSeriesPostList(postList);
     }
 
-    private void addAllCommentsToPosts(List<Post> postList) {
+    private void addAllCommentsToPosts(List<Post> postList, long userId) {
         for (Post post : postList) {
-            addAllCommentsToPost(post);
+            addAllCommentsToPost(post, userId);
         }
     }
 
-    private void addAllCommentsToPost(Post post) {
-        List<Comment> commentsList = jdbcTemplate.query("SELECT * " +
+    private void addAllCommentsToPost(Post post, long userId) {
+        List<Comment> commentsList = jdbcTemplate.query("SELECT seriesreviewcomments.*, " +
+                        "exists(SELECT * FROM haslikedseriesreviewcomment WHERE haslikedseriesreviewcomment.seriesreviewcomment = seriesreviewcomments.id AND haslikedseriesreviewcomment.userid = ?) AS liked " +
                         "FROM seriesreviewcomments " +
-                        "WHERE postid = ?", new Object[]{post.getPostId()},
+                        "WHERE postid = ?", new Object[]{userId, post.getPostId()},
                 (resultSet, i) -> {
                     Comment comment = new Comment();
                     comment.setCommentId(resultSet.getInt("id"));
                     comment.setBody(resultSet.getString("body"));
                     comment.setPoints(resultSet.getInt("numlikes"));
                     comment.setUserId(resultSet.getLong("userid"));
+                    comment.setLiked(resultSet.getBoolean("liked"));
                     return comment;
                 });
         addUsersToComments(commentsList);

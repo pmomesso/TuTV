@@ -129,14 +129,14 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public void removeComment(long commentId) throws UnauthorizedException {
-        if(!userService.getLoggedUser().getIsAdmin()) throw new UnauthorizedException();
+    public void removeComment(long commentId)  {
+        if(!userService.getLoggedUser().getIsAdmin());
         seriesDao.removeComment(commentId);
     }
 
     @Override
-    public void removePost(long postId) throws UnauthorizedException {
-        if(!userService.getLoggedUser().getIsAdmin()) throw new UnauthorizedException();
+    public void removePost(long postId) {
+        if(!userService.getLoggedUser().getIsAdmin());
         seriesDao.removePost(postId);
     }
 }

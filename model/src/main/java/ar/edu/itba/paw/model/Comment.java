@@ -9,7 +9,7 @@ public class Comment {
     private int points;
     private boolean liked = false;
 
-    public boolean isLiked() {
+    public boolean getLiked() {
         return liked;
     }
 
