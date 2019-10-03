@@ -61,7 +61,7 @@
                       <c:choose>
                         <c:when test="${status.index == 0}">
                           <div class="carousel-item active">
-                            <img src="${newShow.bannerUrl}" itemprop="image" alt="${newShow.bannerUrl}">
+                            <img src="<c:url value="${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">
                             <div class="carousel-caption">
                               <h2>${newShow.name}</h2>
                               <h3>${newShow.numFollowers} <spring:message code="index.followers"/><c:if
@@ -71,7 +71,7 @@
                         </c:when>
                         <c:otherwise>
                           <div class="carousel-item">
-                            <img src="${newShow.bannerUrl}" itemprop="image" alt="${newShow.bannerUrl}">>
+                            <img src="<c:url value="${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">>
                             <div class="carousel-caption">
                               <h2>${newShow.name}</h2>
                               <h3>${newShow.numFollowers} <spring:message code="index.followers"/><c:if
@@ -100,7 +100,7 @@
                       <li id="${series.id}" class=" ">
                         <a href="<c:url value="/series?id=${series.id}"/>">
                           <div class="image-crop">
-                            <img src="${series.posterUrl}" alt="${series.name}">
+                            <img src="<c:url value="${series.posterUrl}}"/>" alt="${series.name}">
                             <div class="overlay"><span class="zoom-btn overlay-btn"></span></div>
                           </div>
                           <div class="show-details poster-details">

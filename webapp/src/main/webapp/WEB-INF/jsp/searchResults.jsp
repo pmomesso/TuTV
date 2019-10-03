@@ -50,7 +50,7 @@
                                     <li id="${serie.id}">
                                         <div class="image-crop">
                                             <a href="<c:url value="/series?id=${serie.id}"/>">
-                                                <img src="${serie.posterUrl}"
+                                                <img src="<c:url value="${serie.posterUrl}"/>"
                                                      alt="${serie.name}">
                                             </a>
                                             <div class="overlay">
