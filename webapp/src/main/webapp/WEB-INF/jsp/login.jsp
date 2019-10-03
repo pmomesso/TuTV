@@ -61,6 +61,8 @@
             <div class="divide-section-top text-center">
                 <span><spring:message code="login.noaccount"/></span>
                 <a href="<c:url value="/register"/>"><spring:message code="login.createaccount"/></a>
+                <br>
+                <a href="<c:url value="/"/>"><spring:message code="login.continue"/></a>
             </div>
         </div>
     </div>
