@@ -64,7 +64,8 @@
                             <img src="${newShow.bannerUrl}" itemprop="image" alt="${newShow.bannerUrl}">
                             <div class="carousel-caption">
                               <h2>${newShow.name}</h2>
-                              <h3>${newShow.numFollowers} <spring:message code="index.followers"/></h3>
+                              <h3>${newShow.numFollowers} <spring:message code="index.followers"/><c:if
+                                      test="${newShow.numFollowers ne 1}"><spring:message code="index.sufix"/></c:if></h3>
                             </div>
                           </div>
                         </c:when>
@@ -73,7 +74,8 @@
                             <img src="${newShow.bannerUrl}" itemprop="image" alt="${newShow.bannerUrl}">>
                             <div class="carousel-caption">
                               <h2>${newShow.name}</h2>
-                              <h3>${newShow.numFollowers} <spring:message code="index.followers"/></h3>
+                              <h3>${newShow.numFollowers} <spring:message code="index.followers"/><c:if
+                                      test="${newShow.numFollowers ne 1}"><spring:message code="index.sufix"/></c:if></h3>
                             </div>
                           </div>
                         </c:otherwise>
@@ -103,7 +105,8 @@
                           </div>
                           <div class="show-details poster-details">
                             <h2>${series.name}</h2>
-                            <span class="secondary-link">${series.numFollowers} <spring:message code="index.followers"/></span>
+                            <span class="secondary-link">${series.numFollowers} <spring:message code="index.followers"/><c:if
+                                    test="${series.numFollowers ne 1}"><spring:message code="index.sufix"/></c:if></span>
                           </div>
                         </a>
                       </li>

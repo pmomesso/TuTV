@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Season;
 import ar.edu.itba.paw.model.Series;
+import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,10 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public Series getSerieById(long id) {
-        return seriesDao.getSeriesById(id, userService.getLoggedUser().getId());
+//        TODO CHANGE
+        User u = userService.getLoggedUser();
+        long userId = (u == null) ? -1 : u.getId();
+        return seriesDao.getSeriesById(id, userId);
     }
 
     @Override

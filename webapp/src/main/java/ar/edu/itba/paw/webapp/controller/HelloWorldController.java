@@ -2,8 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.model.Season;
 import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.form.CommentForm;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 
 @Controller
 public class HelloWorldController {
@@ -32,9 +33,6 @@ public class HelloWorldController {
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView home() {
-		User u = userService.getLoggedUser();
-		if(u != null)
-			System.out.println("currUser: " + u.getMailAddress());
 		final ModelAndView mav = new ModelAndView("index");
 		mav.addObject("newShows", seriesService.getNewestSeries(0,4));
 		mav.addObject("seriesMap", seriesService.getSeriesByGenreMap(0,7));
@@ -59,9 +57,6 @@ public class HelloWorldController {
 	@RequestMapping(value = "/series", method = RequestMethod.GET)
 	public ModelAndView series(@ModelAttribute("postForm") final PostForm postForm, @ModelAttribute("commentForm") final CommentForm commentForm, @RequestParam("id") long id) {
 		final ModelAndView mav = new ModelAndView("series");
-		User u = userService.getLoggedUser();
-//		TODO manejar mejor el error de que no haya user
-		long userId = (u != null) ? u.getId() : -1;
 		mav.addObject("series", seriesService.getSerieById(id));
 		mav.addObject("postForm", postForm);
 		mav.addObject("commentForm", commentForm);
@@ -186,7 +181,8 @@ public class HelloWorldController {
     @RequestMapping(value = "/watchlist", method = RequestMethod.GET)
     public ModelAndView watchlist() {
         ModelAndView mav = new ModelAndView("watchlist");
-//        TODO add watchlist to model
+//        TODO pedro reemplazar new ArrayList<Season>() por lo que retorne su funcion
+        mav.addObject("watchlist", new ArrayList<Season>());
         return mav;
     }
 

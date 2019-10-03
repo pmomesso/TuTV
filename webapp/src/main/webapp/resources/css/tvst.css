@@ -78,6 +78,15 @@ body {
  background-color: inherit;
  border: none;
 }
+.check-watchlist {
+    position: absolute;
+    font-size: 30px;
+    right: 2%;
+    top: 2%;
+    color: gray;
+    border: none;
+    border-radius: 50%;
+}
 .viewed {
  color: #95eb34;
 }
@@ -5174,7 +5183,7 @@ a.thumbnail:hover {
  animation:progress-bar-stripes 2s linear infinite
 }
 .progress-bar-success {
- background-color:#5cb85c
+ background-color:#44d9e6
 }
 .progress-striped .progress-bar-success {
  background-image:linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent)
@@ -15891,8 +15900,7 @@ body.single-column .page-center-inner .main-block-container {
  padding:20px 12px 0
 }
 .page-column section h1 {
- font-size:16px;
- color:#666;
+ font-size:30px;
  margin:0;
  line-height:24px
 }
@@ -18671,11 +18679,11 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
 #explore {
  margin:0 auto
 }
-#explore section {
+#explore section, #home section {
  margin:0 20px;
  position:relative
 }
-#explore section h1 {
+#explore section h1, #home section h1 {
  font-size:30px;
  margin-bottom:20px;
  margin-left:0;
@@ -25028,7 +25036,7 @@ body.reduced-left #user-nav .alt-user-nav {
  width:100%
 }
 .posters-list>li .image-crop .progress .progress-bar {
- background-color:#7cdb62;
+ background-color:#44d9e6;
  box-shadow:none
 }
 .posters-list>li .image-crop .overlay {
