@@ -31,11 +31,15 @@
                 <img src="<c:url value="/resources/img/shortcuticon.png"/>" alt="TUTV">
                 <span class="title-page"><spring:message code="register.title"/></span>
             </div>
-            <form:form modelAttribute="registerForm" action="/register" method="post" enctype="application/x-www-form-urlencoded">
+            <c:url value='register' var="myVar"/>
+            <form:form modelAttribute="registerForm" action="${myVar}" method="post" enctype="application/x-www-form-urlencoded">
                 <div class="container">
                     <div class="row w-100">
                         <div class="col-4 h-100 align-self-center">
                             <div class="container h-100">
+                                <div class="row w-100">
+                                    <form:label class="ml-lg-5 mb-4" path="mail"><spring:message code="register.mail"/></form:label>
+                                </div>
                                 <div class="row w-100">
                                     <form:label class="ml-lg-5 mb-4" path="username"><spring:message code="register.username"/></form:label>
                                 </div>
@@ -49,6 +53,12 @@
                         </div>
                         <div class="col-8 align-self-center">
                             <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <form:input class="m-3 w-100" path="mail" type="text"/>
+                                        <form:errors path="mail" element="p" cssClass="error"/>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col">
                                         <form:input class="m-3 w-100" path="username" type="text"/>

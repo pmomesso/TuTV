@@ -25,15 +25,17 @@ import java.util.concurrent.TimeUnit;
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
+    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+        //return bCryptPasswordEncoder;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -53,7 +55,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .failureHandler(new UrlAuthenticationFailureHandler())
                 .and().rememberMe()
                     .rememberMeParameter("rememberme")
-                    //.userDetailsService(userDetailsService).key(getEncryptationKey()) // TODO	no	hacer	esto,	crear	una aleatoria	segura	suficiente mente	grande	y	colocarla	bajo	src/main/resources
+                    .userDetailsService(userDetailsService).key(getEncryptationKey()) // TODO	no	hacer	esto,	crear	una aleatoria	segura	suficiente mente	grande	y	colocarla	bajo	src/main/resources
                     .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
                 .and().logout()
                     .logoutUrl("/logout")
@@ -80,9 +82,4 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 //            throw new RuntimeException();
 //        }
     }
-
-//    @Autowired
-//    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-//    }
 }
