@@ -123,7 +123,7 @@ create table if not exists seriesreview
     id identity not null
         constraint seriesreview_pk
             primary key,
-    numlikes integer not null
+    numlikes integer default 0
 );
 
 create table if not exists season

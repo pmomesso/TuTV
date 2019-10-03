@@ -631,11 +631,9 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private boolean hasLikedPost(long userId, long postId) {
-        List<Boolean> list = jdbcTemplate.query("SELECT exists(SELECT * FROM haslikedseriesreview " +
-                "WHERE userid = ? AND seriesreview = ?) AS liked", new Object[]{userId, postId}, (resultSet, i) -> {
-            return resultSet.getBoolean("liked");
-        });
-        return list.get(0);
+        Integer count = jdbcTemplate.queryForObject("SELECT count(*) FROM haslikedseriesreview " +
+                "WHERE userid = ? AND seriesreview = ?", new Object[]{userId, postId},Integer.class);
+        return count > 0;
     }
 
     private boolean userFollows(long seriesId, long userId) {

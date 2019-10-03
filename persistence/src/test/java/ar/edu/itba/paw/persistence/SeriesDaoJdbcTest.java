@@ -101,6 +101,8 @@ public class SeriesDaoJdbcTest {
         jdbcTemplate = new JdbcTemplate(ds);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "hasgenre");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "hasviewedepisode");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "haslikedseriesreview");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "seriesreview");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "follows");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "episode");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "season");
@@ -356,6 +358,55 @@ public class SeriesDaoJdbcTest {
         //Asserts
 //      Assert.assertEquals(1,series.size());
 //      assertSeries(series.get(0));
+    }
+    @Test
+    public void unviewEpisodeTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        jdbcTemplate.execute(String.format("INSERT INTO hasviewedepisode (userid,episodeid) VALUES (%d,%d)",USER_ID,EPISODE_ID));
+        //Ejercitar
+        seriesDao.unviewEpisode(USER_ID,EPISODE_ID);
+        //Asserts
+        Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"hasviewedepisode"));
+    }
+    @Test
+    public void addSeriesReviewTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        final String body = "body";
+        //Ejercitar
+        seriesDao.addSeriesReview(body,ID,USER_ID);
+        //Asserts
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"seriesreview",
+                String.format("body='%s' AND seriesid=%d AND userid=%d AND numLikes=0",body,ID,USER_ID)));
+    }
+    @Test
+    public void likePostTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        //Ejercitar
+        seriesDao.likePost(USER_ID,postId);
+        //Asserts
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"haslikedseriesreview",
+                String.format("seriesreview=%d AND userid=%d",postId,USER_ID)));
+    }
+    @Test
+    public void unlikePostTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        jdbcTemplate.execute(String.format("INSERT INTO haslikedseriesreview (seriesreview,userid) VALUES (%d,%d)",postId,USER_ID));
+        //Ejercitar
+        seriesDao.unlikePost(USER_ID,postId);
+        //Assert
+        Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"haslikedseriesreview"));
     }
     @Test
     public void getAllGenresTest(){
