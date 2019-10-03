@@ -56,16 +56,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(String userName, String password, String mail,boolean isAdmin) {
-        //String hashedPassword = passwordEncoder.encode(password);
-        User u = userDao.createUser(userName, password, mail,isAdmin);
+    public User createUser(String userName, String password, String mail, boolean isAdmin) {
+        String hashedPassword = passwordEncoder.encode(password);
+        User u = userDao.createUser(userName, hashedPassword, mail, isAdmin);
         //TODO CHEQUEAR QUE NO CONCIDAN MAILS O USERNAMES CON OTROS USUARIOS EXISTENTES
-        String token = null;
-        boolean flag = false;
-        while(!flag) {
-            token = UUID.randomUUID().toString(); //TODO ESTO ESTA BIEN? NO PUEDO ENTRAR EN UN LOOP SI NO CAMBIA LA SEMILLA?
-            flag = !userDao.checkIfValidationKeyExists(token);
-        }
+        String token = UUID.randomUUID().toString(); //TODO ESTO ESTA BIEN? NO PUEDO ENTRAR EN UN LOOP SI NO CAMBIA LA SEMILLA?
 
         userDao.setValidationKey(u, token);
 
