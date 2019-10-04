@@ -73,15 +73,15 @@ public class UserDaoJdbc implements UserDao {
 
 	@Override
 	public boolean checkIfValidationKeyExists(String key) {
-		Boolean answer = (Boolean) jdbcTemplate.queryForObject(
-				"SELECT EXISTS(SELECT * FROM users WHERE confirmation_key = ?)", new Object[] { key }, Boolean.class);
+		Integer count = jdbcTemplate.queryForObject(
+				"SELECT count(*) FROM users WHERE confirmation_key = ?", new Object[] { key }, Integer.class);
 
-		return answer;
+		return count > 0;
 	}
 
 	@Override
-	public void setValidationKey(User u, String key) {
-		jdbcTemplate.update("UPDATE users SET confirmation_key = ? WHERE id = ?", key, u.getId());
+	public void setValidationKey(long userId, String key) {
+		jdbcTemplate.update("UPDATE users SET confirmation_key = ? WHERE id = ?", key, userId);
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class UserDaoJdbc implements UserDao {
 
 	@Override
 	public void unbanUser(long userId) {
-		jdbcTemplate.update("UPDATE users SET isbanned = TRUE WHERE id = ?", new Object[]{userId});
+		jdbcTemplate.update("UPDATE users SET isbanned = FALSE WHERE id = ?", new Object[]{userId});
 	}
 
 }

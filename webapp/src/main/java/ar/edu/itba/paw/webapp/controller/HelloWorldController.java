@@ -69,6 +69,18 @@ public class HelloWorldController {
 	    return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
+	@RequestMapping(value = "/viewSeason", method = RequestMethod.POST)
+	public ModelAndView viewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) {
+//		TODO pedro llamar al metodo correspondiente
+		return new ModelAndView("redirect:/series?id=" + seriesId);
+	}
+
+	@RequestMapping(value = "/unviewSeason", method = RequestMethod.POST)
+	public ModelAndView unviewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) {
+//		TODO pedro llamar al metodo correspondiente
+		return new ModelAndView("redirect:/series?id=" + seriesId);
+	}
+
     @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
     public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) throws NotFoundException, UnauthorizedException {
 		seriesService.setViewedEpisode(episodeId);
@@ -92,7 +104,6 @@ public class HelloWorldController {
 		if (errors.hasErrors()) {
 			return series(form, new CommentForm(), form.getSeriesId());
 		}
-		//TODO pedro que el método reciba un form más que los campos de form...
 		seriesService.addSeriesReview(form.getBody(), form.getSeriesId());
 		return new ModelAndView("redirect:/series?id=" + form.getSeriesId());
 	}
@@ -110,7 +121,8 @@ public class HelloWorldController {
     }
 
 	@RequestMapping(value = "/removePost", method = RequestMethod.POST)
-	public ModelAndView removePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) throws UnauthorizedException, NotFoundException {
+	public ModelAndView removePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) throws UnauthorizedException {
+		//Todo: validate that the removal is requested by admin or by comment owner
 		seriesService.removePost(postId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
@@ -120,29 +132,25 @@ public class HelloWorldController {
 		if (errors.hasErrors()) {
 			return series(new PostForm(), form, form.getCommentSeriesId());
 		}
-		//TODO que este metodo tome el form y no los parámetros directamente... (sería más correcto??)
-		//Todo: validate that this is requested by the same userc
 		seriesService.addCommentToPost(form.getCommentPostId(), form.getCommentBody());
 		return new ModelAndView("redirect:/series?id=" + form.getCommentSeriesId());
 	}
 
     @RequestMapping(value = "/likeComment", method = RequestMethod.POST)
-    public ModelAndView likeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws NotFoundException, UnauthorizedException {
-		//Todo: validate that the like is requested by the same user
+    public ModelAndView likeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
 		seriesService.likeComment(commentId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/unlikeComment", method = RequestMethod.POST)
-    public ModelAndView unlikeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws NotFoundException, UnauthorizedException {
-		//Todo: validate that the unlike is requested by the same user
+    public ModelAndView unlikeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
 		seriesService.unlikeComment(commentId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
 	@RequestMapping(value = "/removeComment", method = RequestMethod.POST)
-	public ModelAndView removeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws UnauthorizedException, NotFoundException {
-		//Todo: validate that the removal is requested by admin
+	public ModelAndView removeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws UnauthorizedException {
+		//Todo: validate that the removal is requested by admin or by comment owner
 		seriesService.removeComment(commentId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
@@ -157,7 +165,6 @@ public class HelloWorldController {
     @RequestMapping(value = "/unbanUser", method = RequestMethod.POST)
     public ModelAndView unbanUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException {
 		//Todo: validate that the unban is requested by admin.
-		
 		userService.unbanUser(userId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
     }

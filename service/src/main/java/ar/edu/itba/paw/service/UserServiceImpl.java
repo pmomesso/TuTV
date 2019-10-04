@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
         //TODO CHEQUEAR QUE NO CONCIDAN MAILS O USERNAMES CON OTROS USUARIOS EXISTENTES
         String token = UUID.randomUUID().toString(); //TODO ESTO ESTA BIEN? NO PUEDO ENTRAR EN UN LOOP SI NO CAMBIA LA SEMILLA?
 
-        userDao.setValidationKey(u, token);
+        userDao.setValidationKey(u.getId(), token);
 
         mailService.sendConfirmationMail(u, token);
 

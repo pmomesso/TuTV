@@ -26,7 +26,9 @@ public class SeriesDaoJdbc implements SeriesDao {
             ret.setDescription(description);
         }
         ret.setId(resultSet.getLong("id"));
-        ret.setTotalRating(Math.round(resultSet.getDouble("userRating") * 10.0) / 10.0);
+        Double rating = resultSet.getDouble("userRating");
+        Double rounded = Math.round(rating * 10.0) / 10.0;
+        ret.setTotalRating(rounded);
         ret.setImdbId(resultSet.getString("id_imdb"));
         ret.setRunningTime(resultSet.getInt("runtime"));
         ret.setNumFollowers(resultSet.getInt("followers"));
@@ -595,11 +597,10 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private boolean likedComment(long userId, long commentId) {
-        List<Boolean> list = jdbcTemplate.query("SELECT exists(SELECT * FROM haslikedseriesreviewcomment WHERE seriesreviewcomment = ? AND userid = ?) AS liked",
-                new Object[]{commentId, userId}, (resultSet, i) -> {
-                    return resultSet.getBoolean("liked");
-                });
-        return list.get(0);
+        Integer count = jdbcTemplate.queryForObject("SELECT count(*) FROM haslikedseriesreviewcomment WHERE seriesreviewcomment = ? AND userid = ?",
+                new Object[]{commentId,userId},
+                Integer.class);
+        return count > 0;
     }
 
     @Override

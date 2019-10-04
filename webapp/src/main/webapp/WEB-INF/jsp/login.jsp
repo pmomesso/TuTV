@@ -47,6 +47,27 @@
                             <input class="m-3 w-100" id="password" name="password" type="password"/>
                         </div>
                     </div>
+                    <c:if test="${param.error}">
+                        <div class="row w-100">
+                            <div class="col-4 align-self-center"></div>
+                            <div class="col-8 align-self-center">
+                                <c:choose>
+                                    <c:when test="${ErrorNotConfirmed}">
+                                        <span class="error m-3 w-100"><spring:message code="login.ErrorNotConfirmed"/></span>
+                                    </c:when>
+                                    <c:when test="${ErrorExpired}">
+                                        <span class="error m-3 w-100"><spring:message code="login.ErrorExpired"/></span>
+                                    </c:when>
+                                    <c:when test="${ErrorInvalidCredentials}">
+                                        <span class="error m-3 w-100"><spring:message code="login.ErrorInvalidCredentials"/></span>
+                                    </c:when>
+                                    <c:when test="ErrorOther">
+                                        <span class="error m-3 w-100"><spring:message code="login.ErrorOther"/></span>
+                                    </c:when>
+                                </c:choose>
+                            </div>
+                        </div>
+                    </c:if>
                 </div>
                 <div class="text-center p-3">
                     <label for="rememberme">
