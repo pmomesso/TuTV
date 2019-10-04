@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -508,76 +507,91 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     @Override
-    public void followSeries(long seriesId, long userId) {
+    public int followSeries(long seriesId, long userId) {
 
         //Todo: ask if there is a utility method for this.
-        if(userFollows(seriesId, userId)) return;
+        if(userFollows(seriesId, userId)) return -1;
 
         Map<String, Object> args = new HashMap<>();
         args.put("userId",userId);
         args.put("seriesId", seriesId);
 
-        followsjdbcInsert.execute(args);
-        jdbcTemplate.update("UPDATE series SET followers = (followers + 1) WHERE id = ?", seriesId);
+        int numRowsAffected = followsjdbcInsert.execute(args);
+        if(numRowsAffected != 0) {
+            jdbcTemplate.update("UPDATE series SET followers = (followers + 1) WHERE id = ?", seriesId);
+        }
+        return numRowsAffected;
     }
 
     @Override
-    public void setViewedEpisode(long episodeId, long userId) {
+    public int setViewedEpisode(long episodeId, long userId) {
         Map<String, Object> args = new HashMap<>();
         args.put("userId",userId);
         args.put("episodeId", episodeId);
-        viewedEpisodesjdbcInsert.execute(args);
+        int numRowsAffected = viewedEpisodesjdbcInsert.execute(args);
+        return numRowsAffected;
     }
 
     @Override
-    public void unviewEpisode(long userId, long episodeId) {
-        jdbcTemplate.update("DELETE FROM hasviewedepisode WHERE hasviewedepisode.userid = ? AND hasviewedepisode.episodeid = ?", new Object[]{userId, episodeId});
+    public int unviewEpisode(long userId, long episodeId) {
+        int result = jdbcTemplate.update("DELETE FROM hasviewedepisode WHERE hasviewedepisode.userid = ? AND hasviewedepisode.episodeid = ?", new Object[]{userId, episodeId});
+        return result;
     }
 
     @Override
-    public void addSeriesReview(String body, long seriesId, long userId) {
+    public int addSeriesReview(String body, long seriesId, long userId) {
         Map<String, Object> args = new HashMap<>();
         args.put("userid", userId);
         args.put("seriesid", seriesId);
         args.put("body", body);
-        seriesReviewJdbcInsert.execute(args);
+        int numRows = seriesReviewJdbcInsert.execute(args);
+        return numRows;
     }
 
     @Override
-    public void likePost(long userId, long postId) {
-        if(hasLikedPost(userId, postId)) return;
+    public int likePost(long userId, long postId) {
+        if(hasLikedPost(userId, postId)) return -1;
         Map<String, Object> args = new HashMap<>();
         args.put("userid", userId);
         args.put("seriesreview", postId);
-        hasLikedSeriesReviewJdbcInsert.execute(args);
-        addPointsToPost(postId, 1);
+        int numRows = hasLikedSeriesReviewJdbcInsert.execute(args);
+        if(numRows != 0) {
+            addPointsToPost(postId, 1);
+        }
+        return numRows;
     }
 
     @Override
-    public void unlikePost(long userId, long postId) {
-        jdbcTemplate.update("DELETE FROM haslikedseriesreview WHERE userid = ? AND seriesreview = ?", new Object[]{userId, postId});
-        addPointsToPost(postId, -1);
+    public int unlikePost(long userId, long postId) {
+        int numRows = jdbcTemplate.update("DELETE FROM hasliked seriesreview WHERE userid = ? AND seriesreview = ?", new Object[]{userId, postId});
+        if(numRows != 0) {
+            addPointsToPost(postId, -1);
+        }
+        return numRows;
     }
 
     @Override
-    public void addCommentToPost(long commentPostId, String commentBody, long commentUserId) {
+    public int addCommentToPost(long commentPostId, String commentBody, long commentUserId) {
         Map<String, Object> args = new HashMap<>();
         args.put("body", commentBody);
         args.put("postid", commentPostId);
         args.put("userid", commentUserId);
-
-        seriesReviewCommentsJdbcInsert.execute(args);
+        int numRows = seriesReviewCommentsJdbcInsert.execute(args);
+        return numRows;
     }
 
     @Override
-    public void likeComment(long userId, long commentId) {
-        if(likedComment(userId, commentId)) return;
+    public int likeComment(long userId, long commentId) {
+        if(likedComment(userId, commentId)) return -1;
         Map<String, Object> args = new HashMap<>();
         args.put("userid", userId);
         args.put("seriesreviewcomment", commentId);
 
-        hasLikedSeriesReviewCommentsJdbcInsert.execute(args);
-        addPointsToComment(commentId, 1);
+        int numRows = hasLikedSeriesReviewCommentsJdbcInsert.execute(args);
+        if(numRows != 0) {
+            addPointsToComment(commentId, 1);
+        }
+        return numRows;
     }
 
     private boolean likedComment(long userId, long commentId) {
@@ -589,37 +603,46 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     @Override
-    public void unlikeComment(long userId, long commentId) {
-        jdbcTemplate.update("DELETE FROM haslikedseriesreviewcomment WHERE seriesreviewcomment = ? AND userid = ?", new Object[]{commentId, userId});
-        addPointsToComment(commentId, -1);
+    public int unlikeComment(long userId, long commentId) {
+        int numRows = jdbcTemplate.update("DELETE FROM haslikedseriesreviewcomment WHERE seriesreviewcomment = ? AND userid = ?", new Object[]{commentId, userId});
+        if(numRows != 0) {
+            addPointsToComment(commentId, -1);
+        }
+        return numRows;
     }
 
     @Override
-    public void removeComment(long commentId) {
-        jdbcTemplate.update("DELETE FROM seriesreviewcomments WHERE id = ?", new Object[]{commentId});
+    public int removeComment(long commentId) {
+        int numRows = jdbcTemplate.update("DELETE FROM seriesreviewcomments WHERE id = ?", new Object[]{commentId});
+        return numRows;
     }
 
     @Override
-    public void removePost(long postId) {
-        jdbcTemplate.update("DELETE FROM seriesreview WHERE id = ?", new Object[]{postId});
+    public int removePost(long postId) {
+        int numRows = jdbcTemplate.update("DELETE FROM seriesreview WHERE id = ?", new Object[]{postId});
+        return numRows;
     }
 
     @Override
-    public void rateSeries(long seriesId, long userId, double rating) {
+    public int rateSeries(long seriesId, long userId, double rating) {
         Double oldRating = getUserSeriesRating(userId,seriesId);
+        int numRows = 0;
         if(oldRating != null){
             jdbcTemplate.update("UPDATE userseriesrating SET rating = ? WHERE userid = ? AND seriesid = ?",
                     new Object[]{rating,userId,seriesId});
-        }
-        else{
+        } else {
             Map<String, Object> args = new HashMap<>();
             args.put("userid", userId);
             args.put("seriesid", seriesId);
             args.put("rating",rating);
-            userSeriesRatingJdbcInsert.execute(args);
+            numRows = userSeriesRatingJdbcInsert.execute(args);
+        }
+        if(numRows == 0) {
+            return 0;
         }
         Double avg = jdbcTemplate.queryForObject("SELECT avg(rating) FROM userseriesrating WHERE seriesid = ?",new Object[]{seriesId},Double.class);
         jdbcTemplate.update("UPDATE series SET userRating = ?  WHERE id = ?",new Object[]{avg,seriesId});
+        return numRows;
     }
 
     private void addPointsToComment(long commentId, int points) {

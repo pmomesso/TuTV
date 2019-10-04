@@ -55,7 +55,7 @@ public class HelloWorldController {
         return mav;
     }
 	@RequestMapping(value = "/series", method = RequestMethod.GET)
-	public ModelAndView series(@ModelAttribute("postForm") final PostForm postForm, @ModelAttribute("commentForm") final CommentForm commentForm, @RequestParam("id") long id) {
+	public ModelAndView series(@ModelAttribute("postForm") final PostForm postForm, @ModelAttribute("commentForm") final CommentForm commentForm, @RequestParam("id") long id) throws Exception {
 		final ModelAndView mav = new ModelAndView("series");
 		mav.addObject("series", seriesService.getSerieById(id));
 		mav.addObject("postForm", postForm);
@@ -64,31 +64,31 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/addSeries", method = RequestMethod.POST)
-    public ModelAndView addSeries(@RequestParam("seriesId") long seriesId) {
+    public ModelAndView addSeries(@RequestParam("seriesId") long seriesId) throws NotFoundException, UnauthorizedException {
 	    seriesService.followSeries(seriesId);
 	    return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
-    public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId) {
+    public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) throws NotFoundException, UnauthorizedException {
 		seriesService.setViewedEpisode(episodeId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/unviewEpisode", method = RequestMethod.POST)
-    public ModelAndView unviewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId) {
+    public ModelAndView unviewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId) throws NotFoundException, UnauthorizedException {
 		seriesService.unviewEpisode(episodeId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/rate")
-    public ModelAndView rate(@RequestParam("seriesId") long seriesId, @RequestParam("rating") int rating) {
+    public ModelAndView rate(@RequestParam("seriesId") long seriesId, @RequestParam("rating") int rating) throws NotFoundException, UnauthorizedException {
 		seriesService.rateSeries(seriesId, rating);
 	    return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/post", method = RequestMethod.POST)
-	public ModelAndView post(@Valid @ModelAttribute("postForm") final PostForm form, final BindingResult errors) {
+	public ModelAndView post(@Valid @ModelAttribute("postForm") final PostForm form, final BindingResult errors) throws Exception {
 		if (errors.hasErrors()) {
 			return series(form, new CommentForm(), form.getSeriesId());
 		}
@@ -98,25 +98,25 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/likePost", method = RequestMethod.POST)
-	public ModelAndView likePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) {
+	public ModelAndView likePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) throws NotFoundException, UnauthorizedException {
 		seriesService.likePost(postId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 
     @RequestMapping(value = "/unlikePost", method = RequestMethod.POST)
-    public ModelAndView unlikePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) {
+    public ModelAndView unlikePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) throws NotFoundException, UnauthorizedException {
 		seriesService.unlikePost(postId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
 	@RequestMapping(value = "/removePost", method = RequestMethod.POST)
-	public ModelAndView removePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) throws UnauthorizedException {
+	public ModelAndView removePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) throws UnauthorizedException, NotFoundException {
 		seriesService.removePost(postId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 
 	@RequestMapping(value = "/comment", method = RequestMethod.POST)
-	public ModelAndView comment(@Valid @ModelAttribute("commentForm") final CommentForm form, final BindingResult errors) {
+	public ModelAndView comment(@Valid @ModelAttribute("commentForm") final CommentForm form, final BindingResult errors) throws Exception {
 		if (errors.hasErrors()) {
 			return series(new PostForm(), form, form.getCommentSeriesId());
 		}
@@ -127,21 +127,21 @@ public class HelloWorldController {
 	}
 
     @RequestMapping(value = "/likeComment", method = RequestMethod.POST)
-    public ModelAndView likeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+    public ModelAndView likeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws NotFoundException, UnauthorizedException {
 		//Todo: validate that the like is requested by the same user
 		seriesService.likeComment(commentId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/unlikeComment", method = RequestMethod.POST)
-    public ModelAndView unlikeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+    public ModelAndView unlikeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws NotFoundException, UnauthorizedException {
 		//Todo: validate that the unlike is requested by the same user
 		seriesService.unlikeComment(commentId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
 	@RequestMapping(value = "/removeComment", method = RequestMethod.POST)
-	public ModelAndView removeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws UnauthorizedException {
+	public ModelAndView removeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws UnauthorizedException, NotFoundException {
 		//Todo: validate that the removal is requested by admin
 		seriesService.removeComment(commentId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);

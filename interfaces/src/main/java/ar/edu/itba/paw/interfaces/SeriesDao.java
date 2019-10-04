@@ -38,26 +38,26 @@ public interface SeriesDao {
 
     List<Series> getNextToBeSeen(long userId);
 
-    void followSeries(long seriesId,long userId);
-    void setViewedEpisode(long episodeId,long userId);
+    int followSeries(long seriesId, long userId);
+    int setViewedEpisode(long episodeId, long userId);
 
-    void unviewEpisode(long userId, long episodeId);
+    int unviewEpisode(long userId, long episodeId);
 
-    void addSeriesReview(String body, long seriesId, long userId);
+    int addSeriesReview(String body, long seriesId, long userId);
 
-    void likePost(long userId, long postId);
+    int likePost(long userId, long postId);
 
-    void unlikePost(long userId, long postId);
+    int unlikePost(long userId, long postId);
 
-    void addCommentToPost(long commentPostId, String commentBody, long commentUserId);
+    int addCommentToPost(long commentPostId, String commentBody, long commentUserId);
 
-    void likeComment(long userId, long commentId);
+    int likeComment(long userId, long commentId);
 
-    void unlikeComment(long userId, long commentId);
+    int unlikeComment(long userId, long commentId);
 
-    void removeComment(long commentId);
+    int removeComment(long commentId);
 
-    void removePost(long postId);
+    int removePost(long postId);
 
-    void rateSeries(long seriesId,long userId,double rating);
+    int rateSeries(long seriesId, long userId, double rating);
 }
