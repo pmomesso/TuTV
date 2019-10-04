@@ -2,9 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 
 import ar.edu.itba.paw.model.*;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -99,9 +97,14 @@ public class SeriesDaoJdbcTest {
     @Before
     public void setUp(){
         jdbcTemplate = new JdbcTemplate(ds);
+    }
+    @After
+    public void clearDatabase() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "hasgenre");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "hasviewedepisode");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "haslikedseriesreview");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "haslikedseriesreviewcomment");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "seriesreviewcomments");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "seriesreview");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "follows");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "episode");
@@ -111,7 +114,6 @@ public class SeriesDaoJdbcTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "network");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "users");
     }
-
     @Test
     public void createSeriesTest(){
         //Ejercitar
@@ -383,6 +385,18 @@ public class SeriesDaoJdbcTest {
                 String.format("body='%s' AND seriesid=%d AND userid=%d AND numLikes=0",body,ID,USER_ID)));
     }
     @Test
+    public void removePostTest() {
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        //Ejercitar
+        seriesDao.removePost(postId);
+        //Asserts
+        Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"seriesreview"));
+    }
+    @Test
     public void likePostTest(){
         //Setup
         populateDatabase();
@@ -407,6 +421,62 @@ public class SeriesDaoJdbcTest {
         seriesDao.unlikePost(USER_ID,postId);
         //Assert
         Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"haslikedseriesreview"));
+    }
+    @Test
+    public void addCommentToPostTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        final String commentBody = "comment body";
+        //Ejercitar
+        seriesDao.addCommentToPost(postId,commentBody,USER_ID);
+        //Asserts
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"seriesreviewcomments"));
+    }
+    @Test
+    public void removeCommentTest() {
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        final long commentId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreviewcomments (id,body,userid,postid) VALUES (%d,'%s',%d,'%s')",commentId,"body",USER_ID,postId));
+        //Ejercitar
+        seriesDao.removeComment(commentId);
+        //Asserts
+        Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"seriesreviewcomments"));
+    }
+    @Test
+    public void likeCommentTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        final long commentId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreviewcomments (id,body,userid,postid) VALUES (%d,'%s',%d,'%s')",commentId,"body",USER_ID,postId));
+        //Ejercitar
+        seriesDao.likeComment(USER_ID,commentId);
+        //Asserts
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"haslikedseriesreviewcomment"));
+    }
+    @Test
+    public void unlikeCommentTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        final long commentId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreviewcomments (id,body,userid,postid) VALUES (%d,'%s',%d,'%s')",commentId,"body",USER_ID,postId));
+        jdbcTemplate.execute(String.format("INSERT INTO haslikedseriesreviewcomment (seriesreviewcomment,userid) VALUES (%d,%d)",commentId,USER_ID));
+        //Ejercitar
+        seriesDao.unlikeComment(USER_ID,commentId);
+        //Asserts
+        Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"haslikedseriesreviewcomment"));
     }
     @Test
     public void getAllGenresTest(){
@@ -552,5 +622,144 @@ public class SeriesDaoJdbcTest {
         List<Episode> episodes = seriesDao.getEpisodesBySeasonId(SEASON_ID + 1,USER_ID);
         //Asserts
         Assert.assertEquals(0,episodes.size());
+    }
+    @Test
+    public void unviewEpisodeByWrongId() {
+        //Setup
+        populateDatabase();
+        insertUser();
+        jdbcTemplate.execute(String.format("INSERT INTO hasviewedepisode (userid,episodeid) VALUES (%d,%d)",USER_ID,EPISODE_ID));
+        //Ejercitar
+        seriesDao.unviewEpisode(USER_ID,EPISODE_ID + 1);
+        //Asserts
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"hasviewedepisode"));
+    }
+    @Test
+    public void addSeriesReviewByWrongSeriesIdTest() {
+        //Setup
+        populateDatabase();
+        insertUser();
+        final String body = "body";
+        //Ejercitar
+        try {
+            seriesDao.addSeriesReview(body, ID + 1, USER_ID);
+        } catch (DataIntegrityViolationException e) {
+            //Asserts
+            Assert.assertEquals(0, JdbcTestUtils.countRowsInTable(jdbcTemplate, "seriesreview"));
+            return;
+        }
+        //Si no lanza una excepcion, falla el test.
+        Assert.fail();
+    }
+    @Test
+    public void likePostByWrongIdTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        //Ejercitar
+        try {
+            seriesDao.likePost(USER_ID, postId + 1);
+        }catch (DataIntegrityViolationException e){
+            //Asserts
+            Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"haslikedseriesreview"));
+            return;
+        }
+        //Si no lanza una excepcion, falla el test.
+        Assert.fail();
+    }
+    @Test
+    public void unlikePostByWrongIdTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        jdbcTemplate.execute(String.format("INSERT INTO haslikedseriesreview (seriesreview,userid) VALUES (%d,%d)",postId,USER_ID));
+        //Ejercitar
+        seriesDao.unlikePost(USER_ID,postId + 1);
+        //Assert
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"haslikedseriesreview"));
+    }
+    @Test
+    public void addCommentToPostByWrongIdTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        final String commentBody = "comment body";
+        //Ejercitar
+        try {
+            seriesDao.addCommentToPost(postId + 1, commentBody, USER_ID);
+        }catch (DataIntegrityViolationException e){
+            //Asserts
+            Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"seriesreviewcomments"));
+            return;
+        }
+        //Si no lanza una excepcion, falla el test.
+        Assert.fail();
+    }
+    @Test
+    public void removeCommentByWrongIdTest() {
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        final long commentId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreviewcomments (id,body,userid,postid) VALUES (%d,'%s',%d,'%s')",commentId,"body",USER_ID,postId));
+        //Ejercitar
+        seriesDao.removeComment(commentId + 1);
+        //Asserts
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"seriesreviewcomments"));
+    }
+    @Test
+    public void likeCommentByWrongIdTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        final long commentId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreviewcomments (id,body,userid,postid) VALUES (%d,'%s',%d,'%s')",commentId,"body",USER_ID,postId));
+        //Ejercitar
+        try {
+            seriesDao.likeComment(USER_ID, commentId + 1);
+        }catch(DataIntegrityViolationException e){
+            //Asserts
+            Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"haslikedseriesreviewcomment"));
+            return;
+        }
+        //Si no lanza una excepcion, falla el test.
+        Assert.fail();
+    }
+    @Test
+    public void unlikeCommentByWrongIdTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        final long commentId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreviewcomments (id,body,userid,postid) VALUES (%d,'%s',%d,'%s')",commentId,"body",USER_ID,postId));
+        jdbcTemplate.execute(String.format("INSERT INTO haslikedseriesreviewcomment (seriesreviewcomment,userid) VALUES (%d,%d)",commentId,USER_ID));
+        //Ejercitar
+        seriesDao.unlikeComment(USER_ID,commentId + 1);
+        //Asserts
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"haslikedseriesreviewcomment"));
+    }
+    @Test
+    public void removePostByWrongIdTest() {
+        //Setup
+        populateDatabase();
+        insertUser();
+        final long postId = 1;
+        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,seriesid,body) VALUES (%d,%d,%d,'%s')",postId,USER_ID,ID,"body"));
+        //Ejercitar
+        seriesDao.removePost(postId + 1);
+        //Asserts
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"seriesreview"));
     }
 }
