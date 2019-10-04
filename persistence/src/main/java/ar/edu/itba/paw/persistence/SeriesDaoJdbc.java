@@ -534,7 +534,21 @@ public class SeriesDaoJdbc implements SeriesDao {
         int numRowsAffected = viewedEpisodesjdbcInsert.execute(args);
         return numRowsAffected;
     }
-
+    @Override
+    public int setViewedSeason(long seasonId, long userId) {
+        List<Episode> seasonEpisodes = getEpisodesBySeasonId(seasonId,userId);
+        int rows = 0;
+        for(Episode episode  : seasonEpisodes){
+            rows += setViewedEpisode(episode.getId(),userId);
+        }
+        return rows;
+    }
+    @Override
+    public int unviewSeason(long seasonId, long userId) {
+        return jdbcTemplate.update("DELETE FROM hasviewedepisode " +
+                "WHERE hasviewedepisode.userid = ? AND EXISTS(SELECT * FROM episode WHERE hasviewedepisode.episodeid = episode.id AND episode.seasonid = ?)",
+                new Object[]{userId,seasonId});
+    }
     @Override
     public int unviewEpisode(long userId, long episodeId) {
         int result = jdbcTemplate.update("DELETE FROM hasviewedepisode WHERE hasviewedepisode.userid = ? AND hasviewedepisode.episodeid = ?", new Object[]{userId, episodeId});
@@ -566,7 +580,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public int unlikePost(long userId, long postId) {
-        int numRows = jdbcTemplate.update("DELETE FROM hasliked seriesreview WHERE userid = ? AND seriesreview = ?", new Object[]{userId, postId});
+        int numRows = jdbcTemplate.update("DELETE FROM seriesreview WHERE userid = ? AND id = ?", new Object[]{userId, postId});
         if(numRows != 0) {
             addPointsToPost(postId, -1);
         }

@@ -25,10 +25,10 @@ public interface SeriesService {
     List<Genre> getAllGenres();
     void followSeries(long seriesId) throws NotFoundException, UnauthorizedException;
     void setViewedEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
-
+    void setViewedSeason(long seasonId) throws UnauthorizedException;
     void rateSeries(long seriesId,double rating) throws NotFoundException, UnauthorizedException;
     void unviewEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
-
+    void unviewSeason(long seasonId) throws UnauthorizedException;
     void addSeriesReview(String body, long seriesId) throws NotFoundException, UnauthorizedException;
 
     void likePost(long postId) throws NotFoundException, UnauthorizedException;

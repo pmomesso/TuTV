@@ -276,6 +276,17 @@ public class SeriesDaoJdbcTest {
         Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"hasviewedepisode"));
     }
     @Test
+    public void setViewedSeasonTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        //Ejercitar
+        seriesDao.setViewedSeason(SEASON_ID,USER_ID);
+        //Asserts
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"hasviewedepisode",
+                String.format("episodeid=%d AND userid=%d",EPISODE_ID,USER_ID)));
+    }
+    @Test
     public void searchSeriesTest(){
         //Setup
         populateDatabase();
@@ -369,6 +380,17 @@ public class SeriesDaoJdbcTest {
         jdbcTemplate.execute(String.format("INSERT INTO hasviewedepisode (userid,episodeid) VALUES (%d,%d)",USER_ID,EPISODE_ID));
         //Ejercitar
         seriesDao.unviewEpisode(USER_ID,EPISODE_ID);
+        //Asserts
+        Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"hasviewedepisode"));
+    }
+    @Test
+    public void unviewSeasonTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        jdbcTemplate.execute(String.format("INSERT INTO hasviewedepisode (userid,episodeid) VALUES (%d,%d)",USER_ID,EPISODE_ID));
+        //Ejercitar
+        seriesDao.unviewSeason(SEASON_ID,USER_ID);
         //Asserts
         Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"hasviewedepisode"));
     }
@@ -605,6 +627,16 @@ public class SeriesDaoJdbcTest {
         Assert.fail();
     }
     @Test
+    public void setViewedSeasonByWrongIdTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        //Ejercitar
+        seriesDao.setViewedSeason(SEASON_ID + 1, USER_ID);
+        //Asserts
+        Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"hasviewedepisode"));
+    }
+    @Test
     public void getSeasonsByWrongSeriesIdTest(){
         //Setup
         populateDatabase();
@@ -631,6 +663,17 @@ public class SeriesDaoJdbcTest {
         jdbcTemplate.execute(String.format("INSERT INTO hasviewedepisode (userid,episodeid) VALUES (%d,%d)",USER_ID,EPISODE_ID));
         //Ejercitar
         seriesDao.unviewEpisode(USER_ID,EPISODE_ID + 1);
+        //Asserts
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"hasviewedepisode"));
+    }
+    @Test
+    public void unviewSeasonByWrongIdTest(){
+        //Setup
+        populateDatabase();
+        insertUser();
+        jdbcTemplate.execute(String.format("INSERT INTO hasviewedepisode (userid,episodeid) VALUES (%d,%d)",USER_ID,EPISODE_ID));
+        //Ejercitar
+        seriesDao.unviewSeason(SEASON_ID,USER_ID + 1);
         //Asserts
         Assert.assertEquals(1,JdbcTestUtils.countRowsInTable(jdbcTemplate,"hasviewedepisode"));
     }

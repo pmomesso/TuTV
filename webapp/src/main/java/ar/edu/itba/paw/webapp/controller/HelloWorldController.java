@@ -70,14 +70,14 @@ public class HelloWorldController {
     }
 
 	@RequestMapping(value = "/viewSeason", method = RequestMethod.POST)
-	public ModelAndView viewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) {
-//		TODO pedro llamar al metodo correspondiente
+	public ModelAndView viewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) throws UnauthorizedException {
+		seriesService.setViewedSeason(seasonId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 
 	@RequestMapping(value = "/unviewSeason", method = RequestMethod.POST)
-	public ModelAndView unviewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) {
-//		TODO pedro llamar al metodo correspondiente
+	public ModelAndView unviewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) throws UnauthorizedException {
+		seriesService.unviewSeason(seasonId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 

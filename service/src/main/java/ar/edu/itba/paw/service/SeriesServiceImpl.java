@@ -117,6 +117,14 @@ public class SeriesServiceImpl implements SeriesService {
             throw new NotFoundException();
         }
     }
+    @Override
+    public void setViewedSeason(long seasonId) throws UnauthorizedException {
+        User u = userService.getLoggedUser();
+        if(u == null){
+            throw new UnauthorizedException();
+        }
+        seriesDao.setViewedSeason(seasonId,u.getId());
+    }
 
     @Override
     public void rateSeries(long seriesId, double rating) throws NotFoundException, UnauthorizedException {
@@ -141,7 +149,14 @@ public class SeriesServiceImpl implements SeriesService {
             throw new NotFoundException();
         }
     }
-
+    @Override
+    public void unviewSeason(long seasonId) throws UnauthorizedException {
+        User u = userService.getLoggedUser();
+        if(u == null){
+            throw new UnauthorizedException();
+        }
+        seriesDao.unviewSeason(seasonId,u.getId());
+    }
     @Override
     public void addSeriesReview(String body, long seriesId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser();

@@ -38,9 +38,10 @@ public interface SeriesDao {
 
     List<Series> getNextToBeSeen(long userId);
 
-    int followSeries(long seriesId, long userId);
-    int setViewedEpisode(long episodeId, long userId);
-
+    int followSeries(long seriesId,long userId);
+    int setViewedEpisode(long episodeId,long userId);
+    int setViewedSeason(long seasonId,long userId);
+    int unviewSeason(long seasonId,long userId);
     int unviewEpisode(long userId, long episodeId);
 
     int addSeriesReview(String body, long seriesId, long userId);
@@ -59,5 +60,5 @@ public interface SeriesDao {
 
     int removePost(long postId);
 
-    int rateSeries(long seriesId, long userId, double rating);
+    int rateSeries(long seriesId,long userId,double rating);
 }
