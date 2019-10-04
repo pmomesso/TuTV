@@ -82,7 +82,7 @@ public class HelloWorldController {
 	}
 
     @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
-    public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) throws NotFoundException, UnauthorizedException {
+    public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId) throws NotFoundException, UnauthorizedException {
 		seriesService.setViewedEpisode(episodeId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
@@ -121,7 +121,7 @@ public class HelloWorldController {
     }
 
 	@RequestMapping(value = "/removePost", method = RequestMethod.POST)
-	public ModelAndView removePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) throws UnauthorizedException {
+	public ModelAndView removePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) throws UnauthorizedException, NotFoundException {
 		//Todo: validate that the removal is requested by admin or by comment owner
 		seriesService.removePost(postId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
@@ -137,19 +137,19 @@ public class HelloWorldController {
 	}
 
     @RequestMapping(value = "/likeComment", method = RequestMethod.POST)
-    public ModelAndView likeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+    public ModelAndView likeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws NotFoundException, UnauthorizedException {
 		seriesService.likeComment(commentId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/unlikeComment", method = RequestMethod.POST)
-    public ModelAndView unlikeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) {
+    public ModelAndView unlikeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws NotFoundException, UnauthorizedException {
 		seriesService.unlikeComment(commentId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
 	@RequestMapping(value = "/removeComment", method = RequestMethod.POST)
-	public ModelAndView removeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws UnauthorizedException {
+	public ModelAndView removeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws UnauthorizedException, NotFoundException {
 		//Todo: validate that the removal is requested by admin or by comment owner
 		seriesService.removeComment(commentId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
@@ -186,10 +186,10 @@ public class HelloWorldController {
     }
 
     @RequestMapping(value = "/watchlist", method = RequestMethod.GET)
-    public ModelAndView watchlist() {
+    public ModelAndView watchlist() throws UnauthorizedException {
         ModelAndView mav = new ModelAndView("watchlist");
 //        TODO pedro reemplazar new ArrayList<Season>() por lo que retorne su funcion
-        mav.addObject("watchlist", new ArrayList<Season>());
+        mav.addObject("watchlist", seriesService.getWatchList());
         return mav;
     }
 

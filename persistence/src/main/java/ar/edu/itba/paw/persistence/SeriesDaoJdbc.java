@@ -462,32 +462,33 @@ public class SeriesDaoJdbc implements SeriesDao {
 
                     auxEpisodeList.add(episode);
                     season.setEpisodeList(auxEpisodeList);
+                    auxSeasonList.add(season);
                     series.setSeasons(auxSeasonList);
 
                     return series;
                 });
         //Todo: process list
-        processToBeSeenList(toBeSeenSeriesList);
-        return toBeSeenSeriesList;
+        List<Series> retList = processToBeSeenList(toBeSeenSeriesList);
+        return retList;
     }
 
-    private void processToBeSeenList(List<Series> toBeSeenSeriesList) {
-
-
-
+    private List<Series> processToBeSeenList(List<Series> toBeSeenSeriesList) {
+        List<Series> retList = new ArrayList<>();
+        Set<Long> idSet = new HashSet<>();
         for(Series series1 : toBeSeenSeriesList) {
-            Series oldestSeries = series1;
-            for(Series series2 : toBeSeenSeriesList) {
-                if(series1 != series2 && series1.getId() == series2.getId()
-                        && compareToBeSeenSeries(oldestSeries, series2) > 0) {
-                    toBeSeenSeriesList.remove(oldestSeries);
-                    oldestSeries = series2;
-                } else if(compareToBeSeenSeries(oldestSeries, series2) < 0) {
-                    toBeSeenSeriesList.remove(series2);
+            if(!idSet.contains(series1.getId())) {
+                Series oldestSeries = series1;
+                idSet.add(series1.getId());
+                for (Series series2 : toBeSeenSeriesList) {
+                    if (oldestSeries.getId() == series2.getId()
+                            && compareToBeSeenSeries(oldestSeries, series2) > 0) {
+                        oldestSeries = series2;
+                    }
                 }
+                retList.add(oldestSeries);
             }
         }
-
+        return retList;
     }
 
     private int compareToBeSeenSeries(Series oldestSeries, Series series2) {
@@ -497,7 +498,7 @@ public class SeriesDaoJdbc implements SeriesDao {
             return 1;
         }
         Season seriesSeason1 = oldestSeries.getSeasons().get(0);
-        Season seriesSeason2 = oldestSeries.getSeasons().get(0);
+        Season seriesSeason2 = series2.getSeasons().get(0);
 
         if(seriesSeason1.getEpisodeList().get(0).getEpisodeNumber() < seriesSeason2.getEpisodeList().get(0).getEpisodeNumber()) {
             return -1;

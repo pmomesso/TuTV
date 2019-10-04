@@ -237,4 +237,14 @@ public class SeriesServiceImpl implements SeriesService {
             throw new NotFoundException();
         }
     }
+
+    @Override
+    public List<Series> getWatchList() throws UnauthorizedException{
+        User user = userService.getLoggedUser();
+        if(user == null) {
+            throw new UnauthorizedException();
+        }
+        List<Series> seriesList = seriesDao.getNextToBeSeen(user.getId());
+        return seriesList;
+    }
 }
