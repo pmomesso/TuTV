@@ -26,20 +26,20 @@
                     <ul class="menu list-unstyled">
                         <c:if test="${isLogged}">
                             <li class="upcoming ">
-                                <a href="<c:url value="/upcoming"/>" title="Upcoming">
+                                <a id="menu_upcoming" href="<c:url value="/upcoming"/>" title="Upcoming">
                                     <img class="logo logo_icon" src="<c:url value="/resources/img/upcoming.png"/>" alt="Upcoming">
                                     <span><spring:message code="index.upcoming"/></span>
                                 </a>
                             </li>
                             <li class="home ">
-                                <a href="<c:url value="/watchlist"/>" title="Watchlist">
+                                <a id="menu_watchlist" href="<c:url value="/watchlist"/>" title="Watchlist">
                                     <img class="logo logo_icon" src="<c:url value="/resources/img/watchlist.png"/>" alt="Watchlist">
                                     <span><spring:message code="index.watchlist"/></span>
                                 </a>
                             </li>
                         </c:if>
                         <li class="explore">
-                            <a href="<c:url value="/"/>" title="Explore">
+                            <a id="menu_home" href="<c:url value="/"/>" title="Explore">
                                 <img class="logo logo_icon" src="<c:url value="/resources/img/explore.png"/>" alt="Explore">
                                 <span><spring:message code="index.explore"/></span>
                             </a>
@@ -51,7 +51,7 @@
                         <h1>${user.userName}</h1>
                         <ul class="menu list-unstyled">
                             <li class="profile ">
-                                <a href="<c:url value="/profile?id=${user.id}"/>" title="<spring:message code="index.profile"/>">
+                                <a id="menu_profile"  href="<c:url value="/profile?id=${user.id}"/>" title="<spring:message code="index.profile"/>">
                                     <img class="logo logo_icon" src="<c:url value="/resources/img/profile.png"/>" alt="<spring:message code="index.profile"/>">
                                     <span><spring:message code="index.profile"/></span>
                                 </a>

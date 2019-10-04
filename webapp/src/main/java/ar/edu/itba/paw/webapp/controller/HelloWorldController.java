@@ -70,7 +70,7 @@ public class HelloWorldController {
     }
 
     @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
-    public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("userId") long userId) {
+    public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId) {
 		seriesService.setViewedEpisode(episodeId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }

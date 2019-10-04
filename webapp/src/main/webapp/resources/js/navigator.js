@@ -6,15 +6,20 @@ function getRelativeURL() {
 
 function selectCurrentMenuItem() {
     var relativeURL = getRelativeURL();
-    if (relativeURL != "series") {
-        // TODO falla con profile porque tiene parameters
-        var link = $(".all-left-navs").find("a[href=\"\/" + relativeURL + "\"]");
 
-        var previousImg = $(link).find("img").attr("src");
-        var newImg = previousImg.replace(".png", "_active.png");
-        $(link).find("img").attr("src", newImg);
-        link.parent().addClass("active");
-    }
+    if(relativeURL == "")
+        relativeURL = "home";
+
+        // TODO falla con profile porque tiene parameters
+    var link = $(".all-left-navs").find("#menu_" + relativeURL);
+
+    if(link == null)
+        return;
+
+    var previousImg = $(link).find("img").attr("src");
+    var newImg = previousImg.replace(".png", "_active.png");
+    $(link).find("img").attr("src", newImg);
+    link.parent().addClass("active");
 }
 
 $( document ).ready(function() {
