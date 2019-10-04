@@ -35,11 +35,7 @@
 </head>
 <body id="container" class="home no-touch white   reduced-right ">
 <div class="body-inner">
-    <div class="page-left page-sidebar page-column ">
-        <div class="scrollable scrolling-element">
-            <%@ include file="sideMenu.jsp" %>
-        </div>
-    </div>
+    <%@ include file="sideMenu.jsp" %>
     <div class="page-center page-column ">
         <div class="page-center-inner">
             <div class="main-block">
@@ -168,7 +164,8 @@
                                                             <div class="disclaimer">
                                                                 <p class="disclaimer-title"><spring:message code="series.spoil"/></p>
                                                             </div>
-                                                            <form:form class="post" modelAttribute="postForm" action="/post"
+                                                            <c:url value='post' var="actionPostValue"/>
+                                                            <form:form class="post" modelAttribute="postForm" action="${actionPostValue}"
                                                                        method="post"
                                                                        enctype="application/x-www-form-urlencoded">
                                                                 <div class="top">
@@ -344,7 +341,8 @@
                                                                             </article>
                                                                         </c:forEach>
                                                                         <c:if test="${isLogged && not user.isBanned}">
-                                                                            <form:form class="reply clearfix" modelAttribute="commentForm" action="/comment"
+                                                                            <c:url value='comment' var="actionCommentValue"/>
+                                                                            <form:form class="reply clearfix" modelAttribute="commentForm" action="${actionCommentValue}"
                                                                                        method="post"
                                                                                        enctype="application/x-www-form-urlencoded">
                                                                                 <form:errors path="commentBody" element="p" cssClass="error text-left"/>
