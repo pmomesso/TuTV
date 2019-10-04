@@ -27,11 +27,7 @@
 </head>
 <body id="container" class="">
 <div class="body-inner h-100">
-    <div class="page-left page-sidebar page-column">
-        <div class="scrollable scrolling-element">
-            <%@ include file="sideMenu.jsp" %>
-        </div>
-    </div>
+    <%@ include file="sideMenu.jsp" %>
     <div class="page-center page-column h-100">
         <div class="container h-100">
             <div class="row justify-content-center h-100">

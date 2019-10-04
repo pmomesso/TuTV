@@ -28,13 +28,7 @@
 <body id="container" class="home no-touch white   reduced-right ">
 
 <div class="body-inner">
-
-    <div class="page-left page-sidebar page-column ">
-        <div class="scrollable scrolling-element">
-            <%@ include file="sideMenu.jsp" %>
-        </div>
-    </div>
-
+    <%@ include file="sideMenu.jsp" %>
     <div class="page-center page-column ">
         <div class="page-center-inner">
             <div class="alt-block"></div>

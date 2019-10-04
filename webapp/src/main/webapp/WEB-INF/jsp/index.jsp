@@ -27,11 +27,7 @@
   </head>
   <body id="container" class="home no-touch white   reduced-right ">
     <div class="body-inner">
-      <div class="page-left page-sidebar page-column ">
-        <div class="scrollable scrolling-element">
-          <%@ include file="sideMenu.jsp" %>
-        </div>
-      </div>
+      <%@ include file="sideMenu.jsp" %>
       <div class="page-center page-column ">
       <div class="page-center-inner">
         <div class="alt-block"></div>
@@ -93,11 +89,11 @@
                 </div>
               </section>
               <c:forEach items="${seriesMap}" var="entry">
-                <section id="${entry.key}">
+                <section id="new-shows">
                   <h2 class="black-font"><c:out value="${entry.key.name}"/></h2>
                   <ul class="posters-list shows-list explore-list list-unstyled list-inline">
                     <c:forEach items="${entry.value}" var="series">
-                      <li id="${series.id}" class=" ">
+                      <li>
                         <a href="<c:url value="/series?id=${series.id}"/>">
                           <div class="image-crop">
                             <img src="<c:url value="${series.posterUrl}}"/>" alt="${series.name}">

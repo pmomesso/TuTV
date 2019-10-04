@@ -199,6 +199,17 @@ body {
 .label,sub,sup {
  vertical-align:baseline
 }
+
+@media (max-width: 768px) {
+ #home-text {
+  display: none !important;
+ }
+ .tutv {
+  height: 40px;
+  margin: 2px;
+ }
+}
+
 .redactor_toolbar li,
 hr {
  -webkit-box-sizing:content-box;
@@ -18764,12 +18775,7 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
  color:#80cf50
 }
 #explore .posters-list {
- height:295px;
  overflow:hidden
-}
-#explore .posters-list li:first-child {
- padding-left:0;
- width:170px
 }
 #trending {
  margin:0;
@@ -38152,7 +38158,7 @@ body.fixfixedAbs #top-moments-container .bottom-nav-container {
  }
  .page-left.extended {
   max-height:100%;
-  height:100%;
+  height:430px;
   overflow-y:scroll
  }
  .page-center {

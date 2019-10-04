@@ -28,11 +28,7 @@
 </head>
 <body id="container" class="">
 <div class="body-inner h-100">
-    <div class="page-left page-sidebar page-column">
-        <div class="scrollable scrolling-element">
-            <%@ include file="sideMenu.jsp" %>
-        </div>
-    </div>
+    <%@ include file="sideMenu.jsp" %>
     <div class="page-center page-column h-100">
         <div class="page-center-inner h-100">
             <div class="main-block h-100">
@@ -43,7 +39,7 @@
                                 <c:when test="${empty watchlist}">
                                     <div class="container h-100">
                                         <div class="row justify-content-center h-100">
-                                            <div class="col-8 align-self-center">
+                                            <div class="col-lg-8 col-sm-12 align-self-center">
                                                 <div class="text-center">
                                                     <h2><spring:message code="watchlist.noshows"/></h2>
                                                 </div>

@@ -7,6 +7,7 @@ function getRelativeURL() {
 function selectCurrentMenuItem() {
     var relativeURL = getRelativeURL();
     if (relativeURL != "series") {
+        // TODO falla con profile porque tiene parameters
         var link = $(".all-left-navs").find("a[href=\"\/" + relativeURL + "\"]");
 
         var previousImg = $(link).find("img").attr("src");
@@ -19,3 +20,11 @@ function selectCurrentMenuItem() {
 $( document ).ready(function() {
     selectCurrentMenuItem();
 });
+
+function extend() {
+    if ($(".page-left").hasClass("extended")) {
+        $(".page-left").removeClass("extended");
+    } else {
+        $(".page-left").addClass("extended");
+    }
+}
