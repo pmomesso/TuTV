@@ -69,6 +69,18 @@ public class HelloWorldController {
 	    return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
+	@RequestMapping(value = "/viewSeason", method = RequestMethod.POST)
+	public ModelAndView viewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) {
+//		TODO pedro llamar al metodo correspondiente
+		return new ModelAndView("redirect:/series?id=" + seriesId);
+	}
+
+	@RequestMapping(value = "/unviewSeason", method = RequestMethod.POST)
+	public ModelAndView unviewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) {
+//		TODO pedro llamar al metodo correspondiente
+		return new ModelAndView("redirect:/series?id=" + seriesId);
+	}
+
     @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
     public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId) {
 		seriesService.setViewedEpisode(episodeId);

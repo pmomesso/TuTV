@@ -36,7 +36,7 @@
 <body id="container" class="home no-touch white   reduced-right ">
 <div class="body-inner">
     <%@ include file="sideMenu.jsp" %>
-    <div class="page-center page-column ">
+    <div class="page-center page-column">
         <div class="page-center-inner">
             <div class="main-block">
                 <div id="explore">
@@ -109,15 +109,36 @@
                                                     <li class="cd-accordion__item cd-accordion__item--has-children">
                                                         <input class="cd-accordion__input" type="checkbox"
                                                                name="group-${item.index}" id="group-${item.index}">
+                                                        <c:set var="viewedEpisodes" value="0" scope="page"/>
                                                         <c:choose>
                                                             <c:when test="${isLogged && season.viewed}">
                                                                 <label class="cd-accordion__label cd-accordion__label--icon-folder drop drop-watched" for="group-${item.index}">
                                                                     <span class="big-size"><spring:message code="series.Season"/> ${season.seasonNumber}</span>
+                                                                    <c:if test="${isLogged && series.follows}">
+                                                                        <span class="ml-3 viewed-episodes">${pageScope.viewedEpisodes} / ${fn:length(season.episodeList)}</span>
+                                                                    </c:if>
+                                                                    <form action="<c:url value="/unviewSeason?seriesId=${series.id}&seasonId=${season.id}"/>"
+                                                                          method="post">
+                                                                        <button type="submit"
+                                                                                style="font-family: FontAwesome,serif; font-style: normal"
+                                                                                class="check-season viewed">&#xf058
+                                                                        </button>
+                                                                    </form>
                                                                 </label>
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <label class="cd-accordion__label cd-accordion__label--icon-folder drop" for="group-${item.index}">
                                                                     <span class="big-size"><spring:message code="series.Season"/> ${season.seasonNumber}</span>
+                                                                    <c:if test="${isLogged && series.follows}">
+                                                                        <span class="ml-3 viewed-episodes">${pageScope.viewedEpisodes} / ${fn:length(season.episodeList)}</span>
+                                                                        <form action="<c:url value="/viewSeason?seriesId=${series.id}&seasonId=${season.id}"/>"
+                                                                              method="post">
+                                                                            <button type="submit"
+                                                                                    style="font-family: FontAwesome,serif; font-style: normal"
+                                                                                    class="check-season">&#xf058
+                                                                            </button>
+                                                                        </form>
+                                                                    </c:if>
                                                                 </label>
                                                             </c:otherwise>
                                                         </c:choose>
@@ -130,6 +151,7 @@
                                                                         <c:if test="${isLogged && series.follows}">
                                                                             <c:choose>
                                                                                 <c:when test="${episode.viewed}">
+                                                                                    <c:set var="viewedEpisodes" value="${viewedEpisodes + 1}" scope="page"/>
                                                                                     <form action="<c:url value="/unviewEpisode?seriesId=${series.id}&episodeId=${episode.id}"/>"
                                                                                           method="post">
                                                                                         <button type="submit"
