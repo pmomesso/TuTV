@@ -80,23 +80,25 @@
                                                 test="${series.numFollowers ne 1}"><spring:message code="index.sufix"/></c:if>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="container h-20">
-                                        <div class="starrating risingstar d-flex justify-content-center flex-row-reverse">
-                                            <c:forEach var="index" begin="0" end="4">
-                                                <c:choose>
-                                                    <c:when test="${series.userRating eq (5-index)}">
-                                                        <input id="star${5-index}" name="rating" type="radio" checked value="${5-index}" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&rating=${5-index}"/>'"/>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <input id="star${5-index}" name="rating" type="radio" value="${5-index}" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&rating=${5-index}"/>'"/>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                                <label for="star${5-index}" title="${5-index} <spring:message code="series.star"/><c:if test="${series.numFollowers ne 1}">s</c:if>"></label>
-                                            </c:forEach>
+                                <c:if test="${isLogged}">
+                                    <div class="col-lg-4">
+                                        <div class="container h-20">
+                                            <div class="starrating risingstar d-flex justify-content-center flex-row-reverse">
+                                                <c:forEach var="index" begin="0" end="4">
+                                                    <c:choose>
+                                                        <c:when test="${series.userRating eq (5-index)}">
+                                                            <input id="star${5-index}" name="rating" type="radio" checked value="${5-index}" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&rating=${5-index}"/>'"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <input id="star${5-index}" name="rating" type="radio" value="${5-index}" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&rating=${5-index}"/>'"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                    <label for="star${5-index}" title="${5-index} <spring:message code="series.star"/><c:if test="${series.numFollowers ne 1}">s</c:if>"></label>
+                                                </c:forEach>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </c:if>
                             </div>
                             <div id="content" class="show-main alt">
                                 <div class="content-container">
