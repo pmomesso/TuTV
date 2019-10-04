@@ -56,7 +56,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().rememberMe()
                     .rememberMeParameter("rememberme")
                     .userDetailsService(userDetailsService).key(getEncryptationKey()) // TODO	no	hacer	esto,	crear	una aleatoria	segura	suficiente mente	grande	y	colocarla	bajo	src/main/resources
-                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
+                    .tokenValiditySeconds((int) TimeUnit.SECONDS.toSeconds(1))
                 .and().logout()
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/login")
