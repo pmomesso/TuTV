@@ -5,13 +5,16 @@ create table if not exists users
             primary key,
     username varchar(50),
     password varchar(255),
-    mail varchar(32),
+    mail varchar(50),
     confirmation_key varchar(60),
     isbanned boolean default false,
     isadmin boolean default false
 );
 
 alter table users owner to root;
+
+create unique index if not exists users_mail_uindex
+    on users (mail);
 
 create table if not exists genres
 (
@@ -240,10 +243,15 @@ create table if not exists hasviewedepisode
 (
     userid integer
         constraint hasviewedepisode_users_id_fk
-            references users,
+            references users
+            on delete cascade,
     episodeid integer
         constraint hasviewedepisode_episode_id_fk
             references episode
+            on delete cascade,
+    id serial not null
+        constraint hasviewedepisode_pk
+            primary key
 );
 
 alter table hasviewedepisode owner to root;
@@ -287,7 +295,9 @@ create table if not exists userseriesrating
             references series
             on delete cascade,
     rating double precision not null,
-    constraint user_series_rating_unique unique (userid,seriesid)
+    constraint user_series_rating_unique
+        unique (userid, seriesid)
 );
 
 alter table userseriesrating owner to root;
+
