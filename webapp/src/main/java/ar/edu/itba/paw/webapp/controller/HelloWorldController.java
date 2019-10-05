@@ -46,7 +46,8 @@ public class HelloWorldController {
 		mav.addObject("genres",seriesService.getAllGenres());
 		return mav;
 	}
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/search", method = RequestMethod.POST)
     public ModelAndView search(@Valid @ModelAttribute("searchForm") final SearchForm form, final BindingResult errors) {
 	    if(errors.hasErrors()){
 	        return search();
@@ -55,6 +56,7 @@ public class HelloWorldController {
         mav.addObject("searchResults",seriesService.searchSeries(form.getName(),form.getGenre(),form.getNetwork(),form.getMin(),form.getMax()));
         return mav;
     }
+
 	@RequestMapping(value = "/series", method = RequestMethod.GET)
 	public ModelAndView series(@ModelAttribute("postForm") final PostForm postForm, @ModelAttribute("commentForm") final CommentForm commentForm, @RequestParam("id") long id) throws Exception {
 		final ModelAndView mav = new ModelAndView("series");

@@ -10,16 +10,14 @@ function selectCurrentMenuItem() {
     if(relativeURL == "")
         relativeURL = "home";
 
-        // TODO falla con profile porque tiene parameters
-    var link = $(".all-left-navs").find("#menu_" + relativeURL);
+    if (relativeURL != 'series') {
+        var link = $(".all-left-navs").find("#menu_" + relativeURL);
 
-    if(link == null)
-        return;
-
-    var previousImg = $(link).find("img").attr("src");
-    var newImg = previousImg.replace(".png", "_active.png");
-    $(link).find("img").attr("src", newImg);
-    link.parent().addClass("active");
+        var previousImg = $(link).find("img").attr("src");
+        var newImg = previousImg.replace(".png", "_active.png");
+        $(link).find("img").attr("src", newImg);
+        link.parent().addClass("active");
+    }
 }
 
 $( document ).ready(function() {
@@ -32,4 +30,14 @@ function extend() {
     } else {
         $(".page-left").addClass("extended");
     }
+}
+
+function confirmAction(event, message) {
+    event.preventDefault();
+
+    var form = event.target;
+    var accept = confirm(message);
+
+    if (accept)
+        form.submit();
 }

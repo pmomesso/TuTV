@@ -109,16 +109,16 @@
                                                     <li class="cd-accordion__item cd-accordion__item--has-children">
                                                         <input class="cd-accordion__input" type="checkbox"
                                                                name="group-${item.index}" id="group-${item.index}">
-                                                        <c:set var="viewedEpisodes" value="0" scope="page"/>
+                                                        <c:set var="viewedEpisodes" value="0"/>
                                                         <c:choose>
                                                             <c:when test="${isLogged && season.viewed}">
                                                                 <label class="cd-accordion__label cd-accordion__label--icon-folder drop drop-watched" for="group-${item.index}">
                                                                     <span class="big-size"><spring:message code="series.Season"/> ${season.seasonNumber}</span>
                                                                     <c:if test="${isLogged && series.follows}">
-                                                                        <span class="ml-3 viewed-episodes">${pageScope.viewedEpisodes} / ${fn:length(season.episodeList)}</span>
+                                                                        <span class="ml-3 viewed-episodes">${viewedEpisodes} / ${fn:length(season.episodeList)}</span>
                                                                     </c:if>
                                                                     <form action="<c:url value="/unviewSeason?seriesId=${series.id}&seasonId=${season.id}"/>"
-                                                                          method="post">
+                                                                          method="post" onsubmit="confirmAction(event,'<spring:message code="series.sureUnviewSeason"/>')">
                                                                         <button type="submit"
                                                                                 style="font-family: FontAwesome,serif; font-style: normal"
                                                                                 class="check-season viewed">&#xf058
@@ -130,9 +130,9 @@
                                                                 <label class="cd-accordion__label cd-accordion__label--icon-folder drop" for="group-${item.index}">
                                                                     <span class="big-size"><spring:message code="series.Season"/> ${season.seasonNumber}</span>
                                                                     <c:if test="${isLogged && series.follows}">
-                                                                        <span class="ml-3 viewed-episodes">${pageScope.viewedEpisodes} / ${fn:length(season.episodeList)}</span>
+                                                                        <span class="ml-3 viewed-episodes">${viewedEpisodes} / ${fn:length(season.episodeList)}</span>
                                                                         <form action="<c:url value="/viewSeason?seriesId=${series.id}&seasonId=${season.id}"/>"
-                                                                              method="post">
+                                                                              method="post" onsubmit="confirmAction(event,'<spring:message code="series.sureViewSeason"/>')">
                                                                             <button type="submit"
                                                                                     style="font-family: FontAwesome,serif; font-style: normal"
                                                                                     class="check-season">&#xf058
@@ -153,7 +153,7 @@
                                                                                 <c:when test="${episode.viewed}">
                                                                                     <c:set var="viewedEpisodes" value="${viewedEpisodes + 1}" scope="page"/>
                                                                                     <form action="<c:url value="/unviewEpisode?seriesId=${series.id}&episodeId=${episode.id}"/>"
-                                                                                          method="post">
+                                                                                          method="post" onsubmit="confirmAction(event,'<spring:message code="series.sureUnviewEpisode"/>')">
                                                                                         <button type="submit"
                                                                                                 style="font-family: FontAwesome,serif; font-style: normal"
                                                                                                 class="check viewed">&#xf058
@@ -241,7 +241,7 @@
                                                                                     <c:choose>
                                                                                         <c:when test="${post.user.isBanned}">
                                                                                             <form action="<c:url value="/unbanUser?seriesId=${series.id}&userId=${post.userId}"/>"
-                                                                                                  method="post" class="float-left">
+                                                                                                  method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureUnbanUser"/>')">
                                                                                                 <button type="submit" class="remove">
                                                                                                     <img src="<c:url value="/resources/img/unban.png"/>" title="<spring:message code="series.unban"/>" alt="<spring:message code="series.unban"/>">
                                                                                                 </button>
@@ -249,7 +249,7 @@
                                                                                         </c:when>
                                                                                         <c:otherwise>
                                                                                             <form action="<c:url value="/banUser?seriesId=${series.id}&userId=${post.userId}"/>"
-                                                                                                  method="post" class="float-left">
+                                                                                                  method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureBanUser"/>')">
                                                                                                 <button class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf05e</button>
                                                                                             </form>
                                                                                         </c:otherwise>
@@ -258,7 +258,7 @@
                                                                                 <div class="float-right mr-5">
                                                                                     <c:if test="${user.isAdmin || user.id eq post.userId}">
                                                                                         <form action="<c:url value="/removePost?seriesId=${series.id}&postId=${post.postId}"/>"
-                                                                                              method="post" class="float-left">
+                                                                                              method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureRemovePort"/>')">
                                                                                             <button type="submit" class="remove">
                                                                                                 <img src="<c:url value="/resources/img/remove.png"/>" alt="<spring:message code="series.remove"/>">
                                                                                             </button>
@@ -309,7 +309,7 @@
                                                                                             <c:choose>
                                                                                                 <c:when test="${comment.user.isBanned}">
                                                                                                     <form action="<c:url value="/unbanUser?seriesId=${series.id}&userId=${comment.userId}"/>"
-                                                                                                          method="post" class="float-left">
+                                                                                                          method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureUnbanUser"/>')">
                                                                                                         <button type="submit" class="remove">
                                                                                                             <img src="<c:url value="/resources/img/unban.png"/>" title="<spring:message code="series.unban"/>" alt="<spring:message code="series.unban"/>">
                                                                                                         </button>
@@ -317,7 +317,7 @@
                                                                                                 </c:when>
                                                                                                 <c:otherwise>
                                                                                                     <form action="<c:url value="/banUser?seriesId=${series.id}&userId=${comment.userId}"/>"
-                                                                                                          method="post" class="float-left">
+                                                                                                          method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureBanUser"/>')">
                                                                                                         <button class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf05e</button>
                                                                                                     </form>
                                                                                                 </c:otherwise>
@@ -326,7 +326,7 @@
                                                                                         <div class="float-right">
                                                                                             <c:if test="${user.isAdmin || user.id eq comment.userId}">
                                                                                                 <form action="<c:url value="/removeComment?seriesId=${series.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
-                                                                                                      method="post" class="float-left">
+                                                                                                      method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureRemoveComment"/>')">
                                                                                                     <button type="submit" class="remove-small">
                                                                                                         <img src="<c:url value="/resources/img/remove.png"/>" alt="<spring:message code="series.remove"/>">
                                                                                                     </button>
