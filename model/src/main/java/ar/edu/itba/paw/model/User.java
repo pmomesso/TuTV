@@ -14,7 +14,12 @@ public class User {
     private boolean isBanned = false;
 
     public User() {}
-
+    public User(String userName,String password,String mailAddress,boolean isAdmin){
+        this.userName = userName;
+        this.password = password;
+        this.mailAddress = mailAddress;
+        this.isAdmin = isAdmin;
+    }
     public String getConfirmationKey() {
         return confirmationKey;
     }
