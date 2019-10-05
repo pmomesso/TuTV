@@ -114,4 +114,15 @@ public class UserDaoJdbc implements UserDao {
 		return !userExistsList.isEmpty();
 	}
 
+	@Override
+	public void setUserAvatar(long userId, byte[] byteArray) {
+		jdbcTemplate.update("UPDATE users SET avatar = ? WHERE id = ?", new Object[]{byteArray, userId});
+	}
+
+	@Override
+	public byte[] getUserAvatar(long userId) {
+		return (byte[]) jdbcTemplate.queryForObject(
+				"SELECT avatar FROM users WHERE id = ?", new Object[] { userId }, byte[].class);
+	}
+
 }

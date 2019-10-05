@@ -11,15 +11,16 @@ import ar.edu.itba.paw.webapp.form.PostForm;
 import ar.edu.itba.paw.webapp.form.SearchForm;
 import ar.edu.itba.paw.webapp.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 @Controller
@@ -198,6 +199,11 @@ public class HelloWorldController {
 		return new ModelAndView("login");
 	}
 
+	@RequestMapping(value = "/registrationsuccess", method = RequestMethod.GET)
+	public ModelAndView showRegistrationSuccess() {
+		return new ModelAndView("registrationsuccess");
+	}
+
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public ModelAndView showRegister(@ModelAttribute("registerForm") final UserForm form) {
 		return new ModelAndView("register");
@@ -210,9 +216,23 @@ public class HelloWorldController {
 		}
 
 		userService.createUser(form.getUsername(), form.getPassword(), form.getMail(),false);
+		return new ModelAndView("redirect:/registrationsuccess");
 		// TODO create user y setear admin.
-//		final User u = us.create(form.getUsername());
-//		return new ModelAndView("redirect:/user/" + u.getId());
-		return null;
+	}
+
+	@RequestMapping(value = "/uplodadAvatar", method = RequestMethod.POST)
+	public ModelAndView uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
+		try {
+			userService.setUserAvatar(1, avatar.getBytes());
+		} catch (Exception e) {
+			System.out.println("ERROR EN GETBYTES SETAVATAR");
+		}
+
+		return new ModelAndView("redirect:/");
+	}
+
+	@RequestMapping(value = "/user/{userId}/avatar", produces = MediaType.IMAGE_JPEG_VALUE)
+	public @ResponseBody byte[] getImageWithMediaType(@PathVariable long userId) throws IOException {
+		return userService.getUserAvatar(userId);
 	}
 }

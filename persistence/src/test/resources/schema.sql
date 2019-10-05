@@ -8,7 +8,7 @@ create table if not exists users
     mail varchar(32),
     confirmation_key varchar(60),
     isAdmin boolean default false not null,
-    isbanned boolean default false,
+    isbanned boolean default false
 );
 
 create table if not exists genres

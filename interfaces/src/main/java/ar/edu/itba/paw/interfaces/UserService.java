@@ -16,5 +16,7 @@ public interface UserService {
 
     void banUser(long userId) throws UnauthorizedException, NotFoundException;
 
+    boolean setUserAvatar(long userId, byte[] byteArray);
+	byte[] getUserAvatar(long userId);
     void unbanUser(long userId) throws UnauthorizedException, NotFoundException;
 }

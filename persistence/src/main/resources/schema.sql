@@ -8,7 +8,8 @@ create table if not exists users
     mail varchar(50),
     confirmation_key varchar(60),
     isbanned boolean default false,
-    isadmin boolean default false
+    isadmin boolean default false,
+    avatar BYTEA
 );
 
 alter table users owner to root;

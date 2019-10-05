@@ -16,6 +16,8 @@ public interface UserDao {
 
     int banUser(long userId);
 
+    byte[] getUserAvatar(long userId);
+    void setUserAvatar(long userId, byte[] byteArray);
     int unbanUser(long userId);
 
     boolean userExists(long userId);

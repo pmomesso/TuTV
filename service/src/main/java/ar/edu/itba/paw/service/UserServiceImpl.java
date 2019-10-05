@@ -115,4 +115,16 @@ public class UserServiceImpl implements UserService {
     void setAuthentication(Authentication authentication) {
         this.authentication = authentication;
     }
+
+    @Override
+    public boolean setUserAvatar(long userId, byte[] byteArray) {
+        //TODO validar byteArray
+        userDao.setUserAvatar(userId, byteArray);
+        return true;
+    }
+
+    @Override
+    public byte[] getUserAvatar(long userId) {
+        return userDao.getUserAvatar(userId);
+    }
 }

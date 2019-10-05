@@ -52,11 +52,11 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .passwordParameter("password")
                     .defaultSuccessUrl("/", false)
                     .loginPage("/login")
-                .failureHandler(new UrlAuthenticationFailureHandler())
+                    .failureHandler(new UrlAuthenticationFailureHandler())
                 .and().rememberMe()
                     .rememberMeParameter("rememberme")
                     .userDetailsService(userDetailsService).key(getEncryptationKey()) // TODO	no	hacer	esto,	crear	una aleatoria	segura	suficiente mente	grande	y	colocarla	bajo	src/main/resources
-                    .tokenValiditySeconds((int) TimeUnit.SECONDS.toSeconds(1))
+                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
                 .and().logout()
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/login")
