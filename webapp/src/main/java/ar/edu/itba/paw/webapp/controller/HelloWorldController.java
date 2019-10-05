@@ -156,14 +156,14 @@ public class HelloWorldController {
 	}
 
     @RequestMapping(value = "/banUser", method = RequestMethod.POST)
-    public ModelAndView banUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException {
+    public ModelAndView banUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException, NotFoundException {
 		//Todo: validate that the ban is requested by admin.
 		userService.banUser(userId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/unbanUser", method = RequestMethod.POST)
-    public ModelAndView unbanUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException {
+    public ModelAndView unbanUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException, NotFoundException {
 		//Todo: validate that the unban is requested by admin.
 		userService.unbanUser(userId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);

@@ -2,8 +2,6 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.model.User;
 
-import java.util.Date;
-
 public interface UserDao {
 
     User getUserById(long id);
@@ -16,7 +14,7 @@ public interface UserDao {
 
     void setValidationKey(long userId, String key);
 
-    void banUser(long userId);
+    int banUser(long userId);
 
-    void unbanUser(long userId);
+    int unbanUser(long userId);
 }

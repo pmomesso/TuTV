@@ -85,13 +85,25 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	@Override
-	public void banUser(long userId) {
-		jdbcTemplate.update("UPDATE users SET isbanned = TRUE WHERE id = ?", new Object[]{userId});
+	public int banUser(long userId) {
+		List<Boolean> isBannedList = jdbcTemplate.query("SELECT isbanned FROM users WHERE userid = ?", new Object[]{userId},
+				(resultSet, i) -> {
+					return resultSet.getBoolean("isbanned");
+				});
+		if(isBannedList.isEmpty()) return -1;
+		int numRows = jdbcTemplate.update("UPDATE users SET isbanned = TRUE WHERE id = ?", new Object[]{userId});
+		return numRows;
 	}
 
 	@Override
-	public void unbanUser(long userId) {
-		jdbcTemplate.update("UPDATE users SET isbanned = FALSE WHERE id = ?", new Object[]{userId});
+	public int unbanUser(long userId) {
+		List<Boolean> isBannedList = jdbcTemplate.query("SELECT isbanned FROM user WHERE userid = ?", new Object[]{userId},
+				(resultSet, i) -> {
+					return resultSet.getBoolean("isbanned");
+				});
+		if(isBannedList.isEmpty()) return -1;
+		int numRows = jdbcTemplate.update("UPDATE users SET isbanned = FALSE WHERE id = ?", new Object[]{userId});
+		return numRows;
 	}
 
 }

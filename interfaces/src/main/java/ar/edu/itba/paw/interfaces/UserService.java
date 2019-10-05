@@ -14,7 +14,7 @@ public interface UserService {
 
 	User getLoggedUser();
 
-    void banUser(long userId) throws UnauthorizedException;
+    void banUser(long userId) throws UnauthorizedException, NotFoundException;
 
-    void unbanUser(long userId) throws UnauthorizedException;
+    void unbanUser(long userId) throws UnauthorizedException, NotFoundException;
 }
