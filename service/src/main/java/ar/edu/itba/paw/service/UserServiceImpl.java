@@ -7,7 +7,6 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -39,9 +38,13 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private Authentication authentication = null;
+
     @Autowired
-    public UserServiceImpl(UserDao userDao) {
+    public UserServiceImpl(UserDao userDao,MailService mailService,PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
+        this.mailService = mailService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -72,7 +75,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getLoggedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = this.authentication;
+        if(authentication == null)
+            authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserMail = authentication.getName();
 
@@ -104,5 +110,9 @@ public class UserServiceImpl implements UserService {
         if(result == -1) {
             throw new NotFoundException();
         }
+    }
+
+    void setAuthentication(Authentication authentication) {
+        this.authentication = authentication;
     }
 }
