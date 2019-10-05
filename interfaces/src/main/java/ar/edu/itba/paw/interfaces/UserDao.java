@@ -17,4 +17,6 @@ public interface UserDao {
     int banUser(long userId);
 
     int unbanUser(long userId);
+
+    boolean userExists(long userId);
 }

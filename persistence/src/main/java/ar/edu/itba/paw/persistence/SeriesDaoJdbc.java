@@ -475,6 +475,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Series> getRecentlyWatched(long userId, int number) {
+        if(!userDao.userExists(userId)) return null;
         List<Series> seriesList = jdbcTemplate.query("SELECT DISTINCT seriesname, bannerurl, seriesid FROM (SELECT id AS idhasviewed,\n" +
                 "(SELECT name FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS seriesname,\n" +
                 "(SELECT bannerurl FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS bannerurl,\n" +
@@ -483,9 +484,27 @@ public class SeriesDaoJdbc implements SeriesDao {
                 "WHERE userid = ?\n" +
                 "ORDER BY id DESC LIMIT ?) AS foo(id, seriesname, bannerurl, seriesid)", new Object[]{userId, number}, (resultSet, i) -> {
             Series ret = new Series();
-            ret.setId(resultSet.getInt("seriesid"));
+            ret.setId(resultSet.getLong("seriesid"));
             ret.setBannerUrl(resultSet.getString("bannerurl"));
             ret.setName(resultSet.getString("seriesname"));
+            return ret;
+        });
+        return seriesList;
+    }
+
+    @Override
+    public List<Series> getAddedSeries(long userId) {
+        if(!userDao.userExists(userId)) return null;
+        List<Series> seriesList = jdbcTemplate.query("SELECT DISTINCT seriesid, " +
+                "(SELECT name FROM series WHERE series.id = seriesid) AS seriesname, " +
+                "(SELECT bannerurl FROM series WHERE series.id = seriesid) AS banner " +
+                "FROM follows " +
+                "WHERE follows.userid = ?", new Object[]{userId}, (resultSet, i) -> {
+            Series ret = new Series();
+            ret.setName(resultSet.getString("seriesname"));
+            ret.setId(resultSet.getLong("seriesid"));
+            ret.setBannerUrl(resultSet.getString("banner"));
+
             return ret;
         });
         return seriesList;
@@ -709,4 +728,5 @@ public class SeriesDaoJdbc implements SeriesDao {
                 (resultSet, i) -> resultSet.getDouble("rating"));
         return (series.size() > 0) ? series.get(0) : null;
     }
+
 }

@@ -106,4 +106,12 @@ public class UserDaoJdbc implements UserDao {
 		return numRows;
 	}
 
+	@Override
+	public boolean userExists(long userId) {
+		List<Boolean> userExistsList = jdbcTemplate.query("SELECT id FROM users WHERE id = ?", new Object[]{userId}, (resultSet, i) -> {
+			return resultSet.getBoolean("userExists");
+		});
+		return !userExistsList.isEmpty();
+	}
+
 }
