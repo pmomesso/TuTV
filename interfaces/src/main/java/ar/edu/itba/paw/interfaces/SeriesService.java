@@ -3,6 +3,7 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Season;
 import ar.edu.itba.paw.model.Series;
+import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 
@@ -46,4 +47,6 @@ public interface SeriesService {
     void removePost(long postId) throws UnauthorizedException, NotFoundException;
 
     List<Series> getWatchList() throws UnauthorizedException;
+
+    List<Series> getRecentlyWatchedList(int number) throws UnauthorizedException, BadRequestException;
 }

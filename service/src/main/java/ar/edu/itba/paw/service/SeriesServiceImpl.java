@@ -7,6 +7,7 @@ import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Season;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -260,6 +261,19 @@ public class SeriesServiceImpl implements SeriesService {
             throw new UnauthorizedException();
         }
         List<Series> seriesList = seriesDao.getNextToBeSeen(user.getId());
+        return seriesList;
+    }
+
+    @Override
+    public List<Series> getRecentlyWatchedList(int number) throws UnauthorizedException, BadRequestException {
+        User user = userService.getLoggedUser();
+        if(user == null) {
+            throw new UnauthorizedException();
+        }
+        if(number <= 0) {
+            throw new BadRequestException();
+        }
+        List<Series> seriesList = seriesDao.getRecentlyWatched(user.getId(), number);
         return seriesList;
     }
 }

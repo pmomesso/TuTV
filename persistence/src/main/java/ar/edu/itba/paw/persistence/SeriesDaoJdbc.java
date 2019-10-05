@@ -123,7 +123,8 @@ public class SeriesDaoJdbc implements SeriesDao {
         followsjdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("follows");
         viewedEpisodesjdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("hasviewedepisode");
+                .withTableName("hasviewedepisode")
+                .usingColumns("userid", "episodeid");
         seriesReviewJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("seriesreview")
                 .usingColumns("userid", "seriesid", "body");
@@ -470,6 +471,24 @@ public class SeriesDaoJdbc implements SeriesDao {
         //Todo: process list
         List<Series> retList = processToBeSeenList(toBeSeenSeriesList);
         return retList;
+    }
+
+    @Override
+    public List<Series> getRecentlyWatched(long userId, int number) {
+        List<Series> seriesList = jdbcTemplate.query("SELECT DISTINCT seriesname, bannerurl, seriesid FROM (SELECT id AS idhasviewed,\n" +
+                "(SELECT name FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS seriesname,\n" +
+                "(SELECT bannerurl FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS bannerurl,\n" +
+                "(SELECT id FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS seriesid\n" +
+                "FROM hasviewedepisode\n" +
+                "WHERE userid = ?\n" +
+                "ORDER BY id DESC LIMIT ?) AS foo(id, seriesname, bannerurl, seriesid)", new Object[]{userId, number}, (resultSet, i) -> {
+            Series ret = new Series();
+            ret.setId(resultSet.getInt("seriesid"));
+            ret.setBannerUrl(resultSet.getString("bannerurl"));
+            ret.setName(resultSet.getString("seriesname"));
+            return ret;
+        });
+        return seriesList;
     }
 
     private List<Series> processToBeSeenList(List<Series> toBeSeenSeriesList) {
