@@ -10,7 +10,6 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
