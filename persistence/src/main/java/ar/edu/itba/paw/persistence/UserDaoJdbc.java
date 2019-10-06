@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistence;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
@@ -42,10 +43,9 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	@Override
-	public User getUserById(final long id) {
+	public Optional<User> getUserById(final long id) {
 		List<User> resultSet = jdbcTemplate.query("SELECT * FROM users WHERE id = ?", new Object[]{id}, rm);
-		if(resultSet.isEmpty()) return null;
-		return resultSet.get(0);
+		return resultSet.stream().findFirst();
 	}
 
 	@Override
@@ -63,7 +63,8 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	@Override
-	public User createUser(final String userName, final String password, final String mail, boolean isAdmin) {
+	public Optional<User> createUser(final String userName, final String password, final String mail, boolean isAdmin) {
+		if(userNameExists(userName) || mailIsTaken(mail)) return Optional.empty();
 		Map<String, Object> args = new HashMap<>();
 		args.put("username", userName);
 		args.put("password", password);
@@ -72,6 +73,16 @@ public class UserDaoJdbc implements UserDao {
 		final Number userGeneratedId = jdbcInsert.executeAndReturnKey(args);
 		long insertedId = userGeneratedId.longValue();
 		return getUserById(insertedId);
+	}
+
+	private boolean mailIsTaken(String mail) {
+		return jdbcTemplate.query("SELECT mail FROM users WHERE mail = ?", new Object[]{mail},
+				(resultSet) -> { return resultSet.getString("mail"); }).isEmpty();
+	}
+
+	private boolean userNameExists(String userName) {
+		return jdbcTemplate.query("SELECT username FROM users WHERE username = ?", new Object[]{userName},
+				(resultSet) -> { return resultSet.getString("username"); }).isEmpty();
 	}
 
 	@Override

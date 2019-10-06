@@ -3,16 +3,17 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDao {
 
-    User getUserById(long id);
+    Optional<User> getUserById(long id);
 
     User getUserByValidationKey(String key);
 
     User getUserByMail(String mail);
 
-    User createUser(String userName, String password, String mail, boolean isAdmin);
+    Optional<User> createUser(String userName, String password, String mail, boolean isAdmin);
 
     boolean checkIfValidationKeyExists(String key);
 
