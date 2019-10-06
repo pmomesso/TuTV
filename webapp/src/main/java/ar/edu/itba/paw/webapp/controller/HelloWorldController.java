@@ -235,8 +235,8 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/uploadAvatar", method = RequestMethod.POST)
-	public ModelAndView uploadAvatar(@RequestParam("avatar") MultipartFile avatar) throws NotFoundException {
-		User u = userService.getLoggedUser();
+	public ModelAndView uploadAvatar(@RequestParam("avatar") MultipartFile avatar) throws UnauthorizedException {
+		User u = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
 
 		try {
 			userService.setUserAvatar(u.getId(), avatar.getBytes());

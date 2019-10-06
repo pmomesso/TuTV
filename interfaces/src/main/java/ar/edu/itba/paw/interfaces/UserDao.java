@@ -11,7 +11,7 @@ public interface UserDao {
 
     User getUserByValidationKey(String key);
 
-    User getUserByMail(String mail);
+    Optional<User> getUserByMail(String mail);
 
     Optional<User> createUser(String userName, String password, String mail, boolean isAdmin);
 

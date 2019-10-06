@@ -56,10 +56,9 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	@Override
-	public User getUserByMail(final String mail) {
+	public Optional<User> getUserByMail(final String mail) {
 		List<User> resultSet = jdbcTemplate.query("SELECT * FROM users WHERE mail = ?", new Object[]{mail}, rm);
-		if(resultSet.isEmpty()) return null;
-		return resultSet.get(0);
+		return resultSet.stream().findFirst();
 	}
 
 	@Override

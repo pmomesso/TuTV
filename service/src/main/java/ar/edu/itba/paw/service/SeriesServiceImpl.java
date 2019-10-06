@@ -43,8 +43,8 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public Series getSerieById(long id) throws NotFoundException {
-        User u = userService.getLoggedUser();
-        long userId = (u == null) ? -1 : u.getId();
+        Optional<User> u = userService.getLoggedUser();
+        long userId = (u.isPresent()) ? u.get().getId() : -1;
         Series series = seriesDao.getSeriesById(id, userId).orElseThrow(NotFoundException::new);
         return series;
     }
@@ -98,10 +98,7 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public void followSeries(long seriesId) throws NotFoundException, UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         int result = seriesDao.followSeries(seriesId, user.getId());
         if(result == 0) {
             throw new NotFoundException();
@@ -110,10 +107,7 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public void setViewedEpisode(long episodeId) throws NotFoundException, UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         int result = seriesDao.setViewedEpisode(episodeId, user.getId());
         if(result == 0) {
             throw new NotFoundException();
@@ -121,19 +115,13 @@ public class SeriesServiceImpl implements SeriesService {
     }
     @Override
     public void setViewedSeason(long seasonId) throws UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         seriesDao.setViewedSeason(seasonId,user.getId());
     }
 
     @Override
     public void rateSeries(long seriesId, double rating) throws NotFoundException, UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         int result = seriesDao.rateSeries(seriesId, user.getId(), rating);
         if(result == 0) {
             throw new NotFoundException();
@@ -142,10 +130,7 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public void unviewEpisode(long episodeId) throws NotFoundException, UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         int result = seriesDao.unviewEpisode(user.getId(), episodeId);
         if(result == 0) {
             throw new NotFoundException();
@@ -153,21 +138,12 @@ public class SeriesServiceImpl implements SeriesService {
     }
     @Override
     public void unviewSeason(long seasonId) throws UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
-        if(user == null){
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         seriesDao.unviewSeason(seasonId,user.getId());
     }
     @Override
     public void addSeriesReview(String body, long seriesId) throws NotFoundException, UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         int result = seriesDao.addSeriesReview(body, seriesId, user.getId());
         if(result == 0) {
             throw new NotFoundException();
@@ -176,10 +152,7 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public void likePost(long postId) throws NotFoundException, UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         int result = seriesDao.likePost(user.getId(), postId);
         if(result == 0) {
             throw new NotFoundException();
@@ -188,10 +161,7 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public void unlikePost(long postId) throws NotFoundException, UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         int result = seriesDao.unlikePost(user.getId(), postId);
         if(result == 0) {
             throw new NotFoundException();
@@ -200,10 +170,7 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public void addCommentToPost(long commentPostId, String commentBody) throws NotFoundException, UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         int result = seriesDao.addCommentToPost(commentPostId, commentBody, user.getId());
         if(result == 0) {
             throw new NotFoundException();
@@ -212,10 +179,7 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public void likeComment(long commentId) throws NotFoundException, UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         int result = seriesDao.likeComment(user.getId(), commentId);
         if(result == 0) {
             throw new NotFoundException();
@@ -224,10 +188,7 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public void unlikeComment(long commentId) throws NotFoundException, UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         int result = seriesDao.unlikeComment(user.getId(), commentId);
         if(result == 0) {
             throw new NotFoundException();
@@ -236,11 +197,8 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public void removeComment(long commentId) throws NotFoundException, UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
-        if((!user.getIsAdmin() && seriesDao.getCommentAuthorId(commentId) != user.getId())) {
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        if(!user.getIsAdmin() && seriesDao.getCommentAuthorId(commentId) != user.getId()) {
             throw new UnauthorizedException();
         }
         int result = seriesDao.removeComment(commentId);
@@ -251,11 +209,8 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public void removePost(long postId) throws NotFoundException, UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
-        if((!user.getIsAdmin() && seriesDao.getPostAuthorId(postId) != user.getId())) {
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        if(!user.getIsAdmin() && seriesDao.getPostAuthorId(postId) != user.getId()) {
             throw new UnauthorizedException();
         }
         int result = seriesDao.removePost(postId);
@@ -266,20 +221,14 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public List<Series> getWatchList() throws UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         List<Series> seriesList = seriesDao.getNextToBeSeen(user.getId());
         return seriesList;
     }
 
     @Override
     public List<Series> getRecentlyWatchedList(int number) throws UnauthorizedException, BadRequestException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         if(number <= 0) {
             throw new BadRequestException();
         }
@@ -288,12 +237,9 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Series> getAddedSeries() throws NotFoundException, UnauthorizedException {
-        User user = userService.getLoggedUser();
-        if(user == null) {
-            throw new UnauthorizedException();
-        }
-        List<Series> seriesList = seriesDao.getAddedSeries(user.getId()).orElseThrow(NotFoundException::new);
+    public List<Series> getAddedSeries() throws UnauthorizedException {
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        List<Series> seriesList = seriesDao.getAddedSeries(user.getId()).get();
         return seriesList;
     }
 

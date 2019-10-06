@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByMail(String mail) {
+    public Optional<User> findByMail(String mail) {
         return userDao.getUserByMail(mail);
     }
 
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getLoggedUser() {
+    public Optional<User> getLoggedUser() {
         Authentication authentication = this.authentication;
         if(authentication == null)
             authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -84,20 +84,20 @@ public class UserServiceImpl implements UserService {
             String currentUserMail = authentication.getName();
             return findByMail(currentUserMail);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
     public List<User> getAllUsersExceptLoggedOne() {
-        User loggedUser = getLoggedUser();
+        Optional<User> loggedUser = getLoggedUser();
         List<User> usersList = userDao.getAllUsers();
-        return usersList.stream().filter(user -> user.getId() != loggedUser.getId()).collect(Collectors.toList());
+        return usersList.stream().filter(user -> loggedUser.isPresent() ? (loggedUser.get().getId() == user.getId()) : true).collect(Collectors.toList());
     }
 
     @Override
     public void banUser(long userId) throws UnauthorizedException, NotFoundException {
-        User user = getLoggedUser();
-        if(user == null || !user.getIsAdmin()) throw new UnauthorizedException();
+        User user = getLoggedUser().orElseThrow(UnauthorizedException::new);
+        if(!user.getIsAdmin()) throw new UnauthorizedException();
         int result = userDao.banUser(userId);
         if(result == -1) {
             throw new NotFoundException();
@@ -106,8 +106,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void unbanUser(long userId) throws UnauthorizedException, NotFoundException {
-        User user = getLoggedUser();
-        if(user == null || !user.getIsAdmin()) throw new UnauthorizedException();
+        User user = getLoggedUser().orElseThrow(UnauthorizedException::new);
+        if(!user.getIsAdmin()) throw new UnauthorizedException();
         int result = userDao.unbanUser(userId);
         if(result == -1) {
             throw new NotFoundException();

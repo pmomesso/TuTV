@@ -81,9 +81,10 @@ public class UserDaoJdbcTest {
         //Setup
         insertUser();
         //Ejercitar
-        final User user = userDao.getUserByMail(MAIL);
+        final Optional<User> user = userDao.getUserByMail(MAIL);
         //Asserts
-        assertUser(user);
+        Assert.assertTrue(user.isPresent());
+        assertUser(user.get());
     }
     @Test
     public void checkIfValidationKeyExistsTest(){
@@ -134,17 +135,18 @@ public class UserDaoJdbcTest {
         //Ejercitar
         final Optional<User> user = userDao.getUserById(USER_ID + 1);
         //Asserts
-        Assert.assertTrue(user.isPresent());
-        Assert.assertNull(user);
+        Assert.assertFalse(user.isPresent());
+        Assert.assertEquals(user, Optional.empty());
     }
     @Test
     public void getUserByWrongEmailTest(){
         //Setup
         insertUser();
         //Ejercitar
-        final User user = userDao.getUserByMail(MAIL + "wrong");
+        final Optional<User> user = userDao.getUserByMail(MAIL + "wrong");
         //Asserts
-        Assert.assertNull(user);
+        Assert.assertFalse(user.isPresent());
+        Assert.assertEquals(user, Optional.empty());
     }
     @Test
     public void checkIfWrongValidationKeyExistsTest(){

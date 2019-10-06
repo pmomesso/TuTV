@@ -85,11 +85,12 @@ public class UserServiceImplTest {
         mockUser.setId(USER_ID);
         mockUser.setConfirmationKey(CONFIRMATION_KEY);
         Mockito.when(mockDao.getUserByMail(Mockito.eq(MAIL)))
-                .thenReturn(mockUser);
+                .thenReturn(Optional.of(mockUser));
         //Ejercitar
-        User user = userService.findByMail(MAIL);
+        Optional<User> user = userService.findByMail(MAIL);
         //Asserts
-        assertUser(user);
+        Assert.assertTrue(user.isPresent());
+        assertUser(user.get());
     }
     @Test
     public void getLoggedUserTest(){
@@ -97,20 +98,21 @@ public class UserServiceImplTest {
         User mockUser = new User(USERNAME,PASSWORD,MAIL,IS_ADMIN);
         mockUser.setId(USER_ID);
         mockUser.setConfirmationKey(CONFIRMATION_KEY);
-        Mockito.when(mockDao.getUserByMail(Mockito.eq(MAIL))).thenReturn(mockUser);
+        Mockito.when(mockDao.getUserByMail(Mockito.eq(MAIL))).thenReturn(Optional.of(mockUser));
         Mockito.when(authentication.getName()).thenReturn(MAIL);
         userService.setAuthentication(authentication);
         //Ejercitar
-        User u = userService.getLoggedUser();
+        Optional<User> u = userService.getLoggedUser();
         //Asserts
-        assertUser(u);
+        Assert.assertTrue(u.isPresent());
+        assertUser(u.get());
     }
     @Test
     public void banUserTest(){
         //Setup
         User mockUser = new User(USERNAME,PASSWORD,MAIL,true);
         mockUser.setId(USER_ID);
-        Mockito.when(mockDao.getUserByMail(Mockito.eq(MAIL))).thenReturn(mockUser);
+        Mockito.when(mockDao.getUserByMail(Mockito.eq(MAIL))).thenReturn(Optional.of(mockUser));
         Mockito.when(mockDao.banUser(Mockito.eq(USER_ID))).thenAnswer(invocation -> {
             mockUser.setIsBanned(true);
             return 1;
@@ -132,7 +134,7 @@ public class UserServiceImplTest {
         User mockUser = new User(USERNAME,PASSWORD,MAIL,true);
         mockUser.setId(USER_ID);
         mockUser.setIsBanned(true);
-        Mockito.when(mockDao.getUserByMail(Mockito.eq(MAIL))).thenReturn(mockUser);
+        Mockito.when(mockDao.getUserByMail(Mockito.eq(MAIL))).thenReturn(Optional.of(mockUser));
         Mockito.when(mockDao.unbanUser(Mockito.eq(USER_ID))).thenAnswer(invocation -> {
             mockUser.setIsBanned(false);
             return 1;

@@ -11,6 +11,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 // atributos que quiero entre todos los controllers.. que se agregue a cualquier model and view ese atributo
 
@@ -43,6 +44,7 @@ public class ControllerAdvice {
 
     @ModelAttribute("user")
     public User loggedUser() {
-        return userService.getLoggedUser();
+        Optional<User> loggedUser = userService.getLoggedUser();
+        return loggedUser.isPresent() ? loggedUser.get() : null;
     }
 }
