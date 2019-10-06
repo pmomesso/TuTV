@@ -70,9 +70,7 @@ public class UserServiceImpl implements UserService {
         //    throw new UnauthorizedException();
         //}
         return Either.value(u);
-        //TODO CHEQUEAR QUE NO CONCIDAN MAILS O USERNAMES CON OTROS USUARIOS EXISTENTES
         //TODO ESTO ESTA BIEN? NO PUEDO ENTRAR EN UN LOOP SI NO CAMBIA LA SEMILLA?
-        //Todo: ver de tirar una excepción cuando ya existen usernames o mails...
     }
 
     @Override

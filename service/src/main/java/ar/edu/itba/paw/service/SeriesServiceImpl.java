@@ -283,7 +283,7 @@ public class SeriesServiceImpl implements SeriesService {
         if(number <= 0) {
             throw new BadRequestException();
         }
-        List<Series> seriesList = seriesDao.getRecentlyWatched(user.getId(), number);
+        List<Series> seriesList = seriesDao.getRecentlyWatched(user.getId(), number).orElseThrow(BadRequestException::new);
         return seriesList;
     }
 

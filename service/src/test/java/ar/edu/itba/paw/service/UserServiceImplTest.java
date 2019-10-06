@@ -53,7 +53,7 @@ public class UserServiceImplTest {
         retUser.setId(USER_ID);
         retUser.setConfirmationKey(CONFIRMATION_KEY);
         Mockito.when(mockDao.createUser(Mockito.eq(USERNAME), Mockito.eq(PASSWORD), Mockito.eq(MAIL), Mockito.eq(IS_ADMIN)))
-                .thenReturn(retUser);
+                .thenReturn(Optional.of(retUser));
         Mockito.when(passwordEncoder.encode(Mockito.eq(PASSWORD))).thenReturn(PASSWORD);
         //Ejercitar
         //User u  = userService.createUser(USERNAME, PASSWORD, MAIL,IS_ADMIN);
@@ -67,7 +67,7 @@ public class UserServiceImplTest {
         mockUser.setId(USER_ID);
         mockUser.setConfirmationKey(CONFIRMATION_KEY);
         Mockito.when(mockDao.getUserById(USER_ID))
-                .thenReturn(mockUser);
+                .thenReturn(Optional.of(mockUser));
         //Ejercitar
         User user = null;
         try {

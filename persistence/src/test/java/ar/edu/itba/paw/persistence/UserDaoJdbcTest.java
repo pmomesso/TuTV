@@ -57,22 +57,24 @@ public class UserDaoJdbcTest {
     @Test
     public void createUserTest(){
         //Ejercitar
-        final User u = userDao.createUser(USERNAME, PASSWORD, MAIL,IS_ADMIN);
+        final Optional<User> u = userDao.createUser(USERNAME, PASSWORD, MAIL,IS_ADMIN);
         //Asserts
-        Assert.assertTrue(u.getId() >= 0);
-        Assert.assertEquals(USERNAME,u.getUserName());
-        Assert.assertEquals(PASSWORD,u.getPassword());
-        Assert.assertEquals(MAIL,u.getMailAddress());
-        Assert.assertEquals(IS_ADMIN,u.getIsAdmin());
+        Assert.assertTrue(u.isPresent());
+        Assert.assertTrue(u.get().getId() >= 0);
+        Assert.assertEquals(USERNAME,u.get().getUserName());
+        Assert.assertEquals(PASSWORD,u.get().getPassword());
+        Assert.assertEquals(MAIL,u.get().getMailAddress());
+        Assert.assertEquals(IS_ADMIN,u.get().getIsAdmin());
     }
     @Test
     public void getUserByIdTest(){
         //Setup
         insertUser();
         //Ejercitar
-        final User user = userDao.getUserById(USER_ID);
+        final Optional<User> user = userDao.getUserById(USER_ID);
         //Asserts
-        assertUser(user);
+        Assert.assertTrue(user.isPresent());
+        assertUser(user.get());
     }
     @Test
     public void getUserByEmailTest(){
@@ -130,8 +132,9 @@ public class UserDaoJdbcTest {
         //Setup
         insertUser();
         //Ejercitar
-        final User user = userDao.getUserById(USER_ID + 1);
+        final Optional<User> user = userDao.getUserById(USER_ID + 1);
         //Asserts
+        Assert.assertTrue(user.isPresent());
         Assert.assertNull(user);
     }
     @Test

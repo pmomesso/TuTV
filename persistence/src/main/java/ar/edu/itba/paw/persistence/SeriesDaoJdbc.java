@@ -304,13 +304,17 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     private void addUsersToComments(List<Comment> commentsList) {
         for(Comment comment : commentsList) {
-            comment.setUser(userDao.getUserById(comment.getUserId()));
+            userDao.getUserById(comment.getUserId()).ifPresent(user -> {
+                comment.setUser(user);
+            });
         }
     }
 
     private void addUserToPosts(List<Post> postList) {
         for(Post post : postList) {
-            post.setUser(userDao.getUserById(post.getUserId()));
+            userDao.getUserById(post.getUserId()).ifPresent(user -> {
+                post.setUser(user);
+            });
         }
     }
 
@@ -459,8 +463,8 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     @Override
-    public List<Series> getRecentlyWatched(long userId, int number) {
-        if(!userDao.userExists(userId)) return null;
+    public Optional<List<Series>> getRecentlyWatched(long userId, int number) {
+        if(!userDao.userExists(userId)) return Optional.empty();
         List<Series> seriesList = jdbcTemplate.query("SELECT DISTINCT seriesname, bannerurl, seriesid FROM (SELECT id AS idhasviewed,\n" +
                 "(SELECT name FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS seriesname,\n" +
                 "(SELECT bannerurl FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS bannerurl,\n" +
@@ -474,7 +478,7 @@ public class SeriesDaoJdbc implements SeriesDao {
             ret.setName(resultSet.getString("seriesname"));
             return ret;
         });
-        return seriesList;
+        return Optional.of(seriesList);
     }
 
     @Override

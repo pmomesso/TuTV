@@ -38,7 +38,7 @@ public interface SeriesDao {
 
     List<Series> getNextToBeSeen(long userId);
 
-    List<Series> getRecentlyWatched(long userId, int number);
+    Optional<List<Series>> getRecentlyWatched(long userId, int number);
 
     Optional<List<Series>> getAddedSeries(long userId);
 
