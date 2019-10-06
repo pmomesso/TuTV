@@ -82,7 +82,7 @@ public class UserDaoJdbc implements UserDao {
 	@Override
 	public boolean userNameExists(String userName) {
 		return jdbcTemplate.query("SELECT username FROM users WHERE username = ?", new Object[]{userName},
-				(resultSet) -> { return resultSet.getString("username"); }).isEmpty();
+				(resultSet, i) -> { return resultSet.getString("username"); }).isEmpty();
 	}
 
 	@Override
