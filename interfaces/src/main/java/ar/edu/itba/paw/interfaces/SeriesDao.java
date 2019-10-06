@@ -65,4 +65,8 @@ public interface SeriesDao {
     int removePost(long postId);
 
     int rateSeries(long seriesId,long userId,double rating);
+
+    long getPostAuthorId(long postId);
+
+    long getCommentAuthorId(long commentId);
 }

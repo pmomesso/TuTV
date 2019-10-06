@@ -233,7 +233,7 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public void removeComment(long commentId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser();
-        if(user == null || !user.getIsAdmin()) {
+        if(user == null || seriesDao.getCommentAuthorId(commentId) != user.getId() || !user.getIsAdmin()) {
             throw new UnauthorizedException();
         }
         int result = seriesDao.removeComment(commentId);
@@ -245,7 +245,7 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public void removePost(long postId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser();
-        if(user == null || !user.getIsAdmin()) {
+        if(user == null || seriesDao.getPostAuthorId(postId) != user.getId() || !user.getIsAdmin()) {
             throw new UnauthorizedException();
         }
         int result = seriesDao.removePost(postId);

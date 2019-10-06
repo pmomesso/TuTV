@@ -699,6 +699,26 @@ public class SeriesDaoJdbc implements SeriesDao {
         return numRows;
     }
 
+    @Override
+    public long getPostAuthorId(long postId) {
+        List<Long> idList = jdbcTemplate.query("SELECT userid FROM seriesreview WHERE seriesreview.id = ?", new Object[]{postId},
+                (resultSet, i) -> {
+                    return resultSet.getLong("userid");
+                });
+        if(idList.isEmpty()) return -1;
+        return idList.get(0);
+    }
+
+    @Override
+    public long getCommentAuthorId(long commentId) {
+        List<Long> idList = jdbcTemplate.query("SELECT userid FROM seriesreviewcomments WHERE id = ?", new Object[]{commentId},
+                (resultSet, i) -> {
+                    return resultSet.getLong("userid");
+                });
+        if(idList.isEmpty()) return -1;
+        return idList.get(0);
+    }
+
     private void addPointsToComment(long commentId, int points) {
         jdbcTemplate.update("UPDATE seriesreviewcomments SET numlikes = numlikes + (?) WHERE id = ?", new Object[]{points, commentId});
     }
