@@ -129,9 +129,10 @@ public class SeriesDaoJdbcTest {
         //Setup
         populateDatabase();
         //Ejercitar
-        final Series series = seriesDao.getSeriesById(ID,0);
+        final Optional<Series> series = seriesDao.getSeriesById(ID,0);
         //Asserts
-        assertSeries(series);
+        Assert.assertTrue(series.isPresent());
+        assertSeries(series.get());
     }
 
     @Test
@@ -495,8 +496,9 @@ public class SeriesDaoJdbcTest {
         //Setup
         populateDatabase();
         //Ejercitar
-        final Series series = seriesDao.getSeriesById(ID + 1, -1);
+        final Optional<Series> series = seriesDao.getSeriesById(ID + 1, -1);
         //Asserts
+        Assert.assertTrue(series.isPresent());
         Assert.assertNull(series);
     }
     @Test

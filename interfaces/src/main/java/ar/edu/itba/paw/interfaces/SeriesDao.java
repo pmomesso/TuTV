@@ -4,6 +4,7 @@ import ar.edu.itba.paw.model.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface SeriesDao {
 
@@ -21,7 +22,7 @@ public interface SeriesDao {
 
     Map<Genre, List<Series>> getBestSeriesByGenres(int lowerLimit, int upperLimit);
 
-    Series getSeriesById(long id, long userId);
+    Optional<Series> getSeriesById(long id, long userId);
 
     long createSeries(Integer tvdbid, String seriesName, String seriesDescription, Double userRating, String status, Integer runtime,
                       Integer networkId, String firstAired, String idImdb, String added, String updated, String posterUrl, String bannerUrl, Integer followers);

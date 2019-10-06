@@ -221,20 +221,20 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     @Override
-    public Series getSeriesById(final long id, final long userId) {
+    public Optional<Series> getSeriesById(final long id, final long userId) {
         final List<Series> seriesList = jdbcTemplate.query("SELECT * " +
                 "FROM (series LEFT JOIN hasGenre ON hasgenre.seriesid = series.id LEFT JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.networkid = series.networkid) " +
                 "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname)" +
                 "WHERE id = ?", new Object[]{id}, seriesRowMapper);
         if (seriesList.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         Series series = groupGenres(seriesList).get(0);
         addAllSeasonsToSeries(series, userId);
         addAllPostsToSeries(series, userId);
         series.setFollows(userFollows(id, userId));
         series.setUserRating(getSeriesRating(id,userId));
-        return series;
+        return Optional.of(series);
     }
 
     private Double getSeriesRating(long id, long userId) {

@@ -45,10 +45,7 @@ public class SeriesServiceImpl implements SeriesService {
     public Series getSerieById(long id) throws NotFoundException {
         User u = userService.getLoggedUser();
         long userId = (u == null) ? -1 : u.getId();
-        Series series = seriesDao.getSeriesById(id, userId);
-        if(series == null) {
-            throw new NotFoundException();
-        }
+        Series series = seriesDao.getSeriesById(id, userId).orElseThrow(NotFoundException::new);
         return series;
     }
 
