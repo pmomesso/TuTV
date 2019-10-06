@@ -62,13 +62,11 @@
                                         <c:forEach items="${watchlist}" var="series">
                                             <li>
                                                 <div class="image-crop">
-                                                    <a href="<c:url value="/series?id=${series.id}"/>">
-                                                        <form action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${series.seasons[0].episodeList[0].id}"/>"
-                                                              method="post">
-                                                            <button type="submit" style="font-family: FontAwesome,serif; font-style: normal" class="check-watchlist">&#xf058</button>
-                                                        </form>
-                                                        <img src="<c:url value="${series.posterUrl}"/>" alt="${series.name}">
-                                                    </a>
+                                                    <form action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${series.seasons[0].episodeList[0].id}"/>"
+                                                          method="post">
+                                                        <button type="submit" style="font-family: FontAwesome,serif; font-style: normal" class="check-watchlist">&#xf058</button>
+                                                    </form>
+                                                    <img src="<c:url value="${series.posterUrl}"/>" alt="${series.name}">
                                                     <div class="progress">
                                                         <div class="progress-bar progress-bar-success uncomplete w-100" role="progressbar">
                                                         </div>
