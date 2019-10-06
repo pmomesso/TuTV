@@ -480,15 +480,14 @@ public class SeriesDaoJdbc implements SeriesDao {
     @Override
     public List<Series> getAddedSeries(long userId) {
         if(!userDao.userExists(userId)) return null;
-        List<Series> seriesList = jdbcTemplate.query("SELECT DISTINCT seriesid, " +
-                "(SELECT name FROM series WHERE series.id = seriesid) AS seriesname, " +
-                "(SELECT bannerurl FROM series WHERE series.id = seriesid) AS banner " +
-                "FROM follows " +
-                "WHERE follows.userid = ?", new Object[]{userId}, (resultSet, i) -> {
+        List<Series> seriesList = jdbcTemplate.query("SELECT * " +
+                "FROM follows JOIN series ON follows.seriesid = series.id " +
+                "WHERE userid = ?", new Object[]{userId}, (resultSet, i) -> {
             Series ret = new Series();
-            ret.setName(resultSet.getString("seriesname"));
+            ret.setName(resultSet.getString("name"));
             ret.setId(resultSet.getLong("seriesid"));
-            ret.setBannerUrl(resultSet.getString("banner"));
+            ret.setBannerUrl(resultSet.getString("bannerUrl"));
+            ret.setPosterUrl(resultSet.getString("posterUrl"));
 
             return ret;
         });

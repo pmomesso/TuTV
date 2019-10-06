@@ -51,4 +51,5 @@ public interface SeriesService {
     List<Series> getRecentlyWatchedList(int number) throws UnauthorizedException, BadRequestException, NotFoundException;
 
     List<Series> getAddedSeries() throws NotFoundException, UnauthorizedException;
+    List<Series> getAddedSeries(long userId) throws NotFoundException;
 }

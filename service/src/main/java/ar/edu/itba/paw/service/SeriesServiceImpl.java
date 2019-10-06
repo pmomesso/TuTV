@@ -302,4 +302,13 @@ public class SeriesServiceImpl implements SeriesService {
         }
         return seriesList;
     }
+
+    @Override
+    public List<Series> getAddedSeries(long userId) throws NotFoundException {
+        List<Series> seriesList = seriesDao.getAddedSeries(userId);
+        if(seriesList == null) {
+            throw new NotFoundException();
+        }
+        return seriesList;
+    }
 }

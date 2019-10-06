@@ -203,9 +203,10 @@ public class HelloWorldController {
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public ModelAndView profile(@RequestParam("id") long userId) throws NotFoundException {
 		User u = userService.findById(userId);
-//		TODO manejar error de si no hay user
 		ModelAndView mav = new ModelAndView("profile");
 		mav.addObject("userProfile", u);
+		mav.addObject("hasAvatar", userService.getUserAvatar(userId) != null);
+		mav.addObject("followedSeries",seriesService.getAddedSeries(userId));
 		return mav;
 	}
 
@@ -235,7 +236,7 @@ public class HelloWorldController {
 		return new ModelAndView("redirect:/registrationsuccess");
 	}
 
-	@RequestMapping(value = "/uplodadAvatar", method = RequestMethod.POST)
+	@RequestMapping(value = "/uploadAvatar", method = RequestMethod.POST)
 	public ModelAndView uploadAvatar(@RequestParam("avatar") MultipartFile avatar) throws NotFoundException {
 		User u = userService.getLoggedUser();
 
@@ -245,7 +246,7 @@ public class HelloWorldController {
 			System.out.println("ERROR EN GETBYTES SETAVATAR");
 		}
 
-		return new ModelAndView("redirect:/");
+		return new ModelAndView("redirect:/profile?id="+u.getId());
 	}
 
 	@RequestMapping(value = "/mailconfirm", method = RequestMethod.GET)

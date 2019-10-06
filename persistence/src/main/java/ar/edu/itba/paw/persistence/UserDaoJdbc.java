@@ -89,7 +89,7 @@ public class UserDaoJdbc implements UserDao {
 
 	@Override
 	public int banUser(long userId) {
-		List<Boolean> isBannedList = jdbcTemplate.query("SELECT isbanned FROM users WHERE userid = ?", new Object[]{userId},
+		List<Boolean> isBannedList = jdbcTemplate.query("SELECT isbanned FROM users WHERE id = ?", new Object[]{userId},
 				(resultSet, i) -> {
 					return resultSet.getBoolean("isbanned");
 				});
@@ -100,7 +100,7 @@ public class UserDaoJdbc implements UserDao {
 
 	@Override
 	public int unbanUser(long userId) {
-		List<Boolean> isBannedList = jdbcTemplate.query("SELECT isbanned FROM user WHERE userid = ?", new Object[]{userId},
+		List<Boolean> isBannedList = jdbcTemplate.query("SELECT isbanned FROM users WHERE id = ?", new Object[]{userId},
 				(resultSet, i) -> {
 					return resultSet.getBoolean("isbanned");
 				});
@@ -111,10 +111,8 @@ public class UserDaoJdbc implements UserDao {
 
 	@Override
 	public boolean userExists(long userId) {
-		List<Boolean> userExistsList = jdbcTemplate.query("SELECT id FROM users WHERE id = ?", new Object[]{userId}, (resultSet, i) -> {
-			return resultSet.getBoolean("userExists");
-		});
-		return !userExistsList.isEmpty();
+		Integer count = jdbcTemplate.queryForObject("SELECT count(*) FROM users WHERE id = ?", new Object[]{userId},Integer.class);
+		return count > 0;
 	}
 
 	@Override

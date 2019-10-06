@@ -5,10 +5,11 @@ create table if not exists users
             primary key,
     username varchar(50),
     password varchar(255),
-    mail varchar(32),
+    mail varchar(50) unique,
     confirmation_key varchar(60),
-    isAdmin boolean default false not null,
-    isbanned boolean default false
+    isbanned boolean default false,
+    isadmin boolean default false,
+    avatar binary
 );
 
 create table if not exists genres
@@ -104,7 +105,7 @@ create table if not exists actorroles
             references actor,
     tvdbid integer,
     seriesid integer
-        constraint seriesid_constraint
+        constraint actorroles_seriesid
             references series,
     created date,
     updated date
@@ -120,10 +121,10 @@ create table if not exists seriesreview
     seriesid integer
         constraint seriesreview_series_id_fk
             references series,
+    numlikes integer default 0,
     id identity not null
         constraint seriesreview_pk
-            primary key,
-    numlikes integer default 0
+            primary key
 );
 
 create table if not exists season
@@ -151,7 +152,8 @@ create table if not exists episode
     tvdbid integer not null,
     seasonid integer not null
         constraint episode_season_seasonid_fk
-            references season
+            references season,
+    aired date
 );
 
 create table if not exists follows
@@ -182,10 +184,12 @@ create table if not exists seriesreviewcomments
     body varchar(512),
     userid integer
         constraint seriesreviewcomments_users_id_fk
-            references users,
+            references users
+            on delete cascade,
     postid integer
         constraint seriesreviewcomments_seriesreview_id_fk
-            references seriesreview,
+            references seriesreview
+            on delete cascade,
     numlikes integer default 0
 );
 
@@ -205,10 +209,15 @@ create table if not exists hasviewedepisode
 (
     userid integer
         constraint hasviewedepisode_users_id_fk
-            references users,
+            references users
+            on delete cascade,
     episodeid integer
         constraint hasviewedepisode_episode_id_fk
             references episode
+            on delete cascade,
+    id identity not null
+        constraint hasviewedepisode_pk
+            primary key
 );
 
 create table if not exists haslikedseriesreview
@@ -246,7 +255,8 @@ create table if not exists userseriesrating
             references series
             on delete cascade,
     rating double precision not null,
-    constraint user_series_rating_unique unique (userid,seriesid)
+    constraint user_series_rating_unique
+        unique (userid, seriesid)
 );
 
 
