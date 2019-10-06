@@ -35,11 +35,13 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendConfirmationMail(User u, String token) {
+    public void sendConfirmationMail(User u, String token, String BaseUrl) {
         //TODO chequear que no exista el token, ponerle expiración, algo así?
         String body = "¡Gracias por registrarse a TuTv!<br>" +
-                "<a href='" + token + "'>CLICK AQUI PARA CONFIRMAR CUENTA</a>";
+                "<a href='" + BaseUrl + "/mailconfirm?token=" + token + "'>CLICK AQUI PARA CONFIRMAR CUENTA</a>";
 
         sendMail(u.getMailAddress(), "Confirmar mail", body, true);
     }
+
+
 }

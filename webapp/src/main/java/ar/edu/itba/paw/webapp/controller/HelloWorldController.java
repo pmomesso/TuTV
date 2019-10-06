@@ -17,10 +17,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.print.attribute.standard.Media;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 @Controller
@@ -212,20 +216,23 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public ModelAndView register(@Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors) {
+	public ModelAndView register(HttpServletRequest request, @Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors) {
 		if (errors.hasErrors()) {
 			return showRegister(form);
 		}
 
-		userService.createUser(form.getUsername(), form.getPassword(), form.getMail(),false);
+		final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+
+		userService.createUser(form.getUsername(), form.getPassword(), form.getMail(),false, baseUrl);
 		return new ModelAndView("redirect:/registrationsuccess");
 		// TODO create user y setear admin.
 	}
 
 	@RequestMapping(value = "/uplodadAvatar", method = RequestMethod.POST)
 	public ModelAndView uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
+		User u = userService.getLoggedUser();
 		try {
-			userService.setUserAvatar(1, avatar.getBytes());
+			userService.setUserAvatar(u.getId(), avatar.getBytes());
 		} catch (Exception e) {
 			System.out.println("ERROR EN GETBYTES SETAVATAR");
 		}
@@ -233,7 +240,17 @@ public class HelloWorldController {
 		return new ModelAndView("redirect:/");
 	}
 
-	@RequestMapping(value = "/user/{userId}/avatar", produces = MediaType.IMAGE_JPEG_VALUE)
+	@RequestMapping(value = "/mailconfirm", method = RequestMethod.GET)
+	public ModelAndView showRegister(@RequestParam("token") String token) {
+
+		boolean activated = userService.activateUser(token);
+
+		ModelAndView mav = new ModelAndView("mailconfirm");
+		mav.addObject("activated", activated);
+		return mav;
+	}
+
+	@RequestMapping(value = "/user/{userId}/avatar", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_GIF_VALUE})
 	public @ResponseBody byte[] getImageWithMediaType(@PathVariable long userId) throws IOException {
 		return userService.getUserAvatar(userId);
 	}

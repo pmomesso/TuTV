@@ -6,6 +6,8 @@ public interface UserDao {
 
     User getUserById(long id);
 
+    User getUserByValidationKey(String key);
+
     User getUserByMail(String mail);
 
     User createUser(String userName, String password, String mail,boolean isAdmin);

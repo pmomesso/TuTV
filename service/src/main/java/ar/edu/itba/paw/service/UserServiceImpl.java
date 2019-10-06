@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(String userName, String password, String mail, boolean isAdmin) {
+    public User createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) {
         String hashedPassword = passwordEncoder.encode(password);
         User u = userDao.createUser(userName, hashedPassword, mail, isAdmin);
         //TODO CHEQUEAR QUE NO CONCIDAN MAILS O USERNAMES CON OTROS USUARIOS EXISTENTES
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
         userDao.setValidationKey(u.getId(), token);
 
-        mailService.sendConfirmationMail(u, token);
+        mailService.sendConfirmationMail(u, token, baseUrl);
 
         return u;
     }
@@ -126,5 +126,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public byte[] getUserAvatar(long userId) {
         return userDao.getUserAvatar(userId);
+    }
+
+    @Override
+    public boolean activateUser(String token) {
+        User u = userDao.getUserByValidationKey(token);
+
+        if(u == null)
+            return false;
+
+        userDao.setValidationKey(u.getId(), null);
+        return true;
     }
 }

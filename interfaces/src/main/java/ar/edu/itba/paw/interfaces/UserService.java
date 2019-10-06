@@ -10,7 +10,7 @@ public interface UserService {
 
 	User findByMail(String mail);
 
-	User createUser(String userName, String password, String mail,boolean isAdmin);
+	User createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl);
 
 	User getLoggedUser();
 
@@ -19,4 +19,6 @@ public interface UserService {
     boolean setUserAvatar(long userId, byte[] byteArray);
 	byte[] getUserAvatar(long userId);
     void unbanUser(long userId) throws UnauthorizedException, NotFoundException;
+
+	boolean activateUser(String token);
 }
