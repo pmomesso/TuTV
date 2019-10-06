@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -44,10 +45,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(long id) throws NotFoundException {
-        User ret = userDao.getUserById(id);
-        if(ret == null) {
-            throw new NotFoundException();
-        }
+        User ret = userDao.getUserById(id).orElseThrow(NotFoundException::new);
         return ret;
     }
 
@@ -57,15 +55,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) throws UnauthorizedException {
+    public Optional<User> createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) {
         String hashedPassword = passwordEncoder.encode(password);
-        User u = userDao.createUser(userName, hashedPassword, mail, isAdmin);
-        if(u == null) {
-            throw new UnauthorizedException();
-        }
-        String token = UUID.randomUUID().toString();
-        userDao.setValidationKey(u.getId(), token);
-        mailService.sendConfirmationMail(u, token, baseUrl);
+        Optional<User> u = userDao.createUser(userName, hashedPassword, mail, isAdmin);
+        u.ifPresent(user -> {
+            String token = UUID.randomUUID().toString();
+            userDao.setValidationKey(user.getId(), token);
+            mailService.sendConfirmationMail(user, token, baseUrl);
+        });
+        //if(u == null) {
+        //    throw new UnauthorizedException();
+        //}
         return u;
         //TODO CHEQUEAR QUE NO CONCIDAN MAILS O USERNAMES CON OTROS USUARIOS EXISTENTES
         //TODO ESTO ESTA BIEN? NO PUEDO ENTRAR EN UN LOOP SI NO CAMBIA LA SEMILLA?
