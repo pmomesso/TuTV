@@ -118,7 +118,7 @@
                                                                         <span class="ml-3 viewed-episodes">${viewedEpisodes} / ${fn:length(season.episodeList)}</span>
                                                                     </c:if>
                                                                     <form action="<c:url value="/unviewSeason?seriesId=${series.id}&seasonId=${season.id}"/>"
-                                                                          method="post" onsubmit="confirmAction(event,'<spring:message code="series.sureUnviewSeason"/>')">
+                                                                          method="post">
                                                                         <button type="submit"
                                                                                 style="font-family: FontAwesome,serif; font-style: normal"
                                                                                 class="check-season viewed">&#xf058
@@ -132,7 +132,7 @@
                                                                     <c:if test="${isLogged && series.follows}">
                                                                         <span class="ml-3 viewed-episodes">${viewedEpisodes} / ${fn:length(season.episodeList)}</span>
                                                                         <form action="<c:url value="/viewSeason?seriesId=${series.id}&seasonId=${season.id}"/>"
-                                                                              method="post" onsubmit="confirmAction(event,'<spring:message code="series.sureViewSeason"/>')">
+                                                                              method="post">
                                                                             <button type="submit"
                                                                                     style="font-family: FontAwesome,serif; font-style: normal"
                                                                                     class="check-season">&#xf058
@@ -154,7 +154,7 @@
 <%--                                                                                    TODO fix viewedEpisodes value--%>
                                                                                     <c:set var="viewedEpisodes" value="${viewedEpisodes + 1}" scope="page"/>
                                                                                     <form action="<c:url value="/unviewEpisode?seriesId=${series.id}&episodeId=${episode.id}"/>"
-                                                                                          method="post" onsubmit="confirmAction(event,'<spring:message code="series.sureUnviewEpisode"/>')">
+                                                                                          method="post">
                                                                                         <button type="submit"
                                                                                                 style="font-family: FontAwesome,serif; font-style: normal"
                                                                                                 class="check viewed">&#xf058
