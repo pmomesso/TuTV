@@ -4,22 +4,16 @@ import ar.edu.itba.paw.interfaces.MailService;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.internet.MimeMessage;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -49,51 +43,43 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(long id) throws NotFoundException {
-        User ret = userDao.getUserById(id);
-        if(ret == null) throw new NotFoundException();
-        return ret;
+        return userDao.getUserById(id).orElseThrow(NotFoundException::new);
     }
 
     @Override
-    public User findByMail(String mail) {
+    public Optional<User> findByMail(String mail) {
         return userDao.getUserByMail(mail);
     }
 
     @Override
     public User createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) {
         String hashedPassword = passwordEncoder.encode(password);
-        User u = userDao.createUser(userName, hashedPassword, mail, isAdmin);
+        return userDao.createUser(userName, hashedPassword, mail, isAdmin).map(user -> {
+            String token = UUID.randomUUID().toString();
+            userDao.setValidationKey(user.getId(), token);
+            mailService.sendConfirmationMail(user, token, baseUrl);
+            return user;
+        }).get();
         //TODO CHEQUEAR QUE NO CONCIDAN MAILS O USERNAMES CON OTROS USUARIOS EXISTENTES
-        String token = UUID.randomUUID().toString(); //TODO ESTO ESTA BIEN? NO PUEDO ENTRAR EN UN LOOP SI NO CAMBIA LA SEMILLA?
-
-        userDao.setValidationKey(u.getId(), token);
-
-        mailService.sendConfirmationMail(u, token, baseUrl);
-
-        return u;
+        //TODO ESTO ESTA BIEN? NO PUEDO ENTRAR EN UN LOOP SI NO CAMBIA LA SEMILLA?
     }
 
     @Override
-    public User getLoggedUser() {
+    public Optional<User> getLoggedUser() {
         Authentication authentication = this.authentication;
         if(authentication == null)
             authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserMail = authentication.getName();
-
-            User u = findByMail(currentUserMail);
-
-            return u;
+            return findByMail(currentUserMail);
         }
-
-        return null;
+        return Optional.empty();
     }
 
     @Override
     public void banUser(long userId) throws UnauthorizedException, NotFoundException {
-        User user = getLoggedUser();
-        if(user == null) throw new NotFoundException();
+        User user = getLoggedUser().orElseThrow(NotFoundException::new);
         if(!user.getIsAdmin()) throw new UnauthorizedException();
         int result = userDao.banUser(userId);
         if(result == -1) {
@@ -103,8 +89,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void unbanUser(long userId) throws UnauthorizedException, NotFoundException {
-        User user = getLoggedUser();
-        if(user == null) throw new NotFoundException();
+        User user = getLoggedUser().orElseThrow(NotFoundException::new);
         if(!user.getIsAdmin()) throw new UnauthorizedException();
         int result = userDao.unbanUser(userId);
         if(result == -1) {
@@ -130,12 +115,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean activateUser(String token) {
-        User u = userDao.getUserByValidationKey(token);
+        Optional<User> u = userDao.getUserByValidationKey(token);
 
-        if(u == null)
-            return false;
+        if(!u.isPresent()) return false;
 
-        userDao.setValidationKey(u.getId(), null);
+        userDao.setValidationKey(u.get().getId(), null);
         return true;
     }
 }
