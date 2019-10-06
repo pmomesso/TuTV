@@ -180,9 +180,7 @@ public class HelloWorldController {
     @RequestMapping(value = "/users", method = RequestMethod.GET)
 	public ModelAndView users() {
 		ModelAndView mav = new ModelAndView("users");
-//		TODO pedro change new ArrayList<User>() por lo que devuelva su metodo
-//		TODO solo puede acceder a esta vista un admin.. tirar exception en el metodo si el loggedUser no es admin
-		mav.addObject("users", new ArrayList<User>());
+		mav.addObject("users", userService.getAllUsersExceptLoggedOne());
 		return mav;
 	}
 

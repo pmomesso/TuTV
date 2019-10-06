@@ -55,7 +55,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .failureHandler(new UrlAuthenticationFailureHandler())
                 .and().rememberMe()
                     .rememberMeParameter("rememberme")
-                    .userDetailsService(userDetailsService).key(getEncryptationKey()) // TODO	no	hacer	esto,	crear	una aleatoria	segura	suficiente mente	grande	y	colocarla	bajo	src/main/resources
+                    .userDetailsService(userDetailsService).key(getEncryptationKey())
                     .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
                 .and().logout()
                     .logoutUrl("/logout")
@@ -72,14 +72,12 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     }
 
     private String getEncryptationKey() {
-        return "mysupersecretketthatnobodyknowsabout ";
-
-//        InputStream iStream = getClass()
-//                .getClassLoader().getResourceAsStream("cryptoKey.key");
-//        try {
-//            return IOUtils.toString(iStream, StandardCharsets.UTF_8);
-//        } catch (Exception e) {
-//            throw new RuntimeException();
-//        }
+        InputStream inputStream = getClass()
+                .getClassLoader().getResourceAsStream("remember.key");
+        try {
+            return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
     }
 }
