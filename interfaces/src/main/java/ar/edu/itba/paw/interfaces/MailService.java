@@ -8,5 +8,5 @@ import javax.mail.internet.MimeMessage;
 public interface MailService {
     void sendMail(String to, String subject, String content, boolean containsHTML);
 
-    void sendConfirmationMail(User u, String token, String BaseUrl);
+    void sendConfirmationMail(User u, String BaseUrl);
 }

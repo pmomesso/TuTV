@@ -58,6 +58,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) throws UnauthorizedException {
+        User existing = userDao.getUserByMail(mail);
+        if(existing != null)
+            return null;
         String hashedPassword = passwordEncoder.encode(password);
         User u = userDao.createUser(userName, hashedPassword, mail, isAdmin);
         if(u == null) {
@@ -65,7 +68,8 @@ public class UserServiceImpl implements UserService {
         }
         String token = UUID.randomUUID().toString();
         userDao.setValidationKey(u.getId(), token);
-        mailService.sendConfirmationMail(u, token, baseUrl);
+        u.setConfirmationKey(token);
+        mailService.sendConfirmationMail(u, baseUrl);
         return u;
         //TODO CHEQUEAR QUE NO CONCIDAN MAILS O USERNAMES CON OTROS USUARIOS EXISTENTES
         //TODO ESTO ESTA BIEN? NO PUEDO ENTRAR EN UN LOOP SI NO CAMBIA LA SEMILLA?
