@@ -129,7 +129,6 @@ public class HelloWorldController {
 
 	@RequestMapping(value = "/removePost", method = RequestMethod.POST)
 	public ModelAndView removePost(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId) throws UnauthorizedException, NotFoundException {
-		//Todo: validate that the removal is requested by admin or by comment owner
 		seriesService.removePost(postId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
@@ -157,21 +156,18 @@ public class HelloWorldController {
 
 	@RequestMapping(value = "/removeComment", method = RequestMethod.POST)
 	public ModelAndView removeComment(@RequestParam("seriesId") long seriesId, @RequestParam("postId") long postId, @RequestParam("commentId") long commentId) throws UnauthorizedException, NotFoundException {
-		//Todo: validate that the removal is requested by admin or by comment owner
 		seriesService.removeComment(commentId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 
     @RequestMapping(value = "/banUser", method = RequestMethod.POST)
     public ModelAndView banUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException, NotFoundException {
-		//Todo: validate that the ban is requested by admin.
 		userService.banUser(userId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/unbanUser", method = RequestMethod.POST)
     public ModelAndView unbanUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException, NotFoundException {
-		//Todo: validate that the unban is requested by admin.
 		userService.unbanUser(userId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
     }
@@ -195,7 +191,6 @@ public class HelloWorldController {
     @RequestMapping(value = "/watchlist", method = RequestMethod.GET)
     public ModelAndView watchlist() throws UnauthorizedException {
         ModelAndView mav = new ModelAndView("watchlist");
-//        TODO pedro reemplazar new ArrayList<Season>() por lo que retorne su funcion
         mav.addObject("watchlist", seriesService.getWatchList());
         return mav;
     }
@@ -220,12 +215,10 @@ public class HelloWorldController {
 		if (errors.hasErrors()) {
 			return showRegister(form);
 		}
-
 		final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 
 		userService.createUser(form.getUsername(), form.getPassword(), form.getMail(),false, baseUrl);
 		return new ModelAndView("redirect:/registrationsuccess");
-		// TODO create user y setear admin.
 	}
 
 	@RequestMapping(value = "/uplodadAvatar", method = RequestMethod.POST)
