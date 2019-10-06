@@ -65,7 +65,8 @@ public class UserServiceImpl implements UserService {
         User u = userDao.createUser(userName, hashedPassword, mail, isAdmin).get();
         String token = UUID.randomUUID().toString();
         userDao.setValidationKey(u.getId(), token);
-        mailService.sendConfirmationMail(u, token, baseUrl);
+        u.setConfirmationKey(token);
+        mailService.sendConfirmationMail(u, baseUrl);
         //if(u == null) {
         //    throw new UnauthorizedException();
         //}
