@@ -15,6 +15,10 @@ public interface UserDao {
 
     Optional<User> createUser(String userName, String password, String mail, boolean isAdmin);
 
+    boolean mailIsTaken(String mail);
+
+    boolean userNameExists(String userName);
+
     boolean checkIfValidationKeyExists(String key);
 
     void setValidationKey(long userId, String key);

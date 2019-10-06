@@ -64,7 +64,6 @@ public class UserDaoJdbc implements UserDao {
 
 	@Override
 	public Optional<User> createUser(final String userName, final String password, final String mail, boolean isAdmin) {
-		if(userNameExists(userName) || mailIsTaken(mail)) return Optional.empty();
 		Map<String, Object> args = new HashMap<>();
 		args.put("username", userName);
 		args.put("password", password);
@@ -75,12 +74,14 @@ public class UserDaoJdbc implements UserDao {
 		return getUserById(insertedId);
 	}
 
-	private boolean mailIsTaken(String mail) {
+	@Override
+	public boolean mailIsTaken(String mail) {
 		return jdbcTemplate.query("SELECT mail FROM users WHERE mail = ?", new Object[]{mail},
 				(resultSet) -> { return resultSet.getString("mail"); }).isEmpty();
 	}
 
-	private boolean userNameExists(String userName) {
+	@Override
+	public boolean userNameExists(String userName) {
 		return jdbcTemplate.query("SELECT username FROM users WHERE username = ?", new Object[]{userName},
 				(resultSet) -> { return resultSet.getString("username"); }).isEmpty();
 	}

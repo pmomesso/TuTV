@@ -3,7 +3,9 @@ package ar.edu.itba.paw.service;
 import ar.edu.itba.paw.interfaces.MailService;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.model.either.Either;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.errors.Errors;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,18 +57,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) {
+    public Either<User, Errors> createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) {
+        if(userDao.userNameExists(userName)) return Either.alternative(Errors.USERNAME_ALREADY_IN_USE);
+        if(userDao.mailIsTaken(mail)) return Either.alternative(Errors.MAIL_ALREADY_IN_USE);
+
         String hashedPassword = passwordEncoder.encode(password);
-        Optional<User> u = userDao.createUser(userName, hashedPassword, mail, isAdmin);
-        u.ifPresent(user -> {
-            String token = UUID.randomUUID().toString();
-            userDao.setValidationKey(user.getId(), token);
-            mailService.sendConfirmationMail(user, token, baseUrl);
-        });
+        User u = userDao.createUser(userName, hashedPassword, mail, isAdmin).get();
+        String token = UUID.randomUUID().toString();
+        userDao.setValidationKey(u.getId(), token);
+        mailService.sendConfirmationMail(u, token, baseUrl);
         //if(u == null) {
         //    throw new UnauthorizedException();
         //}
-        return u;
+        return Either.value(u);
         //TODO CHEQUEAR QUE NO CONCIDAN MAILS O USERNAMES CON OTROS USUARIOS EXISTENTES
         //TODO ESTO ESTA BIEN? NO PUEDO ENTRAR EN UN LOOP SI NO CAMBIA LA SEMILLA?
         //Todo: ver de tirar una excepción cuando ya existen usernames o mails...
