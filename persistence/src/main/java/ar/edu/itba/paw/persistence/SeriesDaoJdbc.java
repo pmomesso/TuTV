@@ -478,8 +478,8 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     @Override
-    public List<Series> getAddedSeries(long userId) {
-        if(!userDao.userExists(userId)) return null;
+    public Optional<List<Series>> getAddedSeries(long userId) {
+        if(!userDao.userExists(userId)) return Optional.empty();
         List<Series> seriesList = jdbcTemplate.query("SELECT * " +
                 "FROM follows JOIN series ON follows.seriesid = series.id " +
                 "WHERE userid = ?", new Object[]{userId}, (resultSet, i) -> {
@@ -491,7 +491,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
             return ret;
         });
-        return seriesList;
+        return Optional.of(seriesList);
     }
 
     private List<Series> processToBeSeenList(List<Series> toBeSeenSeriesList) {

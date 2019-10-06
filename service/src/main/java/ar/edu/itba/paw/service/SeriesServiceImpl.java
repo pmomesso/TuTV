@@ -293,19 +293,13 @@ public class SeriesServiceImpl implements SeriesService {
         if(user == null) {
             throw new UnauthorizedException();
         }
-        List<Series> seriesList = seriesDao.getAddedSeries(user.getId());
-        if(seriesList == null) {
-            throw new NotFoundException();
-        }
+        List<Series> seriesList = seriesDao.getAddedSeries(user.getId()).orElseThrow(NotFoundException::new);
         return seriesList;
     }
 
     @Override
     public List<Series> getAddedSeries(long userId) throws NotFoundException {
-        List<Series> seriesList = seriesDao.getAddedSeries(userId);
-        if(seriesList == null) {
-            throw new NotFoundException();
-        }
+        List<Series> seriesList = seriesDao.getAddedSeries(userId).orElseThrow(NotFoundException::new);
         return seriesList;
     }
 }
