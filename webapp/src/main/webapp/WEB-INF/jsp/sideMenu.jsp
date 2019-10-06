@@ -25,22 +25,30 @@
                 <section id="menu">
                     <ul class="menu list-unstyled">
                         <c:if test="${isLogged}">
+                            <c:if test="${user.isAdmin}">
+                                <li class="upcoming ">
+                                    <a id="menu_users" href="<c:url value="/users"/>" title="<spring:message code="index.users"/>">
+                                        <img class="logo logo_icon" src="<c:url value="/resources/img/users.png"/>" alt="<spring:message code="index.users"/>">
+                                        <span><spring:message code="index.users"/></span>
+                                    </a>
+                                </li>
+                            </c:if>
                             <li class="upcoming ">
-                                <a id="menu_upcoming" href="<c:url value="/upcoming"/>" title="Upcoming">
-                                    <img class="logo logo_icon" src="<c:url value="/resources/img/upcoming.png"/>" alt="Upcoming">
+                                <a id="menu_upcoming" href="<c:url value="/upcoming"/>" title="<spring:message code="index.upcoming"/>">
+                                    <img class="logo logo_icon" src="<c:url value="/resources/img/upcoming.png"/>" alt="<spring:message code="index.upcoming"/>">
                                     <span><spring:message code="index.upcoming"/></span>
                                 </a>
                             </li>
                             <li class="home ">
-                                <a id="menu_watchlist" href="<c:url value="/watchlist"/>" title="Watchlist">
-                                    <img class="logo logo_icon" src="<c:url value="/resources/img/watchlist.png"/>" alt="Watchlist">
+                                <a id="menu_watchlist" href="<c:url value="/watchlist"/>" title="<spring:message code="index.watchlist"/>">
+                                    <img class="logo logo_icon" src="<c:url value="/resources/img/watchlist.png"/>" alt="<spring:message code="index.watchlist"/>">
                                     <span><spring:message code="index.watchlist"/></span>
                                 </a>
                             </li>
                         </c:if>
                         <li class="explore">
-                            <a id="menu_home" href="<c:url value="/"/>" title="Explore">
-                                <img class="logo logo_icon" src="<c:url value="/resources/img/explore.png"/>" alt="Explore">
+                            <a id="menu_home" href="<c:url value="/"/>" title="<spring:message code="index.explore"/>">
+                                <img class="logo logo_icon" src="<c:url value="/resources/img/explore.png"/>" alt="<spring:message code="index.explore"/>">
                                 <span><spring:message code="index.explore"/></span>
                             </a>
                         </li>

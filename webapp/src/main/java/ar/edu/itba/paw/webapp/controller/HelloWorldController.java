@@ -172,19 +172,30 @@ public class HelloWorldController {
 		return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
-	@RequestMapping(value = "/profile", method = RequestMethod.GET)
-	public ModelAndView profile(@RequestParam("id") long userId) throws NotFoundException {
-		User u = userService.findById(userId);
-//		TODO manejar error de si no hay user
-		ModelAndView mav = new ModelAndView("profile");
-		mav.addObject("userProfile", u);
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+	public ModelAndView users() {
+		ModelAndView mav = new ModelAndView("users");
+//		TODO pedro change new ArrayList<User>() por lo que devuelva su metodo
+//		TODO solo puede acceder a esta vista un admin.. tirar exception en el metodo si el loggedUser no es admin
+		ArrayList<User> users = new ArrayList<>();
+		User a = new User("pedro","pedro","pedro@gmail.com",false);
+		User b = new User("pablo","pedro","pablo@gmail.com",false);
+		User c = new User("maria","pedro","maria@gmail.com",false);
+		User d = new User("jose","pedro","jose@gmail.com",true);
+		User e = new User("jorge","pedro","jorge@gmail.com",false);
+		users.add(a);
+		users.add(b);
+		users.add(c);
+		users.add(d);
+		users.add(e);
+		mav.addObject("users", users);
 		return mav;
 	}
 
     @RequestMapping(value = "/upcoming", method = RequestMethod.GET)
     public ModelAndView upcoming() {
         ModelAndView mav = new ModelAndView("upcoming");
-//        TODO add upcoming series to model
+//        TODO add upcoming episodes to model
         return mav;
     }
 
@@ -194,6 +205,15 @@ public class HelloWorldController {
         mav.addObject("watchlist", seriesService.getWatchList());
         return mav;
     }
+
+	@RequestMapping(value = "/profile", method = RequestMethod.GET)
+	public ModelAndView profile(@RequestParam("id") long userId) throws NotFoundException {
+		User u = userService.findById(userId);
+//		TODO manejar error de si no hay user
+		ModelAndView mav = new ModelAndView("profile");
+		mav.addObject("userProfile", u);
+		return mav;
+	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public ModelAndView showLogin(@RequestParam(required = false) String error) {
