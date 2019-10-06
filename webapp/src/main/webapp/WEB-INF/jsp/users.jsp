@@ -35,7 +35,8 @@
             <div class="main-block h-100">
                 <div class="main-block-container h-100">
                     <div id="home" class="h-100">
-                        <section id="new-shows" class="h-100">
+                        <section id="new-shows" class="h-100 p-small-0">
+                            <h1 class="no-display-small mb-5"><spring:message code="users.title"/></h1>
                             <div class="container bootstrap snippet">
                                 <div class="row">
                                     <div class="col-lg-12">
@@ -45,10 +46,10 @@
                                                     <table class="table user-list">
                                                         <thead>
                                                         <tr>
-                                                            <th><span>User</span></th>
-                                                            <th class="text-center"><span>Status</span></th>
-                                                            <th><span>Email</span></th>
-                                                            <th>&nbsp;</th>
+                                                            <th><span><spring:message code="users.user"/></span></th>
+                                                            <th class="text-center"><span><spring:message code="users.status"/></span></th>
+                                                            <th><span><spring:message code="users.email"/></span></th>
+                                                            <th><spring:message code="users.action"/></th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
@@ -56,24 +57,24 @@
                                                             <tr>
                                                                 <td>
 <%--                                                                    TODO modify photo--%>
-                                                                    <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
+                                                                    <img src="<c:url value="/resources/img/user.png"/>" class="no-display-small" alt="${currUser.userName}">
                                                                     <a href="<c:url value="/profile?id=${currUser.id}"/>" class="user-link">${currUser.userName}</a>
                                                                     <c:choose>
                                                                         <c:when test="${currUser.isAdmin}">
                                                                             <span class="user-subhead">Admin</span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="user-subhead">Member</span>
+                                                                            <span class="user-subhead"><spring:message code="users.member"/></span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>
                                                                 <td class="text-center">
                                                                     <c:choose>
                                                                         <c:when test="${currUser.isBanned}">
-                                                                            <span class="label label-danger">Banned</span>
+                                                                            <span class="label label-danger"><spring:message code="users.banned"/></span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="label label-success">Active</span>
+                                                                            <span class="label label-success"><spring:message code="users.active"/></span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>
@@ -81,24 +82,22 @@
                                                                     <span>${currUser.mailAddress}</span>
                                                                 </td>
                                                                 <td style="width: 20%;">
-                                                                    <a href="#" class="table-link">
-                                                                    <span class="fa-stack">
-                                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                                        <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
-                                                                    </span>
-                                                                    </a>
-                                                                    <a href="#" class="table-link">
-                                                                    <span class="fa-stack">
-                                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                    </span>
-                                                                    </a>
-                                                                    <a href="#" class="table-link danger">
-                                                                    <span class="fa-stack">
-                                                                        <i class="fa fa-square fa-stack-2x"></i>
-                                                                        <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
-                                                                    </span>
-                                                                    </a>
+                                                                    <c:choose>
+                                                                        <c:when test="${currUser.isBanned}">
+                                                                            <form action="<c:url value="/unbanUser?userId=${currUser.id}"/>"
+                                                                                  method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureUnbanUser"/>')">
+                                                                                <button type="submit" class="remove">
+                                                                                    <img src="<c:url value="/resources/img/unban.png"/>" title="<spring:message code="series.unban"/>" alt="<spring:message code="series.unban"/>">
+                                                                                </button>
+                                                                            </form>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <form action="<c:url value="/banUser?userId=${currUser.id}"/>"
+                                                                                  method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureBanUser"/>')">
+                                                                                <button class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal; font-size: 20px;">&#xf05e</button>
+                                                                            </form>
+                                                                        </c:otherwise>
+                                                                    </c:choose>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>
@@ -110,52 +109,6 @@
                                     </div>
                                 </div>
                             </div>
-<%--                            <c:choose>--%>
-<%--                                <c:when test="${empty watchlist}">--%>
-<%--                                    <div class="container h-100">--%>
-<%--                                        <div class="row justify-content-center h-100">--%>
-<%--                                            <div class="col-lg-8 col-sm-12 align-self-center">--%>
-<%--                                                <div class="text-center">--%>
-<%--                                                    <h2><spring:message code="watchlist.noshows"/></h2>--%>
-<%--                                                </div>--%>
-<%--                                                <div class="text-center">--%>
-<%--                                                    <img src="<c:url value="/resources/img/noshows2.png"/>" alt="<spring:message code="watchlist.Noshows"/>">--%>
-<%--                                                </div>--%>
-<%--                                                <div class="text-center m-4">--%>
-<%--                                                    <h4><spring:message code="watchlist.discover"/></h4>--%>
-<%--                                                </div>--%>
-<%--                                                <div class="text-center m-4">--%>
-<%--                                                    <button class="tutv-button m-4" onclick="window.location.href='<c:url value="/"/>'"><spring:message code="watchlist.explore"/></button>--%>
-<%--                                                </div>--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
-<%--                                    </div>--%>
-<%--                                </c:when>--%>
-<%--                                <c:otherwise>--%>
-<%--                                    <h1><spring:message code="watchlist.watchNext"/></h1>--%>
-<%--                                    <ul class="to-watch-list posters-list list-unstyled list-inline single-row">--%>
-<%--                                        <c:forEach items="${watchlist}" var="series">--%>
-<%--                                            <li>--%>
-<%--                                                <div class="image-crop">--%>
-<%--                                                    <form action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${series.seasons[0].episodeList[0].id}"/>"--%>
-<%--                                                          method="post">--%>
-<%--                                                        <button type="submit" style="font-family: FontAwesome,serif; font-style: normal" class="check-watchlist">&#xf058</button>--%>
-<%--                                                    </form>--%>
-<%--                                                    <img src="<c:url value="${series.posterUrl}"/>" alt="${series.name}">--%>
-<%--                                                    <div class="progress">--%>
-<%--                                                        <div class="progress-bar progress-bar-success uncomplete w-100" role="progressbar">--%>
-<%--                                                        </div>--%>
-<%--                                                    </div>--%>
-<%--                                                </div>--%>
-<%--                                                <div class="episode-details poster-details">--%>
-<%--                                                    <h2><spring:message code="watchlist.season"/><fmt:formatNumber pattern="00" value="${series.seasons[0].seasonNumber}"/>E<fmt:formatNumber pattern="00" value="${series.seasons[0].episodeList[0].episodeNumber}"/></h2>--%>
-<%--                                                    <a class="nb-reviews-link secondary-link" href="<c:url value="/series?id=${series.id}"/>">${series.name}</a>--%>
-<%--                                                </div>--%>
-<%--                                            </li>--%>
-<%--                                        </c:forEach>--%>
-<%--                                    </ul>--%>
-<%--                                </c:otherwise>--%>
-<%--                            </c:choose>--%>
                         </section>
                     </div>
                 </div>

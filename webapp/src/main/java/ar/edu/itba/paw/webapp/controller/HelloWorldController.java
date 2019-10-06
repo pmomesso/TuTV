@@ -161,14 +161,18 @@ public class HelloWorldController {
 	}
 
     @RequestMapping(value = "/banUser", method = RequestMethod.POST)
-    public ModelAndView banUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException, NotFoundException {
+    public ModelAndView banUser(@RequestParam(value = "seriesId", required = false) Long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException, NotFoundException {
 		userService.banUser(userId);
+		if (seriesId == null)
+			return new ModelAndView("redirect:/users");
 		return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
     @RequestMapping(value = "/unbanUser", method = RequestMethod.POST)
-    public ModelAndView unbanUser(@RequestParam("seriesId") long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException, NotFoundException {
+    public ModelAndView unbanUser(@RequestParam(value = "seriesId", required = false) Long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException, NotFoundException {
 		userService.unbanUser(userId);
+		if (seriesId == null)
+			return new ModelAndView("redirect:/users");
 		return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
@@ -177,18 +181,7 @@ public class HelloWorldController {
 		ModelAndView mav = new ModelAndView("users");
 //		TODO pedro change new ArrayList<User>() por lo que devuelva su metodo
 //		TODO solo puede acceder a esta vista un admin.. tirar exception en el metodo si el loggedUser no es admin
-		ArrayList<User> users = new ArrayList<>();
-		User a = new User("pedro","pedro","pedro@gmail.com",false);
-		User b = new User("pablo","pedro","pablo@gmail.com",false);
-		User c = new User("maria","pedro","maria@gmail.com",false);
-		User d = new User("jose","pedro","jose@gmail.com",true);
-		User e = new User("jorge","pedro","jorge@gmail.com",false);
-		users.add(a);
-		users.add(b);
-		users.add(c);
-		users.add(d);
-		users.add(e);
-		mav.addObject("users", users);
+		mav.addObject("users", new ArrayList<User>());
 		return mav;
 	}
 
