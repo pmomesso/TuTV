@@ -4,16 +4,18 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface UserService {
 	User findById(long id) throws NotFoundException;
 
-	Optional<User> findByMail(String mail) throws NotFoundException;
+	User findByMail(String mail);
 
-	User createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl);
+	User createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) throws UnauthorizedException;
 
-	Optional<User> getLoggedUser() throws NotFoundException;
+	User getLoggedUser();
+
+	List<User> getAllUsersExceptLoggedOne();
 
     void banUser(long userId) throws UnauthorizedException, NotFoundException;
 

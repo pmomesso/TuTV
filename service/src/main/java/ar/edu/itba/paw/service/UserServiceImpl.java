@@ -13,8 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Hello world!
@@ -43,29 +44,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(long id) throws NotFoundException {
-        return userDao.getUserById(id).orElseThrow(NotFoundException::new);
+        User ret = userDao.getUserById(id);
+        if(ret == null) {
+            throw new NotFoundException();
+        }
+        return ret;
     }
 
     @Override
-    public Optional<User> findByMail(String mail) {
+    public User findByMail(String mail) {
         return userDao.getUserByMail(mail);
     }
 
     @Override
-    public User createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) {
+    public User createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) throws UnauthorizedException {
         String hashedPassword = passwordEncoder.encode(password);
-        return userDao.createUser(userName, hashedPassword, mail, isAdmin).map(user -> {
-            String token = UUID.randomUUID().toString();
-            userDao.setValidationKey(user.getId(), token);
-            mailService.sendConfirmationMail(user, token, baseUrl);
-            return user;
-        }).get();
+        User u = userDao.createUser(userName, hashedPassword, mail, isAdmin);
+        if(u == null) {
+            throw new UnauthorizedException();
+        }
+        String token = UUID.randomUUID().toString();
+        userDao.setValidationKey(u.getId(), token);
+        mailService.sendConfirmationMail(u, token, baseUrl);
+        return u;
         //TODO CHEQUEAR QUE NO CONCIDAN MAILS O USERNAMES CON OTROS USUARIOS EXISTENTES
         //TODO ESTO ESTA BIEN? NO PUEDO ENTRAR EN UN LOOP SI NO CAMBIA LA SEMILLA?
+        //Todo: ver de tirar una excepción cuando ya existen usernames o mails...
     }
 
     @Override
-    public Optional<User> getLoggedUser() {
+    public User getLoggedUser() {
         Authentication authentication = this.authentication;
         if(authentication == null)
             authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -74,13 +82,20 @@ public class UserServiceImpl implements UserService {
             String currentUserMail = authentication.getName();
             return findByMail(currentUserMail);
         }
-        return Optional.empty();
+        return null;
+    }
+
+    @Override
+    public List<User> getAllUsersExceptLoggedOne() {
+        User loggedUser = getLoggedUser();
+        List<User> usersList = userDao.getAllUsers();
+        return usersList.stream().filter(user -> user.getId() != loggedUser.getId()).collect(Collectors.toList());
     }
 
     @Override
     public void banUser(long userId) throws UnauthorizedException, NotFoundException {
-        User user = getLoggedUser().orElseThrow(NotFoundException::new);
-        if(!user.getIsAdmin()) throw new UnauthorizedException();
+        User user = getLoggedUser();
+        if(user == null || !user.getIsAdmin()) throw new UnauthorizedException();
         int result = userDao.banUser(userId);
         if(result == -1) {
             throw new NotFoundException();
@@ -89,8 +104,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void unbanUser(long userId) throws UnauthorizedException, NotFoundException {
-        User user = getLoggedUser().orElseThrow(NotFoundException::new);
-        if(!user.getIsAdmin()) throw new UnauthorizedException();
+        User user = getLoggedUser();
+        if(user == null || !user.getIsAdmin()) throw new UnauthorizedException();
         int result = userDao.unbanUser(userId);
         if(result == -1) {
             throw new NotFoundException();
@@ -115,11 +130,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean activateUser(String token) {
-        Optional<User> u = userDao.getUserByValidationKey(token);
+        User u = userDao.getUserByValidationKey(token);
 
-        if(!u.isPresent()) return false;
+        if(u == null) return false;
 
-        userDao.setValidationKey(u.get().getId(), null);
+        userDao.setValidationKey(u.getId(), null);
         return true;
     }
 }

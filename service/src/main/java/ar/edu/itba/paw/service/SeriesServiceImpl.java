@@ -102,7 +102,9 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public void followSeries(long seriesId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser();
-        if(user == null) throw new UnauthorizedException();
+        if(user == null) {
+            throw new UnauthorizedException();
+        }
         int result = seriesDao.followSeries(seriesId, user.getId());
         if(result == 0) {
             throw new NotFoundException();
@@ -112,7 +114,9 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public void setViewedEpisode(long episodeId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser();
-        if(user == null) throw new UnauthorizedException();
+        if(user == null) {
+            throw new UnauthorizedException();
+        }
         int result = seriesDao.setViewedEpisode(episodeId, user.getId());
         if(result == 0) {
             throw new NotFoundException();
@@ -120,11 +124,11 @@ public class SeriesServiceImpl implements SeriesService {
     }
     @Override
     public void setViewedSeason(long seasonId) throws UnauthorizedException {
-        User u = userService.getLoggedUser();
-        if(u == null){
+        User user = userService.getLoggedUser();
+        if(user == null) {
             throw new UnauthorizedException();
         }
-        seriesDao.setViewedSeason(seasonId,u.getId());
+        seriesDao.setViewedSeason(seasonId,user.getId());
     }
 
     @Override
@@ -152,11 +156,14 @@ public class SeriesServiceImpl implements SeriesService {
     }
     @Override
     public void unviewSeason(long seasonId) throws UnauthorizedException {
-        User u = userService.getLoggedUser();
-        if(u == null){
+        User user = userService.getLoggedUser();
+        if(user == null) {
             throw new UnauthorizedException();
         }
-        seriesDao.unviewSeason(seasonId,u.getId());
+        if(user == null){
+            throw new UnauthorizedException();
+        }
+        seriesDao.unviewSeason(seasonId,user.getId());
     }
     @Override
     public void addSeriesReview(String body, long seriesId) throws NotFoundException, UnauthorizedException {
@@ -233,7 +240,10 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public void removeComment(long commentId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser();
-        if(user == null || (!user.getIsAdmin() && seriesDao.getCommentAuthorId(commentId) != user.getId())) {
+        if(user == null) {
+            throw new UnauthorizedException();
+        }
+        if((!user.getIsAdmin() && seriesDao.getCommentAuthorId(commentId) != user.getId())) {
             throw new UnauthorizedException();
         }
         int result = seriesDao.removeComment(commentId);
@@ -245,7 +255,10 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public void removePost(long postId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser();
-        if(user == null || (!user.getIsAdmin() && seriesDao.getPostAuthorId(postId) != user.getId())) {
+        if(user == null) {
+            throw new UnauthorizedException();
+        }
+        if((!user.getIsAdmin() && seriesDao.getPostAuthorId(postId) != user.getId())) {
             throw new UnauthorizedException();
         }
         int result = seriesDao.removePost(postId);
@@ -278,10 +291,10 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Series> getAddedSeries() throws NotFoundException {
+    public List<Series> getAddedSeries() throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser();
         if(user == null) {
-            throw new NotFoundException();
+            throw new UnauthorizedException();
         }
         List<Series> seriesList = seriesDao.getAddedSeries(user.getId());
         if(seriesList == null) {

@@ -338,28 +338,6 @@ public class SeriesDaoJdbcTest {
         Assert.assertEquals(1,e.getEpisodeNumber());
     }
     @Test
-    public void getSeriesCommentsByIdTest(){
-        //Setup
-        populateDatabase();
-        insertUser();
-        long commentId = 1;
-        long numLikes = 1;
-        String body = "body";
-        jdbcTemplate.execute(String.format("INSERT INTO seriesreview (id,userid,body,seriesid,numLikes) VALUES (%d,%d,'%s',%d,%d)",
-                commentId,USER_ID,body,ID,numLikes));
-        //Ejercitar
-        List<Comment> comments = seriesDao.getSeriesCommentsById(ID);
-        //Asserts
-        Assert.assertEquals(1,comments.size());
-        Comment c = comments.get(0);
-        Assert.assertEquals(commentId,c.getCommentId());
-        Assert.assertEquals(USER_ID,c.getUserId());
-        Assert.assertEquals(numLikes,c.getPoints());
-        Assert.assertEquals(body,c.getBody());
-        Assert.assertNotNull(c.getUser());
-        Assert.assertEquals(USER_ID,c.getUser().getId());
-    }
-    @Test
     public void getNextToBeSeenTest(){
         //Setup
         populateDatabase();

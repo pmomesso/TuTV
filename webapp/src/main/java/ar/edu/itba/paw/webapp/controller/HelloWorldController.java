@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Controller
 public class HelloWorldController {
@@ -77,13 +78,13 @@ public class HelloWorldController {
     }
 
 	@RequestMapping(value = "/viewSeason", method = RequestMethod.POST)
-	public ModelAndView viewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) throws UnauthorizedException {
+	public ModelAndView viewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) throws UnauthorizedException, NotFoundException {
 		seriesService.setViewedSeason(seasonId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
 
 	@RequestMapping(value = "/unviewSeason", method = RequestMethod.POST)
-	public ModelAndView unviewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) throws UnauthorizedException {
+	public ModelAndView unviewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) throws UnauthorizedException, NotFoundException {
 		seriesService.unviewSeason(seasonId);
 		return new ModelAndView("redirect:/series?id=" + seriesId);
 	}
@@ -193,7 +194,7 @@ public class HelloWorldController {
     }
 
     @RequestMapping(value = "/watchlist", method = RequestMethod.GET)
-    public ModelAndView watchlist() throws UnauthorizedException {
+    public ModelAndView watchlist() throws UnauthorizedException, NotFoundException {
         ModelAndView mav = new ModelAndView("watchlist");
         mav.addObject("watchlist", seriesService.getWatchList());
         return mav;
@@ -224,7 +225,7 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public ModelAndView register(HttpServletRequest request, @Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors) {
+	public ModelAndView register(HttpServletRequest request, @Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors) throws UnauthorizedException {
 		if (errors.hasErrors()) {
 			return showRegister(form);
 		}
@@ -235,8 +236,9 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/uplodadAvatar", method = RequestMethod.POST)
-	public ModelAndView uploadAvatar(@RequestParam("avatar") MultipartFile avatar) {
+	public ModelAndView uploadAvatar(@RequestParam("avatar") MultipartFile avatar) throws NotFoundException {
 		User u = userService.getLoggedUser();
+
 		try {
 			userService.setUserAvatar(u.getId(), avatar.getBytes());
 		} catch (Exception e) {

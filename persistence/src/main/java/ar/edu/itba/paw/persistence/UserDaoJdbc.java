@@ -3,7 +3,6 @@ package ar.edu.itba.paw.persistence;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.sql.DataSource;
 
@@ -43,25 +42,28 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	@Override
-	public Optional<User> getUserById(final long id) {
+	public User getUserById(final long id) {
 		List<User> resultSet = jdbcTemplate.query("SELECT * FROM users WHERE id = ?", new Object[]{id}, rm);
-		return resultSet.stream().findFirst();
+		if(resultSet.isEmpty()) return null;
+		return resultSet.get(0);
 	}
 
 	@Override
-	public Optional<User> getUserByValidationKey(final String key) {
+	public User getUserByValidationKey(final String key) {
 		List<User> resultSet = jdbcTemplate.query("SELECT * FROM users WHERE confirmation_key = ?", new Object[]{key}, rm);
-		return resultSet.stream().findFirst();
+		if(resultSet.isEmpty()) return null;
+		return resultSet.get(0);
 	}
 
 	@Override
-	public Optional<User> getUserByMail(final String mail) {
+	public User getUserByMail(final String mail) {
 		List<User> resultSet = jdbcTemplate.query("SELECT * FROM users WHERE mail = ?", new Object[]{mail}, rm);
-		return resultSet.stream().findFirst();
+		if(resultSet.isEmpty()) return null;
+		return resultSet.get(0);
 	}
 
 	@Override
-	public Optional<User> createUser(final String userName, final String password, final String mail, boolean isAdmin) {
+	public User createUser(final String userName, final String password, final String mail, boolean isAdmin) {
 		Map<String, Object> args = new HashMap<>();
 		args.put("username", userName);
 		args.put("password", password);
@@ -113,6 +115,12 @@ public class UserDaoJdbc implements UserDao {
 			return resultSet.getBoolean("userExists");
 		});
 		return !userExistsList.isEmpty();
+	}
+
+	@Override
+	public List<User> getAllUsers() {
+		List<User> userList = jdbcTemplate.query("SELECT * FROM users", rm);
+		return userList;
 	}
 
 	@Override

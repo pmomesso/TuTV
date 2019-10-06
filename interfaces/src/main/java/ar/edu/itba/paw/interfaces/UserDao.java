@@ -2,17 +2,17 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.model.User;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface UserDao {
 
-    Optional<User> getUserById(long id);
+    User getUserById(long id);
 
-    Optional<User> getUserByValidationKey(String key);
+    User getUserByValidationKey(String key);
 
-    Optional<User> getUserByMail(String mail);
+    User getUserByMail(String mail);
 
-    Optional<User> createUser(String userName, String password, String mail, boolean isAdmin);
+    User createUser(String userName, String password, String mail, boolean isAdmin);
 
     boolean checkIfValidationKeyExists(String key);
 
@@ -25,4 +25,7 @@ public interface UserDao {
     int unbanUser(long userId);
 
     boolean userExists(long userId);
+
+    List<User> getAllUsers();
+
 }

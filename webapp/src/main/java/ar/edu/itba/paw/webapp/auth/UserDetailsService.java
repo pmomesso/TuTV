@@ -20,8 +20,9 @@ public class UserDetailsService implements org.springframework.security.core.use
     public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
         final User user = us.findByMail(mail);
 
-        if(user == null)
+        if(user == null) {
             throw new UsernameNotFoundException("No such user");
+        }
 
         final Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));

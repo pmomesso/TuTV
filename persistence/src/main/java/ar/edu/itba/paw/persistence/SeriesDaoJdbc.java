@@ -303,13 +303,13 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private void addUsersToComments(List<Comment> commentsList) {
-        for (Comment comment : commentsList) {
+        for(Comment comment : commentsList) {
             comment.setUser(userDao.getUserById(comment.getUserId()));
         }
     }
 
     private void addUserToPosts(List<Post> postList) {
-        for (Post post : postList) {
+        for(Post post : postList) {
             post.setUser(userDao.getUserById(post.getUserId()));
         }
     }
@@ -412,21 +412,6 @@ public class SeriesDaoJdbc implements SeriesDao {
         return episodeList;
     }
 
-    @Override
-    public List<Comment> getSeriesCommentsById(long seriesId) {
-        return jdbcTemplate.query("SELECT * " +
-                        "FROM seriesreview " +
-                        "WHERE seriesId = ?",
-                new Object[]{seriesId}, (resultSet, i) -> {
-                    Comment comment = new Comment();
-                    comment.setCommentId(resultSet.getLong("id"));
-                    comment.setUserId(resultSet.getLong("userId"));
-                    comment.setBody(resultSet.getString("body"));
-                    comment.setPoints(resultSet.getInt("numLikes"));
-                    comment.setUser(userDao.getUserById(comment.getUserId()));
-                    return comment;
-                });
-    }
 
     @Override
     public List<Series> getNextToBeSeen(long userId) {

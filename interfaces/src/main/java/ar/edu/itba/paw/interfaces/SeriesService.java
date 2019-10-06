@@ -26,10 +26,10 @@ public interface SeriesService {
     List<Genre> getAllGenres();
     void followSeries(long seriesId) throws NotFoundException, UnauthorizedException;
     void setViewedEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
-    void setViewedSeason(long seasonId) throws UnauthorizedException;
+    void setViewedSeason(long seasonId) throws UnauthorizedException, NotFoundException;
     void rateSeries(long seriesId,double rating) throws NotFoundException, UnauthorizedException;
     void unviewEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
-    void unviewSeason(long seasonId) throws UnauthorizedException;
+    void unviewSeason(long seasonId) throws UnauthorizedException, NotFoundException;
     void addSeriesReview(String body, long seriesId) throws NotFoundException, UnauthorizedException;
 
     void likePost(long postId) throws NotFoundException, UnauthorizedException;
@@ -46,9 +46,9 @@ public interface SeriesService {
     
     void removePost(long postId) throws UnauthorizedException, NotFoundException;
 
-    List<Series> getWatchList() throws UnauthorizedException;
+    List<Series> getWatchList() throws UnauthorizedException, NotFoundException;
 
-    List<Series> getRecentlyWatchedList(int number) throws UnauthorizedException, BadRequestException;
+    List<Series> getRecentlyWatchedList(int number) throws UnauthorizedException, BadRequestException, NotFoundException;
 
-    List<Series> getAddedSeries() throws NotFoundException;
+    List<Series> getAddedSeries() throws NotFoundException, UnauthorizedException;
 }
