@@ -37,6 +37,7 @@
                 <div id="profile">
                     <div class="images">
                         <div class="images-inner"></div>
+                        <img src="<c:url value="/resources/img/background.jpg"/>"/>
                     </div>
                     <div class="profile-nav">
                         <div class="row wrapper">
@@ -76,7 +77,7 @@
                         <h3 class="popover-title"><spring:message code="profile.upload"/> </h3>
                         <div class="popover-content">
                             <h3 class="popover-title" id="avatarMaxSizeError" style="display: none">
-                                <font color="red"><spring:message code="profile.avatarMaxSize"/> 100000KB</font>
+                                <font color="red"><spring:message code="profile.avatarMaxSize"/> 100KB</font>
                             </h3>
                             <form id="avatarFileForm" action="<c:url value="/uploadAvatar"/>" method="post" enctype="multipart/form-data">
                                 <input id="avatarFileInput" type="file" name="avatar" data-max-size="100000">
