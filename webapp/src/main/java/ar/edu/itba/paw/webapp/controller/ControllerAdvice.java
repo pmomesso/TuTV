@@ -40,7 +40,7 @@ public class ControllerAdvice {
     }
 
     @ModelAttribute("isLogged")
-    public boolean isLogged() { return userService.getLoggedUser() != null; }
+    public boolean isLogged() { return userService.getLoggedUser().isPresent(); }
 
     @ModelAttribute("user")
     public User loggedUser() {
