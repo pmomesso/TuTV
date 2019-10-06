@@ -44,7 +44,7 @@
                                                     <h2><spring:message code="watchlist.noshows"/></h2>
                                                 </div>
                                                 <div class="text-center">
-                                                    <img src="<c:url value="/resources/img/noshows2.png"/>" alt="<spring:message code="watchlist.Noshows"/>">
+                                                    <img src="<c:url value="/resources/img/noshows.png"/>" alt="<spring:message code="watchlist.Noshows"/>">
                                                 </div>
                                                 <div class="text-center m-4">
                                                     <h4><spring:message code="watchlist.discover"/></h4>

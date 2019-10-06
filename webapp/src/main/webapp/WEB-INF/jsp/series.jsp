@@ -151,6 +151,7 @@
                                                                         <c:if test="${isLogged && series.follows}">
                                                                             <c:choose>
                                                                                 <c:when test="${episode.viewed}">
+<%--                                                                                    TODO fix viewedEpisodes value--%>
                                                                                     <c:set var="viewedEpisodes" value="${viewedEpisodes + 1}" scope="page"/>
                                                                                     <form action="<c:url value="/unviewEpisode?seriesId=${series.id}&episodeId=${episode.id}"/>"
                                                                                           method="post" onsubmit="confirmAction(event,'<spring:message code="series.sureUnviewEpisode"/>')">
