@@ -255,8 +255,11 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private void setSeasonsViewed(List<Season> seasonList) {
+        int episodesViewed;
         for (Season season : seasonList) {
-            season.setViewed(season.getEpisodeList().stream().allMatch(episode -> episode.isViewed()));
+            episodesViewed = (int)season.getEpisodeList().stream().filter(episode -> episode.isViewed()).count();
+            season.setViewed(season.getEpisodeList().size() == episodesViewed);
+            season.setEpisodesViewed(episodesViewed);
         }
     }
 
@@ -411,6 +414,7 @@ public class SeriesDaoJdbc implements SeriesDao {
             ret.setName(resultSet.getString("name"));
             ret.setViewed(resultSet.getBoolean("viewed"));
             ret.setId(resultSet.getLong("id"));
+            ret.setAiring(resultSet.getDate("aired"));
             return ret;
         });
         return episodeList;

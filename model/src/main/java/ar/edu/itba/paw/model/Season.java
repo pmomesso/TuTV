@@ -9,6 +9,7 @@ public class Season {
     private int seasonNumber;
     private long seasonId;
     private boolean viewed;
+    private int episodesViewed;
     private Rating userRating;
 
     public String getName() {
@@ -61,5 +62,13 @@ public class Season {
 
     public boolean isViewed() {
         return viewed;
+    }
+
+    public int getEpisodesViewed() {
+        return episodesViewed;
+    }
+
+    public void setEpisodesViewed(int episodesViewed) {
+        this.episodesViewed = episodesViewed;
     }
 }

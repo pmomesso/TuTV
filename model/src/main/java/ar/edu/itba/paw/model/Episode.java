@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Episode {
@@ -11,6 +12,7 @@ public class Episode {
     private long id;
     private boolean viewed = false;
     private Rating userRating;
+    private Date airing;
     private List<Comment> episodeComments = new ArrayList<>();
 
     public boolean isViewed() {
@@ -65,5 +67,13 @@ public class Episode {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Date getAiring() {
+        return airing;
+    }
+
+    public void setAiring(Date airing) {
+        this.airing = airing;
     }
 }
