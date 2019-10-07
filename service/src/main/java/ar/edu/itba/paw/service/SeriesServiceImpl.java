@@ -248,4 +248,11 @@ public class SeriesServiceImpl implements SeriesService {
         List<Series> seriesList = seriesDao.getAddedSeries(userId).orElseThrow(NotFoundException::new);
         return seriesList;
     }
+
+    @Override
+    public List<Series> getUpcomingEpisodes() throws UnauthorizedException {
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        List<Series> seriesList = seriesDao.getUpcomingEpisodes(user.getId()).get();
+        return seriesList;
+    }
 }

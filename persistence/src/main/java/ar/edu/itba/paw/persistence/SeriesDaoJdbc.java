@@ -457,7 +457,6 @@ public class SeriesDaoJdbc implements SeriesDao {
 
                     return series;
                 });
-        //Todo: process list
         List<Series> retList = processToBeSeenList(toBeSeenSeriesList);
         return retList;
     }
@@ -496,6 +495,47 @@ public class SeriesDaoJdbc implements SeriesDao {
             return ret;
         });
         return Optional.of(seriesList);
+    }
+
+    @Override
+    public Optional<List<Series>> getUpcomingEpisodes(long userId) {
+        Optional<List<Series>> seriesList = getAddedSeries(userId);
+        seriesList.ifPresent(list -> {
+            list.forEach(series -> {
+                getUpcomingEpisode(series).ifPresent(seasons -> {
+                    series.setSeasons(seasons);
+                });
+            });
+        });
+        return seriesList;
+    }
+
+    private Optional<List<Season>> getUpcomingEpisode(Series series) {
+        List<Season> seasonsList = jdbcTemplate.query("SELECT id AS episodeid,\n" +
+                "name AS episodename,\n" +
+                "numepisode AS episodenumber,\n" +
+                "(SELECT season.seasonnumber FROM season WHERE season.seasonid = episode.seasonid) AS seasonnumber\n" +
+                "FROM episode\n" +
+                "WHERE episode.aired = (SELECT min(episode.aired) FROM episode WHERE current_date < episode.aired)\n" +
+                        "AND episode.seriesid = ?\n" +
+                        "ORDER BY seasonnumber, episodenumber ASC", new Object[]{series.getId()},
+                (resultSet, i) -> {
+            Season season = new Season();
+            season.setId(resultSet.getLong("episodeid"));
+            season.setSeasonNumber(resultSet.getInt("seasonnumber"));
+
+            List<Episode> episodeList = new ArrayList<>(1);
+            Episode episode = new Episode();
+            episode.setId(resultSet.getLong("episodeid"));
+            episode.setName(resultSet.getString("episodename"));
+            episodeList.add(episode);
+            season.setEpisodeList(episodeList);
+            return season;
+        });
+
+        if(seasonsList.isEmpty()) return Optional.empty();
+        return Optional.of(seasonsList);
+
     }
 
     private List<Series> processToBeSeenList(List<Series> toBeSeenSeriesList) {

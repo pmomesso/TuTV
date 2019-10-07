@@ -498,8 +498,8 @@ public class SeriesDaoJdbcTest {
         //Ejercitar
         final Optional<Series> series = seriesDao.getSeriesById(ID + 1, -1);
         //Asserts
-        Assert.assertTrue(series.isPresent());
-        Assert.assertNull(series);
+        Assert.assertFalse(series.isPresent());
+        Assert.assertEquals(series, Optional.empty());
     }
     @Test
     public void getSeriesByWrongGenreId(){

@@ -42,6 +42,8 @@ public interface SeriesDao {
 
     Optional<List<Series>> getAddedSeries(long userId);
 
+    Optional<List<Series>> getUpcomingEpisodes(long userId);
+
     int followSeries(long seriesId, long userId);
     int setViewedEpisode(long episodeId,long userId);
     int setViewedSeason(long seasonId,long userId);

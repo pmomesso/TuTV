@@ -52,4 +52,6 @@ public interface SeriesService {
 
     List<Series> getAddedSeries() throws NotFoundException, UnauthorizedException;
     List<Series> getAddedSeries(long userId) throws NotFoundException;
+    
+    List<Series> getUpcomingEpisodes() throws UnauthorizedException;
 }
