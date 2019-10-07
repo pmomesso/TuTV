@@ -132,11 +132,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean activateUser(String token) {
-        User u = userDao.getUserByValidationKey(token);
-
-        if(u == null) return false;
-
-        userDao.setValidationKey(u.getId(), null);
-        return true;
+        Optional<User> u = userDao.getUserByValidationKey(token);
+        u.ifPresent(user -> userDao.setValidationKey(user.getId(), null));
+        return u.isPresent();
     }
 }

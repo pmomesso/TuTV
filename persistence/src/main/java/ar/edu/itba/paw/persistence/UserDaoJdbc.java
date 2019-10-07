@@ -49,10 +49,9 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	@Override
-	public User getUserByValidationKey(final String key) {
+	public Optional<User> getUserByValidationKey(final String key) {
 		List<User> resultSet = jdbcTemplate.query("SELECT * FROM users WHERE confirmation_key = ?", new Object[]{key}, rm);
-		if(resultSet.isEmpty()) return null;
-		return resultSet.get(0);
+		return resultSet.stream().findFirst();
 	}
 
 	@Override
