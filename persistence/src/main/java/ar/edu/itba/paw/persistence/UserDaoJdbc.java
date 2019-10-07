@@ -145,9 +145,9 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	@Override
-	public byte[] getUserAvatar(long userId) {
-		return (byte[]) jdbcTemplate.queryForObject(
-				"SELECT avatar FROM users WHERE id = ?", new Object[] { userId }, byte[].class);
+	public Optional<byte[]> getUserAvatar(long userId) {
+		return Optional.of(jdbcTemplate.queryForObject(
+				"SELECT avatar FROM users WHERE id = ?", new Object[] { userId }, byte[].class));
 	}
 
 }

@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public byte[] getUserAvatar(long userId) {
+    public Optional<byte[]> getUserAvatar(long userId) {
         return userDao.getUserAvatar(userId);
     }
 

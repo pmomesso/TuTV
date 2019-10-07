@@ -24,7 +24,7 @@ public interface UserService {
 
     boolean updateLoggedUserName(String newUsername) throws NotFoundException;
     boolean setUserAvatar(long userId, byte[] byteArray);
-	byte[] getUserAvatar(long userId);
+	Optional<byte[]> getUserAvatar(long userId);
     void unbanUser(long userId) throws UnauthorizedException, NotFoundException;
 
 	boolean activateUser(String token);

@@ -59,7 +59,7 @@ public class HelloWorldController {
 		final ModelAndView mav = new ModelAndView("series");
 		mav.addObject("series", seriesService.getSerieById(id));
 		Optional<User> u = userService.getLoggedUser();
-		u.ifPresent(user -> mav.addObject("hasAvatar", userService.getUserAvatar(user.getId()) != null));
+		u.ifPresent(user -> mav.addObject("hasAvatar", userService.getUserAvatar(user.getId()).isPresent()));
 		mav.addObject("postForm", postForm);
 		mav.addObject("commentForm", commentForm);
 		return mav;
@@ -198,7 +198,7 @@ public class HelloWorldController {
 		User u = userService.findById(userId);
 		ModelAndView mav = new ModelAndView("profile");
 		mav.addObject("userProfile", u);
-		mav.addObject("hasAvatar", userService.getUserAvatar(userId) != null);
+		mav.addObject("hasAvatar", userService.getUserAvatar(userId).isPresent());
 		mav.addObject("followedSeries",seriesService.getAddedSeries(userId));
 		return mav;
 	}
@@ -253,8 +253,8 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/user/{userId}/avatar", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_GIF_VALUE})
-	public @ResponseBody byte[] getImageWithMediaType(@PathVariable long userId) throws IOException {
-		return userService.getUserAvatar(userId);
+	public @ResponseBody byte[] getImageWithMediaType(@PathVariable long userId) throws IOException, NotFoundException {
+		return userService.getUserAvatar(userId).orElseThrow(NotFoundException::new);
 	}
 
 	@RequestMapping(value = "/user/update", method = RequestMethod.POST)
