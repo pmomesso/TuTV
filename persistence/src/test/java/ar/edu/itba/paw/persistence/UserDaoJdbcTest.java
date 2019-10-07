@@ -8,13 +8,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -27,11 +31,13 @@ public class UserDaoJdbcTest {
     private static final String MAIL = "mail";
     private static final String CONFIRMATION_KEY = "confirmation_key";
     private static final boolean IS_ADMIN = true;
+    private static final String AVATAR = "X'FFD91A5817BBF84A'";
     @Autowired
     private DataSource ds;
     @Autowired
     private UserDaoJdbc userDao;
     private JdbcTemplate jdbcTemplate;
+    private SimpleJdbcInsert jdbcInsert;
 
     private void assertUser(User user){
         Assert.assertNotNull(user);
@@ -43,12 +49,21 @@ public class UserDaoJdbcTest {
         Assert.assertEquals(CONFIRMATION_KEY,user.getConfirmationKey());
     }
     private void insertUser(){
-        jdbcTemplate.execute(String.format("INSERT INTO users(id, username, password, mail,confirmation_key,isAdmin) VALUES( %d,'%s','%s','%s','%s',%b)",
-                USER_ID, USERNAME, PASSWORD, MAIL,CONFIRMATION_KEY,IS_ADMIN));
+        Map<String,Object> args = new HashMap<>();
+        args.put("id",USER_ID);
+        args.put("username", USERNAME);
+        args.put("password", PASSWORD);
+        args.put("mail", MAIL);
+        args.put("isAdmin",IS_ADMIN);
+        args.put("confirmation_key",CONFIRMATION_KEY);
+        //TODO
+        //args.put("avatar",AVATAR);
+        jdbcInsert.execute(args);
     }
     @Before
     public void setUp(){
         jdbcTemplate = new JdbcTemplate(ds);
+        jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("users");
     }
     @After
     public void clearDatabase() {
@@ -77,6 +92,17 @@ public class UserDaoJdbcTest {
         assertUser(user.get());
     }
     @Test
+    public void getUserByValidationKeyTest(){
+        //Setup
+        insertUser();
+        //Ejercitar
+        final Optional<User> user = userDao.getUserByValidationKey(CONFIRMATION_KEY);
+        //Asserts
+        Assert.assertTrue(user.isPresent());
+        assertUser(user.get());
+
+    }
+    @Test
     public void getUserByEmailTest(){
         //Setup
         insertUser();
@@ -85,6 +111,24 @@ public class UserDaoJdbcTest {
         //Asserts
         Assert.assertTrue(user.isPresent());
         assertUser(user.get());
+    }
+    @Test
+    public void mailIsTakenTest(){
+        //Setup
+        insertUser();
+        //Ejercitar
+        boolean taken = userDao.mailIsTaken(MAIL);
+        //Asserts
+        Assert.assertTrue(taken);
+    }
+    @Test
+    public void userNameExistsTest(){
+        //Setup
+        insertUser();
+        //Ejercitar
+        boolean taken = userDao.userNameExists(USERNAME);
+        //Asserts
+        Assert.assertTrue(taken);
     }
     @Test
     public void checkIfValidationKeyExistsTest(){
@@ -112,7 +156,7 @@ public class UserDaoJdbcTest {
         insertUser();
         jdbcTemplate.update("UPDATE users SET isBanned = false WHERE id = ?",USER_ID);
         //Ejercitar
-        userDao.banUser(USER_ID);
+        int result = userDao.banUser(USER_ID);
         //Asserts
         Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"users",
                 String.format("id=%d AND isBanned=true",USER_ID)));
@@ -123,10 +167,22 @@ public class UserDaoJdbcTest {
         insertUser();
         jdbcTemplate.update("UPDATE users SET isBanned = true WHERE id = ?",USER_ID);
         //Ejercitar
-        userDao.unbanUser(USER_ID);
+        int result = userDao.unbanUser(USER_ID);
         //Asserts
         Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"users",
                 String.format("id=%d AND isBanned=false",USER_ID)));
+    }
+    @Test
+    //TODO
+    public void getUserAvatarTest(){
+        /*
+        //Setup
+        insertUser();
+        //Ejercitar
+        byte[] avatar = userDao.getUserAvatar(USER_ID);
+        //Asserts
+        Assert.assertEquals(AVATAR.getBytes(),avatar);
+        */
     }
     @Test
     public void getUserByWrongIdTest(){
@@ -163,8 +219,9 @@ public class UserDaoJdbcTest {
         insertUser();
         jdbcTemplate.update("UPDATE users SET isBanned = false WHERE id = ?",USER_ID);
         //Ejercitar
-        userDao.banUser(USER_ID + 1);
+        int result = userDao.banUser(USER_ID + 1);
         //Asserts
+        Assert.assertEquals(-1,result);
         Assert.assertEquals(0,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"users",
                 String.format("id=%d AND isBanned=true",USER_ID)));
     }
@@ -174,8 +231,9 @@ public class UserDaoJdbcTest {
         insertUser();
         jdbcTemplate.update("UPDATE users SET isBanned = true WHERE id = ?",USER_ID);
         //Ejercitar
-        userDao.unbanUser(USER_ID + 1);
+        int result = userDao.unbanUser(USER_ID + 1);
         //Asserts
+        Assert.assertEquals(-1,result);
         Assert.assertEquals(0,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"users",
                 String.format("id=%d AND isBanned=false",USER_ID)));
     }

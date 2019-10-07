@@ -9,7 +9,7 @@ create table if not exists users
     confirmation_key varchar(60),
     isbanned boolean default false,
     isadmin boolean default false,
-    avatar binary
+    avatar blob
 );
 
 create table if not exists genres

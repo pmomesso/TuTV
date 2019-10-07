@@ -9,7 +9,7 @@ public interface UserDao {
 
     Optional<User> getUserById(long id);
 
-    User getUserByValidationKey(String key);
+    Optional<User> getUserByValidationKey(String key);
 
     Optional<User> getUserByMail(String mail);
 

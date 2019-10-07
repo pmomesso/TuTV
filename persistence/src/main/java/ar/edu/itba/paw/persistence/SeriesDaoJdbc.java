@@ -424,7 +424,7 @@ public class SeriesDaoJdbc implements SeriesDao {
                         "episode.numepisode AS episodenumber,\n" +
                         "(SELECT series.id FROM series WHERE series.id = episode.seriesid) AS seriesid,\n" +
                         "(SELECT series.name FROM series WHERE series.id = episode.seriesid) AS seriesname,\n" +
-                        "(SELECT series.bannerurl FROM series WHERE series.id = episode.seriesid) AS seriesbannerurl,\n" +
+                        "(SELECT series.posterurl FROM series WHERE series.id = episode.seriesid) AS seriesposterurl,\n" +
                         "(SELECT season.seasonid FROM season WHERE season.seasonid = episode.seasonid) AS seasonid,\n" +
                         "(SELECT season.seasonnumber FROM season WHERE season.seasonid = episode.seasonid) AS seasonnumber\n" +
                         "FROM episode\n" +
@@ -437,7 +437,7 @@ public class SeriesDaoJdbc implements SeriesDao {
                     Series series = new Series();
                     series.setName(resultSet.getString("seriesname"));
                     series.setId(resultSet.getLong("seriesid"));
-                    series.setBannerUrl(resultSet.getString("seriesbannerurl"));
+                    series.setPosterUrl(resultSet.getString("seriesposterurl"));
 
                     List<Season> auxSeasonList = new ArrayList<>(1);
                     Season season = new Season();
