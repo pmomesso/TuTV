@@ -512,12 +512,12 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     private Optional<List<Season>> getUpcomingEpisode(Series series) {
         List<Season> seasonsList = jdbcTemplate.query("SELECT id AS episodeid,\n" +
-                "name AS episodename,\n" +
-                "numepisode AS episodenumber,\n" +
-                "(SELECT season.seasonnumber FROM season WHERE season.seasonid = episode.seasonid) AS seasonnumber\n" +
-                "FROM episode\n" +
-                "WHERE episode.aired = (SELECT min(episode.aired) FROM episode WHERE current_date < episode.aired)\n" +
-                        "AND episode.seriesid = ?\n" +
+                        "name AS episodename,\n" +
+                        "numepisode AS episodenumber,\n" +
+                        "(SELECT season.seasonnumber FROM season WHERE season.seasonid = e1.seasonid) AS seasonnumber\n" +
+                        "FROM episode AS e1\n" +
+                        "WHERE e1.aired = (SELECT min(episode.aired) FROM episode WHERE current_date < episode.aired AND episode.seriesid = e1.seriesid)\n" +
+                        "AND e1.seriesid = ?\n" +
                         "ORDER BY seasonnumber, episodenumber ASC", new Object[]{series.getId()},
                 (resultSet, i) -> {
             Season season = new Season();
