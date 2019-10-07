@@ -62,7 +62,7 @@
             this.seriesIdTo.Name = "seriesIdTo";
             this.seriesIdTo.Size = new System.Drawing.Size(176, 29);
             this.seriesIdTo.TabIndex = 8;
-            this.seriesIdTo.Text = "305290";
+            this.seriesIdTo.Text = "66732";
             this.seriesIdTo.ValidatingType = typeof(int);
             // 
             // label1
@@ -81,7 +81,7 @@
             this.seriesIdFrom.Name = "seriesIdFrom";
             this.seriesIdFrom.Size = new System.Drawing.Size(176, 29);
             this.seriesIdFrom.TabIndex = 6;
-            this.seriesIdFrom.Text = "305288";
+            this.seriesIdFrom.Text = "66732";
             this.seriesIdFrom.ValidatingType = typeof(int);
             // 
             // button1

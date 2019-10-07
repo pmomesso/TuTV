@@ -257,7 +257,7 @@ namespace ApiCrawlerTuTV {
 
                 cmd.Parameters.AddWithValue("status",       s.status);
                 cmd.Parameters.AddWithValue("runtime",      s.runningTime);
-                cmd.Parameters.AddWithValue("networkid",    s.network.Id);
+                cmd.Parameters.AddWithValue("networkid",    s.network.id);
                 cmd.Parameters.AddWithValue("id_imdb",      s.imbdId);
 
                 if (s.firstAired != null)

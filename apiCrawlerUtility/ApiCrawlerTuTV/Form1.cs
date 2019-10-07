@@ -15,7 +15,36 @@ namespace ApiCrawlerTuTV {
             InitializeComponent();
         }
 
-        private void Crawl() {
+        private void CrawlMovieDb() {
+            int seriesIdFromNum = int.Parse(seriesIdFrom.Text);
+            int seriesIdToNum = int.Parse(seriesIdTo.Text);
+
+            if (seriesIdToNum < seriesIdFromNum) {
+                MessageBox.Show("Argumentos inválidos.");
+                goto ThisIsTheEnd;
+            }
+
+            groupBox1.Enabled = false;
+            groupBox1.Text = "Intentando obtener " + (seriesIdToNum - seriesIdFromNum + 1) + " series de TheTvDB...";
+
+            //Creawleo la data de la API y la transformo en Serie
+            TheMovieDbCrawler crawler = new TheMovieDbCrawler("c52eb986fe3d20e3eb11c982d5eab213");
+
+            //Listado de géneros
+            HashSet<Genre> gl = new HashSet<Genre>();
+            //Listado de networks
+            HashSet<Network> nl = new HashSet<Network>();
+            //Listado de actores
+            HashSet<Actor> al = new HashSet<Actor>();
+            //Listado de series
+            List<Series> l = crawler.GetSeriesListAsync(seriesIdFromNum, seriesIdToNum, gl, nl, al).Result;
+
+        ThisIsTheEnd:
+            groupBox1.ResetText();
+            groupBox1.Enabled = true;
+        }
+
+        private void CrawlTvDb() {
 
             int seriesIdFromNum = int.Parse(seriesIdFrom.Text);
             int seriesIdToNum = int.Parse(seriesIdTo.Text);
@@ -29,7 +58,7 @@ namespace ApiCrawlerTuTV {
             groupBox1.Text = "Intentando obtener " + (seriesIdToNum - seriesIdFromNum + 1) + " series de TheTvDB...";
 
             //Creawleo la data de la API y la transformo en Serie
-            ApiCrawler crawler = new ApiCrawler(
+            TheTvDbCrawler crawler = new TheTvDbCrawler(
                 "8AN5KC2OL40JPSCD", 
                 "holanico119d1", 
                 "8NQWA8WSGZX78J4Q", 
@@ -53,7 +82,7 @@ namespace ApiCrawlerTuTV {
             groupBox1.Text = "Actualizando canales...";
             //Inserto canales
             foreach (Network n in nl)
-                n.Id = dbm.InsertOrUpdateNetwork(n);
+                n.id = dbm.InsertOrUpdateNetwork(n);
 
             int count = 1;
 
@@ -86,7 +115,8 @@ namespace ApiCrawlerTuTV {
         }
 
         private void Button1_Click_1(object sender, EventArgs e) {
-            Crawl();
+            CrawlMovieDb();
+            //CrawlTvDb();
         }
     }
 }

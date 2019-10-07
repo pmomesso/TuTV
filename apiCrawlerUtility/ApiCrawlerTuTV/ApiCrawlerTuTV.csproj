@@ -60,6 +60,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -73,7 +74,9 @@
   <ItemGroup>
     <Compile Include="DatabaseManager.cs" />
     <Compile Include="Model\ActorRole.cs" />
-    <Compile Include="ApiCrawler.cs" />
+    <Compile Include="Model\TheMovieDb\TheMovieDbSeries.cs" />
+    <Compile Include="TheMovieDbCrawler.cs" />
+    <Compile Include="TheTvDbCrawler.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,11 +85,11 @@
     </Compile>
     <Compile Include="Model\Actor.cs" />
     <Compile Include="Model\Episode.cs" />
-    <Compile Include="Model\ExternalApi\Authentication.cs" />
-    <Compile Include="Model\ExternalApi\IMDbSeries.cs" />
-    <Compile Include="Model\ExternalApi\TheTvDbActor.cs" />
-    <Compile Include="Model\ExternalApi\TheTvDbEpisode.cs" />
-    <Compile Include="Model\ExternalApi\TheTvDbSeries.cs" />
+    <Compile Include="Model\TheTvDb\Authentication.cs" />
+    <Compile Include="Model\IMDb\IMDbSeries.cs" />
+    <Compile Include="Model\TheTvDb\TheTvDbActor.cs" />
+    <Compile Include="Model\TheTvDb\TheTvDbEpisode.cs" />
+    <Compile Include="Model\TheTvDb\TheTvDbSeries.cs" />
     <Compile Include="Model\Genre.cs" />
     <Compile Include="Model\Network.cs" />
     <Compile Include="Model\Season.cs" />
@@ -119,5 +122,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -6,13 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ApiCrawlerTuTV {
-    public class ActorRole {
+    public class ActorRole : IComparable<ActorRole> {
         public int id { get; set; }
         public int tvDbId { get; set; }
         public String role { get; set; }
         public Actor actor { get; set; }
         public Series series { get; set; }
         public string imageUrl { get; set; }
+
+        public int CompareTo(ActorRole other) {
+            return this.id.CompareTo(other.id);
+        }
     }
 
 }

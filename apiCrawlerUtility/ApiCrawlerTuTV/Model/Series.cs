@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ApiCrawlerTuTV.Model {
-    public class Series {
+    public class Series : IComparable<Series> {
         public int id { get; set; }
         public String seriesName { get; set; }
         public int tvDbId { get; set; }
@@ -22,7 +22,12 @@ namespace ApiCrawlerTuTV.Model {
         public List<ActorRole> actorList { get; set; }
         public List<Genre> genresList { get; set; }
         public List<Season> seasonList { get; set; }
+        public List<Network> networkList { get; set; }
         public string bannerUrl { get; set; }
         public string posterUrl { get; set; }
+
+        public int CompareTo(Series other) {
+            return this.id.CompareTo(other.id);
+        }
     }
 }
