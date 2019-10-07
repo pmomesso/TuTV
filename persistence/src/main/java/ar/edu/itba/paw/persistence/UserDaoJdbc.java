@@ -75,13 +75,13 @@ public class UserDaoJdbc implements UserDao {
 
 	@Override
 	public boolean mailIsTaken(String mail) {
-		return jdbcTemplate.query("SELECT mail FROM users WHERE mail = ?", new Object[]{mail},
-				(resultSet) -> { return resultSet.getString("mail"); }).isEmpty();
+		return !jdbcTemplate.query("SELECT mail FROM users WHERE mail = ?", new Object[]{mail},
+				(resultSet, i) -> { return resultSet.getString("mail"); }).isEmpty();
 	}
 
 	@Override
 	public boolean userNameExists(String userName) {
-		return jdbcTemplate.query("SELECT username FROM users WHERE username = ?", new Object[]{userName},
+		return !jdbcTemplate.query("SELECT username FROM users WHERE username = ?", new Object[]{userName},
 				(resultSet, i) -> { return resultSet.getString("username"); }).isEmpty();
 	}
 
