@@ -19,6 +19,8 @@ public interface UserDao {
 
     boolean userNameExists(String userName);
 
+    int updateUserName(long userId, String newUserName);
+
     boolean checkIfValidationKeyExists(String key);
 
     void setValidationKey(long userId, String key);

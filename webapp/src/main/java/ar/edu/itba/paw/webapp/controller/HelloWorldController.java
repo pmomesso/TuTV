@@ -5,10 +5,7 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
-import ar.edu.itba.paw.webapp.form.CommentForm;
-import ar.edu.itba.paw.webapp.form.PostForm;
-import ar.edu.itba.paw.webapp.form.SearchForm;
-import ar.edu.itba.paw.webapp.form.UserForm;
+import ar.edu.itba.paw.webapp.form.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -61,9 +59,7 @@ public class HelloWorldController {
 		final ModelAndView mav = new ModelAndView("series");
 		mav.addObject("series", seriesService.getSerieById(id));
 		Optional<User> u = userService.getLoggedUser();
-		if (u.isPresent()) {
-			mav.addObject("hasAvatar", userService.getUserAvatar(u.get().getId()) != null);
-		}
+		u.ifPresent(user -> mav.addObject("hasAvatar", userService.getUserAvatar(user.getId()) != null));
 		mav.addObject("postForm", postForm);
 		mav.addObject("commentForm", commentForm);
 		return mav;
@@ -197,7 +193,8 @@ public class HelloWorldController {
     }
 
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
-	public ModelAndView profile(@RequestParam("id") long userId) throws NotFoundException {
+	public ModelAndView profile(@RequestParam("id") long userId,@ModelAttribute("updateUserForm") final UpdateUserForm form) throws NotFoundException {
+
 		User u = userService.findById(userId);
 		ModelAndView mav = new ModelAndView("profile");
 		mav.addObject("userProfile", u);
@@ -260,4 +257,22 @@ public class HelloWorldController {
 		return userService.getUserAvatar(userId);
 	}
 
+	@RequestMapping(value = "/user/update", method = RequestMethod.POST)
+	public ModelAndView updateUsername(@Valid @ModelAttribute("updateUserForm") final UpdateUserForm form, final BindingResult errors) throws UnauthorizedException, NotFoundException {
+		User u = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+		if(errors.hasErrors()){
+			ModelAndView mav = profile(u.getId(),form);
+			mav.addObject("formErrors",true);
+			return mav;
+		}
+		boolean updated = userService.updateLoggedUserName(form.getUsername());
+		if(updated){
+			return new ModelAndView("redirect:/profile?id="+u.getId());
+		}
+		else{
+			ModelAndView mav = profile(u.getId(),form);
+			mav.addObject("exists",true);
+			return mav;
+		}
+	}
 }

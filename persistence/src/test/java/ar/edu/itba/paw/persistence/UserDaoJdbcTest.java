@@ -140,6 +140,17 @@ public class UserDaoJdbcTest {
         Assert.assertTrue(exists);
     }
     @Test
+    public void setUsernameTest() {
+        //Setup
+        insertUser();
+        final String newUsername = USERNAME + "new";
+        //Ejercitar
+        int result = userDao.updateUserName(USER_ID,newUsername);
+        //Asserts
+        Assert.assertEquals(1,result);
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"users",String.format("username='%s'",newUsername)));
+    }
+    @Test
     public void setValidationKeyTest(){
         //Setup
         insertUser();

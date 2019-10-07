@@ -105,6 +105,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean updateLoggedUserName(String newUsername) throws NotFoundException {
+        User user = getLoggedUser().orElseThrow(NotFoundException::new);
+        int result = userDao.updateUserName(user.getId(),newUsername);
+        return result == 1;
+    }
+
+    @Override
     public void unbanUser(long userId) throws UnauthorizedException, NotFoundException {
         User user = getLoggedUser().orElseThrow(UnauthorizedException::new);
         if(!user.getIsAdmin()) throw new UnauthorizedException();

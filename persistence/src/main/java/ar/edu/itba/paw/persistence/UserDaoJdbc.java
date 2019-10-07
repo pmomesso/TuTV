@@ -85,6 +85,14 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	@Override
+	public int updateUserName(long userId, String newUserName) {
+		if(userNameExists(newUserName)){
+			return 0;
+		}
+		return jdbcTemplate.update("UPDATE users SET username = ? WHERE id = ?",newUserName,userId);
+	}
+
+	@Override
 	public boolean checkIfValidationKeyExists(String key) {
 		Integer count = jdbcTemplate.queryForObject(
 				"SELECT count(*) FROM users WHERE confirmation_key = ?", new Object[] { key }, Integer.class);

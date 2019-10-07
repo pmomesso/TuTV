@@ -19,4 +19,16 @@ $(document).ready(function() {
             return false;
         }
     });
+    $('#followedLink').on('click',function() {
+        $('#followedTab').addClass('active');
+        $('#tab-shows').addClass('active');
+        $('#informationTab').removeClass('active');
+        $('#tab-information').removeClass('active');
+    });
+    $('#informationLink').on('click',function() {
+        $('#informationTab').addClass('active');
+        $('#tab-information').addClass('active');
+        $('#followedTab').removeClass('active');
+        $('#tab-shows').removeClass('active');
+    });
 });

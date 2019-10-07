@@ -1,5 +1,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
@@ -25,7 +26,7 @@
     <script src="<c:url value="/resources/js/bootstrap.js"/>"></script>
     <script src="<c:url value="/resources/js/navigator.js"/>"></script>
     <c:if test="${user.id == userProfile.id}">
-        <script src="<c:url value="/resources/js/uploadAvatar.js"/>"></script>
+        <script src="<c:url value="/resources/js/profile.js"/>"></script>
     </c:if>
 </head>
 <body id="container" class="">
@@ -64,11 +65,18 @@
                                 </h1>
                             </div>
                             <ul class="nav nav-tabs" role="tab">
-                                <li role="presentation" class="tab-shows active">
-                                    <a href="#tab-shows" data-toggle="tab" aria-controls="tab-shows" aria-expanded="true">
+                                <li id="followedTab" role="presentation" class="tab-shows <c:if test="${!exists && empty formErrors}">active</c:if>">
+                                    <a id="followedLink" href="#tab-shows" data-toggle="tab" aria-controls="tab-shows" aria-expanded="true">
                                         <div class="label"><spring:message code="profile.followed"/></div>
                                     </a>
                                 </li>
+                                <c:if test="${user.id == userProfile.id}">
+                                <li id="informationTab" role="presentation" class="tab-shows <c:if test="${exists || not empty formErrors}">active</c:if>">
+                                    <a id="informationLink"  href="#tab-information" data-toggle="tab" aria-controls="tab-information" aria-expanded="true">
+                                        <div class="label"><spring:message code="profile.information"/></div>
+                                    </a>
+                                </li>
+                                </c:if>
                             </ul>
                         </div>
                     </div>
@@ -88,7 +96,7 @@
                 <div class="profile-content">
                     <div class="wrapper">
                         <div class="tab-content">
-                            <div id="tab-shows" class="tab-pane active" role="tabpanel">
+                            <div id="tab-shows" class="tab-pane <c:if test="${!exists && empty formErrors}">active</c:if>" role="tabpanel">
                                 <div id="profile-shows" style="margin-top: 20px; margin-left: 20px">
                                     <ul class="posters-list shows-list explore-list list-unstyled list-inline" style="overflow: visible">
                                     <c:forEach items="${followedSeries}" var="serie">
@@ -112,6 +120,49 @@
                                     </c:forEach>
                                     </ul>
                                 </div>
+                            </div>
+                            <div id="tab-information" class="tab-pane <c:if test="${exists || not empty formErrors}">active</c:if>" role="tabpanel">
+                                <section id="basic-settings">
+                                    <div class="row" style="padding: 50px">
+                                        <div class="avatar col-sm-3">
+                                        <c:choose>
+                                            <c:when test="${hasAvatar}">
+                                                <img src="<c:url value="/user/${userProfile.id}/avatar"/>" alt="avatar" class="img-responsive fit-image">
+                                            </c:when>
+                                            <c:otherwise>
+                                                <img src="https://d36rlb2fgh8cjd.cloudfront.net/default-images/default-user-q80.png" alt="avatar" class="img-responsive fit-image">
+                                            </c:otherwise>
+                                        </c:choose>
+                                        </div>
+                                        <div class="col-sm-9 my-auto">
+                                            <div class="other-infos infos-zone">
+                                                <c:url value="/user/update" var="updateUrl"/>
+                                                <form:form modelAttribute="updateUserForm" action="${updateUrl}" method="post" enctype="application/x-www-form-urlencoded">
+                                                    <div class="row form-group">
+                                                        <form:label class="col-sm-4 control-label" path="username"><spring:message code="register.username"/></form:label>
+                                                        <div class="col-sm-6">
+                                                            <form:input path="username" type="text" class="form-control" name="username" placeholder="JohnDoe" value="${userProfile.userName}"/>
+                                                            <form:errors path="username" element="p" cssClass="m-2 error"/>
+                                                            <c:if test="${exists}">
+                                                                <p class="m-2 error"><spring:message code="profile.usernameExists"/></p>
+                                                            </c:if>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        <label class="col-sm-4 control-label"><spring:message code="register.mail"/></label>
+                                                        <div class="col-sm-6">
+                                                            <input type="email" class="form-control" name="mail" placeholder="john@doe.com" value="${userProfile.mailAddress}" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        <button type="submit" class="btn-tvst btn-tvst-light-grey"><spring:message code="profile.save"/></button>
+                                                    </div>
+                                                </form:form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                                <div class="clearfix"></div>
                             </div>
                         </div>
                     </div>
