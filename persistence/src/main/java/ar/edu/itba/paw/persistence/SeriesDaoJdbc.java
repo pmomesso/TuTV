@@ -534,7 +534,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         });
 
         if(seasonsList.isEmpty()) return Optional.empty();
-        return Optional.of(seasonsList);
+        return Optional.of(seasonsList.subList(0, 1));
 
     }
 

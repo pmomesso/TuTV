@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.jws.WebParam;
 import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -185,9 +186,10 @@ public class HelloWorldController {
 	}
 
     @RequestMapping(value = "/upcoming", method = RequestMethod.GET)
-    public ModelAndView upcoming() {
+    public ModelAndView upcoming() throws UnauthorizedException {
         ModelAndView mav = new ModelAndView("upcoming");
 //        TODO add upcoming episodes to model
+		seriesService.getUpcomingEpisodes();
         return mav;
     }
 
@@ -261,4 +263,5 @@ public class HelloWorldController {
 	public @ResponseBody byte[] getImageWithMediaType(@PathVariable long userId) throws IOException {
 		return userService.getUserAvatar(userId);
 	}
+
 }
