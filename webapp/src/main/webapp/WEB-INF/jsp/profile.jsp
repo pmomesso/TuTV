@@ -45,10 +45,10 @@
                                 <a href="#" class="avatar-upload-link" id="showUploadAvatarPopup">
                                     <c:choose>
                                         <c:when test="${hasAvatar}">
-                                            <img src="<c:url value="/user/${userProfile.id}/avatar"/>" alt="avatar">
+                                            <img src="<c:url value="/user/${user.id}/avatar"/>" alt="avatar">
                                         </c:when>
                                         <c:otherwise>
-                                            <img src="https://d36rlb2fgh8cjd.cloudfront.net/default-images/default-user-q80.png" alt="avatar">
+                                            <img src="<c:url value="https://d36rlb2fgh8cjd.cloudfront.net/default-images/default-user-q80.png"/>" alt="avatar">
                                         </c:otherwise>
                                     </c:choose>
                                     <c:if test="${user.id == userProfile.id}">

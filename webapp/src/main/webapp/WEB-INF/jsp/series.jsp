@@ -212,10 +212,14 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="author">
-<%--                                                                        TODO poner img correspondiente al user actual--%>
-                                                                        <img class="author-picture img-circle"
-                                                                             src="https://d1zfszn0v5ya99.cloudfront.net/user/15629037/profile_picture/5d0d499d718d5_square.png"
-                                                                             alt="${user.userName}">
+                                                                        <c:choose>
+                                                                            <c:when test="${hasAvatar}">
+                                                                                <img class="author-picture img-circle" src="<c:url value="/user/${user.id}/avatar"/>" alt="${user.userName}">
+                                                                            </c:when>
+                                                                            <c:otherwise>
+                                                                                <img class="author-picture img-circle" src="<c:url value="https://d36rlb2fgh8cjd.cloudfront.net/default-images/default-user-q80.png"/>" alt="${user.userName}">
+                                                                            </c:otherwise>
+                                                                        </c:choose>
                                                                     </div>
                                                                 </div>
                                                                 <div class="submit-comment">

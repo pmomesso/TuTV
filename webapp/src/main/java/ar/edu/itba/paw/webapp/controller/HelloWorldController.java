@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Optional;
 
 @Controller
 public class HelloWorldController {
@@ -59,6 +60,10 @@ public class HelloWorldController {
 	public ModelAndView series(@ModelAttribute("postForm") final PostForm postForm, @ModelAttribute("commentForm") final CommentForm commentForm, @RequestParam("id") long id) throws Exception {
 		final ModelAndView mav = new ModelAndView("series");
 		mav.addObject("series", seriesService.getSerieById(id));
+		Optional<User> u = userService.getLoggedUser();
+		if (u.isPresent()) {
+			mav.addObject("hasAvatar", userService.getUserAvatar(u.get().getId()) != null);
+		}
 		mav.addObject("postForm", postForm);
 		mav.addObject("commentForm", commentForm);
 		return mav;
