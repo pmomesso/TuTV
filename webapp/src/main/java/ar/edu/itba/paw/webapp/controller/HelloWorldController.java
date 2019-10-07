@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.model.Season;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
@@ -18,16 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.jws.WebParam;
-import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Optional;
 
 @Controller
 public class HelloWorldController {
@@ -188,8 +180,7 @@ public class HelloWorldController {
     @RequestMapping(value = "/upcoming", method = RequestMethod.GET)
     public ModelAndView upcoming() throws UnauthorizedException {
         ModelAndView mav = new ModelAndView("upcoming");
-//        TODO add upcoming episodes to model
-		seriesService.getUpcomingEpisodes();
+        mav.addObject("upcoming", seriesService.getUpcomingEpisodes());
         return mav;
     }
 

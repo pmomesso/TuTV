@@ -105,6 +105,13 @@ body {
  right: 15%;
  color: gray;
 }
+.episode-date {
+    position: absolute;
+    font-size: 15px;
+    right: 15%;
+    color: gray;
+    top: 11px;
+}
 .heart, .remove, .remove-small {
  color: gray;
  background-color: inherit;
@@ -232,6 +239,7 @@ body {
   background-color: inherit;
   border: none;
  }
+
  .check-season {
   position: absolute;
   font-size: 30px;
@@ -250,6 +258,13 @@ body {
   right: 45px;
   color: gray;
  }
+.episode-date {
+    position: absolute;
+    font-size: 15px;
+    right: 45px;
+    color: gray;
+    top: 4px;
+}
  .no-display-small {
      display: none;
  }
