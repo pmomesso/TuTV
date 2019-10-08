@@ -55,7 +55,7 @@
                                         <c:if test="${isLogged && not series.follows}">
                                             <form action="<c:url value="/addSeries?seriesId=${series.id}"/>"
                                                   method="post">
-                                                <button class="add-button" type="submit">Add</button>
+                                                <button class="add-button" type="submit"><spring:message code="series.follow"/></button>
                                             </form>
                                         </c:if>
                                     </div>
