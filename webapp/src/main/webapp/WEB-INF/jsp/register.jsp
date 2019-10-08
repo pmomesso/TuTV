@@ -67,7 +67,6 @@
                         <div class="col-7 align-self-center">
                             <form:input id="passwordInput" class="m-3 w-100" path="password" type="password"/>
                             <form:errors path="password" element="p" cssClass="m-3 error"/>
-                            <p id="unmatchedPasswordError" class="m-3 error" style="display: none"><spring:message code="register.unmatchedPassword"/></p>
                         </div>
                     </div>
                     <div class="row w-100">
@@ -77,6 +76,7 @@
                         <div class="col-7 align-self-center">
                             <form:input id="repeatPasswordInput" class="m-3 w-100" path="repeatPassword" type="password"/>
                             <form:errors path="repeatPassword" element="p" cssClass="m-3 error"/>
+                            <p id="unmatchedPasswordError" class="m-3 error" style="display: none"><spring:message code="register.unmatchedPassword"/></p>
                         </div>
                     </div>
                 </div>
