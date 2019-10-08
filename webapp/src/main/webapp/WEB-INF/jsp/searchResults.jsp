@@ -44,7 +44,7 @@
                                     <li id="${serie.id}">
                                         <div class="image-crop">
                                             <a href="<c:url value="/series?id=${serie.id}"/>">
-                                                <img src="<c:url value="${serie.posterUrl}"/>"
+                                                <img src="<c:url value="https://image.tmdb.org/t/p/original${serie.posterUrl}"/>"
                                                      alt="${serie.name}">
                                             </a>
                                             <div class="overlay">

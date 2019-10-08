@@ -17,5 +17,12 @@ namespace ApiCrawlerTuTV.Model {
         public int CompareTo(Actor other) {
             return this.id.CompareTo(other.id);
         }
+
+        public override bool Equals(object obj) {
+            return this.id.Equals(((Actor)obj).id);
+        }
+        public override int GetHashCode() {
+            return this.id.GetHashCode();
+        }
     }
 }

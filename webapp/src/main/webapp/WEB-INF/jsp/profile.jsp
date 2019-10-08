@@ -107,7 +107,7 @@
                                                                 <div class="show">
                                                                     <a href="<c:url value="/series?id=${series.id}"/>" class="show-link">
                                                                         <div class="image-crop">
-                                                                            <img src="<c:url value="${series.posterUrl}"/>"
+                                                                            <img src="<c:url value="https://image.tmdb.org/t/p/original${series.posterUrl}"/>"
                                                                                  alt="${series.name}">
                                                                         </div>
                                                                     </a>
@@ -132,7 +132,7 @@
                                                                     <div class="show">
                                                                         <a href="<c:url value="/series?id=${series.id}"/>" class="show-link">
                                                                             <div class="image-crop">
-                                                                                <img src="<c:url value="${series.posterUrl}"/>"
+                                                                                <img src="<c:url value="https://image.tmdb.org/t/p/original${series.posterUrl}"/>"
                                                                                      alt="${series.name}">
                                                                             </div>
                                                                         </a>

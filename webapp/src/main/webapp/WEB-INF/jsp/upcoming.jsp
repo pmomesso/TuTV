@@ -62,7 +62,7 @@
                                         <c:forEach items="${upcoming}" var="series">
                                             <li>
                                                 <div class="image-crop">
-                                                    <img src="<c:url value="${series.posterUrl}"/>" alt="${series.name}">
+                                                    <img src="<c:url value="https://image.tmdb.org/t/p/original${series.posterUrl}"/>" alt="${series.name}">
                                                     <div class="progress">
                                                         <div class="progress-bar progress-bar-success uncomplete w-100" role="progressbar">
                                                         </div>

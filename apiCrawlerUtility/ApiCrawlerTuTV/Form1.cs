@@ -37,7 +37,53 @@ namespace ApiCrawlerTuTV {
             //Listado de actores
             HashSet<Actor> al = new HashSet<Actor>();
             //Listado de series
-            List<Series> l = crawler.GetSeriesListAsync(seriesIdFromNum, seriesIdToNum, gl, nl, al).Result;
+            List<Series> l = crawler.GetSeriesListAsync(seriesIdFromNum, seriesIdToNum).Result;
+
+            //Database manager
+            DatabaseManager dbm = new DatabaseManager("localhost", 5432, "root", "root", "paw");
+
+            //Construimos sets de cosas para insertar
+            foreach(Series s in l) {
+                foreach (ActorRole ar in s.actorList)
+                    al.Add(ar.actor);
+
+                foreach (Genre g in s.genresList)
+                    gl.Add(g);
+
+                nl.Add(s.network);
+            }
+
+            //Inserto géneros
+            foreach (Genre g in gl)
+                dbm.InsertOrUpdateGenre(g);
+
+            //Inserto cadenas
+            foreach (Network n in nl)
+                dbm.InsertOrUpdateNetwork(n);
+
+            //Inserto actores
+            foreach (Actor a in al)
+                dbm.InsertOrUpdateActor(a);
+
+            int count = 1;
+            //Inserto serie
+            foreach (Series s in l) {
+                groupBox1.Text = "Insertando serie " + count + " de " + l.Count + "...";
+                dbm.InsertOrUpdateSeries(s);
+
+                foreach (ActorRole ar in s.actorList)
+                    dbm.InsertOrUpdateActorRole(ar);
+
+                foreach (Season se in s.seasonList) {
+                    dbm.InsertOrUpdateSeason(se);
+
+                    foreach (Episode ep in se.episodeList)
+                        dbm.InsertOrUpdateEpisode(ep);
+                }
+                    
+            }
+
+            MessageBox.Show(count + " series insertadas con éxito.");
 
         ThisIsTheEnd:
             groupBox1.ResetText();

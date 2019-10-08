@@ -66,7 +66,7 @@
                                                           method="post">
                                                         <button type="submit" style="font-family: FontAwesome,serif; font-style: normal" class="check-watchlist">&#xf058</button>
                                                     </form>
-                                                    <img src="<c:url value="${series.posterUrl}"/>" alt="${series.name}">
+                                                    <img src="<c:url value="https://image.tmdb.org/t/p/original${series.posterUrl}"/>" alt="${series.name}">
                                                     <div class="progress">
                                                         <div class="progress-bar progress-bar-success uncomplete w-100" role="progressbar">
                                                         </div>

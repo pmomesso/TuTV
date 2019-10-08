@@ -9,17 +9,17 @@ namespace ApiCrawlerTuTV.Model.TheMovieDb {
         public string backdrop_path { get; set; }
         public List<CreatedBy> created_by { get; set; }
         public List<int> episode_run_time { get; set; }
-        public DateTime first_air_date { get; set; }
-        public List<Genre> genres { get; set; }
+        public DateTime? first_air_date { get; set; }
+        public List<TheMovieDbGenre> genres { get; set; }
         public string homepage { get; set; }
         public int id { get; set; }
         public bool in_production { get; set; }
         public List<string> languages { get; set; }
         public string last_air_date { get; set; }
-        public Episode last_episode_to_air { get; set; }
+        public TheMovieDbEpisode last_episode_to_air { get; set; }
         public string name { get; set; }
         public object next_episode_to_air { get; set; }
-        public List<Network> networks { get; set; }
+        public List<TheMovieDbNetwork> networks { get; set; }
         public int number_of_episodes { get; set; }
         public int number_of_seasons { get; set; }
         public List<string> origin_country { get; set; }
@@ -28,8 +28,8 @@ namespace ApiCrawlerTuTV.Model.TheMovieDb {
         public string overview { get; set; }
         public double popularity { get; set; }
         public string poster_path { get; set; }
-        public List<ProductionCompany> production_companies { get; set; }
-        public List<Season> seasons { get; set; }
+        public List<TheMovieDbProductionCompany> production_companies { get; set; }
+        public List<TheMovieDbSeason> seasons { get; set; }
         public string status { get; set; }
         public string type { get; set; }
         public double vote_average { get; set; }
@@ -39,16 +39,45 @@ namespace ApiCrawlerTuTV.Model.TheMovieDb {
             return this.id.CompareTo(other.id);
         }
 
-        public Series ToSeries(HashSet<Model.Genre> gl, HashSet<Model.Network> nl, HashSet<Model.Actor> al) {
+        public Series ToSeries() {
             Model.Series s = new Model.Series();
 
             s.seriesName = this.original_name;
             s.firstAired = this.first_air_date;
-            //s.actorList = 
+            //s.actorList = /series/id/credits
             s.bannerUrl = this.backdrop_path;
-            //s.genresList =
-            //s.imbdId = this.
-            s.networkList
+
+            s.genresList = new List<Genre>();
+            foreach (TheMovieDbGenre mdbg in this.genres)
+                s.genresList.Add(mdbg.ToGenre());
+
+            s.id = this.id;
+
+            //TODO mas que una?
+            if (this.networks.Count > 0)
+                s.network = this.networks[0].ToNetwork();
+
+            s.posterUrl = this.poster_path;
+
+            //TODO promedio?
+            if(this.episode_run_time.Count > 0)
+                s.runningTime = this.episode_run_time[0];
+
+            s.seasonList = new List<Season>();
+            foreach (TheMovieDbSeason mdbs in this.seasons) {
+                Season se = mdbs.ToSeason();
+                se.series = s;
+                s.seasonList.Add(se);
+            }
+
+            s.seriesDescription = this.overview;
+
+            s.seriesName = this.name;
+
+            s.status = this.status;
+
+            s.tvDbId = this.id;
+
             return s;
         }
     }
@@ -65,38 +94,51 @@ namespace ApiCrawlerTuTV.Model.TheMovieDb {
         }
     }
 
-    public class Genre : IComparable<Genre> {
+    public class TheMovieDbGenre : IComparable<TheMovieDbGenre> {
         public int id { get; set; }
         public string name { get; set; }
 
-        public int CompareTo(Genre other) {
+        public int CompareTo(TheMovieDbGenre other) {
              return this.id.CompareTo(other.id);
+        }
+        public Model.Genre ToGenre() {
+            return new Model.Genre {
+                id = this.id,
+                name = this.name
+            };
         }
     }
 
-    public class Network : IComparable<Network> {
+    public class TheMovieDbNetwork : IComparable<TheMovieDbNetwork> {
         public string name { get; set; }
         public int id { get; set; }
         public string logo_path { get; set; }
         public string origin_country { get; set; }
 
-        public int CompareTo(Network other) {
+        public Model.Network ToNetwork() {
+            return new Model.Network {
+                id = this.id,
+                name = this.name
+            };
+        }
+
+        public int CompareTo(TheMovieDbNetwork other) {
              return this.id.CompareTo(other.id);
         }
     }
 
-    public class ProductionCompany : IComparable<ProductionCompany> {
+    public class TheMovieDbProductionCompany : IComparable<TheMovieDbProductionCompany> {
         public int id { get; set; }
         public string logo_path { get; set; }
         public string name { get; set; }
         public string origin_country { get; set; }
 
-        public int CompareTo(ProductionCompany other) {
+        public int CompareTo(TheMovieDbProductionCompany other) {
              return this.id.CompareTo(other.id);
         }
     }
 
-    public class Crew : IComparable<Crew> {
+    public class TheMovieDbCrew : IComparable<TheMovieDbCrew> {
         public int id { get; set; }
         public string credit_id { get; set; }
         public string name { get; set; }
@@ -105,26 +147,38 @@ namespace ApiCrawlerTuTV.Model.TheMovieDb {
         public int gender { get; set; }
         public string profile_path { get; set; }
 
-        public int CompareTo(Crew other) {
+        public int CompareTo(TheMovieDbCrew other) {
              return this.id.CompareTo(other.id);
         }
     }
 
-    public class GuestStar : IComparable<GuestStar> {
+    public class TheMovieDbCast : IComparable<TheMovieDbCast> {
+        public string character { get; set; }
+        public string credit_id { get; set; }
         public int id { get; set; }
         public string name { get; set; }
-        public string credit_id { get; set; }
-        public string character { get; set; }
-        public int order { get; set; }
         public int gender { get; set; }
         public string profile_path { get; set; }
+        public int order { get; set; }
 
-        public int CompareTo(GuestStar other) {
-             return this.id.CompareTo(other.id);
+        public ActorRole ToActorRole() {
+            return new ActorRole {
+                actor = new Actor {
+                    name = this.name,
+                    id = this.id,
+                    tvDbId = this.id
+                },
+                imageUrl = this.profile_path,
+                role = this.character
+            };
+        }
+
+        public int CompareTo(TheMovieDbCast other) {
+            return this.id.CompareTo(other.id);
         }
     }
 
-    public class Episode : IComparable<Episode> {
+    public class TheMovieDbEpisode : IComparable<TheMovieDbEpisode> {
         public string air_date { get; set; }
         public int episode_number { get; set; }
         public int id { get; set; }
@@ -136,27 +190,57 @@ namespace ApiCrawlerTuTV.Model.TheMovieDb {
         public string still_path { get; set; }
         public double vote_average { get; set; }
         public int vote_count { get; set; }
-        public List<Crew> crew { get; set; }
-        public List<GuestStar> guest_stars { get; set; }
+        public List<TheMovieDbCrew> crew { get; set; }
+        public List<TheMovieDbCast> guest_stars { get; set; }
 
-        public int CompareTo(Episode other) {
+        public Model.Episode ToEpisode() {
+            Episode e = new Episode();
+            e.description = this.overview;
+            e.episodeNumber = this.episode_number;
+            e.id = this.id;
+            e.name = this.name;
+            e.seasonNumber = this.season_number;
+            e.TvDbId = this.id;
+
+            return e;
+        }
+
+        public int CompareTo(TheMovieDbEpisode other) {
              return this.id.CompareTo(other.id);
         }
     }
 
-    public class Season : IComparable<Season> {
+    public class TheMovieDbSeason : IComparable<TheMovieDbSeason> {
         public string _id { get; set; }
         public int id { get; set; }
         public string air_date { get; set; }
-        public List<Episode> episodes { get; set; }
+        public List<TheMovieDbEpisode> episodes { get; set; }
         public int episode_count { get; set; }
         public string name { get; set; }
         public string overview { get; set; }
         public string poster_path { get; set; }
         public int season_number { get; set; }
 
-        public int CompareTo(Season other) {
+        public Model.Season ToSeason() {
+            return new Model.Season {
+                id = this.id,
+                name = this.name,
+                seasonNumber = this.season_number
+            };
+        }
+
+        public int CompareTo(TheMovieDbSeason other) {
              return this.id.CompareTo(other.id);
+        }
+    }
+
+    public class TheMovieDbCredits : IComparable<TheMovieDbCredits> {
+        public List<TheMovieDbCast> cast { get; set; }
+        //public List<Crew> crew { get; set; }
+        public int id { get; set; }
+
+        public int CompareTo(TheMovieDbCredits other) {
+            return this.id.CompareTo(other.id);
         }
     }
 }

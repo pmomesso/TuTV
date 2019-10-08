@@ -14,11 +14,11 @@ namespace ApiCrawlerTuTV.Model {
         }
 
         public override bool Equals(object obj) {
-            return this.name.Equals(((Genre)obj).name);
+            return this.id.Equals(((Genre)obj).id);
         }
 
         public override int GetHashCode() {
-            return this.name.GetHashCode();
+            return this.id.GetHashCode();
         }
     }
 }

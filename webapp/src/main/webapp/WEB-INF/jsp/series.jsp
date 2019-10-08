@@ -46,7 +46,7 @@
                         <div id="myCarousel" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
                                 <div class="carousel-item active">
-                                    <img src="${series.bannerUrl}" itemprop="image" alt="${series.bannerUrl}">
+                                    <img src="https://image.tmdb.org/t/p/original${series.bannerUrl}" itemprop="image" alt="https://image.tmdb.org/t/p/original${series.bannerUrl}">
                                     <div class="carousel-caption">
                                         <div class="text-center">
                                             <span class="star"></span>

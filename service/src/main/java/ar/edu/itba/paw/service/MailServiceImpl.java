@@ -78,6 +78,4 @@ public class MailServiceImpl implements MailService {
 
         mailSender.send(message);
     }
-
-
 }

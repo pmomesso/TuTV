@@ -48,14 +48,14 @@ namespace ApiCrawlerTuTV.Model.TheTvDb {
 
             Network n = null;
             foreach (Network n_ in nl) {
-                if (n_.Name == d.network) {
+                if (n_.name == d.network) {
                     n = n_;
                     break;
                 }
             }
             if(n == null) {
                 n = new Network {
-                    Name = d.network
+                    name = d.network
                 };
                 nl.Add(n);
             }

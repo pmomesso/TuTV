@@ -57,7 +57,7 @@
                       <c:choose>
                         <c:when test="${status.index == 0}">
                           <div class="carousel-item active">
-                            <img src="<c:url value="${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">
+                            <img src="<c:url value="https://image.tmdb.org/t/p/original${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">
                             <div class="carousel-caption">
                               <h2>${newShow.name}</h2>
                               <h3>${newShow.numFollowers} <spring:message code="index.followers"/><c:if
@@ -67,7 +67,7 @@
                         </c:when>
                         <c:otherwise>
                           <div class="carousel-item">
-                            <img src="<c:url value="${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">>
+                            <img src="<c:url value="https://image.tmdb.org/t/p/original${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">>
                             <div class="carousel-caption">
                               <h2>${newShow.name}</h2>
                               <h3>${newShow.numFollowers} <spring:message code="index.followers"/><c:if
@@ -96,7 +96,7 @@
                       <li>
                         <a href="<c:url value="/series?id=${series.id}"/>">
                           <div class="image-crop">
-                            <img src="<c:url value="${series.posterUrl}}"/>" alt="${series.name}">
+                            <img src="<c:url value="https://image.tmdb.org/t/p/original${series.posterUrl}"/>" alt="${series.name}">
                             <div class="overlay"><span class="zoom-btn overlay-btn"></span></div>
                           </div>
                           <div class="show-details poster-details">
