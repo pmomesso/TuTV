@@ -131,13 +131,15 @@
                                                                     <span class="big-size"><spring:message code="series.Season"/> ${season.seasonNumber}</span>
                                                                     <c:if test="${isLogged && series.follows}">
                                                                         <span class="ml-3 viewed-episodes">${season.episodesViewed} / ${fn:length(season.episodeList)}</span>
-                                                                        <form action="<c:url value="/viewSeason?seriesId=${series.id}&seasonId=${season.id}"/>"
-                                                                              method="post">
-                                                                            <button type="submit"
-                                                                                    style="font-family: FontAwesome,serif; font-style: normal"
-                                                                                    class="check-season">&#xf058
-                                                                            </button>
-                                                                        </form>
+                                                                        <c:if test="${season.seasonAired}">
+                                                                            <form action="<c:url value="/viewSeason?seriesId=${series.id}&seasonId=${season.id}"/>"
+                                                                                  method="post">
+                                                                                <button type="submit"
+                                                                                        style="font-family: FontAwesome,serif; font-style: normal"
+                                                                                        class="check-season">&#xf058
+                                                                                </button>
+                                                                            </form>
+                                                                        </c:if>
                                                                     </c:if>
                                                                 </label>
                                                             </c:otherwise>
