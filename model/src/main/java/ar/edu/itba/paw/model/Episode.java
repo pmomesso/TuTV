@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class Episode {
     private boolean viewed = false;
     private Rating userRating;
     private Date airing;
-    private List<Comment> episodeComments = new ArrayList<>();
+    private List<Comment> episodeComments = Collections.emptyList();
 
     public boolean isViewed() {
         return viewed;

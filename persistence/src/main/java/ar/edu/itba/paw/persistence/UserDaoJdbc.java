@@ -31,32 +31,32 @@ public class UserDaoJdbc implements UserDao {
 		return user;
 	};
 	
-	private JdbcTemplate jdbcTemplate;
-	private SimpleJdbcInsert jdbcInsert;
+	private JdbcTemplate userJdbcTemplate;
+	private SimpleJdbcInsert uesrJdbcInsert;
 	
 	@Autowired
 	public UserDaoJdbc(final DataSource ds) {
-		jdbcTemplate = new JdbcTemplate(ds);
-		jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+		userJdbcTemplate = new JdbcTemplate(ds);
+		uesrJdbcInsert = new SimpleJdbcInsert(userJdbcTemplate)
 					.withTableName("users")
 					.usingGeneratedKeyColumns("id");
 	}
 
 	@Override
 	public Optional<User> getUserById(final long id) {
-		List<User> resultSet = jdbcTemplate.query("SELECT * FROM users WHERE id = ?", new Object[]{id}, rm);
+		List<User> resultSet = userJdbcTemplate.query("SELECT * FROM users WHERE id = ?", new Object[]{id}, rm);
 		return resultSet.stream().findFirst();
 	}
 
 	@Override
 	public Optional<User> getUserByValidationKey(final String key) {
-		List<User> resultSet = jdbcTemplate.query("SELECT * FROM users WHERE confirmation_key = ?", new Object[]{key}, rm);
+		List<User> resultSet = userJdbcTemplate.query("SELECT * FROM users WHERE confirmation_key = ?", new Object[]{key}, rm);
 		return resultSet.stream().findFirst();
 	}
 
 	@Override
 	public Optional<User> getUserByMail(final String mail) {
-		List<User> resultSet = jdbcTemplate.query("SELECT * FROM users WHERE mail = ?", new Object[]{mail}, rm);
+		List<User> resultSet = userJdbcTemplate.query("SELECT * FROM users WHERE mail = ?", new Object[]{mail}, rm);
 		return resultSet.stream().findFirst();
 	}
 
@@ -67,20 +67,20 @@ public class UserDaoJdbc implements UserDao {
 		args.put("password", password);
 		args.put("mail", mail);
 		args.put("isAdmin",isAdmin);
-		final Number userGeneratedId = jdbcInsert.executeAndReturnKey(args);
+		final Number userGeneratedId = uesrJdbcInsert.executeAndReturnKey(args);
 		long insertedId = userGeneratedId.longValue();
 		return getUserById(insertedId);
 	}
 
 	@Override
 	public boolean mailIsTaken(String mail) {
-		return !jdbcTemplate.query("SELECT mail FROM users WHERE mail = ?", new Object[]{mail},
+		return !userJdbcTemplate.query("SELECT mail FROM users WHERE mail = ?", new Object[]{mail},
 				(resultSet, i) -> { return resultSet.getString("mail"); }).isEmpty();
 	}
 
 	@Override
 	public boolean userNameExists(String userName) {
-		return !jdbcTemplate.query("SELECT username FROM users WHERE username = ?", new Object[]{userName},
+		return !userJdbcTemplate.query("SELECT username FROM users WHERE username = ?", new Object[]{userName},
 				(resultSet, i) -> { return resultSet.getString("username"); }).isEmpty();
 	}
 
@@ -89,12 +89,12 @@ public class UserDaoJdbc implements UserDao {
 		if(userNameExists(newUserName)){
 			return 0;
 		}
-		return jdbcTemplate.update("UPDATE users SET username = ? WHERE id = ?",newUserName,userId);
+		return userJdbcTemplate.update("UPDATE users SET username = ? WHERE id = ?",newUserName,userId);
 	}
 
 	@Override
 	public boolean checkIfValidationKeyExists(String key) {
-		Integer count = jdbcTemplate.queryForObject(
+		Integer count = userJdbcTemplate.queryForObject(
 				"SELECT count(*) FROM users WHERE confirmation_key = ?", new Object[] { key }, Integer.class);
 
 		return count > 0;
@@ -102,51 +102,51 @@ public class UserDaoJdbc implements UserDao {
 
 	@Override
 	public void setValidationKey(long userId, String key) {
-		jdbcTemplate.update("UPDATE users SET confirmation_key = ? WHERE id = ?", key, userId);
+		userJdbcTemplate.update("UPDATE users SET confirmation_key = ? WHERE id = ?", key, userId);
 	}
 
 	@Override
 	public int banUser(long userId) {
-		List<Boolean> isBannedList = jdbcTemplate.query("SELECT isbanned FROM users WHERE id = ?", new Object[]{userId},
+		List<Boolean> isBannedList = userJdbcTemplate.query("SELECT isbanned FROM users WHERE id = ?", new Object[]{userId},
 				(resultSet, i) -> {
 					return resultSet.getBoolean("isbanned");
 				});
 		if(isBannedList.isEmpty()) return -1;
-		int numRows = jdbcTemplate.update("UPDATE users SET isbanned = TRUE WHERE id = ?", new Object[]{userId});
+		int numRows = userJdbcTemplate.update("UPDATE users SET isbanned = TRUE WHERE id = ?", new Object[]{userId});
 		return numRows;
 	}
 
 	@Override
 	public int unbanUser(long userId) {
-		List<Boolean> isBannedList = jdbcTemplate.query("SELECT isbanned FROM users WHERE id = ?", new Object[]{userId},
+		List<Boolean> isBannedList = userJdbcTemplate.query("SELECT isbanned FROM users WHERE id = ?", new Object[]{userId},
 				(resultSet, i) -> {
 					return resultSet.getBoolean("isbanned");
 				});
 		if(isBannedList.isEmpty()) return -1;
-		int numRows = jdbcTemplate.update("UPDATE users SET isbanned = FALSE WHERE id = ?", new Object[]{userId});
+		int numRows = userJdbcTemplate.update("UPDATE users SET isbanned = FALSE WHERE id = ?", new Object[]{userId});
 		return numRows;
 	}
 
 	@Override
 	public boolean userExists(long userId) {
-		Integer count = jdbcTemplate.queryForObject("SELECT count(*) FROM users WHERE id = ?", new Object[]{userId},Integer.class);
+		Integer count = userJdbcTemplate.queryForObject("SELECT count(*) FROM users WHERE id = ?", new Object[]{userId},Integer.class);
 		return count > 0;
 	}
 
 	@Override
 	public List<User> getAllUsers() {
-		List<User> userList = jdbcTemplate.query("SELECT * FROM users", rm);
+		List<User> userList = userJdbcTemplate.query("SELECT * FROM users", rm);
 		return userList;
 	}
 
 	@Override
 	public void setUserAvatar(long userId, byte[] byteArray) {
-		jdbcTemplate.update("UPDATE users SET avatar = ? WHERE id = ?", new Object[]{byteArray, userId});
+		userJdbcTemplate.update("UPDATE users SET avatar = ? WHERE id = ?", new Object[]{byteArray, userId});
 	}
 
 	@Override
 	public Optional<byte[]> getUserAvatar(long userId) {
-		return Optional.ofNullable(jdbcTemplate.queryForObject(
+		return Optional.ofNullable(userJdbcTemplate.queryForObject(
 				"SELECT avatar FROM users WHERE id = ?", new Object[] { userId }, byte[].class));
 	}
 

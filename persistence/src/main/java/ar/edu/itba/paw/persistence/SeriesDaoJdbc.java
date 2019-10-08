@@ -73,7 +73,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         return ret;
     };
 
-    private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate seriesJdbcTemplate;
     private SimpleJdbcInsert seriesjdbcInsert;
     private SimpleJdbcInsert genresjdbcInsert;
     private SimpleJdbcInsert hasGenrejdbcInsert;
@@ -112,41 +112,41 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Autowired
     public SeriesDaoJdbc(final DataSource ds) {
-        jdbcTemplate = new JdbcTemplate(ds);
-        seriesjdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        seriesJdbcTemplate = new JdbcTemplate(ds);
+        seriesjdbcInsert = new SimpleJdbcInsert(seriesJdbcTemplate)
                 .withTableName("series")
                 .usingGeneratedKeyColumns("id");
-        genresjdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        genresjdbcInsert = new SimpleJdbcInsert(seriesJdbcTemplate)
                 .withTableName("genres")
                 .usingGeneratedKeyColumns("id");
-        hasGenrejdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        hasGenrejdbcInsert = new SimpleJdbcInsert(seriesJdbcTemplate)
                 .withTableName("hasgenre");
-        followsjdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        followsjdbcInsert = new SimpleJdbcInsert(seriesJdbcTemplate)
                 .withTableName("follows");
-        viewedEpisodesjdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        viewedEpisodesjdbcInsert = new SimpleJdbcInsert(seriesJdbcTemplate)
                 .withTableName("hasviewedepisode")
                 .usingColumns("userid", "episodeid")
                 .usingGeneratedKeyColumns("id");
-        seriesReviewJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        seriesReviewJdbcInsert = new SimpleJdbcInsert(seriesJdbcTemplate)
                 .withTableName("seriesreview")
                 .usingColumns("userid", "seriesid", "body");
-        hasLikedSeriesReviewJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        hasLikedSeriesReviewJdbcInsert = new SimpleJdbcInsert(seriesJdbcTemplate)
                 .withTableName("haslikedseriesreview")
                 .usingColumns("userid", "seriesreview");
-        seriesReviewCommentsJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        seriesReviewCommentsJdbcInsert = new SimpleJdbcInsert(seriesJdbcTemplate)
                 .withTableName("seriesreviewcomments")
                 .usingColumns("body", "userid", "postid");
-        hasLikedSeriesReviewCommentsJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        hasLikedSeriesReviewCommentsJdbcInsert = new SimpleJdbcInsert(seriesJdbcTemplate)
                 .withTableName("haslikedseriesreviewcomment")
                 .usingColumns("seriesreviewcomment", "userid");
-        userSeriesRatingJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        userSeriesRatingJdbcInsert = new SimpleJdbcInsert(seriesJdbcTemplate)
                 .withTableName("userseriesrating");
     }
 
     @Override
     public List<Series> searchSeries(String seriesName, String genreName, String networkName, int minRating, int maxRating) {
         //TODO agregar "userRating BETWEEN minRating AND maxRating" a la query cuando los puntajes en la base no esten en null.
-        return groupGenres(jdbcTemplate.query("SELECT * " +
+        return groupGenres(seriesJdbcTemplate.query("SELECT * " +
                         "FROM (series LEFT JOIN hasgenre ON series.id = hasgenre.seriesid LEFT JOIN genres ON genres.id = hasgenre.genreid LEFT JOIN network ON network.networkid = series.networkid) " +
                         "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname) " +
                         "WHERE LOWER(name) LIKE ? AND LOWER(genre) LIKE ? AND LOWER(networkname) LIKE ?",
@@ -155,7 +155,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Series> getSeriesByName(String seriesName) {
-        return groupGenres(jdbcTemplate.query("SELECT * " +
+        return groupGenres(seriesJdbcTemplate.query("SELECT * " +
                 "FROM (series LEFT JOIN hasgenre ON series.id = hasgenre.seriesid LEFT JOIN genres ON genres.id = hasgenre.genreid LEFT JOIN network ON network.networkid = series.networkid) " +
                 "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname) " +
                 "WHERE LOWER(name) LIKE ?", new Object[]{"%" + seriesName.toLowerCase() + "%"}, seriesRowMapper));
@@ -163,7 +163,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Series> getSeriesByGenre(String genreName) {
-        return groupGenres(jdbcTemplate.query("SELECT * " +
+        return groupGenres(seriesJdbcTemplate.query("SELECT * " +
                 "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.networkid = series.networkid) " +
                 "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname)" +
                 "WHERE LOWER(genre) LIKE ?", new Object[]{"%" + genreName.toLowerCase() + "%"}, seriesRowMapper));
@@ -171,7 +171,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Series> getSeriesByGenre(int id) {
-        return groupGenres(jdbcTemplate.query("SELECT * " +
+        return groupGenres(seriesJdbcTemplate.query("SELECT * " +
                 "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.networkid = series.networkid) " +
                 "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname)" +
                 "WHERE genreid = ?", new Object[]{id}, seriesRowMapper));
@@ -179,7 +179,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Series> getBestSeriesByGenre(int genreId, int lowerLimit, int upperLimit) {
-        return groupGenres(jdbcTemplate.query("SELECT * " +
+        return groupGenres(seriesJdbcTemplate.query("SELECT * " +
                         "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.networkid = series.networkid) " +
                         "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname)" +
                         "WHERE genreid = ?" +
@@ -189,7 +189,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Series> getNewSeries(int lowerLimit, int upperLimit) {
-        return groupGenres(jdbcTemplate.query("SELECT * " +
+        return groupGenres(seriesJdbcTemplate.query("SELECT * " +
                 "FROM (series LEFT JOIN hasGenre ON hasgenre.seriesid = series.id LEFT JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.networkid = series.networkid) " +
                 "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname) " +
                 "WHERE bannerurl IS NOT NULL " +
@@ -212,7 +212,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Genre> getAllGenres() {
-        return jdbcTemplate.query("SELECT * " +
+        return seriesJdbcTemplate.query("SELECT * " +
                         "FROM genres",
                 (resultSet, i) -> {
                     Genre g = new Genre();
@@ -224,7 +224,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public Optional<Series> getSeriesById(final long id, final long userId) {
-        final List<Series> seriesList = jdbcTemplate.query("SELECT * " +
+        final List<Series> seriesList = seriesJdbcTemplate.query("SELECT * " +
                 "FROM (series LEFT JOIN hasGenre ON hasgenre.seriesid = series.id LEFT JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.networkid = series.networkid) " +
                 "AS foo(id, tvdbid,name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname)" +
                 "WHERE id = ?", new Object[]{id}, seriesRowMapper);
@@ -240,7 +240,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private Double getSeriesRating(long id, long userId) {
-        List<Double> rating = jdbcTemplate.query("SELECT rating " +
+        List<Double> rating = seriesJdbcTemplate.query("SELECT rating " +
                 "FROM userseriesrating " +
                 "WHERE seriesid = ? AND userid = ?",
                 new Object[]{id,userId},(resultSet,i)->resultSet.getDouble("rating"));
@@ -268,7 +268,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private void addAllPostsToSeries(Series series, long userId) {
-        final List<Post> postList = jdbcTemplate.query("SELECT seriesreview.id, seriesreview.body, seriesreview.numlikes, seriesreview.userid, exists(SELECT * FROM haslikedseriesreview WHERE userid = ? AND seriesreview = seriesreview.id) AS liked " +
+        final List<Post> postList = seriesJdbcTemplate.query("SELECT seriesreview.id, seriesreview.body, seriesreview.numlikes, seriesreview.userid, exists(SELECT * FROM haslikedseriesreview WHERE userid = ? AND seriesreview = seriesreview.id) AS liked " +
                         "FROM seriesreview JOIN series ON seriesreview.seriesid = series.id " +
                         "WHERE series.id = ?", new Object[]{userId, series.getId()},
                 (resultSet, i) -> {
@@ -292,7 +292,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private void addAllCommentsToPost(Post post, long userId) {
-        List<Comment> commentsList = jdbcTemplate.query("SELECT seriesreviewcomments.*, " +
+        List<Comment> commentsList = seriesJdbcTemplate.query("SELECT seriesreviewcomments.*, " +
                         "exists(SELECT * FROM haslikedseriesreviewcomment WHERE haslikedseriesreviewcomment.seriesreviewcomment = seriesreviewcomments.id AND haslikedseriesreviewcomment.userid = ?) AS liked " +
                         "FROM seriesreviewcomments " +
                         "WHERE postid = ?", new Object[]{userId, post.getPostId()},
@@ -379,22 +379,22 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public void setSeriesRunningTime(long seriesId, int runningTime) {
-        jdbcTemplate.update("UPDATE series SET runtime = ? WHERE id = ?", runningTime, seriesId);
+        seriesJdbcTemplate.update("UPDATE series SET runtime = ? WHERE id = ?", runningTime, seriesId);
     }
 
     @Override
     public void setSeriesNetwork(long seriesId, int networkId) {
-        jdbcTemplate.update("UPDATE series SET networkId = ? WHERE id = ?", networkId, seriesId);
+        seriesJdbcTemplate.update("UPDATE series SET networkId = ? WHERE id = ?", networkId, seriesId);
     }
 
     @Override
     public void setSeriesDescription(long seriesId, String description) {
-        jdbcTemplate.update("UPDATE series SET description = ? WHERE id = ?", description, seriesId);
+        seriesJdbcTemplate.update("UPDATE series SET description = ? WHERE id = ?", description, seriesId);
     }
 
     @Override
     public List<Season> getSeasonsBySeriesId(long seriesId) {
-        List<Season> seasonList = jdbcTemplate.query("SELECT * " +
+        List<Season> seasonList = seriesJdbcTemplate.query("SELECT * " +
                 "FROM series JOIN season ON series.id = season.seriesId " +
                 "WHERE series.id = ? " +
                 "ORDER BY seasonnumber", new Object[]{seriesId}, (resultSet, i) -> {
@@ -408,7 +408,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Episode> getEpisodesBySeasonId(long seasonId, long userId) {
-        List<Episode> episodeList = jdbcTemplate.query("SELECT episode.*, exists(SELECT * FROM hasviewedepisode WHERE userid = ? AND hasviewedepisode.episodeid = episode.id AND current_date >= episode.aired) as viewed " +
+        List<Episode> episodeList = seriesJdbcTemplate.query("SELECT episode.*, exists(SELECT * FROM hasviewedepisode WHERE userid = ? AND hasviewedepisode.episodeid = episode.id AND current_date >= episode.aired) as viewed " +
                 "FROM episode  " +
                 "WHERE episode.seasonid = ? " +
                 "ORDER BY numepisode", new Object[]{userId, seasonId}, (resultSet, i) -> {
@@ -427,7 +427,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Series> getNextToBeSeen(long userId) {
-        List<Series> toBeSeenSeriesList = jdbcTemplate.query("SELECT episode.id AS episodeid,\n" +
+        List<Series> toBeSeenSeriesList = seriesJdbcTemplate.query("SELECT episode.id AS episodeid,\n" +
                         "episode.name AS episodename,\n" +
                         "episode.numepisode AS episodenumber,\n" +
                         "(SELECT series.id FROM series WHERE series.id = episode.seriesid) AS seriesid,\n" +
@@ -473,7 +473,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     @Override
     public Optional<List<Series>> getRecentlyWatched(long userId, int number) {
         if(!userDao.userExists(userId)) return Optional.empty();
-        List<Series> seriesList = jdbcTemplate.query("SELECT DISTINCT seriesname, posterurl, seriesid FROM (SELECT id AS idhasviewed,\n" +
+        List<Series> seriesList = seriesJdbcTemplate.query("SELECT DISTINCT seriesname, posterurl, seriesid FROM (SELECT id AS idhasviewed,\n" +
                 "(SELECT name FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS seriesname,\n" +
                 "(SELECT posterurl FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS posterurl,\n" +
                 "(SELECT id FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS seriesid\n" +
@@ -492,7 +492,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     @Override
     public Optional<List<Series>> getAddedSeries(long userId) {
         if(!userDao.userExists(userId)) return Optional.empty();
-        List<Series> seriesList = jdbcTemplate.query("SELECT * " +
+        List<Series> seriesList = seriesJdbcTemplate.query("SELECT * " +
                 "FROM follows JOIN series ON follows.seriesid = series.id " +
                 "WHERE userid = ?", new Object[]{userId}, (resultSet, i) -> {
             Series ret = new Series();
@@ -521,7 +521,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private Optional<List<Season>> getUpcomingEpisode(Series series) {
-        List<Season> seasonsList = jdbcTemplate.query("SELECT id AS episodeid,\n" +
+        List<Season> seasonsList = seriesJdbcTemplate.query("SELECT id AS episodeid,\n" +
                         "name AS episodename,\n" +
                         "numepisode AS episodenumber,\n" +
                         "aired as airing," +
@@ -600,14 +600,14 @@ public class SeriesDaoJdbc implements SeriesDao {
 
         int numRowsAffected = followsjdbcInsert.execute(args);
         if(numRowsAffected != 0) {
-            jdbcTemplate.update("UPDATE series SET followers = (followers + 1) WHERE id = ?", seriesId);
+            seriesJdbcTemplate.update("UPDATE series SET followers = (followers + 1) WHERE id = ?", seriesId);
         }
         return numRowsAffected;
     }
 
     @Override
     public int setViewedEpisode(long episodeId, long userId) {
-        List<Date> dateList = jdbcTemplate.query("SELECT episode.aired AS airing\n" +
+        List<Date> dateList = seriesJdbcTemplate.query("SELECT episode.aired AS airing\n" +
                 "FROM episode\n" +
                 "WHERE episode.id = ?", new Object[]{episodeId}, (resultSet, i) ->{
             return resultSet.getDate("airing");
@@ -635,13 +635,13 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
     @Override
     public int unviewSeason(long seasonId, long userId) {
-        return jdbcTemplate.update("DELETE FROM hasviewedepisode " +
+        return seriesJdbcTemplate.update("DELETE FROM hasviewedepisode " +
                 "WHERE hasviewedepisode.userid = ? AND EXISTS(SELECT * FROM episode WHERE hasviewedepisode.episodeid = episode.id AND episode.seasonid = ?)",
                 new Object[]{userId,seasonId});
     }
     @Override
     public int unviewEpisode(long userId, long episodeId) {
-        int result = jdbcTemplate.update("DELETE FROM hasviewedepisode WHERE hasviewedepisode.userid = ? AND hasviewedepisode.episodeid = ?", new Object[]{userId, episodeId});
+        int result = seriesJdbcTemplate.update("DELETE FROM hasviewedepisode WHERE hasviewedepisode.userid = ? AND hasviewedepisode.episodeid = ?", new Object[]{userId, episodeId});
         return result;
     }
 
@@ -670,7 +670,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public int unlikePost(long userId, long postId) {
-        int numRows = jdbcTemplate.update("DELETE FROM seriesreview WHERE userid = ? AND id = ?", new Object[]{userId, postId});
+        int numRows = seriesJdbcTemplate.update("DELETE FROM seriesreview WHERE userid = ? AND id = ?", new Object[]{userId, postId});
         if(numRows != 0) {
             addPointsToPost(postId, -1);
         }
@@ -702,7 +702,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private boolean likedComment(long userId, long commentId) {
-        Integer count = jdbcTemplate.queryForObject("SELECT count(*) FROM haslikedseriesreviewcomment WHERE seriesreviewcomment = ? AND userid = ?",
+        Integer count = seriesJdbcTemplate.queryForObject("SELECT count(*) FROM haslikedseriesreviewcomment WHERE seriesreviewcomment = ? AND userid = ?",
                 new Object[]{commentId,userId},
                 Integer.class);
         return count > 0;
@@ -710,7 +710,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public int unlikeComment(long userId, long commentId) {
-        int numRows = jdbcTemplate.update("DELETE FROM haslikedseriesreviewcomment WHERE seriesreviewcomment = ? AND userid = ?", new Object[]{commentId, userId});
+        int numRows = seriesJdbcTemplate.update("DELETE FROM haslikedseriesreviewcomment WHERE seriesreviewcomment = ? AND userid = ?", new Object[]{commentId, userId});
         if(numRows != 0) {
             addPointsToComment(commentId, -1);
         }
@@ -719,13 +719,13 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public int removeComment(long commentId) {
-        int numRows = jdbcTemplate.update("DELETE FROM seriesreviewcomments WHERE id = ?", new Object[]{commentId});
+        int numRows = seriesJdbcTemplate.update("DELETE FROM seriesreviewcomments WHERE id = ?", new Object[]{commentId});
         return numRows;
     }
 
     @Override
     public int removePost(long postId) {
-        int numRows = jdbcTemplate.update("DELETE FROM seriesreview WHERE id = ?", new Object[]{postId});
+        int numRows = seriesJdbcTemplate.update("DELETE FROM seriesreview WHERE id = ?", new Object[]{postId});
         return numRows;
     }
 
@@ -734,7 +734,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         Double oldRating = getUserSeriesRating(userId,seriesId);
         int numRows = 0;
         if(oldRating != null){
-            jdbcTemplate.update("UPDATE userseriesrating SET rating = ? WHERE userid = ? AND seriesid = ?",
+            seriesJdbcTemplate.update("UPDATE userseriesrating SET rating = ? WHERE userid = ? AND seriesid = ?",
                     new Object[]{rating,userId,seriesId});
         } else {
             Map<String, Object> args = new HashMap<>();
@@ -746,14 +746,14 @@ public class SeriesDaoJdbc implements SeriesDao {
         if(numRows == 0) {
             return 0;
         }
-        Double avg = jdbcTemplate.queryForObject("SELECT avg(rating) FROM userseriesrating WHERE seriesid = ?",new Object[]{seriesId},Double.class);
-        jdbcTemplate.update("UPDATE series SET userRating = ?  WHERE id = ?",new Object[]{avg,seriesId});
+        Double avg = seriesJdbcTemplate.queryForObject("SELECT avg(rating) FROM userseriesrating WHERE seriesid = ?",new Object[]{seriesId},Double.class);
+        seriesJdbcTemplate.update("UPDATE series SET userRating = ?  WHERE id = ?",new Object[]{avg,seriesId});
         return numRows;
     }
 
     @Override
     public long getPostAuthorId(long postId) {
-        List<Long> idList = jdbcTemplate.query("SELECT userid FROM seriesreview WHERE seriesreview.id = ?", new Object[]{postId},
+        List<Long> idList = seriesJdbcTemplate.query("SELECT userid FROM seriesreview WHERE seriesreview.id = ?", new Object[]{postId},
                 (resultSet, i) -> {
                     return resultSet.getLong("userid");
                 });
@@ -763,7 +763,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public long getCommentAuthorId(long commentId) {
-        List<Long> idList = jdbcTemplate.query("SELECT userid FROM seriesreviewcomments WHERE id = ?", new Object[]{commentId},
+        List<Long> idList = seriesJdbcTemplate.query("SELECT userid FROM seriesreviewcomments WHERE id = ?", new Object[]{commentId},
                 (resultSet, i) -> {
                     return resultSet.getLong("userid");
                 });
@@ -772,21 +772,21 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private void addPointsToComment(long commentId, int points) {
-        jdbcTemplate.update("UPDATE seriesreviewcomments SET numlikes = numlikes + (?) WHERE id = ?", new Object[]{points, commentId});
+        seriesJdbcTemplate.update("UPDATE seriesreviewcomments SET numlikes = numlikes + (?) WHERE id = ?", new Object[]{points, commentId});
     }
 
     private void addPointsToPost(long postId, int points) {
-        jdbcTemplate.update("UPDATE seriesreview SET numlikes = numlikes + (?) WHERE id = ?", new Object[]{points, postId});
+        seriesJdbcTemplate.update("UPDATE seriesreview SET numlikes = numlikes + (?) WHERE id = ?", new Object[]{points, postId});
     }
 
     private boolean hasLikedPost(long userId, long postId) {
-        Integer count = jdbcTemplate.queryForObject("SELECT count(*) FROM haslikedseriesreview " +
+        Integer count = seriesJdbcTemplate.queryForObject("SELECT count(*) FROM haslikedseriesreview " +
                 "WHERE userid = ? AND seriesreview = ?", new Object[]{userId, postId},Integer.class);
         return count > 0;
     }
 
     private boolean userFollows(long seriesId, long userId) {
-        List<Integer> series = jdbcTemplate.query("SELECT * " +
+        List<Integer> series = seriesJdbcTemplate.query("SELECT * " +
                         "FROM follows " +
                         "WHERE follows.userid = ? AND follows.seriesid = ?", new Object[]{userId, seriesId},
                 (resultSet, i) -> resultSet.getInt("seriesid"));
@@ -794,7 +794,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     private Double getUserSeriesRating(long userId,long seriesId) {
-        List<Double> series = jdbcTemplate.query("SELECT * " +
+        List<Double> series = seriesJdbcTemplate.query("SELECT * " +
                         "FROM userseriesrating " +
                         "WHERE userid = ? AND seriesid = ?", new Object[]{userId, seriesId},
                 (resultSet, i) -> resultSet.getDouble("rating"));

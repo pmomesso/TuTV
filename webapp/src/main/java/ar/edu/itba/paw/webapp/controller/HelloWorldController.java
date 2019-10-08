@@ -88,9 +88,11 @@ public class HelloWorldController {
 	}
 
     @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
-    public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId) throws NotFoundException, UnauthorizedException {
+    public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId,
+									HttpServletRequest request) throws NotFoundException, UnauthorizedException {
 		seriesService.setViewedEpisode(episodeId);
-        return new ModelAndView("redirect:/series?id=" + seriesId);
+		String referer = request.getHeader("Referer");
+        return new ModelAndView("redirect:" + referer);
     }
 
     @RequestMapping(value = "/unviewEpisode", method = RequestMethod.POST)

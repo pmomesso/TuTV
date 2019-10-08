@@ -1,12 +1,13 @@
 package ar.edu.itba.paw.model;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Post {
 
     private long postId;
     private String body;
-    private List<Comment> comments;
+    private List<Comment> comments = Collections.emptyList();
     private User user;
     private long userId;
     private int points;

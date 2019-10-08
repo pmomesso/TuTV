@@ -23,10 +23,10 @@ public class Series  {
     private Date firstAired;
     private Date added;
     private Date updated;
-    private List<ActorRole> actorList = new LinkedList<ActorRole>();
-    private List<Season> seasons = new LinkedList<>();
-    private Set<Genre> genresList = new HashSet<>();
-    private List<Post> postList;
+    private Set<Genre> genresSet = new HashSet<>();
+    private List<ActorRole> actorList = Collections.emptyList();
+    private List<Season> seasons = Collections.emptyList();
+    private List<Post> postList = Collections.emptyList();
 
     public Series(String name) {
         this.name = name;
@@ -120,14 +120,14 @@ public class Series  {
     }
 
     public void addGenre(Genre genre) {
-        genresList.add(genre);
+        genresSet.add(genre);
     }
 
     public void addGenres(Collection<Genre> genres){
-        genresList.addAll(genres);
+        genresSet.addAll(genres);
     }
     public Set<Genre> getGenres(){
-        return genresList;
+        return genresSet;
     }
     public void setRunningTime(int runningTime) {
         this.runningTime = runningTime;

@@ -1,11 +1,12 @@
 package ar.edu.itba.paw.model;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Season {
 
     private String name;
-    private List<Episode> episodeList;
+    private List<Episode> episodeList = Collections.emptyList();
     private int seasonNumber;
     private long seasonId;
     private boolean viewed;
