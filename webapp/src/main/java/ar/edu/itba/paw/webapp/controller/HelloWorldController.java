@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.form.*;
@@ -193,13 +194,14 @@ public class HelloWorldController {
     }
 
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
-	public ModelAndView profile(@RequestParam("id") long userId,@ModelAttribute("updateUserForm") final UpdateUserForm form) throws NotFoundException {
+	public ModelAndView profile(@RequestParam("id") long userId,@ModelAttribute("updateUserForm") final UpdateUserForm form) throws NotFoundException, UnauthorizedException, BadRequestException {
 
 		User u = userService.findById(userId);
 		ModelAndView mav = new ModelAndView("profile");
 		mav.addObject("userProfile", u);
 		mav.addObject("hasAvatar", userService.getUserAvatar(userId).isPresent());
 		mav.addObject("followedSeries",seriesService.getAddedSeries(userId));
+		mav.addObject("recentlyWatched", seriesService.getRecentlyWatchedList(7));
 		return mav;
 	}
 
@@ -258,7 +260,7 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/user/update", method = RequestMethod.POST)
-	public ModelAndView updateUsername(@Valid @ModelAttribute("updateUserForm") final UpdateUserForm form, final BindingResult errors) throws UnauthorizedException, NotFoundException {
+	public ModelAndView updateUsername(@Valid @ModelAttribute("updateUserForm") final UpdateUserForm form, final BindingResult errors) throws UnauthorizedException, NotFoundException, BadRequestException {
 		User u = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
 		if(errors.hasErrors()){
 			ModelAndView mav = profile(u.getId(),form);

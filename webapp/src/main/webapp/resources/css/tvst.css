@@ -17587,7 +17587,6 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
  zoom:1;
  padding:0;
  border:none;
- width:110px;
  height:40px
 }
 #profile .profile-nav .nav-tabs>li.active a {
@@ -17608,7 +17607,7 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
  margin:0;
  padding-bottom:0;
  text-decoration:none;
- border-bottom:2px solid #f8f0c8;
+ border-bottom:2px solid #44d9e6;
  background-color:transparent
 }
 #profile .profile-nav .nav-tabs>li .label {
@@ -18546,7 +18545,7 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
  z-index:1
 }
 #meme-wizard .submit-meme .submit-meme-btn,
-.new-comment .submit-comment .submit-comment-btn {
+.new-comment .submit-comment .submit-comment-btn, .submit-comment-btn {
  color:#555;
  font-family: proximaNova;
  text-transform:uppercase;

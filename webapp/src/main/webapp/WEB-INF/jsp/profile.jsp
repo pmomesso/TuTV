@@ -25,7 +25,7 @@
     <script src="<c:url value="/resources/js/popper.min.js"/>"></script>
     <script src="<c:url value="/resources/js/bootstrap.js"/>"></script>
     <script src="<c:url value="/resources/js/navigator.js"/>"></script>
-    <c:if test="${user.id == userProfile.id}">
+    <c:if test="${user.id eq userProfile.id}">
         <script src="<c:url value="/resources/js/profile.js"/>"></script>
     </c:if>
 </head>
@@ -92,77 +92,93 @@
                             </form>
                         </div>
                     </div>
-                </div>
-                <div class="profile-content">
-                    <div class="wrapper">
-                        <div class="tab-content">
-                            <div id="tab-shows" class="tab-pane <c:if test="${!exists && empty formErrors}">active</c:if>" role="tabpanel">
-                                <div id="profile-shows" style="margin-top: 20px; margin-left: 20px">
-                                    <ul class="posters-list shows-list explore-list list-unstyled list-inline" style="overflow: visible">
-                                    <c:forEach items="${followedSeries}" var="serie">
-                                        <li id="${serie.id}">
-                                            <div class="image-crop">
-                                                <a href="<c:url value="/series?id=${serie.id}"/>">
-                                                    <img src="<c:url value="${serie.posterUrl}"/>"
-                                                         alt="${serie.name}">
-                                                </a>
-                                                <div class="overlay">
-                                                    <a href="<c:url value="/series?id=${serie.id}"/>" class="zoom-btn overlay-btn" title="info"></a>
-                                                </div>
-                                                <div class="side progress-box">
-                                                    <div class="loader rotating dark small visible"></div>
-                                                </div>
+                    <div class="profile-content">
+                        <div class="wrapper">
+                            <div class="tab-content">
+                                <div id="tab-shows" class="tab-pane <c:if test="${!exists && empty formErrors}">active</c:if>" role="tabpanel">
+                                    <div id="profile-shows">
+                                        <c:if test="${user.id eq userProfile.id && not empty recentlyWatched}">
+                                            <div id="recently-watched-shows">
+                                                <h2 class="small"><spring:message code="profile.recently"/></h2>
+                                                <section>
+                                                    <ul class="shows-list posters-list list-unstyled list-inline">
+                                                        <c:forEach items="${recentlyWatched}" var="series">
+                                                            <li class="first-loaded">
+                                                                <div class="show">
+                                                                    <a href="<c:url value="/series?id=${series.id}"/>" class="show-link">
+                                                                        <div class="image-crop">
+                                                                            <img src="<c:url value="${series.posterUrl}"/>"
+                                                                                 alt="${series.name}">
+                                                                        </div>
+                                                                    </a>
+                                                                    <div class="poster-details">
+                                                                        <h2><a href="<c:url value="/series?id=${series.id}"/>">${series.name}</a></h2>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </c:forEach>
+                                                    </ul>
+                                                </section>
                                             </div>
-                                            <div class="show-details poster-details">
-                                                <h2><a href="<c:url value="/series?id=${serie.id}"/>">${serie.name}</a></h2>
-                                            </div>
-                                        </li>
-                                    </c:forEach>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div id="tab-information" class="tab-pane <c:if test="${exists || not empty formErrors}">active</c:if>" role="tabpanel">
-                                <section id="basic-settings">
-                                    <div class="row" style="padding: 50px">
-                                        <div class="avatar col-sm-3">
-                                        <c:choose>
-                                            <c:when test="${hasAvatar}">
-                                                <img src="<c:url value="/user/${userProfile.id}/avatar"/>" alt="avatar" class="img-responsive fit-image">
-                                            </c:when>
-                                            <c:otherwise>
-                                                <img src="https://d36rlb2fgh8cjd.cloudfront.net/default-images/default-user-q80.png" alt="avatar" class="img-responsive fit-image">
-                                            </c:otherwise>
-                                        </c:choose>
-                                        </div>
-                                        <div class="col-sm-9 my-auto">
-                                            <div class="other-infos infos-zone">
-                                                <c:url value="/user/update" var="updateUrl"/>
-                                                <form:form modelAttribute="updateUserForm" action="${updateUrl}" method="post" enctype="application/x-www-form-urlencoded">
-                                                    <div class="row form-group">
-                                                        <form:label class="col-sm-4 control-label" path="username"><spring:message code="register.username"/></form:label>
-                                                        <div class="col-sm-6">
-                                                            <form:input path="username" type="text" class="form-control" name="username" placeholder="JohnDoe" value="${userProfile.userName}"/>
-                                                            <form:errors path="username" element="p" cssClass="m-2 error"/>
-                                                            <c:if test="${exists}">
-                                                                <p class="m-2 error"><spring:message code="profile.usernameExists"/></p>
-                                                            </c:if>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row form-group">
-                                                        <label class="col-sm-4 control-label"><spring:message code="register.mail"/></label>
-                                                        <div class="col-sm-6">
-                                                            <input type="email" class="form-control" name="mail" placeholder="john@doe.com" value="${userProfile.mailAddress}" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row form-group">
-                                                        <button type="submit" class="btn-tvst btn-tvst-light-grey"><spring:message code="profile.save"/></button>
-                                                    </div>
-                                                </form:form>
-                                            </div>
+                                        </c:if>
+                                        <div id="all-shows">
+                                            <h2 class="small"><spring:message code="profile.all"/></h2>
+                                            <section>
+                                                <ul class="shows-list posters-list list-unstyled list-inline">
+                                                    <c:forEach items="${followedSeries}" var="series">
+                                                        <li class="first-loaded">
+                                                            <div class="show">
+                                                                <a href="<c:url value="/series?id=${series.id}"/>" class="show-link">
+                                                                    <div class="image-crop">
+                                                                        <img src="<c:url value="${series.posterUrl}"/>"
+                                                                             alt="${series.name}">
+                                                                    </div>
+                                                                </a>
+                                                                <div class="poster-details">
+                                                                    <h2><a href="<c:url value="/series?id=${series.id}"/>">${series.name}</a></h2>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </c:forEach>
+                                                </ul>
+                                            </section>
                                         </div>
                                     </div>
-                                </section>
-                                <div class="clearfix"></div>
+                                </div>
+                                <div id="tab-information" class="tab-pane <c:if test="${exists || not empty formErrors}">active</c:if>" role="tabpanel">
+                                    <section id="basic-settings" class="container">
+                                        <div class="row text-center" style="padding: 50px">
+                                            <div class="col my-auto self-align-center">
+                                                <div class="other-infos infos-zone">
+                                                    <c:url value="/user/update" var="updateUrl"/>
+                                                    <form:form modelAttribute="updateUserForm" action="${updateUrl}" method="post" enctype="application/x-www-form-urlencoded">
+                                                        <div class="row form-group">
+                                                            <form:label class="col-sm-4 control-label" path="username"><spring:message code="register.username"/></form:label>
+                                                            <div class="col-sm-6">
+                                                                <form:input path="username" type="text" class="form-control" name="username" placeholder="JohnDoe" value="${userProfile.userName}"/>
+                                                                <form:errors path="username" element="p" cssClass="m-2 error"/>
+                                                                <c:if test="${exists}">
+                                                                    <p class="m-2 error"><spring:message code="profile.usernameExists"/></p>
+                                                                </c:if>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row form-group">
+                                                            <label class="col-sm-4 control-label"><spring:message code="register.mail"/></label>
+                                                            <div class="col-sm-6">
+                                                                <input type="email" class="form-control" name="mail" placeholder="john@doe.com" value="${userProfile.mailAddress}" disabled>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row form-group text-center">
+                                                            <div class="col">
+                                                                <button type="submit" class="submit-comment-btn"><spring:message code="profile.save"/></button>
+                                                            </div>
+                                                        </div>
+                                                    </form:form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
                             </div>
                         </div>
                     </div>
