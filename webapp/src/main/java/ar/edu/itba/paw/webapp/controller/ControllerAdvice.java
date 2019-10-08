@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -24,8 +25,8 @@ public class ControllerAdvice {
     @ExceptionHandler(Exception.class)
     public final ModelAndView globalExceptionHandler(Exception ex, WebRequest request) {
         final ModelAndView mav = new ModelAndView("error");
-        if(ex instanceof ApiException){
-            ApiException apiException = (ApiException) ex;
+        if(ex instanceof ApiException || ex instanceof MaxUploadSizeExceededException){
+            ApiException apiException = (ex instanceof ApiException) ? (ApiException) ex : new BadRequestException();
             mav.addObject("status",apiException.getStatus());
             mav.addObject("body",apiException.getBody());
             mav.addObject("details",apiException.getDetails());

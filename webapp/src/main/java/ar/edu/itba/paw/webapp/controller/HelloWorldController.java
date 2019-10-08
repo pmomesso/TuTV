@@ -9,6 +9,7 @@ import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.form.*;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -21,8 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class HelloWorldController {
@@ -248,13 +248,17 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/uploadAvatar", method = RequestMethod.POST)
-	public ModelAndView uploadAvatar(@RequestParam("avatar") MultipartFile avatar) throws UnauthorizedException {
+	public ModelAndView uploadAvatar(@RequestParam("avatar") MultipartFile avatar) throws UnauthorizedException, BadRequestException {
 		User u = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-
+		String extension = FilenameUtils.getExtension(avatar.getOriginalFilename());
+		final List<String> supportedExtensions = Arrays.asList("png","jpg","jpeg");
+		if(!supportedExtensions.contains(extension)){
+			throw new BadRequestException();
+		}
 		try {
 			userService.setUserAvatar(u.getId(), avatar.getBytes());
-		} catch (Exception e) {
-			System.out.println("ERROR EN GETBYTES SETAVATAR");
+		} catch (IOException e) {
+			throw new BadRequestException();
 		}
 
 		return new ModelAndView("redirect:/profile?id="+u.getId());
@@ -293,4 +297,6 @@ public class HelloWorldController {
 			return mav;
 		}
 	}
+
+
 }

@@ -87,8 +87,11 @@
                             <h3 class="popover-title" id="avatarMaxSizeError" style="display: none">
                                 <font color="red"><spring:message code="profile.avatarMaxSize"/> 100KB</font>
                             </h3>
+                            <h3 class="popover-title"  id="wrongFileTypeError" style="display: none">
+                                <font color="red" ><spring:message code="profile.wrongFileType"/></font>
+                            </h3>
                             <form id="avatarFileForm" action="<c:url value="/uploadAvatar"/>" method="post" enctype="multipart/form-data">
-                                <input id="avatarFileInput" type="file" name="avatar" data-max-size="100000">
+                                <input id="avatarFileInput" type="file" name="avatar" data-max-size="100000" accept=".jpg,.jpeg,.png">
                             </form>
                         </div>
                     </div>

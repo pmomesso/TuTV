@@ -3,6 +3,14 @@ $(document).ready(function() {
         $("#uploadAvatarPopup").toggle();
     });
     $('#avatarFileInput').on('change',function() {
+        var value = $(this).val(),
+            file = value.toLowerCase(),
+            extension = file.substring(file.lastIndexOf('.') + 1);
+        var supportedExtensions = ["jpg","jpeg","png"];
+        if(supportedExtensions.indexOf(extension) === -1){
+            $("#wrongFileTypeError").show();
+            return false;
+        }
         var fileInput = $('#avatarFileInput');
         var maxSize = fileInput.data('max-size');
         if (fileInput.get(0).files.length) {
@@ -12,7 +20,7 @@ $(document).ready(function() {
                 return false;
             }
             else{
-                $("#avatarMaxSizeError").hide();
+                //$("#avatarMaxSizeError").hide();
                 $("#avatarFileForm").submit();
             }
         } else {
