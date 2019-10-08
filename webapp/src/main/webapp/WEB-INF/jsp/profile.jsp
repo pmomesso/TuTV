@@ -124,23 +124,41 @@
                                         <div id="all-shows">
                                             <h2 class="small"><spring:message code="profile.all"/></h2>
                                             <section>
-                                                <ul class="shows-list posters-list list-unstyled list-inline">
-                                                    <c:forEach items="${followedSeries}" var="series">
-                                                        <li class="first-loaded">
-                                                            <div class="show">
-                                                                <a href="<c:url value="/series?id=${series.id}"/>" class="show-link">
-                                                                    <div class="image-crop">
-                                                                        <img src="<c:url value="${series.posterUrl}"/>"
-                                                                             alt="${series.name}">
+                                                <c:choose>
+                                                    <c:when test="${not empty followedSeries}">
+                                                        <ul class="shows-list posters-list list-unstyled list-inline">
+                                                            <c:forEach items="${followedSeries}" var="series">
+                                                                <li class="first-loaded">
+                                                                    <div class="show">
+                                                                        <a href="<c:url value="/series?id=${series.id}"/>" class="show-link">
+                                                                            <div class="image-crop">
+                                                                                <img src="<c:url value="${series.posterUrl}"/>"
+                                                                                     alt="${series.name}">
+                                                                            </div>
+                                                                        </a>
+                                                                        <div class="poster-details">
+                                                                            <h2><a href="<c:url value="/series?id=${series.id}"/>">${series.name}</a></h2>
+                                                                        </div>
                                                                     </div>
-                                                                </a>
-                                                                <div class="poster-details">
-                                                                    <h2><a href="<c:url value="/series?id=${series.id}"/>">${series.name}</a></h2>
+                                                                </li>
+                                                            </c:forEach>
+                                                        </ul>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="container h-100">
+                                                            <div class="row justify-content-center h-100">
+                                                                <div class="col-lg-8 col-sm-12 align-self-center">
+                                                                    <div class="text-center m-4">
+                                                                        <h4><spring:message code="watchlist.discover"/></h4>
+                                                                    </div>
+                                                                    <div class="text-center m-4">
+                                                                        <button class="tutv-button m-4" onclick="window.location.href='<c:url value="/"/>'"><spring:message code="watchlist.explore"/></button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </li>
-                                                    </c:forEach>
-                                                </ul>
+                                                        </div>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </section>
                                         </div>
                                     </div>
