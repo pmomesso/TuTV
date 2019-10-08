@@ -53,30 +53,32 @@
                   <!-- Wrapper for carousel items -->
                   <div class="carousel-inner">
                     <c:forEach items="${newShows}" var="newShow" varStatus="status">
-                      <a href="<c:url value="/series?id=${newShow.id}"/>">
                       <c:choose>
                         <c:when test="${status.index == 0}">
                           <div class="carousel-item active">
-                            <img src="<c:url value="https://image.tmdb.org/t/p/original${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">
-                            <div class="carousel-caption">
-                              <h2>${newShow.name}</h2>
-                              <h3>${newShow.numFollowers} <spring:message code="index.followers"/><c:if
-                                      test="${newShow.numFollowers ne 1}"><spring:message code="index.sufix"/></c:if></h3>
-                            </div>
+                            <a href="<c:url value="/series?id=${newShow.id}"/>">
+                              <img src="<c:url value="https://image.tmdb.org/t/p/original${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">
+                              <div class="carousel-caption">
+                                <h2>${newShow.name}</h2>
+                                <h3>${newShow.numFollowers} <spring:message code="index.followers"/><c:if
+                                        test="${newShow.numFollowers ne 1}"><spring:message code="index.sufix"/></c:if></h3>
+                              </div>
+                            </a>
                           </div>
                         </c:when>
                         <c:otherwise>
                           <div class="carousel-item">
-                            <img src="<c:url value="https://image.tmdb.org/t/p/original${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">>
-                            <div class="carousel-caption">
-                              <h2>${newShow.name}</h2>
-                              <h3>${newShow.numFollowers} <spring:message code="index.followers"/><c:if
-                                      test="${newShow.numFollowers ne 1}"><spring:message code="index.sufix"/></c:if></h3>
-                            </div>
+                            <a href="<c:url value="/series?id=${newShow.id}"/>">
+                              <img src="<c:url value="https://image.tmdb.org/t/p/original${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">>
+                              <div class="carousel-caption">
+                                <h2>${newShow.name}</h2>
+                                <h3>${newShow.numFollowers} <spring:message code="index.followers"/><c:if
+                                        test="${newShow.numFollowers ne 1}"><spring:message code="index.sufix"/></c:if></h3>
+                              </div>
+                            </a>
                           </div>
                         </c:otherwise>
                       </c:choose>
-                      </a>
                     </c:forEach>
                   </div>
                   <!-- Carousel controls -->
