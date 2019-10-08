@@ -4,9 +4,13 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.ApiException;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
+import ar.edu.itba.paw.model.exceptions.NotFoundException;
+import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,21 +26,30 @@ public class ControllerAdvice {
     @Autowired
     private UserService userService;
 
+    @ExceptionHandler({BadRequestException.class,MaxUploadSizeExceededException.class})
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public final ModelAndView badRequestHandler(Exception ex, WebRequest request){
+        ApiException apiException = (ex instanceof  BadRequestException) ? (ApiException)ex : new BadRequestException();
+        return setupErrorModelAndView(apiException);
+    }
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    public final ModelAndView unauthorizedHandler(UnauthorizedException ex, WebRequest request){
+        return setupErrorModelAndView(ex);
+    }
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    public final ModelAndView notFoundHandler(NotFoundException ex, WebRequest request){
+        return setupErrorModelAndView(ex);
+    }
+
     @ExceptionHandler(Exception.class)
-    public final ModelAndView globalExceptionHandler(Exception ex, WebRequest request) {
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+    public final ModelAndView serverErrorHandler(Exception ex, WebRequest request) {
         final ModelAndView mav = new ModelAndView("error");
-        if(ex instanceof ApiException || ex instanceof MaxUploadSizeExceededException){
-            ApiException apiException = (ex instanceof ApiException) ? (ApiException) ex : new BadRequestException();
-            mav.addObject("status",apiException.getStatus());
-            mav.addObject("body",apiException.getBody());
-            mav.addObject("details",apiException.getDetails());
-        }
-        //Si es una excepcion no reconocida, respondo con error 500.
-        else{
-            mav.addObject("status","error.500status");
-            mav.addObject("body","error.500body");
-            mav.addObject("details",new ArrayList<>());
-        }
+        mav.addObject("status","error.500status");
+        mav.addObject("body","error.500body");
+        mav.addObject("details",new ArrayList<>());
         return mav;
     }
 
@@ -47,5 +60,13 @@ public class ControllerAdvice {
     public User loggedUser() {
         Optional<User> loggedUser = userService.getLoggedUser();
         return loggedUser.isPresent() ? loggedUser.get() : null;
+    }
+
+    private ModelAndView setupErrorModelAndView(ApiException apiException){
+        final ModelAndView mav = new ModelAndView("error");
+        mav.addObject("status",apiException.getStatus());
+        mav.addObject("body",apiException.getBody());
+        mav.addObject("details",apiException.getDetails());
+        return mav;
     }
 }
