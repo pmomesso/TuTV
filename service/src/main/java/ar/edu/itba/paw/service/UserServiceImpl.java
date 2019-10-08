@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsersExceptLoggedOne() {
         Optional<User> loggedUser = getLoggedUser();
         List<User> usersList = userDao.getAllUsers();
-        return usersList.stream().filter(user -> loggedUser.isPresent() ? (loggedUser.get().getId() == user.getId()) : true).collect(Collectors.toList());
+        return usersList.stream().filter(user -> loggedUser.isPresent() ? (loggedUser.get().getId() != user.getId()) : true).collect(Collectors.toList());
     }
 
     @Override

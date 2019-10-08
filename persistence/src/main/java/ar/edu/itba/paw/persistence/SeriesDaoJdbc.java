@@ -125,7 +125,8 @@ public class SeriesDaoJdbc implements SeriesDao {
                 .withTableName("follows");
         viewedEpisodesjdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("hasviewedepisode")
-                .usingColumns("userid", "episodeid");
+                .usingColumns("userid", "episodeid")
+                .usingGeneratedKeyColumns("id");
         seriesReviewJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("seriesreview")
                 .usingColumns("userid", "seriesid", "body");
@@ -250,6 +251,8 @@ public class SeriesDaoJdbc implements SeriesDao {
         List<Season> seasonList = getSeasonsBySeriesId(s.getId());
         for (Season season : seasonList) {
             season.setEpisodes(getEpisodesBySeasonId(season.getId(), userId));
+            season.setSeasonAired(season.getEpisodeList().stream().anyMatch(episode -> episode.getAiring() != null
+                    && Calendar.getInstance().getTime().compareTo(episode.getAiring()) >= 0));
         }
         setSeasonsViewed(seasonList);
         s.setSeasons(seasonList);
@@ -405,7 +408,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public List<Episode> getEpisodesBySeasonId(long seasonId, long userId) {
-        List<Episode> episodeList = jdbcTemplate.query("SELECT episode.*, exists(SELECT * FROM hasviewedepisode WHERE userid = ? AND hasviewedepisode.episodeid = episode.id) as viewed " +
+        List<Episode> episodeList = jdbcTemplate.query("SELECT episode.*, exists(SELECT * FROM hasviewedepisode WHERE userid = ? AND hasviewedepisode.episodeid = episode.id AND current_date >= episode.aired) as viewed " +
                 "FROM episode  " +
                 "WHERE episode.seasonid = ? " +
                 "ORDER BY numepisode", new Object[]{userId, seasonId}, (resultSet, i) -> {
@@ -437,7 +440,8 @@ public class SeriesDaoJdbc implements SeriesDao {
                         "AND NOT EXISTS(SELECT e1.id FROM episode AS e1 WHERE NOT EXISTS(SELECT hasviewedepisode.episodeid\n" +
                         "FROM hasviewedepisode\n" +
                         "WHERE hasviewedepisode.episodeid = e1.id AND hasviewedepisode.userid = ?) AND e1.seriesid = episode.seriesid AND e1.aired < episode.aired)\n" +
-                        "AND episode.seriesid IN (SELECT follows.seriesid FROM follows WHERE follows.userid = ?)",
+                        "AND episode.seriesid IN (SELECT follows.seriesid FROM follows WHERE follows.userid = ?)\n" +
+                        "AND current_date >= episode.aired",
                 new Object[]{userId, userId, userId}, (resultSet, i) -> {
                     Series series = new Series();
                     series.setName(resultSet.getString("seriesname"));
@@ -603,18 +607,29 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public int setViewedEpisode(long episodeId, long userId) {
+        List<Date> dateList = jdbcTemplate.query("SELECT episode.aired AS airing\n" +
+                "FROM episode\n" +
+                "WHERE episode.id = ?", new Object[]{episodeId}, (resultSet, i) ->{
+            return resultSet.getDate("airing");
+        });
+        if(dateList.isEmpty()) return 0;
+        Date date = dateList.get(0);
+        if(Calendar.getInstance().getTime().compareTo(date) < 0) return 0;
         Map<String, Object> args = new HashMap<>();
         args.put("userId",userId);
         args.put("episodeId", episodeId);
         int numRowsAffected = viewedEpisodesjdbcInsert.execute(args);
         return numRowsAffected;
     }
+
     @Override
     public int setViewedSeason(long seasonId, long userId) {
         List<Episode> seasonEpisodes = getEpisodesBySeasonId(seasonId,userId);
         int rows = 0;
-        for(Episode episode  : seasonEpisodes){
-            rows += setViewedEpisode(episode.getId(),userId);
+        for(Episode episode : seasonEpisodes) {
+            if(episode.getAiring() != null && Calendar.getInstance().getTime().compareTo(episode.getAiring()) >= 0) {
+                rows += setViewedEpisode(episode.getId(),userId);
+            }
         }
         return rows;
     }
