@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -72,7 +73,13 @@ public class UserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView showLogin(@RequestParam(required = false) String error) {
-        return new ModelAndView("login");
+        Optional<User> user = userService.getLoggedUser();
+        if(user.isPresent()){
+            return new ModelAndView("redirect:/");
+        }
+        else{
+            return new ModelAndView("login");
+        }
     }
 
     @RequestMapping(value = "/registrationsuccess", method = RequestMethod.GET)
