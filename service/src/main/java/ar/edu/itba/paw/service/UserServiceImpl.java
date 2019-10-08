@@ -15,9 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -57,9 +55,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Either<User, Errors> createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) {
-        if(userDao.userNameExists(userName)) return Either.alternative(Errors.USERNAME_ALREADY_IN_USE);
-        if(userDao.mailIsTaken(mail)) return Either.alternative(Errors.MAIL_ALREADY_IN_USE);
+    public Either<User, Collection<Errors>> createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) {
+        boolean usernameExists = userDao.userNameExists(userName);
+        boolean mailIsTaken = userDao.mailIsTaken(mail);
+        if(usernameExists || mailIsTaken){
+            List<Errors> errors = new ArrayList<>();
+            if(usernameExists)
+                errors.add(Errors.USERNAME_ALREADY_IN_USE);
+            if(mailIsTaken)
+                errors.add(Errors.MAIL_ALREADY_IN_USE);
+            return Either.alternative(errors);
+        }
 
         String hashedPassword = passwordEncoder.encode(password);
         User u = userDao.createUser(userName, hashedPassword, mail, isAdmin).get();

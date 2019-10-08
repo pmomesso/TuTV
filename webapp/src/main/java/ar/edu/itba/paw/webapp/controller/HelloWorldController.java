@@ -3,6 +3,8 @@ package ar.edu.itba.paw.webapp.controller;
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.either.Either;
+import ar.edu.itba.paw.model.errors.Errors;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
@@ -16,12 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.Collection;
 import java.util.Optional;
 
 @Controller
@@ -230,8 +230,19 @@ public class HelloWorldController {
 		}
 		final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 
-		userService.createUser(form.getUsername(), form.getPassword(), form.getMail(),false, baseUrl);
-		return new ModelAndView("redirect:/registrationsuccess");
+		Either<User, Collection<Errors>> e = userService.createUser(form.getUsername(), form.getPassword(), form.getMail(),false, baseUrl);
+		ModelAndView mav;
+		if(!e.isValuePresent()){
+			mav = showRegister(form);
+			if(e.getAlternative().contains(Errors.USERNAME_ALREADY_IN_USE))
+				mav.addObject("usernameExists",true);
+			if(e.getAlternative().contains(Errors.MAIL_ALREADY_IN_USE))
+				mav.addObject("mailExists",true);
+		}
+		else{
+			mav = new ModelAndView("redirect:/registrationsuccess");
+		}
+		return mav;
 	}
 
 	@RequestMapping(value = "/uploadAvatar", method = RequestMethod.POST)

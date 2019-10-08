@@ -6,6 +6,7 @@ import ar.edu.itba.paw.model.errors.Errors;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +15,7 @@ public interface UserService {
 
 	Optional<User> findByMail(String mail);
 
-	Either<User, Errors> createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) throws UnauthorizedException;
+	Either<User, Collection<Errors>> createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) throws UnauthorizedException;
 
 	Optional<User> getLoggedUser();
 

@@ -41,7 +41,9 @@
                         <div class="col-7 align-self-center">
                             <form:input class="m-3 w-100" path="mail" type="text"/>
                             <form:errors path="mail" element="p" cssClass="m-3 error"/>
-
+                            <c:if test="${mailExists}">
+                                <p class="m-3 error"><spring:message code="register.mailExists"/></p>
+                            </c:if>
                         </div>
                     </div>
                     <div class="row w-100">
@@ -51,6 +53,9 @@
                         <div class="col-7 align-self-center">
                             <form:input class="m-3 w-100" path="username" type="text"/>
                             <form:errors path="username" element="p" cssClass="m-3 error"/>
+                            <c:if test="${usernameExists}">
+                                <p class="m-3 error"><spring:message code="profile.usernameExists"/></p>
+                            </c:if>
                         </div>
                     </div>
                     <div class="row w-100">
