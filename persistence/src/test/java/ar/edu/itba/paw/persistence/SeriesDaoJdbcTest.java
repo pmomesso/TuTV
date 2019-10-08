@@ -33,6 +33,7 @@ public class SeriesDaoJdbcTest {
     private static final String ADDED = "2000-01-01";
     private static final String UPDATED = "2000-01-01";
     private static final String POSTER_URL = "url/poster";
+    private static final String EPISODE_AIRING = "2000-01-01";
     private static final String BANNER_URL = "url/banner";
     private static final int FOLLOWERS = 6;
     private static final int GENRE_ID = 7;
@@ -59,8 +60,8 @@ public class SeriesDaoJdbcTest {
                 ID, TVDB_ID, NAME,DESCRIPTION, TOTAL_RATING,STATUS,RUNTIME,NETWORK_ID,FIRST_AIRED,ID_IMDB,ADDED,UPDATED,POSTER_URL,BANNER_URL,FOLLOWERS));
         jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO hasgenre (seriesid,genreid) VALUES(%d,%d)",ID,GENRE_ID));
         jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO season (seasonid,seriesid,seasonnumber) VALUES(%d,%d,%d)",SEASON_ID,ID,1));
-        jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO episode (id,name,seriesId,overview,numEpisode,tvdbid,seasonid)VALUES(%d,'%s',%d,'%s',%d,%d,%d)",
-                EPISODE_ID, NAME,ID,DESCRIPTION,1,TVDB_ID,SEASON_ID));
+        jdbcTemplate.execute(String.format(Locale.US,"INSERT INTO episode (id,name,seriesId,overview,numEpisode,tvdbid,seasonid,aired)VALUES(%d,'%s',%d,'%s',%d,%d,%d,'%s')",
+                EPISODE_ID, NAME,ID,DESCRIPTION,1,TVDB_ID,SEASON_ID, EPISODE_AIRING));
     }
     private void insertUser(){
         final String username = "username";
@@ -637,15 +638,18 @@ public class SeriesDaoJdbcTest {
         populateDatabase();
         insertUser();
         //Ejercitar
+        int rowsAffected = 0;
         try {
-            seriesDao.setViewedEpisode(EPISODE_ID + 1, USER_ID);
-        }catch(DataIntegrityViolationException e){
+            rowsAffected = seriesDao.setViewedEpisode(EPISODE_ID + 1, USER_ID);
+        } catch(DataIntegrityViolationException e) {
             //Asserts
             Assert.assertEquals(0,JdbcTestUtils.countRowsInTable(jdbcTemplate,"hasviewedepisode"));
             return;
         }
-        //Si no lanzo excepcion, falla el test.
-        Assert.fail();
+        //Si no lanzo excepcion y rowsAffected > 0, falla el test.
+        if(rowsAffected > 0) {
+            Assert.fail();
+        }
     }
     @Test
     public void setViewedSeasonByWrongIdTest(){

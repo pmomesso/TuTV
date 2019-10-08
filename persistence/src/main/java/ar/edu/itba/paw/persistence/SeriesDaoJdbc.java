@@ -614,7 +614,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         });
         if(dateList.isEmpty()) return 0;
         Date date = dateList.get(0);
-        if(Calendar.getInstance().getTime().compareTo(date) < 0) return 0;
+        if(date != null && Calendar.getInstance().getTime().compareTo(date) < 0) return 0;
         Map<String, Object> args = new HashMap<>();
         args.put("userId",userId);
         args.put("episodeId", episodeId);
