@@ -179,7 +179,7 @@ namespace ApiCrawlerTuTV.Model.TheMovieDb {
     }
 
     public class TheMovieDbEpisode : IComparable<TheMovieDbEpisode> {
-        public string air_date { get; set; }
+        public DateTime? air_date { get; set; }
         public int episode_number { get; set; }
         public int id { get; set; }
         public string name { get; set; }
@@ -201,7 +201,7 @@ namespace ApiCrawlerTuTV.Model.TheMovieDb {
             e.name = this.name;
             e.seasonNumber = this.season_number;
             e.TvDbId = this.id;
-
+            e.aired = this.air_date;
             return e;
         }
 

@@ -14,6 +14,8 @@ namespace ApiCrawlerTuTV.Model {
         public Season season { get; set; }
         public int TvDbId { get; set; }
 
+        public DateTime? aired { get; set; }
+
         public int CompareTo(Episode other) {
             return this.id.CompareTo(other.id);
         }

@@ -73,9 +73,9 @@ namespace ApiCrawlerTuTV {
                 cmd.Connection = conn;
 
                 cmd.CommandText = "INSERT INTO episode " +
-                    "(id, seriesid, seasonid, numepisode, name, overview, tvdbid)" +
+                    "(id, aired, seriesid, seasonid, numepisode, name, overview, tvdbid)" +
                     " VALUES " +
-                    "(@id, @seriesId, @seasonid, @numepisode, @name, @overview, @tvdbid) " +
+                    "(@id, @aired, @seriesId, @seasonid, @numepisode, @name, @overview, @tvdbid) " +
                     "RETURNING id";
 
                 cmd.Parameters.AddWithValue("id", ep.id);
@@ -89,6 +89,11 @@ namespace ApiCrawlerTuTV {
                     cmd.Parameters.AddWithValue("name",         ep.name);
                 else
                     cmd.Parameters.AddWithValue("name",         DBNull.Value);
+
+                if (ep.aired != null)
+                    cmd.Parameters.AddWithValue("aired", ep.aired);
+                else
+                    cmd.Parameters.AddWithValue("aired", DBNull.Value);
 
                 if (ep.description != null)
                     cmd.Parameters.AddWithValue("overview",     ep.description);

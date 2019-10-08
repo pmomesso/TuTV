@@ -80,7 +80,8 @@ namespace ApiCrawlerTuTV {
                     foreach (Episode ep in se.episodeList)
                         dbm.InsertOrUpdateEpisode(ep);
                 }
-                    
+
+                count++;
             }
 
             MessageBox.Show(count + " series insertadas con éxito.");
