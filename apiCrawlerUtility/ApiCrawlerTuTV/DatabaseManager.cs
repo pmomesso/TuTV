@@ -19,7 +19,71 @@ namespace ApiCrawlerTuTV {
             conn.Open();
         }
 
+        #region exists
+        public bool DoesNetworkExist(Network n) {
+            using (var cmd = new NpgsqlCommand()) {
+                cmd.Connection = conn;
+                cmd.CommandText = "SELECT EXISTS(SELECT * FROM network WHERE networkId = @id)";
+                cmd.Parameters.AddWithValue("id", n.id);
+                return (bool)cmd.ExecuteScalar();
+            }
+        }
+        public bool DoesGenreExist(Genre g) {
+            using (var cmd = new NpgsqlCommand()) {
+                cmd.Connection = conn;
+                cmd.CommandText = "SELECT EXISTS(SELECT * FROM genres WHERE id = @id)";
+                cmd.Parameters.AddWithValue("id", g.id);
+                return (bool)cmd.ExecuteScalar();
+            }
+        }
+        public bool DoesSeriesExist(Series s) {
+            using (var cmd = new NpgsqlCommand()) {
+                cmd.Connection = conn;
+                cmd.CommandText = "SELECT EXISTS(SELECT * FROM series WHERE id = @id)";
+                cmd.Parameters.AddWithValue("id", s.id);
+                return (bool)cmd.ExecuteScalar();
+            }
+        }
+        public bool DoesEpisodeExist(Episode ep) {
+            using (var cmd = new NpgsqlCommand()) {
+                cmd.Connection = conn;
+                cmd.CommandText = "SELECT EXISTS(SELECT * FROM episode WHERE id = @id)";
+                cmd.Parameters.AddWithValue("id", ep.id);
+                return (bool)cmd.ExecuteScalar();
+            }
+        }
+        public bool DoesSeasonExist(Season se) {
+            using (var cmd = new NpgsqlCommand()) {
+                cmd.Connection = conn;
+                cmd.CommandText = "SELECT EXISTS(SELECT * FROM season WHERE seasonid = @id)";
+                cmd.Parameters.AddWithValue("id", se.id);
+                return (bool)cmd.ExecuteScalar();
+            }
+        }
+        public bool DoesActorExist(Actor a) {
+            using (var cmd = new NpgsqlCommand()) {
+                cmd.Connection = conn;
+                cmd.CommandText = "SELECT EXISTS(SELECT * FROM actor WHERE id = @id)";
+                cmd.Parameters.AddWithValue("id", a.id);
+                return (bool)cmd.ExecuteScalar();
+            }
+        }
+        public bool DoesActorRoleExist(ActorRole ar) {
+            using (var cmd = new NpgsqlCommand()) {
+                cmd.Connection = conn;
+                cmd.CommandText = "SELECT EXISTS(SELECT * FROM actorRoles WHERE seriesId = @seriesId AND actorId = @actorId)";
+                cmd.Parameters.AddWithValue("seriesId", ar.series.id);
+                cmd.Parameters.AddWithValue("actorId", ar.actor.id);
+                return (bool)cmd.ExecuteScalar();
+            }
+        }
+        #endregion
+
+
         public int InsertOrUpdateNetwork(Network n) {
+            if (DoesNetworkExist(n))
+                return n.id;
+
             using (var cmd = new NpgsqlCommand()) {
                 cmd.Connection = conn;
 
@@ -32,6 +96,10 @@ namespace ApiCrawlerTuTV {
         }
 
         public int InsertOrUpdateGenre(Genre g) {
+            if (DoesGenreExist(g))
+                return g.id;
+
+
             using (var cmd = new NpgsqlCommand()) {
                 cmd.Connection = conn;
 
@@ -44,6 +112,9 @@ namespace ApiCrawlerTuTV {
         }
 
         public int InsertOrUpdateActor(Actor a) {
+            if (DoesActorExist(a))
+                return a.id;
+
             using (var cmd = new NpgsqlCommand()) {
                 cmd.Connection = conn;
 
@@ -56,6 +127,9 @@ namespace ApiCrawlerTuTV {
         }
 
         public int InsertOrUpdateSeason(Season se) {
+            if (DoesSeasonExist(se))
+                return se.id;
+
             using (var cmd = new NpgsqlCommand()) {
                 cmd.Connection = conn;
 
@@ -69,6 +143,9 @@ namespace ApiCrawlerTuTV {
         }
 
         public int InsertOrUpdateEpisode(Episode ep) {
+            if (DoesEpisodeExist(ep))
+                return ep.id;
+
             using (var cmd = new NpgsqlCommand()) {
                 cmd.Connection = conn;
 
@@ -104,7 +181,10 @@ namespace ApiCrawlerTuTV {
             }
         }
 
-        public int InsertOrUpdateActorRole(ActorRole ar) {
+        public int? InsertOrUpdateActorRole(ActorRole ar) {
+            if (DoesActorRoleExist(ar))
+                return ar.id;
+
             using (var cmd = new NpgsqlCommand()) {
                 cmd.Connection = conn;
 
@@ -122,6 +202,9 @@ namespace ApiCrawlerTuTV {
         }
 
         public int InsertOrUpdateSeries(Series s) {
+            if (DoesSeriesExist(s))
+                return s.id;
+
             int DatabaseSeriesId;
 
             using (var cmd = new NpgsqlCommand()) {

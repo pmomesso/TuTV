@@ -90,7 +90,7 @@ namespace ApiCrawlerTuTV {
             groupBox1.ResetText();
             groupBox1.Enabled = true;
         }
-
+        /*
         private void CrawlTvDb() {
 
             int seriesIdFromNum = int.Parse(seriesIdFrom.Text);
@@ -160,6 +160,7 @@ namespace ApiCrawlerTuTV {
             groupBox1.ResetText();
             groupBox1.Enabled = true;
         }
+        */
 
         private void Button1_Click_1(object sender, EventArgs e) {
             CrawlMovieDb();

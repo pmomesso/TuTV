@@ -55,6 +55,18 @@ namespace ApiCrawlerTuTV {
                         TheMovieDbSeries MovieDbS = JsonConvert.DeserializeObject<TheMovieDbSeries>(jsonString);
                         Series s = MovieDbS.ToSeries();
 
+                        if (String.IsNullOrEmpty(s.seriesName))
+                            continue;
+
+                        if (String.IsNullOrEmpty(s.seriesDescription))
+                            continue;
+
+                        if (String.IsNullOrEmpty(s.status))
+                            continue;
+
+                        if (s.firstAired == null)
+                            continue;
+
                         if (String.IsNullOrEmpty(s.bannerUrl))
                             continue;
 
@@ -68,6 +80,10 @@ namespace ApiCrawlerTuTV {
                             se.episodeList = await GetEpisodesBySeriesAndSeasonAsync(s, se);
                             if (se.episodeList.Count <= 0)
                                 continue;
+
+                            foreach (Episode ep in se.episodeList)
+                                if (ep.aired == null)
+                                    continue;
                         }
 
                         s.actorList = await GetMainCastBySeries(s);
