@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
     $("#showUploadAvatarPopup").on('click', function () {
         $("#uploadAvatarPopup").toggle();
     });

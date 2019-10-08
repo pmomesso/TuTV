@@ -226,9 +226,12 @@ public class HelloWorldController {
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public ModelAndView register(HttpServletRequest request, @Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors) throws UnauthorizedException {
+	public ModelAndView register(HttpServletRequest request, @Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors) throws UnauthorizedException, BadRequestException {
 		if (errors.hasErrors()) {
 			return showRegister(form);
+		}
+		else if(!form.getPassword().equals(form.getRepeatPassword())){
+			throw new BadRequestException();
 		}
 		final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 

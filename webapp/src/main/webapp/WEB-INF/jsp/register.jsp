@@ -13,6 +13,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="MobileOptimized" content="1040">
     <meta http-equiv="content-language" content="en">
+    <script src="<c:url value="/resources/js/jquery.min.js"/>"></script>
+    <script src="<c:url value="/resources/js/register.js"/>"></script>
 
     <meta name="title" content="TUTV">
     <title>TUTV</title>
@@ -32,7 +34,7 @@
                 <span class="title-page"><spring:message code="register.title"/></span>
             </div>
             <c:url value='register' var="myVar"/>
-            <form:form modelAttribute="registerForm" action="${myVar}" method="post" enctype="application/x-www-form-urlencoded">
+            <form:form id="registerForm" modelAttribute="registerForm" action="${myVar}" method="post" enctype="application/x-www-form-urlencoded">
                 <div class="container">
                     <div class="row w-100">
                         <div class="col-5 h-100 align-self-center">
@@ -63,8 +65,9 @@
                             <form:label class="ml-lg-5" path="password"><spring:message code="register.password"/></form:label>
                         </div>
                         <div class="col-7 align-self-center">
-                            <form:input class="m-3 w-100" path="password" type="password"/>
+                            <form:input id="passwordInput" class="m-3 w-100" path="password" type="password"/>
                             <form:errors path="password" element="p" cssClass="m-3 error"/>
+                            <p id="unmatchedPasswordError" class="m-3 error" style="display: none"><spring:message code="register.unmatchedPassword"/></p>
                         </div>
                     </div>
                     <div class="row w-100">
@@ -72,7 +75,7 @@
                             <form:label class="ml-lg-5" path="repeatPassword"><spring:message code="register.repeatPassword"/></form:label>
                         </div>
                         <div class="col-7 align-self-center">
-                            <form:input class="m-3 w-100" path="repeatPassword" type="password"/>
+                            <form:input id="repeatPasswordInput" class="m-3 w-100" path="repeatPassword" type="password"/>
                             <form:errors path="repeatPassword" element="p" cssClass="m-3 error"/>
                         </div>
                     </div>
