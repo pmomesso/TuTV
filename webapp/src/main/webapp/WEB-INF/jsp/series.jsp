@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -150,7 +150,7 @@
                                                                     <div class="cd-accordion__item">
                                                                         <h3>${episode.episodeNumber}
                                                                             - ${episode.name}</h3>
-                                                                        <span class="ml-3 episode-date">${episode.airing}</span>
+                                                                        <span class="ml-3 episode-date"><fmt:formatDate value="${episode.airing}" type="date" dateStyle="short"/></span>
                                                                         <c:set var="today_date" value="<%=new java.util.Date()%>"/>
                                                                         <c:if test="${isLogged && series.follows && (episode.airing lt today_date)}">
                                                                             <c:choose>

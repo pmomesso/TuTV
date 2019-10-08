@@ -61,7 +61,7 @@
                                     <ul class="to-watch-list posters-list list-unstyled list-inline single-row">
                                         <c:forEach items="${upcoming}" var="series">
                                             <li>
-                                                <h4>${series.seasons[0].episodeList[0].airing}</h4>
+                                                <h4><fmt:formatDate value="${series.seasons[0].episodeList[0].airing}" type="date" dateStyle="short"/></h4>
                                                 <a href="<c:url value="/series?id=${series.id}"/>">
                                                     <div class="image-crop">
                                                         <img src="<c:url value="https://image.tmdb.org/t/p/original${series.posterUrl}"/>" alt="${series.name}">
