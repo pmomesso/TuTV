@@ -61,16 +61,17 @@
                                     <ul class="to-watch-list posters-list list-unstyled list-inline single-row">
                                         <c:forEach items="${upcoming}" var="series">
                                             <li>
-                                                <div class="image-crop">
-                                                    <img src="<c:url value="https://image.tmdb.org/t/p/original${series.posterUrl}"/>" alt="${series.name}">
-                                                    <div class="progress">
-                                                        <div class="progress-bar progress-bar-success uncomplete w-100" role="progressbar">
+                                                <h4>${series.seasons[0].episodeList[0].airing}</h4>
+                                                <a href="<c:url value="/series?id=${series.id}"/>">
+                                                    <div class="image-crop">
+                                                        <img src="<c:url value="https://image.tmdb.org/t/p/original${series.posterUrl}"/>" alt="${series.name}">
+                                                        <div class="progress">
+                                                            <div class="progress-bar progress-bar-success uncomplete w-100" role="progressbar">
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </a>
                                                 <div class="episode-details poster-details">
-<%--                                                    TODO check como se ve--%>
-                                                    <h2>${series.seasons[0].episodeList[0].airing}</h2>
                                                     <h2><spring:message code="watchlist.season"/><fmt:formatNumber pattern="00" value="${series.seasons[0].seasonNumber}"/>E<fmt:formatNumber pattern="00" value="${series.seasons[0].episodeList[0].episodeNumber}"/></h2>
                                                     <a class="nb-reviews-link secondary-link" href="<c:url value="/series?id=${series.id}"/>">${series.name}</a>
                                                 </div>
