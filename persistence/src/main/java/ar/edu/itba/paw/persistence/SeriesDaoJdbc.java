@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class SeriesDaoJdbc implements SeriesDao {
@@ -468,16 +469,16 @@ public class SeriesDaoJdbc implements SeriesDao {
     @Override
     public Optional<List<Series>> getRecentlyWatched(long userId, int number) {
         if(!userDao.userExists(userId)) return Optional.empty();
-        List<Series> seriesList = jdbcTemplate.query("SELECT DISTINCT seriesname, bannerurl, seriesid FROM (SELECT id AS idhasviewed,\n" +
+        List<Series> seriesList = jdbcTemplate.query("SELECT DISTINCT seriesname, posterurl, seriesid FROM (SELECT id AS idhasviewed,\n" +
                 "(SELECT name FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS seriesname,\n" +
-                "(SELECT bannerurl FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS bannerurl,\n" +
+                "(SELECT posterurl FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS posterurl,\n" +
                 "(SELECT id FROM series WHERE series.id = (SELECT DISTINCT episode.seriesid FROM episode WHERE episode.id = hasviewedepisode.episodeid)) AS seriesid\n" +
                 "FROM hasviewedepisode\n" +
-                "WHERE userid = ?\n" +
-                "ORDER BY id DESC LIMIT ?) AS foo(id, seriesname, bannerurl, seriesid)", new Object[]{userId, number}, (resultSet, i) -> {
+                "WHERE userid = ?) AS foo(idhasviewed, seriesname, posterurl, seriesid)\n" +
+                "LIMIT ?", new Object[]{userId, number}, (resultSet, i) -> {
             Series ret = new Series();
             ret.setId(resultSet.getLong("seriesid"));
-            ret.setBannerUrl(resultSet.getString("bannerurl"));
+            ret.setPosterUrl(resultSet.getString("posterurl"));
             ret.setName(resultSet.getString("seriesname"));
             return ret;
         });
@@ -511,6 +512,7 @@ public class SeriesDaoJdbc implements SeriesDao {
                 });
             });
         });
+        seriesList = seriesList.map(list -> { return list.stream().filter( series -> !series.getSeasons().isEmpty() ).collect(Collectors.toList()); });
         return seriesList;
     }
 
@@ -518,6 +520,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         List<Season> seasonsList = jdbcTemplate.query("SELECT id AS episodeid,\n" +
                         "name AS episodename,\n" +
                         "numepisode AS episodenumber,\n" +
+                        "aired as airing," +
                         "(SELECT season.seasonnumber FROM season WHERE season.seasonid = e1.seasonid) AS seasonnumber\n" +
                         "FROM episode AS e1\n" +
                         "WHERE e1.aired = (SELECT min(episode.aired) FROM episode WHERE current_date < episode.aired AND episode.seriesid = e1.seriesid)\n" +
@@ -532,6 +535,8 @@ public class SeriesDaoJdbc implements SeriesDao {
             Episode episode = new Episode();
             episode.setId(resultSet.getLong("episodeid"));
             episode.setName(resultSet.getString("episodename"));
+            episode.setEpisodeNumber(resultSet.getInt("episodenumber"));
+            episode.setAiring(resultSet.getDate("airing"));
             episodeList.add(episode);
             season.setEpisodeList(episodeList);
             return season;
