@@ -39,28 +39,35 @@
                             <h1><spring:message code="search.searchResults"/></h1>
                         </section>
                         <section id="searchResultsSection">
-                            <ul class="posters-list shows-list explore-list list-unstyled list-inline" style="overflow: visible">
-                                <c:forEach items="${searchResults}" var="serie">
-                                    <li id="${serie.id}">
-                                        <div class="image-crop">
-                                            <a href="<c:url value="/series?id=${serie.id}"/>">
-                                                <img src="<c:url value="https://image.tmdb.org/t/p/original${serie.posterUrl}"/>"
-                                                     alt="${serie.name}">
-                                            </a>
-                                            <div class="overlay">
-                                                <a href="<c:url value="/series?id=${serie.id}"/>" class="zoom-btn overlay-btn" title="info"></a>
-                                            </div>
-                                            <div class="side progress-box">
-                                                <div class="loader rotating dark small visible"></div>
-                                            </div>
-                                        </div>
-                                        <div class="show-details poster-details">
-                                            <h2><a href="<c:url value="/series?id=${serie.id}"/>">${serie.name}</a></h2>
-                                            <a href="<c:url value="/series?id=${serie.id}"/>" class="secondary-link">${serie.numFollowers} <spring:message code="index.followers"/></a>
-                                        </div>
-                                    </li>
-                                </c:forEach>
-                            </ul>
+                            <c:choose>
+                                <c:when test="${not empty searchResults}">
+                                    <ul class="posters-list shows-list explore-list list-unstyled list-inline" style="overflow: visible">
+                                        <c:forEach items="${searchResults}" var="serie">
+                                            <li id="${serie.id}">
+                                                <div class="image-crop">
+                                                    <a href="<c:url value="/series?id=${serie.id}"/>">
+                                                        <img src="<c:url value="https://image.tmdb.org/t/p/original${serie.posterUrl}"/>"
+                                                             alt="${serie.name}">
+                                                    </a>
+                                                    <div class="overlay">
+                                                        <a href="<c:url value="/series?id=${serie.id}"/>" class="zoom-btn overlay-btn" title="info"></a>
+                                                    </div>
+                                                    <div class="side progress-box">
+                                                        <div class="loader rotating dark small visible"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="show-details poster-details">
+                                                    <h2><a href="<c:url value="/series?id=${serie.id}"/>">${serie.name}</a></h2>
+                                                    <a href="<c:url value="/series?id=${serie.id}"/>" class="secondary-link">${serie.numFollowers} <spring:message code="index.followers"/></a>
+                                                </div>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                                </c:when>
+                                <c:otherwise>
+                                    <h4><spring:message code="search.noResults"/></h4>
+                                </c:otherwise>
+                            </c:choose>
                         </section>
                     </div>
                 </div>
