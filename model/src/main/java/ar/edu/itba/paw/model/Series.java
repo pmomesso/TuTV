@@ -38,7 +38,7 @@ public class Series  {
         this.name = name;
         this.seriesDescription = seriesDescription;
     }
-    public Series(long id,int tvdbid,String name,String seriesDescription,String network,String posterUrl,String bannerUrl,Double userRating,
+    public Series(long id,int tvdbid,String name,String seriesDescription,String network,String posterUrl,String bannerUrl,Double totalRating,
                   String status,Integer runningTime,int numFollowers,String imdbid,String firstAired,String added,String updated) {
         this.id = id;
         this.tvdbid = tvdbid;
@@ -48,7 +48,7 @@ public class Series  {
         this.posterUrl = posterUrl;
         this.bannerUrl = bannerUrl;
         this.status = status;
-        this.userRating = userRating;
+        this.totalRating = totalRating;
         this.runningTime = runningTime;
         this.numFollowers = numFollowers;
         this.imdbId = imdbid;

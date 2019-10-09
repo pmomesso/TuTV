@@ -16,17 +16,16 @@ public interface UserService {
 	Optional<User> findByMail(String mail);
 
 	Either<User, Collection<Errors>> createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) throws UnauthorizedException;
+	boolean activateUser(String token);
 
 	Optional<User> getLoggedUser();
 
 	List<User> getAllUsersExceptLoggedOne();
 
     void banUser(long userId) throws UnauthorizedException, NotFoundException;
+	void unbanUser(long userId) throws UnauthorizedException, NotFoundException;
 
     boolean updateLoggedUserName(String newUsername) throws NotFoundException;
 	void setUserAvatar(long userId, byte[] byteArray);
 	Optional<byte[]> getUserAvatar(long userId);
-    void unbanUser(long userId) throws UnauthorizedException, NotFoundException;
-
-	boolean activateUser(String token);
 }

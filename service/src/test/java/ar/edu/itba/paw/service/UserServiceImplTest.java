@@ -49,6 +49,7 @@ public class UserServiceImplTest {
     public static void generateAvatar(){
         new Random().nextBytes(AVATAR);
     }
+
     private User getMockUser(){
         User mockUser = new User(USERNAME,PASSWORD,MAIL,IS_ADMIN);
         mockUser.setId(USER_ID);

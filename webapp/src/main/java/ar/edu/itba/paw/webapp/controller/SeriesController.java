@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -29,9 +31,10 @@ public class SeriesController {
     private SeriesService seriesService;
 
     @RequestMapping(value = "/series", method = RequestMethod.GET)
-    public ModelAndView series(@ModelAttribute("postForm") final PostForm postForm, @ModelAttribute("commentForm") final CommentForm commentForm, @RequestParam("id") long id) throws Exception {
+    public ModelAndView series(@ModelAttribute("postForm") final PostForm postForm, @ModelAttribute("commentForm") final CommentForm commentForm, @RequestParam("id") long id) throws NotFoundException {
         final ModelAndView mav = new ModelAndView("series");
-        mav.addObject("series", seriesService.getSerieById(id));
+        Series series = seriesService.getSerieById(id).orElseThrow(NotFoundException::new);
+        mav.addObject("series", series);
         Optional<User> u = userService.getLoggedUser();
         u.ifPresent(user -> mav.addObject("hasAvatar", userService.getUserAvatar(user.getId()).isPresent()));
         mav.addObject("postForm", postForm);

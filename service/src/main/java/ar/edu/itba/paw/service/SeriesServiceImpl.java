@@ -24,8 +24,9 @@ public class SeriesServiceImpl implements SeriesService {
     private UserService userService;
 
     @Autowired
-    public SeriesServiceImpl(SeriesDao seriesDao) {
+    public SeriesServiceImpl(SeriesDao seriesDao,UserService userService) {
         this.seriesDao = seriesDao;
+        this.userService = userService;
     }
 
     @Override
@@ -42,19 +43,14 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public Series getSerieById(long id) throws NotFoundException {
+    public Optional<Series> getSerieById(long id){
         Optional<User> u = userService.getLoggedUser();
-        long userId = (u.isPresent()) ? u.get().getId() : -1;
-        Series series = seriesDao.getSeriesById(id, userId).orElseThrow(NotFoundException::new);
-        return series;
+        long userId = u.map(User::getId).orElse(-1L);
+        return seriesDao.getSeriesById(id, userId);
     }
 
     @Override
-    public List<Series> getSeriesByGenreAndNumber(int genreId, int num) throws NotFoundException {
-        List<Series> seriesList = seriesDao.getBestSeriesByGenre(genreId, 0, num);
-        if(seriesList.isEmpty()) {
-            throw new NotFoundException();
-        }
+    public List<Series> getSeriesByGenreAndNumber(int genreId, int num) {
         return seriesDao.getBestSeriesByGenre(genreId, 0, num);
     }
 
@@ -64,12 +60,8 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Series> getAllSeriesByGenre(int id) throws NotFoundException {
-        List<Series> seriesList = seriesDao.getSeriesByGenre(id);
-        if(seriesList.isEmpty()) {
-            throw new NotFoundException();
-        }
-        return seriesList;
+    public List<Series> getAllSeriesByGenre(int id){
+        return seriesDao.getSeriesByGenre(id);
     }
 
     @Override
@@ -83,11 +75,7 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Season> getSeasonsBySeriesId(long seriesId) throws NotFoundException {
-        List<Season> seriesList = seriesDao.getSeasonsBySeriesId(seriesId);
-        if(seriesList.isEmpty()) {
-            throw new NotFoundException();
-        }
+    public List<Season> getSeasonsBySeriesId(long seriesId) {
         return seriesDao.getSeasonsBySeriesId(seriesId);
     }
 
@@ -222,8 +210,7 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public List<Series> getWatchList() throws UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        List<Series> seriesList = seriesDao.getNextToBeSeen(user.getId());
-        return seriesList;
+        return seriesDao.getNextToBeSeen(user.getId());
     }
 
     @Override
@@ -232,27 +219,23 @@ public class SeriesServiceImpl implements SeriesService {
         if(number <= 0) {
             throw new BadRequestException();
         }
-        List<Series> seriesList = seriesDao.getRecentlyWatched(user.getId(), number).orElseThrow(BadRequestException::new);
-        return seriesList;
+        return seriesDao.getRecentlyWatched(user.getId(), number).orElseThrow(BadRequestException::new);
     }
 
     @Override
     public List<Series> getAddedSeries() throws UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        List<Series> seriesList = seriesDao.getAddedSeries(user.getId()).get();
-        return seriesList;
+        return seriesDao.getAddedSeries(user.getId()).get();
     }
 
     @Override
     public List<Series> getAddedSeries(long userId) throws NotFoundException {
-        List<Series> seriesList = seriesDao.getAddedSeries(userId).orElseThrow(NotFoundException::new);
-        return seriesList;
+        return seriesDao.getAddedSeries(userId).orElseThrow(NotFoundException::new);
     }
 
     @Override
     public List<Series> getUpcomingEpisodes() throws UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        List<Series> seriesList = seriesDao.getUpcomingEpisodes(user.getId()).get();
-        return seriesList;
+        return seriesDao.getUpcomingEpisodes(user.getId()).get();
     }
 }

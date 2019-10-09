@@ -75,25 +75,25 @@ public class SeriesDaoJdbcTest {
     }
     private void assertSeries(Series series){
         Assert.assertNotNull(series);
-        Assert.assertEquals(series.getId(),ID);
-        Assert.assertEquals(series.getName(),NAME);
-        Assert.assertEquals(series.getSeriesDescription(),DESCRIPTION);
-        Assert.assertEquals(series.getTotalRating(), TOTAL_RATING,0);
-        Assert.assertEquals(series.getStatus(),STATUS);
-        Assert.assertEquals(series.getRunningTime(),RUNTIME);
+        Assert.assertEquals(ID,series.getId());
+        Assert.assertEquals(NAME,series.getName());
+        Assert.assertEquals(DESCRIPTION,series.getSeriesDescription());
+        Assert.assertEquals(TOTAL_RATING,series.getTotalRating(),0);
+        Assert.assertEquals(STATUS,series.getStatus());
+        Assert.assertEquals(RUNTIME,series.getRunningTime());
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Assert.assertEquals(format.format(series.getFirstAired()),FIRST_AIRED);
-        Assert.assertEquals(series.getImdbId(),ID_IMDB);
-        Assert.assertEquals(format.format(series.getAdded()),ADDED);
-        Assert.assertEquals(format.format(series.getUpdated()),UPDATED);
-        Assert.assertEquals(series.getPosterUrl(),POSTER_URL);
-        Assert.assertEquals(series.getBannerUrl(),BANNER_URL);
-        Assert.assertEquals(series.getNumFollowers(),FOLLOWERS);
-        Assert.assertEquals(series.getGenres().size(),1);
-        Assert.assertEquals(series.getNetwork(), NETWORK_NAME);
+        Assert.assertEquals(FIRST_AIRED,format.format(series.getFirstAired()));
+        Assert.assertEquals(ID_IMDB,series.getImdbId());
+        Assert.assertEquals(ADDED,format.format(series.getAdded()));
+        Assert.assertEquals(UPDATED,format.format(series.getUpdated()));
+        Assert.assertEquals(POSTER_URL,series.getPosterUrl());
+        Assert.assertEquals(BANNER_URL,series.getBannerUrl());
+        Assert.assertEquals(FOLLOWERS,series.getNumFollowers());
+        Assert.assertEquals(1,series.getGenres().size());
+        Assert.assertEquals(NETWORK_NAME,series.getNetwork());
         Genre g = (Genre)series.getGenres().toArray()[0];
-        Assert.assertEquals(g.getId(),GENRE_ID);
-        Assert.assertEquals(g.getName(),GENRE);
+        Assert.assertEquals(GENRE_ID,g.getId());
+        Assert.assertEquals(GENRE,g.getName());
     }
     @Before
     public void setUp(){

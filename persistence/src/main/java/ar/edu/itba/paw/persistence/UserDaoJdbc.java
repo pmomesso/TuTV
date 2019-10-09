@@ -151,7 +151,7 @@ public class UserDaoJdbc implements UserDao {
 		if(results.size() == 0)
 			return Optional.empty();
 		else{
-			return Optional.of(results.get(0));
+			return Optional.ofNullable(results.get(0));
 		}
 	}
 

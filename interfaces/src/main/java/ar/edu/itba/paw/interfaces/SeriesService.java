@@ -9,20 +9,21 @@ import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface SeriesService {
 
     List<Series> searchSeries(String seriesName,String genreName,String networkName,int minRating,int maxRating);
     List<Series> getSeriesByName(String name);
 
-    Series getSerieById(long id) throws NotFoundException;
+    Optional<Series> getSerieById(long id);
 
-    List<Series> getSeriesByGenreAndNumber(int genreId, int num) throws NotFoundException;
+    List<Series> getSeriesByGenreAndNumber(int genreId, int num);
     List<Series> getAllSeriesByGenre(String genreName);
-    List<Series> getAllSeriesByGenre(int id) throws NotFoundException;
+    List<Series> getAllSeriesByGenre(int id);
     Map<Genre, List<Series>> getSeriesByGenreMap(int lowerNumber, int upperNumber);
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
-    List<Season> getSeasonsBySeriesId(long seriesId) throws NotFoundException;
+    List<Season> getSeasonsBySeriesId(long seriesId);
     List<Genre> getAllGenres();
     void followSeries(long seriesId) throws NotFoundException, UnauthorizedException;
     void setViewedEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
