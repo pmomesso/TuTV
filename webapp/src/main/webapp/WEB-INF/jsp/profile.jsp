@@ -148,18 +148,33 @@
                                                         </ul>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <div class="container h-100">
-                                                            <div class="row justify-content-center h-100">
-                                                                <div class="col-lg-8 col-sm-12 align-self-center">
-                                                                    <div class="text-center m-4">
-                                                                        <h4><spring:message code="watchlist.discover"/></h4>
-                                                                    </div>
-                                                                    <div class="text-center m-4">
-                                                                        <button class="tutv-button m-4" onclick="window.location.href='<c:url value="/"/>'"><spring:message code="watchlist.explore"/></button>
+                                                        <c:choose>
+                                                            <c:when test="${user.id eq userProfile.id}">
+                                                                <div class="container h-100">
+                                                                    <div class="row justify-content-center h-100">
+                                                                        <div class="col-lg-8 col-sm-12 align-self-center">
+                                                                            <div class="text-center m-4">
+                                                                                <h4><spring:message code="watchlist.discover"/></h4>
+                                                                            </div>
+                                                                            <div class="text-center m-4">
+                                                                                <button class="tutv-button m-4" onclick="window.location.href='<c:url value="/"/>'"><spring:message code="watchlist.explore"/></button>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <div class="container h-100">
+                                                                    <div class="row justify-content-center h-100">
+                                                                        <div class="col-lg-8 col-sm-12 align-self-center">
+                                                                            <div class="text-center m-4">
+                                                                                <h4><spring:message code="profile.userNoShows" arguments="${userProfile.userName}"/></h4>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                     </c:otherwise>
                                                 </c:choose>
                                             </section>

@@ -241,9 +241,16 @@
                                                                     <div class="top">
                                                                         <div class="holder">
                                                                             <div class="author-label mb-3">
-                                                                                <a href="<c:url value="/profile?id=${post.userId}"/>" title="<spring:message code="index.profile"/>">
-                                                                                    <span>${post.user.userName}</span>
-                                                                                </a>
+                                                                                <c:choose>
+                                                                                    <c:when test="${isLogged}">
+                                                                                        <a href="<c:url value="/profile?id=${post.userId}"/>" title="<spring:message code="index.profile"/>">
+                                                                                            <span>${post.user.userName}</span>
+                                                                                        </a>
+                                                                                    </c:when>
+                                                                                    <c:otherwise>
+                                                                                        <span>${post.user.userName}</span>
+                                                                                    </c:otherwise>
+                                                                                </c:choose>
                                                                                 <c:if test="${user.isAdmin && user.id ne post.userId}">
                                                                                     <c:choose>
                                                                                         <c:when test="${post.user.isBanned}">
@@ -309,9 +316,16 @@
                                                                             <article class="reply clearfix initialized">
                                                                                 <div class="holder">
                                                                                     <div class="author-label">
-                                                                                        <a href="<c:url value="/profile?id=${comment.userId}"/>" title="<spring:message code="index.profile"/>">
-                                                                                            <span style="font-family: proximaNova; color: #777;">${comment.user.userName}</span>
-                                                                                        </a>
+                                                                                        <c:choose>
+                                                                                            <c:when test="${isLogged}">
+                                                                                                <a href="<c:url value="/profile?id=${comment.userId}"/>" title="<spring:message code="index.profile"/>">
+                                                                                                    <span style="font-family: proximaNova; color: #777;">${comment.user.userName}</span>
+                                                                                                </a>
+                                                                                            </c:when>
+                                                                                            <c:otherwise>
+                                                                                                <span style="font-family: proximaNova; color: #777;">${comment.user.userName}</span>
+                                                                                            </c:otherwise>
+                                                                                        </c:choose>
                                                                                         <c:if test="${user.isAdmin && user.id ne comment.userId}">
                                                                                             <c:choose>
                                                                                                 <c:when test="${comment.user.isBanned}">
