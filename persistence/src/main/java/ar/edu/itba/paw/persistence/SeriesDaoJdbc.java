@@ -669,7 +669,7 @@ public class SeriesDaoJdbc implements SeriesDao {
 
     @Override
     public int unlikePost(long userId, long postId) {
-        int numRows = seriesJdbcTemplate.update("DELETE FROM seriesreview WHERE userid = ? AND id = ?", new Object[]{userId, postId});
+        int numRows = seriesJdbcTemplate.update("DELETE FROM haslikedseriesreview WHERE userid = ? AND seriesreview = ?", new Object[]{userId, postId});
         if(numRows != 0) {
             addPointsToPost(postId, -1);
         }
