@@ -59,10 +59,20 @@
                         <h1>${user.userName}</h1>
                         <ul class="menu list-unstyled">
                             <li class="profile ">
-                                <a id="menu_profile"  href="<c:url value="/profile?id=${user.id}"/>" title="<spring:message code="index.profile"/>">
-                                    <img class="logo logo_icon" src="<c:url value="/resources/img/profile.png"/>" alt="<spring:message code="index.profile"/>">
-                                    <span><spring:message code="index.profile"/></span>
-                                </a>
+                                <c:choose>
+                                    <c:when test="${not empty userProfile && userProfile.id ne user.id}">
+                                        <a  href="<c:url value="/profile?id=${user.id}"/>" title="<spring:message code="index.profile"/>">
+                                            <img class="logo logo_icon" src="<c:url value="/resources/img/profile.png"/>" alt="<spring:message code="index.profile"/>">
+                                            <span><spring:message code="index.profile"/></span>
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a id="menu_profile"  href="<c:url value="/profile?id=${user.id}"/>" title="<spring:message code="index.profile"/>">
+                                            <img class="logo logo_icon" src="<c:url value="/resources/img/profile.png"/>" alt="<spring:message code="index.profile"/>">
+                                            <span><spring:message code="index.profile"/></span>
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
                             </li>
                         </ul>
                     </section>
