@@ -296,7 +296,7 @@ public class SeriesDaoJdbcTest {
         //Setup
         populateDatabase();
         //Ejercitar
-        List<Series> series = seriesDao.searchSeries(NAME,GENRE,NETWORK_NAME,0,(int) TOTAL_RATING + 1);
+        List<Series> series = seriesDao.searchSeries(NAME,GENRE,NETWORK_NAME);
         //Asserts
         Assert.assertEquals(1,series.size());
         assertSeries(series.get(0));
@@ -610,7 +610,7 @@ public class SeriesDaoJdbcTest {
         //Setup
         populateDatabase();
         //Ejercitar
-        List<Series> series = seriesDao.searchSeries(NAME + "extra",GENRE,NETWORK_NAME,0,(int) TOTAL_RATING + 1);
+        List<Series> series = seriesDao.searchSeries(NAME + "extra",GENRE,NETWORK_NAME);
         //Asserts
         Assert.assertEquals(0,series.size());
     }
@@ -619,7 +619,7 @@ public class SeriesDaoJdbcTest {
         //Setup
         populateDatabase();
         //Ejercitar
-        List<Series> series = seriesDao.searchSeries(NAME,GENRE + "extra",NETWORK_NAME,0,(int) TOTAL_RATING + 1);
+        List<Series> series = seriesDao.searchSeries(NAME,GENRE + "extra",NETWORK_NAME);
         //Asserts
         Assert.assertEquals(0,series.size());
     }
@@ -628,7 +628,7 @@ public class SeriesDaoJdbcTest {
         //Setup
         populateDatabase();
         //Ejercitar
-        List<Series> series = seriesDao.searchSeries(NAME,GENRE,NETWORK_NAME + "extra",0,(int) TOTAL_RATING + 1);
+        List<Series> series = seriesDao.searchSeries(NAME,GENRE,NETWORK_NAME + "extra");
         //Asserts
         Assert.assertEquals(0,series.size());
     }

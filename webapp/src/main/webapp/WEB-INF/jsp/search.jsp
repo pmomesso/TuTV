@@ -45,33 +45,19 @@
                     <label for="seriesNetworkInput"><spring:message code="search.network"/></label>
                     <input type="text" class="form-control" id="seriesNetworkInput" name="network">
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="seriesLowRatingLimitInput"><spring:message code="search.lowRatingLimit"/></label>
-                        <select class="form-control" id="seriesLowRatingLimitInput" name="min">
-                            <option value="0" selected>0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="margin-left: 15px">
-                        <label for="seriesMaxRatingLimitInput"><spring:message code="search.maxRatingLimit"/></label>
-                        <select class="form-control" id="seriesMaxRatingLimitInput" name="max">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5" selected>5</option>
-                        </select>
+                <div class="form-group">
+                    <div class="text-center m-3">
+                        <input class="tutv-button" type="submit" value="<spring:message code="search.search"/>"/>
                     </div>
                 </div>
-                <div class="text-center m-3">
-                    <input class="tutv-button" type="submit" value="<spring:message code="search.search"/>"/>
+                <div class="form-group">
+                    <div class="text-center m-3" >
+                        <a href="<c:url value="/"/>" style="color: black">
+                            <input class="tutv-button" type="button" value="<spring:message code="error.goHome"/>">
+                        </a>
+                    </div>
                 </div>
+
             </form>
         </div>
     </div>

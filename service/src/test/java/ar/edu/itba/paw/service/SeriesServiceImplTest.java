@@ -94,13 +94,13 @@ public class SeriesServiceImplTest {
     public void searchSeriesByNameTest(){
         //Setup
         Series s = getMockSeries();
-        Mockito.when(mockDao.searchSeries(Mockito.eq(NAME),Mockito.eq(GENRE),Mockito.eq(NETWORK_NAME),Mockito.eq(0),Mockito.eq((int)TOTAL_RATING + 1))).thenAnswer(invocation -> {
+        Mockito.when(mockDao.searchSeries(Mockito.eq(NAME),Mockito.eq(GENRE),Mockito.eq(NETWORK_NAME))).thenAnswer(invocation -> {
             List<Series> seriesList = new ArrayList<>();
             seriesList.add(s);
             return seriesList;
         });
         //Ejercitar
-        List<Series> seriesList = seriesService.searchSeries(NAME,GENRE,NETWORK_NAME,0,(int)TOTAL_RATING + 1);
+        List<Series> seriesList = seriesService.searchSeries(NAME,GENRE,NETWORK_NAME);
         //Asserts
         Assert.assertEquals(1,seriesList.size());
         assertMockSeries(seriesList.get(0));

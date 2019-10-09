@@ -144,8 +144,7 @@ public class SeriesDaoJdbc implements SeriesDao {
     }
 
     @Override
-    public List<Series> searchSeries(String seriesName, String genreName, String networkName, int minRating, int maxRating) {
-        //TODO agregar "userRating BETWEEN minRating AND maxRating" a la query cuando los puntajes en la base no esten en null.
+    public List<Series> searchSeries(String seriesName, String genreName, String networkName) {
         return groupGenres(seriesJdbcTemplate.query("SELECT * " +
                         "FROM (series LEFT JOIN hasgenre ON series.id = hasgenre.seriesid LEFT JOIN genres ON genres.id = hasgenre.genreid LEFT JOIN network ON network.networkid = series.networkid) " +
                         "AS foo(id,tvdbid, name, description, userRating, status, runtime, networkid, firstaired, id_imdb, added, updated, posterurl, followers, bannerurl, seriesid, genreid, genreid1, genre, networkid1, networkname) " +

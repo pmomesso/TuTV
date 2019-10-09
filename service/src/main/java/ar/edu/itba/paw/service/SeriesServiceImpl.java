@@ -30,11 +30,11 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Series> searchSeries(String seriesName, String genreName, String networkName,int minRating,int maxRating) {
+    public List<Series> searchSeries(String seriesName, String genreName, String networkName) {
         String name = seriesName == null ? "" : seriesName;
         String genre = genreName == null ? "" : genreName;
         String network = networkName == null ? "" : networkName;
-        return seriesDao.searchSeries(name,genre,network,minRating,maxRating);
+        return seriesDao.searchSeries(name,genre,network);
     }
 
     @Override

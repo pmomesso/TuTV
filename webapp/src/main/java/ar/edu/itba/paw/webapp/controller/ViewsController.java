@@ -38,7 +38,7 @@ public class ViewsController {
 	        return search();
         }
         final ModelAndView mav = new ModelAndView("searchResults");
-        mav.addObject("searchResults",seriesService.searchSeries(form.getName(),form.getGenre(),form.getNetwork(),form.getMin(),form.getMax()));
+        mav.addObject("searchResults",seriesService.searchSeries(form.getName(),form.getGenre(),form.getNetwork()));
         return mav;
     }
 
