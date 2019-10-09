@@ -12,8 +12,6 @@ create table if not exists users
     avatar BYTEA
 );
 
-alter table users owner to root;
-
 create unique index if not exists users_mail_uindex
     on users (mail);
 
@@ -27,16 +25,12 @@ create table if not exists genres
         unique (id, genre)
 );
 
-alter table genres owner to root;
-
 create table if not exists seriesgenre
 (
     genreid integer
         constraint genreid
             references genres
 );
-
-alter table seriesgenre owner to root;
 
 create table if not exists actor
 (
@@ -48,8 +42,6 @@ create table if not exists actor
     updated varchar(32),
     status varchar(32)
 );
-
-alter table actor owner to root;
 
 create table if not exists episodereview
 (
@@ -64,8 +56,6 @@ create table if not exists episodereview
             primary key
 );
 
-alter table episodereview owner to root;
-
 create table if not exists network
 (
     networkid serial not null
@@ -73,8 +63,6 @@ create table if not exists network
             primary key,
     name varchar(255)
 );
-
-alter table network owner to root;
 
 create table if not exists series
 (
@@ -99,8 +87,6 @@ create table if not exists series
     bannerurl varchar(256)
 );
 
-alter table series owner to root;
-
 create table if not exists seriesairing
 (
     seriesid integer not null
@@ -110,8 +96,6 @@ create table if not exists seriesairing
     time time,
     country varchar(255)
 );
-
-alter table seriesairing owner to root;
 
 create table if not exists actorroles
 (
@@ -130,8 +114,6 @@ create table if not exists actorroles
     updated date
 );
 
-alter table actorroles owner to root;
-
 create table if not exists seriesreview
 (
     userid integer
@@ -148,8 +130,6 @@ create table if not exists seriesreview
             primary key
 );
 
-alter table seriesreview owner to root;
-
 create table if not exists season
 (
     seasonid serial not null
@@ -160,8 +140,6 @@ create table if not exists season
             references series,
     seasonnumber integer not null
 );
-
-alter table season owner to root;
 
 create table if not exists episode
 (
@@ -181,8 +159,6 @@ create table if not exists episode
     aired date
 );
 
-alter table episode owner to root;
-
 create table if not exists follows
 (
     userid integer not null
@@ -193,8 +169,6 @@ create table if not exists follows
             references series
 );
 
-alter table follows owner to root;
-
 create table if not exists hasgenre
 (
     seriesid integer
@@ -204,8 +178,6 @@ create table if not exists hasgenre
         constraint hasgenre_genres_id_fk
             references genres
 );
-
-alter table hasgenre owner to root;
 
 create table if not exists seriesreviewcomments
 (
@@ -224,8 +196,6 @@ create table if not exists seriesreviewcomments
     numlikes integer default 0
 );
 
-alter table seriesreviewcomments owner to root;
-
 create table if not exists episodereviewcomment
 (
     id serial not null
@@ -237,8 +207,6 @@ create table if not exists episodereviewcomment
         constraint episodereviewcomment_episodereview_id_fk
             references episodereview
 );
-
-alter table episodereviewcomment owner to root;
 
 create table if not exists hasviewedepisode
 (
@@ -255,8 +223,6 @@ create table if not exists hasviewedepisode
             primary key
 );
 
-alter table hasviewedepisode owner to root;
-
 create table if not exists haslikedseriesreview
 (
     seriesreview integer
@@ -269,8 +235,6 @@ create table if not exists haslikedseriesreview
             on delete cascade
 );
 
-alter table haslikedseriesreview owner to root;
-
 create table if not exists haslikedseriesreviewcomment
 (
     seriesreviewcomment integer
@@ -282,8 +246,6 @@ create table if not exists haslikedseriesreviewcomment
             references users
             on delete cascade
 );
-
-alter table haslikedseriesreviewcomment owner to root;
 
 create table if not exists userseriesrating
 (
@@ -299,6 +261,4 @@ create table if not exists userseriesrating
     constraint user_series_rating_unique
         unique (userid, seriesid)
 );
-
-alter table userseriesrating owner to root;
 
