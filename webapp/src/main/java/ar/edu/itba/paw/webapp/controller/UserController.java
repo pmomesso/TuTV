@@ -62,7 +62,7 @@ public class UserController {
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
     public ModelAndView profile(@RequestParam("id") long userId,@ModelAttribute("updateUserForm") final UpdateUserForm form) throws NotFoundException, UnauthorizedException, BadRequestException {
 
-        User u = userService.findById(userId);
+        User u = userService.findById(userId).orElseThrow(NotFoundException::new);
         ModelAndView mav = new ModelAndView("profile");
         mav.addObject("userProfile", u);
         mav.addObject("hasAvatar", userService.getUserAvatar(userId).isPresent());

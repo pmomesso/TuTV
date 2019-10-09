@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-	User findById(long id) throws NotFoundException;
+	Optional<User> findById(long id);
 
 	Optional<User> findByMail(String mail);
 
@@ -24,7 +24,7 @@ public interface UserService {
     void banUser(long userId) throws UnauthorizedException, NotFoundException;
 
     boolean updateLoggedUserName(String newUsername) throws NotFoundException;
-    boolean setUserAvatar(long userId, byte[] byteArray);
+	void setUserAvatar(long userId, byte[] byteArray);
 	Optional<byte[]> getUserAvatar(long userId);
     void unbanUser(long userId) throws UnauthorizedException, NotFoundException;
 

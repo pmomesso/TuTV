@@ -44,9 +44,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(long id) throws NotFoundException {
-        User ret = userDao.getUserById(id).orElseThrow(NotFoundException::new);
-        return ret;
+    public Optional<User> findById(long id){
+        return userDao.getUserById(id);
     }
 
     @Override
@@ -132,10 +131,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean setUserAvatar(long userId, byte[] byteArray) {
-        //TODO validar byteArray
+    public void setUserAvatar(long userId, byte[] byteArray) {
         userDao.setUserAvatar(userId, byteArray);
-        return true;
     }
 
     @Override

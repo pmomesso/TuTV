@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.model.User;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,10 +12,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -31,7 +28,8 @@ public class UserDaoJdbcTest {
     private static final String MAIL = "mail";
     private static final String CONFIRMATION_KEY = "confirmation_key";
     private static final boolean IS_ADMIN = true;
-    private static final String AVATAR = "X'FFD91A5817BBF84A'";
+    private static final byte[] AVATAR = new byte[1024];
+
     @Autowired
     private DataSource ds;
     @Autowired
@@ -39,6 +37,10 @@ public class UserDaoJdbcTest {
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert jdbcInsert;
 
+    @BeforeClass
+    public static void generateAvatar(){
+        new Random().nextBytes(AVATAR);
+    }
     private void assertUser(User user){
         Assert.assertNotNull(user);
         Assert.assertEquals(USERNAME,user.getUserName());
@@ -56,8 +58,6 @@ public class UserDaoJdbcTest {
         args.put("mail", MAIL);
         args.put("isAdmin",IS_ADMIN);
         args.put("confirmation_key",CONFIRMATION_KEY);
-        //TODO
-        //args.put("avatar",AVATAR);
         jdbcInsert.execute(args);
     }
     @Before
@@ -113,6 +113,16 @@ public class UserDaoJdbcTest {
         assertUser(user.get());
     }
     @Test
+    public void getAllUsersTest(){
+        //Setup
+        insertUser();
+        //Ejercitar
+        List<User> users = userDao.getAllUsers();
+        //Asserts
+        Assert.assertEquals(1,users.size());
+        assertUser(users.get(0));
+    }
+    @Test
     public void mailIsTakenTest(){
         //Setup
         insertUser();
@@ -162,6 +172,17 @@ public class UserDaoJdbcTest {
                 String.format("id=%d AND confirmation_key='%s'",USER_ID,newConfirmationKey)));
     }
     @Test
+    public void updateUsernameTest(){
+        //Setup
+        insertUser();
+        final String newUsername = USERNAME + "_new";
+        //Ejercitar
+        int updated = userDao.updateUserName(USER_ID,newUsername);
+        //Asserts
+        Assert.assertEquals(1,updated);
+        Assert.assertEquals(1,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"users",String.format("username='%s'",newUsername)));
+    }
+    @Test
     public void banUserTest(){
         //Setup
         insertUser();
@@ -184,16 +205,26 @@ public class UserDaoJdbcTest {
                 String.format("id=%d AND isBanned=false",USER_ID)));
     }
     @Test
-    //TODO
     public void getUserAvatarTest(){
-        /*
         //Setup
         insertUser();
+        jdbcTemplate.update("UPDATE users SET avatar = ? WHERE id = ?",AVATAR,USER_ID);
         //Ejercitar
-        byte[] avatar = userDao.getUserAvatar(USER_ID);
+        Optional<byte[]> avatar = userDao.getUserAvatar(USER_ID);
         //Asserts
-        Assert.assertEquals(AVATAR.getBytes(),avatar);
-        */
+        Assert.assertTrue(avatar.isPresent());
+        Assert.assertArrayEquals(AVATAR, avatar.get());
+    }
+    @Test
+    public void setUserAvatarTest(){
+        //Setup
+        insertUser();
+        byte[] newAvatar = new byte[1024];
+        new Random().nextBytes(newAvatar);
+        //Ejercitar
+        userDao.setUserAvatar(USER_ID,newAvatar);
+        //Asserts
+        Assert.assertEquals(Integer.valueOf(1),jdbcTemplate.queryForObject("SELECT count(*) FROM USERS WHERE avatar = ?",new Object[]{newAvatar},Integer.class));
     }
     @Test
     public void getUserByWrongIdTest(){
@@ -247,5 +278,26 @@ public class UserDaoJdbcTest {
         Assert.assertEquals(-1,result);
         Assert.assertEquals(0,JdbcTestUtils.countRowsInTableWhere(jdbcTemplate,"users",
                 String.format("id=%d AND isBanned=false",USER_ID)));
+    }
+    @Test
+    public void getUserAvatarByWrongIdTest(){
+        //Setup
+        insertUser();
+        jdbcTemplate.update("UPDATE users SET avatar = ? WHERE id = ?",AVATAR,USER_ID);
+        //Ejercitar
+        Optional<byte[]> avatar = userDao.getUserAvatar(USER_ID + 1);
+        //Asserts
+        Assert.assertFalse(avatar.isPresent());
+    }
+    @Test
+    public void setUserAvatarByWrongIdTest(){
+        //Setup
+        insertUser();
+        byte[] newAvatar = new byte[1024];
+        new Random().nextBytes(newAvatar);
+        //Ejercitar
+        userDao.setUserAvatar(USER_ID + 1,newAvatar);
+        //Asserts
+        Assert.assertEquals(Integer.valueOf(0),jdbcTemplate.queryForObject("SELECT count(*) FROM USERS WHERE avatar = ?",new Object[]{newAvatar},Integer.class));
     }
 }
