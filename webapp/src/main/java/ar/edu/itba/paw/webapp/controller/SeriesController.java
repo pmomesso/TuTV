@@ -19,8 +19,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
+import java.util.Date;
 
 @Controller
 public class SeriesController {
@@ -37,6 +37,7 @@ public class SeriesController {
         mav.addObject("series", series);
         Optional<User> u = userService.getLoggedUser();
         u.ifPresent(user -> mav.addObject("hasAvatar", userService.getUserAvatar(user.getId()).isPresent()));
+        mav.addObject("today_date", new Date());
         mav.addObject("postForm", postForm);
         mav.addObject("commentForm", commentForm);
         return mav;

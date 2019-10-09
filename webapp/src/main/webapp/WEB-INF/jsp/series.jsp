@@ -151,7 +151,6 @@
                                                                         <h3>${episode.episodeNumber}
                                                                             - ${episode.name}</h3>
                                                                         <span class="ml-3 episode-date"><fmt:formatDate value="${episode.airing}" type="date" dateStyle="short"/></span>
-                                                                        <c:set var="today_date" value="<%=new java.util.Date()%>"/>
                                                                         <c:if test="${isLogged && series.follows && (episode.airing lt today_date)}">
                                                                             <c:choose>
                                                                                 <c:when test="${episode.viewed}">

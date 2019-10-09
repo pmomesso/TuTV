@@ -18,8 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 import java.util.Optional;
 
-// atributos que quiero entre todos los controllers.. que se agregue a cualquier model and view ese atributo
-
 @org.springframework.web.bind.annotation.ControllerAdvice
 public class ControllerAdvice {
 
