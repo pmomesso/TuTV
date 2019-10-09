@@ -734,7 +734,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         Double oldRating = getUserSeriesRating(userId,seriesId);
         int numRows = 0;
         if(oldRating != null){
-            seriesJdbcTemplate.update("UPDATE userseriesrating SET rating = ? WHERE userid = ? AND seriesid = ?",
+            numRows = seriesJdbcTemplate.update("UPDATE userseriesrating SET rating = ? WHERE userid = ? AND seriesid = ?",
                     new Object[]{rating,userId,seriesId});
         } else {
             Map<String, Object> args = new HashMap<>();
