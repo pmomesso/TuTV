@@ -1,16 +1,35 @@
 package ar.edu.itba.paw.model;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "users")
 public class User {
 
-    private String userName;
-    private String mailAddress;
-    private String password;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq")
+    @Column(name = "id")
     private long id;
+
+    @Column(name = "username", length = 50, nullable = false)
+    private String userName;
+
+    @Column(name = "mail", nullable = false)
+    private String mailAddress;
+
+    @Column(name = "password", length = 50, nullable = false)
+    private String password;
+
     private Date birthDate;
+
+    @Column(name = "confirmation_key", length = 60)
     private String confirmationKey;
+
+    @Column(name = "isadmin", nullable = false)
     private boolean isAdmin = false;
+
+    @Column(name = "isbanned", nullable = false)
     private boolean isBanned = false;
 
     public User() {}

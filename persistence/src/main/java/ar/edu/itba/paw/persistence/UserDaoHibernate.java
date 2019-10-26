@@ -5,6 +5,7 @@ import ar.edu.itba.paw.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,17 +16,21 @@ public class UserDaoHibernate implements UserDao {
 
     @Override
     public Optional<User> getUserById(long id) {
-        throw new UnsupportedOperationException();
+        return Optional.ofNullable(em.find(User.class, id));
     }
 
     @Override
     public Optional<User> getUserByValidationKey(String key) {
-        throw new UnsupportedOperationException();
+        final TypedQuery<User> query = em.createQuery("from users as u where u.confirmation_key = :key", User.class);
+        query.setParameter("key", key);
+        return query.getResultList().stream().findFirst();
     }
 
     @Override
     public Optional<User> getUserByMail(String mail) {
-        throw new UnsupportedOperationException();
+        final TypedQuery<User> query = em.createQuery("from users as u where u.mail = :mail", User.class);
+        query.setParameter("mail", mail);
+        return query.getResultList().stream().findFirst();
     }
 
     @Override
@@ -41,12 +46,14 @@ public class UserDaoHibernate implements UserDao {
 
     @Override
     public boolean mailIsTaken(String mail) {
-        throw new UnsupportedOperationException();
+        return getUserByMail(mail).isPresent();
     }
 
     @Override
     public boolean userNameExists(String userName) {
-        throw new UnsupportedOperationException();
+        TypedQuery<User> query = em.createQuery("from users as u where u.username = :username", User.class);
+        query.setParameter("username", userName);
+        return query.getResultList().isEmpty();
     }
 
     @Override
@@ -56,7 +63,8 @@ public class UserDaoHibernate implements UserDao {
 
     @Override
     public boolean checkIfValidationKeyExists(String key) {
-        throw new UnsupportedOperationException();
+        TypedQuery<User> query = em.createQuery("from users as u where u.confirmationk_ey = :key", User.class);
+        return query.setParameter("key", key).getResultList().isEmpty();
     }
 
     @Override
