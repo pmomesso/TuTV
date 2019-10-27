@@ -50,7 +50,8 @@
                                     <div class="carousel-caption">
                                         <div class="text-center">
                                             <span class="star"></span>
-                                            <h2>${series.totalRating} / 5.0</h2>
+                                            <fmt:formatNumber value="${series.totalRating}" var="rating" pattern="0.0"/>
+                                            <h2><spring:message code="series.rating" arguments="${rating}"/></h2>
                                         </div>
                                         <c:if test="${isLogged}">
                                             <c:choose>
@@ -78,15 +79,29 @@
                                     <div class="basic-infos">
                                         <span>${series.network}</span>
                                         <span class="separator">•</span>
-                                        <span>${fn:length(series.seasons)} <spring:message code="series.season"/><c:if
-                                                test="${fn:length(series.seasons) ne 1}">s</c:if></span>
+                                        <c:choose>
+                                            <c:when test="${fn:length(series.seasons) ne 1}">
+                                                <c:set var="sufix" value="s"></c:set>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:set var="sufix" value=""></c:set>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <span><spring:message code="series.season" arguments="${fn:length(series.seasons)},${sufix}"/></span>
                                     </div>
                                     <div class="overview">
                                         ${series.seriesDescription}
                                     </div>
                                     <div class="followers">
-                                        ${series.numFollowers} <spring:message code="index.followers"/><c:if
-                                                test="${series.numFollowers ne 1}"><spring:message code="index.sufix"/></c:if>
+                                        <c:choose>
+                                            <c:when test="${series.numFollowers ne 1}">
+                                                <spring:message code="index.sufix" var="sufix2"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:set var="sufix2" value=""></c:set>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <spring:message code="index.followers" arguments="${series.numFollowers},${sufix2}"/>
                                     </div>
                                 </div>
                                 <c:if test="${isLogged}">
@@ -121,8 +136,8 @@
                                                         <c:choose>
                                                             <c:when test="${isLogged && season.viewed}">
                                                                 <label class="cd-accordion__label cd-accordion__label--icon-folder drop drop-watched" for="group-${item.index}">
-                                                                    <span class="big-size"><spring:message code="series.Season"/> ${season.seasonNumber}</span>
-                                                                    <span class="ml-3 viewed-episodes">${season.episodesViewed} / ${fn:length(season.episodeList)}</span>
+                                                                    <span class="big-size"><spring:message code="series.Season" arguments="${season.seasonNumber}"/></span>
+                                                                    <span class="ml-3 viewed-episodes"><spring:message code="series.slash" arguments="${season.episodesViewed},${fn:length(season.episodeList)}"/></span>
                                                                     <form action="<c:url value="/unviewSeason?seriesId=${series.id}&seasonId=${season.id}"/>"
                                                                           method="post">
                                                                         <button type="submit"
@@ -134,9 +149,9 @@
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <label class="cd-accordion__label cd-accordion__label--icon-folder drop" for="group-${item.index}">
-                                                                    <span class="big-size"><spring:message code="series.Season"/> ${season.seasonNumber}</span>
+                                                                    <span class="big-size"><spring:message code="series.Season" arguments="${season.seasonNumber}"/></span>
                                                                     <c:if test="${isLogged}">
-                                                                        <span class="ml-3 viewed-episodes">${season.episodesViewed} / ${fn:length(season.episodeList)}</span>
+                                                                        <span class="ml-3 viewed-episodes"><spring:message code="series.slash" arguments="${season.episodesViewed},${fn:length(season.episodeList)}"/></span>
                                                                         <c:if test="${season.seasonAired}">
                                                                             <form action="<c:url value="/viewSeason?seriesId=${series.id}&seasonId=${season.id}"/>"
                                                                                   method="post">
@@ -154,8 +169,7 @@
                                                             <c:forEach items="${season.episodeList}" var="episode">
                                                                 <li class="cd-accordion__label cd-accordion__label--icon-img">
                                                                     <div class="cd-accordion__item">
-                                                                        <h3>${episode.episodeNumber}
-                                                                            - ${episode.name}</h3>
+                                                                        <h3><spring:message code="series.minus" arguments="${episode.episodeNumber},${episode.name}"/></h3>
                                                                         <span class="ml-3 episode-date"><fmt:formatDate value="${episode.airing}" type="date" dateStyle="short"/></span>
                                                                         <c:set var="today_date" value="<%=new java.util.Date()%>"/>
                                                                         <c:if test="${isLogged && (episode.airing lt today_date)}">

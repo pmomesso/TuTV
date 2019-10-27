@@ -54,14 +54,21 @@
                   <div class="carousel-inner">
                     <c:forEach items="${newShows}" var="newShow" varStatus="status">
                       <c:choose>
+                        <c:when test="${newShow.numFollowers ne 1}">
+                          <spring:message code="index.sufix" var="sufix"/>
+                        </c:when>
+                        <c:otherwise>
+                          <c:set var="sufix" value=""></c:set>
+                        </c:otherwise>
+                      </c:choose>
+                      <c:choose>
                         <c:when test="${status.index == 0}">
                           <div class="carousel-item active">
                             <a href="<c:url value="/series?id=${newShow.id}"/>">
                               <img src="<c:url value="https://image.tmdb.org/t/p/original${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">
                               <div class="carousel-caption">
                                 <h2>${newShow.name}</h2>
-                                <h3>${newShow.numFollowers} <spring:message code="index.followers"/><c:if
-                                        test="${newShow.numFollowers ne 1}"><spring:message code="index.sufix"/></c:if></h3>
+                                <h3><spring:message code="index.followers" arguments="${newShow.numFollowers},${sufix}"/></h3>
                               </div>
                             </a>
                           </div>
@@ -72,8 +79,7 @@
                               <img src="<c:url value="https://image.tmdb.org/t/p/original${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">>
                               <div class="carousel-caption">
                                 <h2>${newShow.name}</h2>
-                                <h3>${newShow.numFollowers} <spring:message code="index.followers"/><c:if
-                                        test="${newShow.numFollowers ne 1}"><spring:message code="index.sufix"/></c:if></h3>
+                                <h3><spring:message code="index.followers" arguments="${newShow.numFollowers},${sufix}"/></h3>
                               </div>
                             </a>
                           </div>
@@ -103,8 +109,15 @@
                           </div>
                           <div class="show-details poster-details">
                             <h2>${series.name}</h2>
-                            <span class="secondary-link">${series.numFollowers} <spring:message code="index.followers"/><c:if
-                                    test="${series.numFollowers ne 1}"><spring:message code="index.sufix"/></c:if></span>
+                            <c:choose>
+                              <c:when test="${series.numFollowers ne 1}">
+                                <spring:message code="index.sufix" var="sufix2"/>
+                              </c:when>
+                              <c:otherwise>
+                                <c:set var="sufix2" value=""></c:set>
+                              </c:otherwise>
+                            </c:choose>
+                            <span class="secondary-link"><spring:message code="index.followers" arguments="${series.numFollowers},${sufix2}"/></span>
                           </div>
                         </a>
                       </li>

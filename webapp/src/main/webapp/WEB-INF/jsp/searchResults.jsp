@@ -42,24 +42,26 @@
                             <c:choose>
                                 <c:when test="${not empty searchResults}">
                                     <ul class="posters-list shows-list explore-list list-unstyled list-inline" style="overflow: visible">
-                                        <c:forEach items="${searchResults}" var="serie">
-                                            <li id="${serie.id}">
-                                                <div class="image-crop">
-                                                    <a href="<c:url value="/series?id=${serie.id}"/>">
-                                                        <img src="<c:url value="https://image.tmdb.org/t/p/original${serie.posterUrl}"/>"
-                                                             alt="${serie.name}">
-                                                    </a>
-                                                    <div class="overlay">
-                                                        <a href="<c:url value="/series?id=${serie.id}"/>" class="zoom-btn overlay-btn" title="info"></a>
+                                        <c:forEach items="${searchResults}" var="series">
+                                            <li>
+                                                <a href="<c:url value="/series?id=${series.id}"/>">
+                                                    <div class="image-crop">
+                                                        <img src="<c:url value="https://image.tmdb.org/t/p/original${series.posterUrl}"/>" alt="${series.name}">
+                                                        <div class="overlay"><span class="zoom-btn overlay-btn"></span></div>
                                                     </div>
-                                                    <div class="side progress-box">
-                                                        <div class="loader rotating dark small visible"></div>
+                                                    <div class="show-details poster-details">
+                                                        <h2>${series.name}</h2>
+                                                        <c:choose>
+                                                            <c:when test="${series.numFollowers ne 1}">
+                                                                <spring:message code="index.sufix" var="sufix"/>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <c:set var="sufix" value=""></c:set>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                        <span class="secondary-link"><spring:message code="index.followers" arguments="${series.numFollowers},${sufix}"/></span>
                                                     </div>
-                                                </div>
-                                                <div class="show-details poster-details">
-                                                    <h2><a href="<c:url value="/series?id=${serie.id}"/>">${serie.name}</a></h2>
-                                                    <a href="<c:url value="/series?id=${serie.id}"/>" class="secondary-link">${serie.numFollowers} <spring:message code="index.followers"/></a>
-                                                </div>
+                                                </a>
                                             </li>
                                         </c:forEach>
                                     </ul>

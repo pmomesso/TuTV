@@ -18,10 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Hello world!
- *
- */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -96,7 +92,7 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsersExceptLoggedOne() {
         Optional<User> loggedUser = getLoggedUser();
         List<User> usersList = userDao.getAllUsers();
-        return usersList.stream().filter(user -> loggedUser.isPresent() ? (loggedUser.get().getId() != user.getId()) : true).collect(Collectors.toList());
+        return usersList.stream().filter(user -> !loggedUser.isPresent() || (loggedUser.get().getId() != user.getId())).collect(Collectors.toList());
     }
 
     @Override
