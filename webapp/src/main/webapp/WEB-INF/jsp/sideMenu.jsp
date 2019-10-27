@@ -14,7 +14,7 @@
                 <div class="form-group">
                     <input type="text" id="global-search-input" name="name" class="show-search" placeholder="<spring:message code="search.search"/>">
                 </div>
-                <div class="form-group" style="margin-top: 10px">
+                <div class="form-group advanced-search" style="margin-top: 10px">
                     <a id="advancedSearchLink" href="<c:url value="/search"/>">
                         <spring:message code="search.advancedSearch"/>
                     </a>

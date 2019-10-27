@@ -69,6 +69,14 @@ body {
  font-size: 25px;
  font-weight: 700;
 }
+.advanced-search {
+    font-size: 16px;
+    line-height: 1.428571429;
+    font-family: proximaNova !important;
+    box-sizing: border-box !important;
+    font-weight: 400 !important;
+
+}
 .check {
  position: absolute;
  font-size: 30px;
