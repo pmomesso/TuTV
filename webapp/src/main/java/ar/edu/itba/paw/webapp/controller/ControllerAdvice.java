@@ -6,6 +6,8 @@ import ar.edu.itba.paw.model.exceptions.ApiException;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +22,7 @@ import java.util.Optional;
 
 @org.springframework.web.bind.annotation.ControllerAdvice
 public class ControllerAdvice {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ControllerAdvice.class);
 
     @Autowired
     private UserService userService;
@@ -57,6 +60,7 @@ public class ControllerAdvice {
     @ModelAttribute("user")
     public User loggedUser() {
         Optional<User> loggedUser = userService.getLoggedUser();
+        LOGGER.debug("Logged user is {}", loggedUser.orElse(null));
         return loggedUser.orElse(null);
     }
 
