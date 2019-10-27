@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface SeriesService {
 
-    List<Series> searchSeries(String seriesName,String genreName,String networkName);
+    List<Series> searchSeries(String seriesName, String genreName, String networkName);
     List<Series> getSeriesByName(String name);
 
     Optional<Series> getSerieById(long id);
@@ -25,10 +25,14 @@ public interface SeriesService {
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
     List<Season> getSeasonsBySeriesId(long seriesId);
     List<Genre> getAllGenres();
+    List<String> getAllNetworks();
+
+    boolean follows(long seriesId) throws UnauthorizedException;
     void followSeries(long seriesId) throws NotFoundException, UnauthorizedException;
+    void unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException;
     void setViewedEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
     void setViewedSeason(long seasonId) throws UnauthorizedException, NotFoundException;
-    void rateSeries(long seriesId,double rating) throws NotFoundException, UnauthorizedException;
+    void rateSeries(long seriesId, double rating) throws NotFoundException, UnauthorizedException, BadRequestException;
     void unviewEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
     void unviewSeason(long seasonId) throws UnauthorizedException, NotFoundException;
     void addSeriesReview(String body, long seriesId) throws NotFoundException, UnauthorizedException;

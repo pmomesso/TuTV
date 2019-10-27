@@ -1,8 +1,14 @@
 package ar.edu.itba.paw.persistence;
 
 
-import ar.edu.itba.paw.model.*;
-import org.junit.*;
+import ar.edu.itba.paw.model.Episode;
+import ar.edu.itba.paw.model.Genre;
+import ar.edu.itba.paw.model.Season;
+import ar.edu.itba.paw.model.Series;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -533,6 +539,16 @@ public class SeriesDaoJdbcTest {
         Genre g = genres.get(0);
         Assert.assertEquals(GENRE,g.getName());
         Assert.assertEquals(GENRE_ID,g.getId());
+    }
+    @Test
+    public void getAllNetworksTest(){
+        //Setup
+        populateDatabase();
+        //Ejercitar
+        List<String> networks = seriesDao.getAllNetworks();
+        //Asserts
+        Assert.assertEquals(1,networks.size());
+        Assert.assertEquals(NETWORK_NAME,networks.get(0));
     }
     @Test
     public void getSeriesByWrongId(){

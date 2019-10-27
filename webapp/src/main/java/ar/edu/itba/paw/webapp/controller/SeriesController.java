@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.form.CommentForm;
@@ -20,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Optional;
-import java.util.Date;
 
 @Controller
 public class SeriesController {
@@ -37,7 +37,6 @@ public class SeriesController {
         mav.addObject("series", series);
         Optional<User> u = userService.getLoggedUser();
         u.ifPresent(user -> mav.addObject("hasAvatar", userService.getUserAvatar(user.getId()).isPresent()));
-        mav.addObject("today_date", new Date());
         mav.addObject("postForm", postForm);
         mav.addObject("commentForm", commentForm);
         return mav;
@@ -49,8 +48,17 @@ public class SeriesController {
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
+    @RequestMapping(value = "/unfollowSeries", method = RequestMethod.POST)
+    public ModelAndView unfollowSeries(@RequestParam("seriesId") long seriesId) throws NotFoundException, UnauthorizedException {
+        seriesService.unfollowSeries(seriesId);
+        return new ModelAndView("redirect:/series?id=" + seriesId);
+    }
+
     @RequestMapping(value = "/viewSeason", method = RequestMethod.POST)
     public ModelAndView viewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) throws UnauthorizedException, NotFoundException {
+        if(!seriesService.follows(seriesId)){
+            seriesService.followSeries(seriesId);
+        }
         seriesService.setViewedSeason(seasonId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
@@ -64,6 +72,9 @@ public class SeriesController {
     @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
     public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId,
                                     HttpServletRequest request) throws NotFoundException, UnauthorizedException {
+        if(!seriesService.follows(seriesId)){
+            seriesService.followSeries(seriesId);
+        }
         seriesService.setViewedEpisode(episodeId);
         String referer = request.getHeader("Referer");
         return new ModelAndView("redirect:" + referer);
@@ -76,7 +87,7 @@ public class SeriesController {
     }
 
     @RequestMapping(value = "/rate")
-    public ModelAndView rate(@RequestParam("seriesId") long seriesId, @RequestParam("rating") int rating) throws NotFoundException, UnauthorizedException {
+    public ModelAndView rate(@RequestParam("seriesId") long seriesId, @RequestParam("rating") int rating) throws NotFoundException, UnauthorizedException, BadRequestException {
         seriesService.rateSeries(seriesId, rating);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
