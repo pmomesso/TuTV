@@ -57,7 +57,7 @@ public class ControllerAdvice {
     @ModelAttribute("user")
     public User loggedUser() {
         Optional<User> loggedUser = userService.getLoggedUser();
-        return loggedUser.isPresent() ? loggedUser.get() : null;
+        return loggedUser.orElse(null);
     }
 
     private ModelAndView setupErrorModelAndView(ApiException apiException){
