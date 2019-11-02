@@ -13,10 +13,15 @@ import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class SeriesServiceImpl implements SeriesService {
+
+    private static final int MIN_RATING = 0;
+    private static final int MAX_RATING = 5;
 
     @Autowired
     private SeriesDao seriesDao;
@@ -24,7 +29,7 @@ public class SeriesServiceImpl implements SeriesService {
     private UserService userService;
 
     @Autowired
-    public SeriesServiceImpl(SeriesDao seriesDao,UserService userService) {
+    public SeriesServiceImpl(SeriesDao seriesDao, UserService userService) {
         this.seriesDao = seriesDao;
         this.userService = userService;
     }
@@ -85,9 +90,29 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
+    public List<String> getAllNetworks() {
+        return seriesDao.getAllNetworks();
+    }
+
+    @Override
+    public boolean follows(long seriesId) throws UnauthorizedException {
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        return seriesDao.userFollows(seriesId,user.getId());
+    }
+
+    @Override
     public void followSeries(long seriesId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         int result = seriesDao.followSeries(seriesId, user.getId());
+        if(result == 0) {
+            throw new NotFoundException();
+        }
+    }
+
+    @Override
+    public void unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException {
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        int result = seriesDao.unfollowSeries(seriesId, user.getId());
         if(result == 0) {
             throw new NotFoundException();
         }
@@ -108,7 +133,10 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public void rateSeries(long seriesId, double rating) throws NotFoundException, UnauthorizedException {
+    public void rateSeries(long seriesId, double rating) throws NotFoundException, UnauthorizedException, BadRequestException {
+        if(rating > MAX_RATING || rating < MIN_RATING){
+            throw new BadRequestException();
+        }
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         int result = seriesDao.rateSeries(seriesId, user.getId(), rating);
         if(result == 0) {

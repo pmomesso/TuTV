@@ -57,6 +57,7 @@
                                                             <tr>
                                                                 <td>
 <%--                                                                    TODO modify photo--%>
+<%--                                                                    hay que poner el hasAvatar en la clase User--%>
                                                                     <img src="<c:url value="/resources/img/user.png"/>" class="no-display-small" alt="${currUser.userName}">
                                                                     <a href="<c:url value="/profile?id=${currUser.id}"/>" class="user-link">${currUser.userName}</a>
                                                                     <c:choose>

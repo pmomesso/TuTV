@@ -14,7 +14,7 @@
                 <div class="form-group">
                     <input type="text" id="global-search-input" name="name" class="show-search" placeholder="<spring:message code="search.search"/>">
                 </div>
-                <div class="form-group" style="margin-top: 10px">
+                <div class="form-group advanced-search" style="margin-top: 10px">
                     <a id="advancedSearchLink" href="<c:url value="/search"/>">
                         <spring:message code="search.advancedSearch"/>
                     </a>
@@ -61,7 +61,7 @@
                             <li class="profile ">
                                 <c:choose>
                                     <c:when test="${not empty userProfile && userProfile.id ne user.id}">
-                                        <a  href="<c:url value="/profile?id=${user.id}"/>" title="<spring:message code="index.profile"/>">
+                                        <a href="<c:url value="/profile?id=${user.id}"/>" title="<spring:message code="index.profile"/>">
                                             <img class="logo logo_icon" src="<c:url value="/resources/img/profile.png"/>" alt="<spring:message code="index.profile"/>">
                                             <span><spring:message code="index.profile"/></span>
                                         </a>

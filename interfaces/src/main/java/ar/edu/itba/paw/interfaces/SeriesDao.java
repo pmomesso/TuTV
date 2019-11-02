@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.model.*;
+import ar.edu.itba.paw.model.Episode;
+import ar.edu.itba.paw.model.Genre;
+import ar.edu.itba.paw.model.Season;
+import ar.edu.itba.paw.model.Series;
 
 import java.util.List;
 import java.util.Map;
@@ -8,7 +11,7 @@ import java.util.Optional;
 
 public interface SeriesDao {
 
-    List<Series> searchSeries(String seriesName,String genreName,String networkName);
+    List<Series> searchSeries(String seriesName, String genreName, String networkName);
     List<Series> getSeriesByName(String seriesName);
 
     List<Series> getSeriesByGenre(String genreName);
@@ -17,6 +20,7 @@ public interface SeriesDao {
     List<Series> getBestSeriesByGenre(int genreId, int lowerLimit, int upperLimit);
 
     List<Genre> getAllGenres();
+    List<String> getAllNetworks();
 
     List<Series> getNewSeries(int lowerLimit, int upperLimit);
 
@@ -27,7 +31,7 @@ public interface SeriesDao {
     long createSeries(Integer tvdbid, String seriesName, String seriesDescription, Double userRating, String status, Integer runtime,
                       Integer networkId, String firstAired, String idImdb, String added, String updated, String posterUrl, String bannerUrl, Integer followers);
 
-    long addSeriesGenre(String genre,List<Series> series);
+    long addSeriesGenre(String genre, List<Series> series);
     void setSeriesRunningTime(long seriesId, int runningTime);
     void setSeriesNetwork(long seriesId, int networkId);
     void setSeriesDescription(long seriesId, String seriesDescription);
@@ -44,10 +48,12 @@ public interface SeriesDao {
 
     Optional<List<Series>> getUpcomingEpisodes(long userId);
 
+    boolean userFollows(long seriesId, long userId);
     int followSeries(long seriesId, long userId);
-    int setViewedEpisode(long episodeId,long userId);
-    int setViewedSeason(long seasonId,long userId);
-    int unviewSeason(long seasonId,long userId);
+    int unfollowSeries(long seriesId, long userId);
+    int setViewedEpisode(long episodeId, long userId);
+    int setViewedSeason(long seasonId, long userId);
+    int unviewSeason(long seasonId, long userId);
     int unviewEpisode(long userId, long episodeId);
 
     int addSeriesReview(String body, long seriesId, long userId);
@@ -66,7 +72,7 @@ public interface SeriesDao {
 
     int removePost(long postId);
 
-    int rateSeries(long seriesId,long userId,double rating);
+    int rateSeries(long seriesId, long userId, double rating);
 
     long getPostAuthorId(long postId);
 

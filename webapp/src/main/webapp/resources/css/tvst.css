@@ -69,6 +69,14 @@ body {
  font-size: 25px;
  font-weight: 700;
 }
+.advanced-search {
+    font-size: 16px;
+    line-height: 1.428571429;
+    font-family: proximaNova !important;
+    box-sizing: border-box !important;
+    font-weight: 400 !important;
+
+}
 .check {
  position: absolute;
  font-size: 30px;
@@ -154,10 +162,8 @@ body {
 .add-button {
   background-color: #44d9e6;
   border-radius: 10%;
-  width: 100px;
-  height: 45px;
   margin: 10px;
-  padding: 5px;
+  padding: 10px;
   border: none;
   color: black;
   font-size: 2rem;
@@ -10200,7 +10206,6 @@ body.vjs-full-window {
  width:30px
 }
 .editableform-loading {
- background:url(/images/loading.gif) center center no-repeat;
  height:25px;
  width:auto;
  min-width:25px
@@ -11838,7 +11843,6 @@ body .ui-tooltip {
 }
 .ui-widget-overlay,
 .ui-widget-shadow {
- background:url(/images/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x #aaa;
  filter:Alpha(Opacity=30);
  opacity:.3
 }
@@ -14552,7 +14556,6 @@ a {
  background:-webkit-linear-gradient(top,rgba(34,34,34,0) 0,rgba(34,34,34,.65) 100%);
  background:-o-linear-gradient(top,rgba(34,34,34,0) 0,rgba(34,34,34,.65) 100%);
  background:-ms-linear-gradient(top,rgba(34,34,34,0) 0,rgba(34,34,34,.65) 100%);
- background:linear-gradient(top bottom,rgba(34,34,34,0) 0,rgba(34,34,34,.65) 100%);
  filter:progid:DXImageTransform.Microsoft.gradient( startColorstr="#00222222", endColorstr="#a6222222", GradientType=0 )
 }
 .embed .embed-picture img:not(.play-btn) {
@@ -15841,7 +15844,6 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
 .tvst-people-love-us {
  background-color:#232323;
  padding-bottom:90px;
- background-image:url(/images/homepage/dark-squares-pattern.png),url(/images/homepage/dark-squares-pattern-180.png);
  background-position:0 0,0 bottom;
  background-repeat:repeat-x,repeat-x
 }
@@ -16919,7 +16921,6 @@ body.reduced-left.reduced-right:not(.not-connected) .page-center {
  border-radius:3px;
  background-image:linear-gradient(to bottom,#f3f3f3,#d4d4d4);
  box-shadow:0 1px 2px 0 rgba(0,0,0,.2),inset 0 2px 0 0 #fff;
- box-shadow:0 1px 2px 0 rgba(0,0,0,.2),inset 0 2px 0 0 var(--white-two);
  border:1px solid #aaa
 }
 #about-submit {

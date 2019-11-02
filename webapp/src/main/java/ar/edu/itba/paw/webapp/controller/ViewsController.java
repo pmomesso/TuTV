@@ -1,15 +1,20 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
+import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
-import ar.edu.itba.paw.webapp.form.*;
+import ar.edu.itba.paw.webapp.form.SearchForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class ViewsController {
@@ -29,6 +34,7 @@ public class ViewsController {
 	public ModelAndView search() {
 		final ModelAndView mav = new ModelAndView("search");
 		mav.addObject("genres",seriesService.getAllGenres());
+        mav.addObject("networks",seriesService.getAllNetworks());
 		return mav;
 	}
 
@@ -37,8 +43,17 @@ public class ViewsController {
 	    if(errors.hasErrors()){
 	        return search();
         }
-        final ModelAndView mav = new ModelAndView("searchResults");
-        mav.addObject("searchResults",seriesService.searchSeries(form.getName(),form.getGenre(),form.getNetwork()));
+	    List<Series> results = seriesService.searchSeries(form.getName(),form.getGenre(),form.getNetwork());
+        ModelAndView mav;
+	    if(results.size() > 0){
+            mav = new ModelAndView("searchResults");
+            mav.addObject("searchResults",results);
+        }
+	    else{
+            mav = search();
+            mav.addObject("emptySearch",true);
+            mav.addObject("form",form);
+        }
         return mav;
     }
 
