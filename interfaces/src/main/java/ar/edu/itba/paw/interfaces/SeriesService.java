@@ -1,8 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.model.Genre;
-import ar.edu.itba.paw.model.Season;
-import ar.edu.itba.paw.model.Series;
+import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
@@ -21,18 +19,18 @@ public interface SeriesService {
     List<Series> getSeriesByGenreAndNumber(int genreId, int num);
     List<Series> getAllSeriesByGenre(String genreName);
     List<Series> getAllSeriesByGenre(int id);
-    Map<Genre, List<Series>> getSeriesByGenreMap(int lowerNumber, int upperNumber);
+    List<Genre> getSeriesByGenre(int lowerNumber, int upperNumber);
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
     List<Season> getSeasonsBySeriesId(long seriesId);
     List<Genre> getAllGenres();
-    List<String> getAllNetworks();
+    List<Network> getAllNetworks();
 
     boolean follows(long seriesId) throws UnauthorizedException;
     void followSeries(long seriesId) throws NotFoundException, UnauthorizedException;
     void unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException;
     void setViewedEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
     void setViewedSeason(long seasonId) throws UnauthorizedException, NotFoundException;
-    void rateSeries(long seriesId, double rating) throws NotFoundException, UnauthorizedException, BadRequestException;
+    void rateSeries(long seriesId, int rating) throws NotFoundException, UnauthorizedException, BadRequestException;
     void unviewEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
     void unviewSeason(long seasonId) throws UnauthorizedException, NotFoundException;
     void addSeriesReview(String body, long seriesId) throws NotFoundException, UnauthorizedException;
@@ -51,12 +49,12 @@ public interface SeriesService {
     
     void removePost(long postId) throws UnauthorizedException, NotFoundException;
 
-    List<Series> getWatchList() throws UnauthorizedException, NotFoundException;
+    List<Episode> getWatchList() throws UnauthorizedException, NotFoundException;
 
     List<Series> getRecentlyWatchedList(int number) throws UnauthorizedException, BadRequestException, NotFoundException;
 
     List<Series> getAddedSeries() throws NotFoundException, UnauthorizedException;
     List<Series> getAddedSeries(long userId) throws NotFoundException;
 
-    List<Series> getUpcomingEpisodes() throws UnauthorizedException;
+    List<Episode> getUpcomingEpisodes() throws UnauthorizedException;
 }

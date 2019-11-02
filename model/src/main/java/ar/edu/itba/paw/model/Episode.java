@@ -1,64 +1,81 @@
 package ar.edu.itba.paw.model;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import javax.persistence.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
+@Entity
+@Table(name = "episode")
 public class Episode {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "series_id_seq")
+    @SequenceGenerator(sequenceName = "series_id_seq", name = "series_id_seq", allocationSize = 1)
+    private Long id = -1L;
+    @Column(nullable = true)
+    private Long tvdbid;
+    @Column(length = 255,nullable = false)
     private String name;
-    private String description;
-    private int episodeNumber;
-    private long id;
-    private boolean viewed = false;
-    private Rating userRating;
-    private Date airing;
-    private List<Comment> episodeComments = Collections.emptyList();
+    @Column(length = 2048,nullable = false)
+    private String overview;
+    @Column(length = 255,nullable = false)
+    private Integer numEpisode;
+    @Column
+    @Temporal(TemporalType.DATE)
+    private Date aired;
+    //Columna para el apicrawler
+    @Column(name = "series_id",nullable = true)
+    private Long seriesId;
 
-    public boolean isViewed() {
-        return viewed;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private Season season;
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    },fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "hasviewedepisode",
+            joinColumns = { @JoinColumn(name = "episodeid") },
+            inverseJoinColumns = { @JoinColumn(name = "userid") }
+    )
+    private Set<User> viewers = new HashSet<>();
+
+    public Episode(){
+    }
+    public Episode(String name, String overview, int numEpisode, String aired){
+        this.name = name;
+        this.overview = overview;
+        this.numEpisode = numEpisode;
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            this.aired = f.parse(aired);
+        } catch (ParseException e) {
+            this.aired = null;
+        }
+    }
+    public int getNumEpisode() {
+        return numEpisode;
     }
 
-    public void setViewed(boolean viewed) {
-        this.viewed = viewed;
-    }
-
-    public List<Comment> getEpisodeComments() {
-        return episodeComments;
-    }
-
-    public void setEpisodeComments(List<Comment> episodeComments) {
-        this.episodeComments = episodeComments;
-    }
-
-    public int getEpisodeNumber() {
-        return episodeNumber;
-    }
-
-    public void setEpisodeNumber(int episodeNumber) {
-        this.episodeNumber = episodeNumber;
+    public void setNumEpisode(int numEpisode) {
+        this.numEpisode = numEpisode;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getOverview() {
+        return overview;
     }
-
-    public Rating getUserRating() {
-        return userRating;
-    }
-
-    public void setUserRating(Rating rating) { userRating = rating; }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
 
     public long getId() {
@@ -70,10 +87,50 @@ public class Episode {
     }
 
     public Date getAiring() {
-        return airing;
+        return aired;
     }
 
-    public void setAiring(Date airing) {
-        this.airing = airing;
+    public void setAiring(Date aired) {
+        this.aired = aired;
+    }
+
+    public Season getSeason() {
+        return season;
+    }
+
+    public void setSeason(Season season) {
+        this.season = season;
+    }
+
+    public Set<User> getViewers() {
+        return viewers;
+    }
+
+    public void setViewers(Set<User> viewers) {
+        this.viewers = viewers;
+    }
+
+    public void addViewer(User viewer){
+        this.viewers.add(viewer);
+        viewer.getViewed().add(this);
+    }
+    public void removeViewer(User viewer){
+        this.viewers.remove(viewer);
+        viewer.getViewed().remove(this);
+    }
+    @Override
+    public boolean equals(Object obj){
+        if(this == obj){
+            return true;
+        }
+        if(!(obj instanceof Episode)){
+            return false;
+        }
+        Episode other = (Episode)obj;
+        return this.id.equals(other.id);
+    }
+    @Override
+    public int hashCode(){
+        return id.hashCode();
     }
 }

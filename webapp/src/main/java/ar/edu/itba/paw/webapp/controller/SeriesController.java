@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.model.Rating;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
@@ -36,7 +37,15 @@ public class SeriesController {
         Series series = seriesService.getSerieById(id).orElseThrow(NotFoundException::new);
         mav.addObject("series", series);
         Optional<User> u = userService.getLoggedUser();
-        u.ifPresent(user -> mav.addObject("hasAvatar", userService.getUserAvatar(user.getId()).isPresent()));
+        u.ifPresent(user -> {
+            mav.addObject("hasAvatar", userService.getUserAvatar(user.getId()).isPresent());
+            for(Rating r : series.getRatings()){
+                if(r.getUser().getId() == u.get().getId()){
+                    mav.addObject("rating",r.getRating());
+                    break;
+                }
+            }
+        });
         mav.addObject("postForm", postForm);
         mav.addObject("commentForm", commentForm);
         return mav;

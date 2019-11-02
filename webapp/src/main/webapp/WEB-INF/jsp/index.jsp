@@ -54,11 +54,11 @@
                   <div class="carousel-inner">
                     <c:forEach items="${newShows}" var="newShow" varStatus="status">
                       <c:choose>
-                        <c:when test="${newShow.numFollowers ne 1}">
+                        <c:when test="${newShow.followers ne 1}">
                           <spring:message code="index.sufix" var="sufix"/>
                         </c:when>
                         <c:otherwise>
-                          <c:set var="sufix" value=""></c:set>
+                          <c:set var="sufix" value=""/>
                         </c:otherwise>
                       </c:choose>
                       <c:choose>
@@ -68,7 +68,7 @@
                               <img src="<c:url value="https://image.tmdb.org/t/p/original${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">
                               <div class="carousel-caption">
                                 <h2>${newShow.name}</h2>
-                                <h3><spring:message code="index.followers" arguments="${newShow.numFollowers},${sufix}"/></h3>
+                                <h3><spring:message code="index.followers" arguments="${newShow.followers},${sufix}"/></h3>
                               </div>
                             </a>
                           </div>
@@ -79,7 +79,7 @@
                               <img src="<c:url value="https://image.tmdb.org/t/p/original${newShow.bannerUrl}"/>" itemprop="image" alt="${newShow.bannerUrl}">>
                               <div class="carousel-caption">
                                 <h2>${newShow.name}</h2>
-                                <h3><spring:message code="index.followers" arguments="${newShow.numFollowers},${sufix}"/></h3>
+                                <h3><spring:message code="index.followers" arguments="${newShow.followers},${sufix}"/></h3>
                               </div>
                             </a>
                           </div>
@@ -96,11 +96,11 @@
                   </a>
                 </div>
               </section>
-              <c:forEach items="${seriesMap}" var="entry">
+              <c:forEach items="${genres}" var="genre">
                 <section id="new-shows">
-                  <h2 class="black-font"><c:out value="${entry.key.name}"/></h2>
+                  <h2 class="black-font"><c:out value="${genre.name}"/></h2>
                   <ul class="posters-list shows-list explore-list list-unstyled list-inline">
-                    <c:forEach items="${entry.value}" var="series">
+                    <c:forEach items="${genre.series}" var="series">
                       <li>
                         <a href="<c:url value="/series?id=${series.id}"/>">
                           <div class="image-crop">
@@ -110,14 +110,14 @@
                           <div class="show-details poster-details">
                             <h2>${series.name}</h2>
                             <c:choose>
-                              <c:when test="${series.numFollowers ne 1}">
+                              <c:when test="${series.followers ne 1}">
                                 <spring:message code="index.sufix" var="sufix2"/>
                               </c:when>
                               <c:otherwise>
-                                <c:set var="sufix2" value=""></c:set>
+                                <c:set var="sufix2" value=""/>
                               </c:otherwise>
                             </c:choose>
-                            <span class="secondary-link"><spring:message code="index.followers" arguments="${series.numFollowers},${sufix2}"/></span>
+                            <span class="secondary-link"><spring:message code="index.followers" arguments="${series.followers},${sufix2}"/></span>
                           </div>
                         </a>
                       </li>

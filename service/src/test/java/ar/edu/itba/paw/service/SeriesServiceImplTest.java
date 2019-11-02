@@ -3,12 +3,8 @@ package ar.edu.itba.paw.service;
 
 import ar.edu.itba.paw.interfaces.SeriesDao;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.model.Genre;
-import ar.edu.itba.paw.model.Series;
-import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.ApiException;
-import ar.edu.itba.paw.model.exceptions.NotFoundException;
-import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,7 +35,7 @@ public class SeriesServiceImplTest {
     private static final String POSTER_URL = "url/poster";
     private static final String BANNER_URL = "url/banner";
     private static final int FOLLOWERS = 6;
-    private static final int GENRE_ID = 7;
+    private static final long GENRE_ID = 7;
     private static final String GENRE = "genre";
     private static final String NETWORK_NAME = "network";
     private static final long NETWORK_ID = 8;
@@ -64,7 +59,7 @@ public class SeriesServiceImplTest {
     }
     private Series getMockSeries(){
         Genre g = new Genre(GENRE_ID,GENRE);
-        Series s = new Series(ID,TVDB_ID,NAME,DESCRIPTION,NETWORK_NAME,POSTER_URL,BANNER_URL,TOTAL_RATING,STATUS,RUNTIME,FOLLOWERS,ID_IMDB,FIRST_AIRED,ADDED,UPDATED);
+        Series s = new Series(ID,TVDB_ID,NAME,DESCRIPTION,new Network(NETWORK_ID,NETWORK_NAME),POSTER_URL,BANNER_URL,TOTAL_RATING,STATUS,RUNTIME,FOLLOWERS,ID_IMDB,FIRST_AIRED,ADDED,UPDATED);
         s.addGenre(g);
         return s;
     }
@@ -73,9 +68,8 @@ public class SeriesServiceImplTest {
         Assert.assertEquals(ID,series.getId());
         Assert.assertEquals(NAME,series.getName());
         Assert.assertEquals(DESCRIPTION,series.getSeriesDescription());
-        Assert.assertEquals(TOTAL_RATING,series.getTotalRating(),0);
         Assert.assertEquals(STATUS,series.getStatus());
-        Assert.assertEquals(RUNTIME,series.getRunningTime());
+        Assert.assertEquals(RUNTIME,series.getRuntime());
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Assert.assertEquals(FIRST_AIRED,format.format(series.getFirstAired()));
         Assert.assertEquals(ID_IMDB,series.getImdbId());
@@ -83,11 +77,11 @@ public class SeriesServiceImplTest {
         Assert.assertEquals(UPDATED,format.format(series.getUpdated()));
         Assert.assertEquals(POSTER_URL,series.getPosterUrl());
         Assert.assertEquals(BANNER_URL,series.getBannerUrl());
-        Assert.assertEquals(FOLLOWERS,series.getNumFollowers());
+        Assert.assertEquals(FOLLOWERS,series.getFollowers());
         Assert.assertEquals(1,series.getGenres().size());
-        Assert.assertEquals(NETWORK_NAME,series.getNetwork());
+        Assert.assertEquals(NETWORK_NAME,series.getNetwork().getName());
         Genre g = (Genre)series.getGenres().toArray()[0];
-        Assert.assertEquals(GENRE_ID,g.getId());
+        Assert.assertEquals(GENRE_ID,g.getId().longValue());
         Assert.assertEquals(GENRE,g.getName());
     }
     @Test
@@ -110,7 +104,7 @@ public class SeriesServiceImplTest {
         //Setup
         Series s = getMockSeries();
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.getSeriesById(Mockito.eq(ID),Mockito.eq(USER_ID))).thenReturn(Optional.of(s));
+        Mockito.when(mockDao.getSeriesById(Mockito.eq(ID))).thenReturn(Optional.of(s));
         //Ejercitar
         Optional<Series> series = seriesService.getSerieById(ID);
         //Asserts
@@ -156,7 +150,7 @@ public class SeriesServiceImplTest {
     @Test
     public void rateSeriesTest(){
         //Setup
-        final double rating = 3.4;
+        final int rating = 3;
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
         Mockito.when(mockDao.rateSeries(Mockito.eq(ID),Mockito.eq(USER_ID),Mockito.eq(rating))).thenReturn(1);
         //Ejercitar
@@ -195,7 +189,7 @@ public class SeriesServiceImplTest {
         //Setup
         final String body = "body";
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.addSeriesReview(Mockito.eq(body),Mockito.eq(ID),Mockito.eq(USER_ID))).thenReturn(1);
+        Mockito.when(mockDao.createSeriesReview(Mockito.eq(body),Mockito.eq(ID),Mockito.eq(USER_ID))).thenReturn(Optional.of(new SeriesReview()));
         //Ejercitar
         try {
             seriesService.addSeriesReview(body,ID);
@@ -235,7 +229,7 @@ public class SeriesServiceImplTest {
         final long postId = 1;
         final String body = "body";
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.addCommentToPost(Mockito.eq(postId),Mockito.eq(body),Mockito.eq(USER_ID))).thenReturn(1);
+        Mockito.when(mockDao.addCommentToPost(Mockito.eq(postId),Mockito.eq(body),Mockito.eq(USER_ID))).thenReturn(Optional.of(new SeriesReviewComment()));
         //Ejercitar
         try {
             seriesService.addCommentToPost(postId,body);
@@ -303,12 +297,12 @@ public class SeriesServiceImplTest {
         final Series mockSeries = getMockSeries();
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
         Mockito.when(mockDao.getNextToBeSeen(Mockito.eq(USER_ID))).thenAnswer(invocation -> {
-            List<Series> series = new ArrayList<>();
-            series.add(mockSeries);
-            return series;
+            List<Episode> episodes = new ArrayList<>();
+            episodes.add(new Episode());
+            return episodes;
         });
         //Ejercitar
-        List<Series> series;
+        List<Episode> series;
         try {
             series = seriesService.getWatchList();
         } catch (ApiException e) {
@@ -316,7 +310,6 @@ public class SeriesServiceImplTest {
             return;
         }
         Assert.assertEquals(1,series.size());
-        assertMockSeries(series.get(0));
     }
     @Test
     public void getRecentlyWatchedlistTest(){

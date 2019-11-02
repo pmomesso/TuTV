@@ -206,7 +206,7 @@
                                                         </div>
                                                         <div class="row form-group text-center">
                                                             <div class="col">
-                                                                <button type="submit" class="submit-comment-btn"><spring:message code="profile.save"/></button>
+                                                                <button type="submit" class="submit-seriesReviewComment-btn"><spring:message code="profile.save"/></button>
                                                             </div>
                                                         </div>
                                                     </form:form>

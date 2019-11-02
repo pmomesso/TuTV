@@ -1,32 +1,72 @@
 package ar.edu.itba.paw.model;
 
+import javax.persistence.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Entity
+@Table(name = "series")
 public class Series  {
 
-    private boolean follows;
-    private long id;
-    private int tvdbid;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "series_id_seq")
+    @SequenceGenerator(sequenceName = "series_id_seq", name = "series_id_seq", allocationSize = 1)
+    private Long id = -1L;
+    @Column
+    private Integer tvdbid;
+    @Column(length = 255, nullable = false)
     private String name;
+    @Column(name = "description",length = 2048, nullable = false)
     private String seriesDescription;
-    private String network;
+    @Column(length = 255, nullable = false)
     private String posterUrl;
+    @Column(length = 255, nullable = false)
     private String bannerUrl;
+    @Column(length = 16, nullable = false)
     private String status;
+    @Column
     private Double userRating;
-    private Double totalRating;
-    private Integer runningTime;
-    private int numFollowers;
+    @Column
+    private Integer runtime;
+    @Column(columnDefinition = "integer default 0")
+    private Integer followers = 0;
+    @Column(length = 64)
     private String imdbId;
+    @Column
+    @Temporal(TemporalType.DATE)
     private Date firstAired;
+    @Column
+    @Temporal(TemporalType.DATE)
     private Date added;
+    @Column
+    @Temporal(TemporalType.DATE)
     private Date updated;
-    private Set<Genre> genresSet = new HashSet<>();
-    private List<ActorRole> actorList = Collections.emptyList();
-    private List<Season> seasons = Collections.emptyList();
-    private List<Post> postList = Collections.emptyList();
+
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY,optional = false)
+    private Network network;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "hasgenre",
+            joinColumns = { @JoinColumn(name = "seriesid") },
+            inverseJoinColumns = { @JoinColumn(name = "genreid") }
+    )
+    private Set<Genre> genres = new HashSet<>();
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "follows",
+            joinColumns = { @JoinColumn(name = "seriesid") },
+            inverseJoinColumns = { @JoinColumn(name = "userid") }
+    )
+    private Set<User> userFollowers = new HashSet<>();
+    @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},mappedBy = "series",fetch = FetchType.LAZY)
+    @OrderBy(value = "seasonNumber asc")
+    private Set<Season> seasons = new HashSet<>();
+    @OneToMany(mappedBy = "series",fetch = FetchType.LAZY)
+    private Set<SeriesReview> seriesReviewList = new HashSet<>();
+    @OneToMany(mappedBy = "series",fetch = FetchType.LAZY)
+    private Set<Rating> ratings = new HashSet<>();
 
     public Series(String name) {
         this.name = name;
@@ -38,9 +78,8 @@ public class Series  {
         this.name = name;
         this.seriesDescription = seriesDescription;
     }
-    public Series(long id,int tvdbid,String name,String seriesDescription,String network,String posterUrl,String bannerUrl,Double totalRating,
-                  String status,Integer runningTime,int numFollowers,String imdbid,String firstAired,String added,String updated) {
-        this.id = id;
+    public Series(int tvdbid,String name,String seriesDescription,Network network,String posterUrl,String bannerUrl,Double userRating,
+                  String status,Integer runtime,int followers,String imdbid,String firstAired,String added,String updated) {
         this.tvdbid = tvdbid;
         this.name = name;
         this.seriesDescription = seriesDescription;
@@ -48,33 +87,60 @@ public class Series  {
         this.posterUrl = posterUrl;
         this.bannerUrl = bannerUrl;
         this.status = status;
-        this.totalRating = totalRating;
-        this.runningTime = runningTime;
-        this.numFollowers = numFollowers;
+        this.userRating = userRating;
+        this.runtime = runtime;
+        this.followers = followers;
         this.imdbId = imdbid;
         SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
         try {
             this.firstAired = f.parse(firstAired);
         } catch (ParseException e) {
             this.firstAired = null;
-            e.printStackTrace();
         }
         try {
             this.added = f.parse(added);
         } catch (ParseException e) {
             this.added = null;
-            e.printStackTrace();
         }
         try {
             this.updated = f.parse(updated);
         } catch (ParseException e) {
             this.updated = null;
-            e.printStackTrace();
         }
     }
-
-    public int getRunningTime() {
-        return runningTime;
+    public Series(Long id,int tvdbid,String name,String seriesDescription,Network network,String posterUrl,String bannerUrl,Double userRating,
+                  String status,Integer runtime,int followers,String imdbid,String firstAired,String added,String updated) {
+        this.id=id;
+        this.tvdbid = tvdbid;
+        this.name = name;
+        this.seriesDescription = seriesDescription;
+        this.network = network;
+        this.posterUrl = posterUrl;
+        this.bannerUrl = bannerUrl;
+        this.status = status;
+        this.userRating = userRating;
+        this.runtime = runtime;
+        this.followers = followers;
+        this.imdbId = imdbid;
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            this.firstAired = f.parse(firstAired);
+        } catch (ParseException e) {
+            this.firstAired = null;
+        }
+        try {
+            this.added = f.parse(added);
+        } catch (ParseException e) {
+            this.added = null;
+        }
+        try {
+            this.updated = f.parse(updated);
+        } catch (ParseException e) {
+            this.updated = null;
+        }
+    }
+    public int getRuntime() {
+        return runtime;
     }
 
     public String getStatus() {
@@ -115,22 +181,22 @@ public class Series  {
         this.seriesDescription = seriesDescription;
     }
 
-    public void addActor(ActorRole actorRole) {
-        actorList.add(actorRole);
-    }
-
     public void addGenre(Genre genre) {
-        genresSet.add(genre);
+        genres.add(genre);
+        genre.getSeries().add(this);
     }
 
     public void addGenres(Collection<Genre> genres){
-        genresSet.addAll(genres);
+        this.genres.addAll(genres);
     }
     public Set<Genre> getGenres(){
-        return genresSet;
+        return genres;
     }
-    public void setRunningTime(int runningTime) {
-        this.runningTime = runningTime;
+    public void setGenres(Set<Genre> genres){
+        this.genres = genres;
+    }
+    public void setRuntime(int runningTime) {
+        this.runtime = runningTime;
     }
 
     public long getId() {
@@ -149,12 +215,12 @@ public class Series  {
         this.posterUrl = posterUrl;
     }
 
-    public int getNumFollowers() {
-        return numFollowers;
+    public int getFollowers() {
+        return followers;
     }
 
-    public void setNumFollowers(int numFollowers) {
-        this.numFollowers = numFollowers;
+    public void setFollowers(int followers) {
+        this.followers = followers;
     }
 
     public String getBannerUrl() {
@@ -171,7 +237,7 @@ public class Series  {
             return true;
         if(!(obj instanceof Series))
             return false;
-        return id == ((Series)obj).id;
+        return id.equals(((Series)obj).id);
     }
     @Override
     public int hashCode(){
@@ -206,47 +272,60 @@ public class Series  {
         this.tvdbid = tvdbid;
     }
 
-    public String getNetwork() {
+    public Network getNetwork() {
         return network;
     }
 
-    public void setNetwork(String network) {
+    public void setNetwork(Network network) {
         this.network = network;
     }
 
-    public List<Season> getSeasons() {
+    public Set<Season> getSeasons() {
         return seasons;
     }
 
-    public void setSeasons(List<Season> seasons) {
+    public void setSeasons(Set<Season> seasons) {
         this.seasons = seasons;
     }
 
-    public void setSeriesPostList(List<Post> postList) {
-        this.postList = postList;
+    public void addSeason(Season season){
+        this.seasons.add(season);
+        season.setSeries(this);
+    }
+    public void setSeriesPostList(Set<SeriesReview> seriesReviewList) {
+        this.seriesReviewList = seriesReviewList;
     }
 
-    public List<Post> getPostList() {
-        return postList;
+    public Set<SeriesReview> getSeriesReviewList() {
+        return seriesReviewList;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public boolean getFollows() {
-        return follows;
+
+    public Set<User> getUserFollowers() {
+        return userFollowers;
     }
 
-    public void setFollows(boolean follows) {
-        this.follows = follows;
+    public void setUserFollowers(Set<User> userFollowers) {
+        this.userFollowers = userFollowers;
     }
 
-    public Double getTotalRating() {
-        return totalRating;
+    public void addUserFollower(User user){
+        this.userFollowers.add(user);
+        user.getFollows().add(this);
+    }
+    public void removeUserFollower(User user){
+        this.userFollowers.remove(user);
+        user.getFollows().remove(this);
+    }
+    public Set<Rating> getRatings() {
+        return ratings;
     }
 
-    public void setTotalRating(Double totalRating) {
-        this.totalRating = totalRating;
+    public void setRatings(Set<Rating> ratings) {
+        this.ratings = ratings;
     }
 }

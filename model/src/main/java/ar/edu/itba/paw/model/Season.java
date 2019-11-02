@@ -1,33 +1,53 @@
 package ar.edu.itba.paw.model;
 
+import javax.persistence.*;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+@Entity
+@Table(name = "season")
 public class Season {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "season_id_seq")
+    @SequenceGenerator(sequenceName = "season_id_seq", name = "season_id_seq", allocationSize = 1)
+    private Long id = -1L;
+    @Column(length = 255, nullable = true)
     private String name;
-    private List<Episode> episodeList = Collections.emptyList();
+    @Column(nullable = false)
     private int seasonNumber;
-    private long seasonId;
-    private boolean viewed;
-    private int episodesViewed;
-    private boolean seasonAired;
-    private Rating userRating;
 
+    @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},mappedBy = "season",fetch = FetchType.LAZY)
+    @OrderBy(value = "numEpisode asc")
+    private Set<Episode> episodes = new HashSet<>();
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private Series series;
+
+    @Transient
+    private boolean viewed;
+    @Transient
+    private int episodesViewed;
+    @Transient
+    private boolean seasonAired;
+
+    public Season(){
+    }
+    public Season(String name, int seasonNumber){
+        this.name = name;
+        this.seasonNumber = seasonNumber;
+    }
     public String getName() {
         return name;
     }
 
-    public List<Episode> getEpisodeList() {
-        return episodeList;
+    public Set<Episode> getEpisodes() {
+        return episodes;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setEpisodeList(List<Episode> episodeList) {
-        this.episodeList = episodeList;
     }
 
     public int getSeasonNumber() {
@@ -38,32 +58,36 @@ public class Season {
         this.seasonNumber = seasonNumber;
     }
 
-    public Rating getUserRating() {
-        return userRating;
-    }
-
-    public void setUserRating() {
-
-    }
-
     public long getId() {
-        return seasonId;
+        return id;
     }
 
     public void setId(long seasonId) {
-        this.seasonId = seasonId;
+        this.id = seasonId;
     }
 
-    public void setEpisodes(List<Episode> episodeList) {
-        this.episodeList = episodeList;
+    public void setEpisodes(Set<Episode> episodes) {
+        this.episodes = episodes;
+    }
+
+    public void addEpisode(Episode episode){
+        this.episodes.add(episode);
+        episode.setSeason(this);
+    }
+    public Series getSeries() {
+        return series;
+    }
+
+    public void setSeries(Series series) {
+        this.series = series;
+    }
+
+    public boolean getViewed() {
+        return viewed;
     }
 
     public void setViewed(boolean viewed) {
         this.viewed = viewed;
-    }
-
-    public boolean isViewed() {
-        return viewed;
     }
 
     public int getEpisodesViewed() {
@@ -74,7 +98,7 @@ public class Season {
         this.episodesViewed = episodesViewed;
     }
 
-    public boolean isSeasonAired() {
+    public boolean getSeasonAired() {
         return seasonAired;
     }
 

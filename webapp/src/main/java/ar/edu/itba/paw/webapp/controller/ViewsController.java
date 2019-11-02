@@ -26,7 +26,7 @@ public class ViewsController {
 	public ModelAndView home() {
 		final ModelAndView mav = new ModelAndView("index");
 		mav.addObject("newShows", seriesService.getNewestSeries(0,4));
-		mav.addObject("seriesMap", seriesService.getSeriesByGenreMap(0,7));
+		mav.addObject("genres", seriesService.getSeriesByGenre(0,7));
 		return mav;
 	}
 

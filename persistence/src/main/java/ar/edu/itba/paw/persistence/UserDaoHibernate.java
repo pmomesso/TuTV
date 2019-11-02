@@ -104,7 +104,7 @@ public class UserDaoHibernate implements UserDao {
     @Override
     public void setUserAvatar(long userId, byte[] byteArray) {
         //Todo: ask if should change User Class
-        TypedQuery<User> query = em.createQuery("from User as u where u.userId = :id", User.class);
+        TypedQuery<User> query = em.createQuery("from User as u where u.id = :id", User.class);
         query.setParameter("id", userId);
         query.getResultList().stream().findFirst().ifPresent(user -> {
             user.setUserAvatar(byteArray);
@@ -129,7 +129,7 @@ public class UserDaoHibernate implements UserDao {
     @Override
     public List<User> getAllUsers() {
         //Todo: ask if correct
-        TypedQuery<User> query = em.createQuery("from User where true", User.class);
+        TypedQuery<User> query = em.createQuery("from User", User.class);
         return query.getResultList();
     }
 

@@ -50,12 +50,12 @@
                                     <div class="carousel-caption">
                                         <div class="text-center">
                                             <span class="star"></span>
-                                            <fmt:formatNumber value="${series.totalRating}" var="rating" pattern="0.0"/>
-                                            <h2><spring:message code="series.rating" arguments="${rating}"/></h2>
+                                            <fmt:formatNumber value="${series.userRating}" var="totalRating" pattern="0.0" />
+                                            <h2><spring:message code="series.rating" arguments="${totalRating}" argumentSeparator=";"/></h2>
                                         </div>
                                         <c:if test="${isLogged}">
                                             <c:choose>
-                                                <c:when test="${series.follows}">
+                                                <c:when test="${fn:contains(series.userFollowers,user)}">
                                                     <form action="<c:url value="/unfollowSeries?seriesId=${series.id}"/>" method="post">
                                                         <button class="add-button" type="submit"><spring:message code="series.unfollow"/></button>
                                                     </form>
@@ -81,10 +81,10 @@
                                         <span class="separator">•</span>
                                         <c:choose>
                                             <c:when test="${fn:length(series.seasons) ne 1}">
-                                                <c:set var="sufix" value="s"></c:set>
+                                                <c:set var="sufix" value="s"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:set var="sufix" value=""></c:set>
+                                                <c:set var="sufix" value=""/>
                                             </c:otherwise>
                                         </c:choose>
                                         <span><spring:message code="series.season" arguments="${fn:length(series.seasons)},${sufix}"/></span>
@@ -94,14 +94,14 @@
                                     </div>
                                     <div class="followers">
                                         <c:choose>
-                                            <c:when test="${series.numFollowers ne 1}">
+                                            <c:when test="${series.followers ne 1}">
                                                 <spring:message code="index.sufix" var="sufix2"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:set var="sufix2" value=""></c:set>
+                                                <c:set var="sufix2" value=""/>
                                             </c:otherwise>
                                         </c:choose>
-                                        <spring:message code="index.followers" arguments="${series.numFollowers},${sufix2}"/>
+                                        <spring:message code="index.followers" arguments="${series.followers},${sufix2}"/>
                                     </div>
                                 </div>
                                 <c:if test="${isLogged}">
@@ -110,14 +110,14 @@
                                             <div class="starrating risingstar d-flex justify-content-center flex-row-reverse">
                                                 <c:forEach var="index" begin="0" end="4">
                                                     <c:choose>
-                                                        <c:when test="${series.userRating eq (5-index)}">
+                                                        <c:when test="${rating eq (5-index)}">
                                                             <input id="star${5-index}" name="rating" type="radio" checked value="${5-index}" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&rating=${5-index}"/>'"/>
                                                         </c:when>
                                                         <c:otherwise>
                                                             <input id="star${5-index}" name="rating" type="radio" value="${5-index}" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&rating=${5-index}"/>'"/>
                                                         </c:otherwise>
                                                     </c:choose>
-                                                    <label for="star${5-index}" title="${5-index} <spring:message code="series.star"/><c:if test="${series.numFollowers ne 1}">s</c:if>"></label>
+                                                    <label for="star${5-index}" title="${5-index} <spring:message code="series.star"/><c:if test="${series.followers ne 1}">s</c:if>"></label>
                                                 </c:forEach>
                                             </div>
                                         </div>
@@ -137,7 +137,7 @@
                                                             <c:when test="${isLogged && season.viewed}">
                                                                 <label class="cd-accordion__label cd-accordion__label--icon-folder drop drop-watched" for="group-${item.index}">
                                                                     <span class="big-size"><spring:message code="series.Season" arguments="${season.seasonNumber}"/></span>
-                                                                    <span class="ml-3 viewed-episodes"><spring:message code="series.slash" arguments="${season.episodesViewed},${fn:length(season.episodeList)}"/></span>
+                                                                    <span class="ml-3 viewed-episodes"><spring:message code="series.slash" arguments="${season.episodesViewed},${fn:length(season.episodes)}"/></span>
                                                                     <form action="<c:url value="/unviewSeason?seriesId=${series.id}&seasonId=${season.id}"/>"
                                                                           method="post">
                                                                         <button type="submit"
@@ -151,7 +151,7 @@
                                                                 <label class="cd-accordion__label cd-accordion__label--icon-folder drop" for="group-${item.index}">
                                                                     <span class="big-size"><spring:message code="series.Season" arguments="${season.seasonNumber}"/></span>
                                                                     <c:if test="${isLogged}">
-                                                                        <span class="ml-3 viewed-episodes"><spring:message code="series.slash" arguments="${season.episodesViewed},${fn:length(season.episodeList)}"/></span>
+                                                                        <span class="ml-3 viewed-episodes"><spring:message code="series.slash" arguments="${season.episodesViewed},${fn:length(season.episodes)}"/></span>
                                                                         <c:if test="${season.seasonAired}">
                                                                             <form action="<c:url value="/viewSeason?seriesId=${series.id}&seasonId=${season.id}"/>"
                                                                                   method="post">
@@ -166,15 +166,15 @@
                                                             </c:otherwise>
                                                         </c:choose>
                                                         <ul class="cd-accordion__sub cd-accordion__sub--l1">
-                                                            <c:forEach items="${season.episodeList}" var="episode">
+                                                            <c:forEach items="${season.episodes}" var="episode">
                                                                 <li class="cd-accordion__label cd-accordion__label--icon-img">
                                                                     <div class="cd-accordion__item">
-                                                                        <h3><spring:message code="series.minus" arguments="${episode.episodeNumber},${episode.name}"/></h3>
+                                                                        <h3><spring:message code="series.minus" arguments="${episode.numEpisode},${episode.name}"/></h3>
                                                                         <span class="ml-3 episode-date"><fmt:formatDate value="${episode.airing}" type="date" dateStyle="short"/></span>
                                                                         <c:set var="today_date" value="<%=new java.util.Date()%>"/>
                                                                         <c:if test="${isLogged && (episode.airing lt today_date)}">
                                                                             <c:choose>
-                                                                                <c:when test="${episode.viewed}">
+                                                                                <c:when test="${fn:contains(episode.viewers,user)}">
                                                                                     <form action="<c:url value="/unviewEpisode?seriesId=${series.id}&episodeId=${episode.id}"/>"
                                                                                           method="post">
                                                                                         <button type="submit"
@@ -211,7 +211,7 @@
                                                             <div class="disclaimer">
                                                                 <p class="disclaimer-title"><spring:message code="series.spoil"/></p>
                                                             </div>
-                                                            <c:url value='post' var="actionPostValue"/>
+                                                            <c:url value='/post' var="actionPostValue"/>
                                                             <form:form class="post" modelAttribute="postForm" action="${actionPostValue}"
                                                                        method="post"
                                                                        enctype="application/x-www-form-urlencoded">
@@ -252,10 +252,10 @@
                                                         </div>
                                                     </c:if>
                                                     <div class="comments-list">
-                                                        <c:if test="${not isLogged && empty series.postList}">
+                                                        <c:if test="${not isLogged && empty series.seriesReviewList}">
                                                             <spring:message code="series.noPosts"/>
                                                         </c:if>
-                                                        <c:forEach var="post" items="${series.postList}">
+                                                        <c:forEach var="seriesReview" items="${series.seriesReviewList}">
                                                             <div class="comment clearfix extended">
                                                                 <article class="post">
                                                                     <div class="top">
@@ -263,18 +263,18 @@
                                                                             <div class="author-label mb-3">
                                                                                 <c:choose>
                                                                                     <c:when test="${isLogged}">
-                                                                                        <a href="<c:url value="/profile?id=${post.userId}"/>" title="<spring:message code="index.profile"/>">
-                                                                                            <span>${post.user.userName}</span>
+                                                                                        <a href="<c:url value="/profile?id=${seriesReview.userId}"/>" title="<spring:message code="index.profile"/>">
+                                                                                            <span>${seriesReview.user.userName}</span>
                                                                                         </a>
                                                                                     </c:when>
                                                                                     <c:otherwise>
-                                                                                        <span>${post.user.userName}</span>
+                                                                                        <span>${seriesReview.user.userName}</span>
                                                                                     </c:otherwise>
                                                                                 </c:choose>
-                                                                                <c:if test="${user.isAdmin && user.id ne post.userId}">
+                                                                                <c:if test="${user.isAdmin && user.id ne seriesReview.user.id}">
                                                                                     <c:choose>
-                                                                                        <c:when test="${post.user.isBanned}">
-                                                                                            <form action="<c:url value="/unbanUser?seriesId=${series.id}&userId=${post.userId}"/>"
+                                                                                        <c:when test="${seriesReview.user.isBanned}">
+                                                                                            <form action="<c:url value="/unbanUser?seriesId=${series.id}&userId=${seriesReview.userId}"/>"
                                                                                                   method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureUnbanUser"/>')">
                                                                                                 <button type="submit" class="remove">
                                                                                                     <img src="<c:url value="/resources/img/unban.png"/>" title="<spring:message code="series.unban"/>" alt="<spring:message code="series.unban"/>">
@@ -282,7 +282,7 @@
                                                                                             </form>
                                                                                         </c:when>
                                                                                         <c:otherwise>
-                                                                                            <form action="<c:url value="/banUser?seriesId=${series.id}&userId=${post.userId}"/>"
+                                                                                            <form action="<c:url value="/banUser?seriesId=${series.id}&userId=${seriesReview.userId}"/>"
                                                                                                   method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureBanUser"/>')">
                                                                                                 <button class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf05e</button>
                                                                                             </form>
@@ -290,8 +290,8 @@
                                                                                     </c:choose>
                                                                                 </c:if>
                                                                                 <div class="float-right mr-5">
-                                                                                    <c:if test="${user.isAdmin || user.id eq post.userId}">
-                                                                                        <form action="<c:url value="/removePost?seriesId=${series.id}&postId=${post.postId}"/>"
+                                                                                    <c:if test="${user.isAdmin || user.id eq seriesReview.user.id}">
+                                                                                        <form action="<c:url value="/removePost?seriesId=${series.id}&postId=${seriesReview.id}"/>"
                                                                                               method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureRemovePort"/>')">
                                                                                             <button type="submit" class="remove">
                                                                                                 <img src="<c:url value="/resources/img/remove.png"/>" alt="<spring:message code="series.remove"/>">
@@ -301,55 +301,55 @@
                                                                                     <c:choose>
                                                                                         <c:when test="${isLogged}">
                                                                                             <c:choose>
-                                                                                                <c:when test="${post.liked}">
-                                                                                                    <form action="<c:url value="/unlikePost?seriesId=${series.id}&postId=${post.postId}"/>"
+                                                                                                <c:when test="${fn:contains(seriesReview.likes,user)}">
+                                                                                                    <form action="<c:url value="/unlikePost?seriesId=${series.id}&postId=${seriesReview.id}"/>"
                                                                                                           method="post" class="float-left">
                                                                                                         <button type="submit" class="heart post-liked no-padding" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
-                                                                                                        <span>${post.points}</span>
+                                                                                                        <span>${seriesReview.numLikes}</span>
                                                                                                     </form>
                                                                                                 </c:when>
                                                                                                 <c:otherwise>
-                                                                                                    <form action="<c:url value="/likePost?seriesId=${series.id}&postId=${post.postId}"/>"
+                                                                                                    <form action="<c:url value="/likePost?seriesId=${series.id}&postId=${seriesReview.id}"/>"
                                                                                                           method="post" class="float-left">
                                                                                                         <button type="submit" class="heart no-padding" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
-                                                                                                        <span>${post.points}</span>
+                                                                                                        <span>${seriesReview.numLikes}</span>
                                                                                                     </form>
                                                                                                 </c:otherwise>
                                                                                             </c:choose>
                                                                                         </c:when>
                                                                                         <c:otherwise>
                                                                                             <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
-                                                                                            <span>${post.points}</span>
+                                                                                            <span>${seriesReview.numLikes}</span>
                                                                                         </c:otherwise>
                                                                                     </c:choose>
                                                                                 </div>
                                                                             </div>
                                                                             <blockquote class="original">
-                                                                                <p>${post.body}</p>
+                                                                                <p>${seriesReview.body}</p>
                                                                             </blockquote>
                                                                         </div>
                                                                     </div>
                                                                 </article>
-                                                                <c:if test="${(isLogged && not user.isBanned)|| not empty post.comments}">
+                                                                <c:if test="${(isLogged && not user.isBanned)|| not empty seriesReview.comments}">
                                                                     <div class="replies sub-comment">
-                                                                        <c:forEach var="comment" items="${post.comments}">
+                                                                        <c:forEach var="seriesReviewComment" items="${seriesReview.comments}">
                                                                             <article class="reply clearfix initialized">
                                                                                 <div class="holder">
                                                                                     <div class="author-label">
                                                                                         <c:choose>
                                                                                             <c:when test="${isLogged}">
-                                                                                                <a href="<c:url value="/profile?id=${comment.userId}"/>" title="<spring:message code="index.profile"/>">
-                                                                                                    <span style="font-family: proximaNova; color: #777;">${comment.user.userName}</span>
+                                                                                                <a href="<c:url value="/profile?id=${seriesReviewComment.user.id}"/>" title="<spring:message code="index.profile"/>">
+                                                                                                    <span style="font-family: proximaNova; color: #777;">${seriesReviewComment.user.userName}</span>
                                                                                                 </a>
                                                                                             </c:when>
                                                                                             <c:otherwise>
-                                                                                                <span style="font-family: proximaNova; color: #777;">${comment.user.userName}</span>
+                                                                                                <span style="font-family: proximaNova; color: #777;">${seriesReviewComment.user.userName}</span>
                                                                                             </c:otherwise>
                                                                                         </c:choose>
-                                                                                        <c:if test="${user.isAdmin && user.id ne comment.userId}">
+                                                                                        <c:if test="${user.isAdmin && user.id ne seriesReviewComment.user.id}">
                                                                                             <c:choose>
-                                                                                                <c:when test="${comment.user.isBanned}">
-                                                                                                    <form action="<c:url value="/unbanUser?seriesId=${series.id}&userId=${comment.userId}"/>"
+                                                                                                <c:when test="${seriesReviewComment.user.isBanned}">
+                                                                                                    <form action="<c:url value="/unbanUser?seriesId=${series.id}&userId=${seriesReviewComment.user.id}"/>"
                                                                                                           method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureUnbanUser"/>')">
                                                                                                         <button type="submit" class="remove">
                                                                                                             <img src="<c:url value="/resources/img/unban.png"/>" title="<spring:message code="series.unban"/>" alt="<spring:message code="series.unban"/>">
@@ -357,7 +357,7 @@
                                                                                                     </form>
                                                                                                 </c:when>
                                                                                                 <c:otherwise>
-                                                                                                    <form action="<c:url value="/banUser?seriesId=${series.id}&userId=${comment.userId}"/>"
+                                                                                                    <form action="<c:url value="/banUser?seriesId=${series.id}&userId=${seriesReviewComment.user.id}"/>"
                                                                                                           method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureBanUser"/>')">
                                                                                                         <button class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf05e</button>
                                                                                                     </form>
@@ -365,8 +365,8 @@
                                                                                             </c:choose>
                                                                                         </c:if>
                                                                                         <div class="float-right">
-                                                                                            <c:if test="${user.isAdmin || user.id eq comment.userId}">
-                                                                                                <form action="<c:url value="/removeComment?seriesId=${series.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
+                                                                                            <c:if test="${user.isAdmin || user.id eq seriesReviewComment.user.id}">
+                                                                                                <form action="<c:url value="/removeComment?seriesId=${series.id}&postId=${seriesReview.id}&commentId=${seriesReviewComment.id}"/>"
                                                                                                       method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureRemoveComment"/>')">
                                                                                                     <button type="submit" class="remove-small">
                                                                                                         <img src="<c:url value="/resources/img/remove.png"/>" alt="<spring:message code="series.remove"/>">
@@ -376,31 +376,31 @@
                                                                                             <c:choose>
                                                                                                 <c:when test="${isLogged}">
                                                                                                     <c:choose>
-                                                                                                        <c:when test="${comment.liked}">
-                                                                                                            <form action="<c:url value="/unlikeComment?seriesId=${series.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
+                                                                                                        <c:when test="${fn:contains(seriesReviewComment.likes,user)}">
+                                                                                                            <form action="<c:url value="/unlikeComment?seriesId=${series.id}&postId=${seriesReview.id}&commentId=${seriesReviewComment.id}"/>"
                                                                                                                   method="post" class="float-left">
                                                                                                                 <button type="submit" class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
-                                                                                                                <span>${comment.points}</span>
+                                                                                                                <span>${seriesReviewComment.numLikes}</span>
                                                                                                             </form>
                                                                                                         </c:when>
                                                                                                         <c:otherwise>
-                                                                                                            <form action="<c:url value="/likeComment?seriesId=${series.id}&postId=${post.postId}&commentId=${comment.commentId}"/>"
+                                                                                                            <form action="<c:url value="/likeComment?seriesId=${series.id}&postId=${seriesReview.id}&commentId=${seriesReviewComment.id}"/>"
                                                                                                                   method="post" class="float-left">
                                                                                                                 <button type="submit" class="heart" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
-                                                                                                                <span>${comment.points}</span>
+                                                                                                                <span>${seriesReviewComment.numLikes}</span>
                                                                                                             </form>
                                                                                                         </c:otherwise>
                                                                                                     </c:choose>
                                                                                                 </c:when>
                                                                                                 <c:otherwise>
                                                                                                     <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
-                                                                                                    <span>${comment.points}</span>
+                                                                                                    <span>${seriesReviewComment.numLikes}</span>
                                                                                                 </c:otherwise>
                                                                                             </c:choose>
                                                                                         </div>
                                                                                     </div>
                                                                                     <blockquote>
-                                                                                        <p>${comment.body}</p>
+                                                                                        <p>${seriesReviewComment.body}</p>
                                                                                     </blockquote>
                                                                                 </div>
                                                                             </article>
@@ -425,7 +425,7 @@
                                                                                                         value="${series.id}"/>
                                                                                             <form:input type="hidden"
                                                                                                         path="commentPostId"
-                                                                                                        value="${post.postId}"/>
+                                                                                                        value="${seriesReview.id}"/>
                                                                                             <button type="submit" class="post-comment"><spring:message code="series.post"/></button>
                                                                                         </div>
                                                                                     </div>

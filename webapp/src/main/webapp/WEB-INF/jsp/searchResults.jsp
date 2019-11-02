@@ -52,14 +52,14 @@
                                                     <div class="show-details poster-details">
                                                         <h2>${series.name}</h2>
                                                         <c:choose>
-                                                            <c:when test="${series.numFollowers ne 1}">
+                                                            <c:when test="${series.followers ne 1}">
                                                                 <spring:message code="index.sufix" var="sufix"/>
                                                             </c:when>
                                                             <c:otherwise>
-                                                                <c:set var="sufix" value=""></c:set>
+                                                                <c:set var="sufix" value=""/>
                                                             </c:otherwise>
                                                         </c:choose>
-                                                        <span class="secondary-link"><spring:message code="index.followers" arguments="${series.numFollowers},${sufix}"/></span>
+                                                        <span class="secondary-link"><spring:message code="index.followers" arguments="${series.followers},${sufix}"/></span>
                                                     </div>
                                                 </a>
                                             </li>

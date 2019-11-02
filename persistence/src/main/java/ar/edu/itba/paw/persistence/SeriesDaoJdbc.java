@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Repository
+/*
 public class SeriesDaoJdbc implements SeriesDao {
 
     private RowMapper<Series> seriesRowMapper = (resultSet, i) -> {
@@ -31,8 +31,8 @@ public class SeriesDaoJdbc implements SeriesDao {
         Double rounded = Math.round(rating * 10.0) / 10.0;
         ret.setTotalRating(rounded);
         ret.setImdbId(resultSet.getString("id_imdb"));
-        ret.setRunningTime(resultSet.getInt("runtime"));
-        ret.setNumFollowers(resultSet.getInt("followers"));
+        ret.setRuntime(resultSet.getInt("runtime"));
+        ret.setFollowers(resultSet.getInt("followers"));
         ret.setBannerUrl(resultSet.getString("bannerurl"));
         ret.setPosterUrl(resultSet.getString("posterurl"));
         ret.setStatus(resultSet.getString("status"));
@@ -257,7 +257,7 @@ public class SeriesDaoJdbc implements SeriesDao {
         List<Season> seasonList = getSeasonsBySeriesId(s.getId());
         for (Season season : seasonList) {
             season.setEpisodes(getEpisodesBySeasonId(season.getId(), userId));
-            season.setSeasonAired(season.getEpisodeList().stream().anyMatch(episode -> episode.getAiring() != null
+            season.setSeasonAired(season.getEpisodes().stream().anyMatch(episode -> episode.getAiring() != null
                     && Calendar.getInstance().getTime().compareTo(episode.getAiring()) >= 0));
         }
         setSeasonsViewed(seasonList);
@@ -267,66 +267,66 @@ public class SeriesDaoJdbc implements SeriesDao {
     private void setSeasonsViewed(List<Season> seasonList) {
         int episodesViewed;
         for (Season season : seasonList) {
-            episodesViewed = (int)season.getEpisodeList().stream().filter(episode -> episode.isViewed()).count();
-            season.setViewed(season.getEpisodeList().size() == episodesViewed);
+            episodesViewed = (int)season.getEpisodes().stream().filter(episode -> episode.isViewed()).count();
+            season.setViewed(season.getEpisodes().size() == episodesViewed);
             season.setEpisodesViewed(episodesViewed);
         }
     }
 
     private void addAllPostsToSeries(Series series, long userId) {
-        final List<Post> postList = seriesJdbcTemplate.query("SELECT seriesreview.id, seriesreview.body, seriesreview.numlikes, seriesreview.userid, exists(SELECT * FROM haslikedseriesreview WHERE userid = ? AND seriesreview = seriesreview.id) AS liked " +
+        final List<SeriesReview> seriesReviewList = seriesJdbcTemplate.query("SELECT seriesreview.id, seriesreview.body, seriesreview.numlikes, seriesreview.userid, exists(SELECT * FROM haslikedseriesreview WHERE userid = ? AND seriesreview = seriesreview.id) AS liked " +
                         "FROM seriesreview JOIN series ON seriesreview.seriesid = series.id " +
                         "WHERE series.id = ?", new Object[]{userId, series.getId()},
                 (resultSet, i) -> {
-                    Post post = new Post();
-                    post.setBody(resultSet.getString("body"));
-                    post.setPoints(resultSet.getInt("numlikes"));
-                    post.setPostId(resultSet.getInt("id"));
-                    post.setUserId(resultSet.getLong("userid"));
-                    post.setLiked(resultSet.getBoolean("liked"));
-                    return post;
+                    SeriesReview seriesReview = new SeriesReview();
+                    seriesReview.setBody(resultSet.getString("body"));
+                    seriesReview.setNumLikes(resultSet.getInt("numlikes"));
+                    seriesReview.setId(resultSet.getInt("id"));
+                    seriesReview.setUserId(resultSet.getLong("userid"));
+                    seriesReview.setLiked(resultSet.getBoolean("liked"));
+                    return seriesReview;
                 });
-        addUserToPosts(postList);
-        addAllCommentsToPosts(postList, userId);
-        series.setSeriesPostList(postList);
+        addUserToPosts(seriesReviewList);
+        addAllCommentsToPosts(seriesReviewList, userId);
+        series.setSeriesPostList(seriesReviewList);
     }
 
-    private void addAllCommentsToPosts(List<Post> postList, long userId) {
-        for (Post post : postList) {
-            addAllCommentsToPost(post, userId);
+    private void addAllCommentsToPosts(List<SeriesReview> seriesReviewList, long userId) {
+        for (SeriesReview seriesReview : seriesReviewList) {
+            addAllCommentsToPost(seriesReview, userId);
         }
     }
 
-    private void addAllCommentsToPost(Post post, long userId) {
-        List<Comment> commentsList = seriesJdbcTemplate.query("SELECT seriesreviewcomments.*, " +
+    private void addAllCommentsToPost(SeriesReview seriesReview, long userId) {
+        List<SeriesReviewComment> commentsList = seriesJdbcTemplate.query("SELECT seriesreviewcomments.*, " +
                         "exists(SELECT * FROM haslikedseriesreviewcomment WHERE haslikedseriesreviewcomment.seriesreviewcomment = seriesreviewcomments.id AND haslikedseriesreviewcomment.userid = ?) AS liked " +
                         "FROM seriesreviewcomments " +
-                        "WHERE postid = ?", new Object[]{userId, post.getPostId()},
+                        "WHERE postid = ?", new Object[]{userId, seriesReview.getId()},
                 (resultSet, i) -> {
-                    Comment comment = new Comment();
-                    comment.setCommentId(resultSet.getInt("id"));
-                    comment.setBody(resultSet.getString("body"));
-                    comment.setPoints(resultSet.getInt("numlikes"));
-                    comment.setUserId(resultSet.getLong("userid"));
-                    comment.setLiked(resultSet.getBoolean("liked"));
-                    return comment;
+                    SeriesReviewComment seriesReviewComment = new SeriesReviewComment();
+                    seriesReviewComment.setId(resultSet.getInt("id"));
+                    seriesReviewComment.setBody(resultSet.getString("body"));
+                    seriesReviewComment.setNumLikes(resultSet.getInt("numlikes"));
+                    seriesReviewComment.setUserId(resultSet.getLong("userid"));
+                    seriesReviewComment.setLiked(resultSet.getBoolean("liked"));
+                    return seriesReviewComment;
                 });
         addUsersToComments(commentsList);
-        post.setComments(commentsList);
+        seriesReview.setComments(commentsList);
     }
 
-    private void addUsersToComments(List<Comment> commentsList) {
-        for(Comment comment : commentsList) {
-            userDao.getUserById(comment.getUserId()).ifPresent(user -> {
-                comment.setUser(user);
+    private void addUsersToComments(List<SeriesReviewComment> commentsList) {
+        for(SeriesReviewComment seriesReviewComment : commentsList) {
+            userDao.getUserById(seriesReviewComment.getUserId()).ifPresent(user -> {
+                seriesReviewComment.setUser(user);
             });
         }
     }
 
-    private void addUserToPosts(List<Post> postList) {
-        for(Post post : postList) {
-            userDao.getUserById(post.getUserId()).ifPresent(user -> {
-                post.setUser(user);
+    private void addUserToPosts(List<SeriesReview> seriesReviewList) {
+        for(SeriesReview seriesReview : seriesReviewList) {
+            userDao.getUserById(seriesReview.getUserId()).ifPresent(user -> {
+                seriesReview.setUser(user);
             });
         }
     }
@@ -419,8 +419,8 @@ public class SeriesDaoJdbc implements SeriesDao {
                 "WHERE episode.seasonid = ? " +
                 "ORDER BY numepisode", new Object[]{userId, seasonId}, (resultSet, i) -> {
             Episode ret = new Episode();
-            ret.setEpisodeNumber(resultSet.getInt("numepisode"));
-            ret.setDescription(resultSet.getString("overview"));
+            ret.setNumEpisode(resultSet.getInt("numepisode"));
+            ret.setOverview(resultSet.getString("overview"));
             ret.setName(resultSet.getString("name"));
             ret.setViewed(resultSet.getBoolean("viewed"));
             ret.setId(resultSet.getLong("id"));
@@ -463,7 +463,7 @@ public class SeriesDaoJdbc implements SeriesDao {
                     Episode episode = new Episode();
                     episode.setId(resultSet.getLong("episodeid"));
                     episode.setName(resultSet.getString("episodename"));
-                    episode.setEpisodeNumber(resultSet.getInt("episodenumber"));
+                    episode.setNumEpisode(resultSet.getInt("episodenumber"));
 
                     auxEpisodeList.add(episode);
                     season.setEpisodeList(auxEpisodeList);
@@ -545,7 +545,7 @@ public class SeriesDaoJdbc implements SeriesDao {
             Episode episode = new Episode();
             episode.setId(resultSet.getLong("episodeid"));
             episode.setName(resultSet.getString("episodename"));
-            episode.setEpisodeNumber(resultSet.getInt("episodenumber"));
+            episode.setNumEpisode(resultSet.getInt("episodenumber"));
             episode.setAiring(resultSet.getDate("airing"));
             episodeList.add(episode);
             season.setEpisodeList(episodeList);
@@ -585,9 +585,9 @@ public class SeriesDaoJdbc implements SeriesDao {
         Season seriesSeason1 = oldestSeries.getSeasons().get(0);
         Season seriesSeason2 = series2.getSeasons().get(0);
 
-        if(seriesSeason1.getEpisodeList().get(0).getEpisodeNumber() < seriesSeason2.getEpisodeList().get(0).getEpisodeNumber()) {
+        if(seriesSeason1.getEpisodes().get(0).getEpisodeNumber() < seriesSeason2.getEpisodes().get(0).getEpisodeNumber()) {
             return -1;
-        } else if(seriesSeason1.getEpisodeList().get(0).getEpisodeNumber() > seriesSeason2.getEpisodeList().get(0).getEpisodeNumber()){
+        } else if(seriesSeason1.getEpisodes().get(0).getEpisodeNumber() > seriesSeason2.getEpisodes().get(0).getEpisodeNumber()){
             return 1;
         }
 
@@ -815,4 +815,4 @@ public class SeriesDaoJdbc implements SeriesDao {
         return (series.size() > 0) ? series.get(0) : null;
     }
 
-}
+}*/
