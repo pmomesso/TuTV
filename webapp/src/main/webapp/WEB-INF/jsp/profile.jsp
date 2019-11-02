@@ -25,6 +25,7 @@
     <script src="<c:url value="/resources/js/popper.min.js"/>"></script>
     <script src="<c:url value="/resources/js/bootstrap.js"/>"></script>
     <script src="<c:url value="/resources/js/navigator.js"/>"></script>
+    <script src="<c:url value="/resources/js/charts.js"/>"></script>
     <c:if test="${user.id eq userProfile.id}">
         <script src="<c:url value="/resources/js/profile.js"/>"></script>
     </c:if>
@@ -38,7 +39,7 @@
                 <div id="profile">
                     <div class="images">
                         <div class="images-inner"></div>
-                        <img src="<c:url value="/resources/img/background.jpg"/>"/>
+                        <img src="<c:url value="/resources/img/background.jpg"/>" alt="Background"/>
                     </div>
                     <div class="profile-nav">
                         <div class="row wrapper">
@@ -64,14 +65,24 @@
                                     <c:out value="${userProfile.userName}"/>
                                 </h1>
                             </div>
-                            <ul class="nav nav-tabs" role="tab">
+                            <ul class="nav nav-tabs align-self-center">
                                 <li id="followedTab" role="presentation" class="tab-shows <c:if test="${!exists && empty formErrors}">active</c:if>">
                                     <a id="followedLink" href="#tab-shows" data-toggle="tab" aria-controls="tab-shows" aria-expanded="true">
                                         <div class="label"><spring:message code="profile.followed"/></div>
                                     </a>
                                 </li>
                                 <c:if test="${user.id == userProfile.id}">
-                                <li id="informationTab" role="presentation" class="tab-shows <c:if test="${exists || not empty formErrors}">active</c:if>">
+                                <li id="listsTab" role="presentation" class="tab-information">
+                                    <a id="listsLink" href="#tab-lists" data-toggle="tab" aria-controls="tab-lists" aria-expanded="true" >
+                                        <div class="label"><spring:message code="profile.lists"/></div>
+                                    </a>
+                                </li>
+                                <li id="statsTab" role="presentation" class="tab-information">
+                                    <a id="statsLink" href="#tab-stats" data-toggle="tab" aria-controls="tab-stats" aria-expanded="true" >
+                                        <div class="label"><spring:message code="profile.stats"/></div>
+                                    </a>
+                                </li>
+                                <li id="informationTab" role="presentation" class="tab-information <c:if test="${exists || not empty formErrors}">active</c:if>">
                                     <a id="informationLink"  href="#tab-information" data-toggle="tab" aria-controls="tab-information" aria-expanded="true">
                                         <div class="label"><spring:message code="profile.information"/></div>
                                     </a>
@@ -85,10 +96,10 @@
                         <h3 class="popover-title"><spring:message code="profile.upload"/> </h3>
                         <div class="popover-content">
                             <h3 class="popover-title" id="avatarMaxSizeError" style="display: none">
-                                <font color="red"><spring:message code="profile.avatarMaxSize"/> 100KB</font>
+                                <span style="color: red"><spring:message code="profile.avatarMaxSize"/> 100KB</span>
                             </h3>
                             <h3 class="popover-title"  id="wrongFileTypeError" style="display: none">
-                                <font color="red" ><spring:message code="profile.wrongFileType"/></font>
+                                <span style="color: red"><spring:message code="profile.wrongFileType"/></span>
                             </h3>
                             <form id="avatarFileForm" action="<c:url value="/uploadAvatar"/>" method="post" enctype="multipart/form-data">
                                 <input id="avatarFileInput" type="file" name="avatar" data-max-size="100000" accept=".jpg,.jpeg,.png">
@@ -99,7 +110,7 @@
                         <div class="wrapper">
                             <div class="tab-content">
                                 <div id="tab-shows" class="tab-pane <c:if test="${!exists && empty formErrors}">active</c:if>" role="tabpanel">
-                                    <div id="profile-shows">
+                                    <div class="profile-shows">
                                         <c:if test="${user.id eq userProfile.id && not empty recentlyWatched}">
                                             <div id="recently-watched-shows">
                                                 <h2 class="small"><spring:message code="profile.recently"/></h2>
@@ -181,6 +192,88 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div id="tab-lists" class="tab-pane" role="tabpanel">
+                                    <div class="profile-shows">
+                                        <div>
+                                            <h2 class="small"><spring:message code="profile.favorite"/></h2>
+                                            <section>
+                                                <ul class="shows-list posters-list list-unstyled list-inline">
+                                                    <c:forEach items="${recentlyWatched}" var="series">
+<%--                                                        favoriteShows--%>
+                                                        <li class="first-loaded">
+                                                            <div class="show">
+                                                                <a href="<c:url value="/series?id=${series.id}"/>" class="show-link">
+                                                                    <div class="image-crop">
+                                                                        <img src="<c:url value="https://image.tmdb.org/t/p/original${series.posterUrl}"/>"
+                                                                             alt="${series.name}">
+                                                                    </div>
+                                                                </a>
+                                                                <div class="poster-details">
+                                                                    <h2><a href="<c:url value="/series?id=${series.id}"/>">${series.name}</a></h2>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </c:forEach>
+                                                    <li class="first-loaded">
+                                                        <div class="show">
+                                                            TODO trigger modal to add shows
+                                                            <a href="" class="show-link" style="text-decoration: none !important; color: black">
+                                                                <div class="image-crop text-center" style="background-color: #EEEEEE">
+                                                                    <div style="margin-top: 55px">
+                                                                        <h2 class="mt-0">+</h2>
+                                                                        <h4>Add to list</h4>
+                                                                    </div>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="tab-stats" class="tab-pane" role="tabpanel">
+                                    <div class="profile-shows">
+                                        <div>
+                                            <h2 class="small"><spring:message code="profile.favoriteGenres"/></h2>
+                                            <div class="row justify-content-center">
+                                                <div class="mt-lg-5 mt-sm-0"><canvas id="genresChart" ></canvas></div>
+                                                <c:set var="labels" value="["/>
+                                                <c:forEach var="key" items="${genreStats.keySet()}">
+                                                    <c:set var="labels" value="${labels} '${key}',"/>
+                                                </c:forEach>
+                                                <c:set var="labels" value="${labels}]"/>
+                                                <script>
+                                                    var ctx = document.getElementById('genresChart');
+                                                    var myChart = new Chart(ctx, {
+                                                        type: 'doughnut',
+                                                        data: {
+                                                            labels: ${labels},
+                                                            datasets: [{
+                                                                data: ${genreStats.values()},
+                                                                backgroundColor: [
+                                                                    '#3cb44b', '#469990', '#aaffc3', '#42d4f4', '#4363d8',
+                                                                    '#000075', '#911eb4', '#f032e6', '#e6beff', '#800000',
+                                                                    '#e6194b', '#f58231', '#ffd8b1', '#ffe119', '#bfef45'
+                                                                ]
+                                                            }]
+                                                        },
+                                                        options: {
+                                                            maintainAspectRatio: false,
+                                                            legend: {
+                                                                display: true,
+                                                                position: 'bottom',
+                                                                labels: {
+                                                                    padding: 20
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                </script>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div id="tab-information" class="tab-pane <c:if test="${exists || not empty formErrors}">active</c:if>" role="tabpanel">
                                     <section id="basic-settings" class="container">
                                         <div class="row text-center" style="padding: 50px">
@@ -201,7 +294,7 @@
                                                         <div class="row form-group">
                                                             <label class="col-sm-4 control-label"><spring:message code="register.mail"/></label>
                                                             <div class="col-sm-6">
-                                                                <input type="email" class="form-control" name="mail" placeholder="john@doe.com" value="${userProfile.mailAddress}" disabled>
+                                                                <input type="email" class="form-control" name="mail" value="${userProfile.mailAddress}" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="row form-group text-center">

@@ -20,10 +20,6 @@ function selectCurrentMenuItem() {
     }
 }
 
-$( document ).ready(function() {
-    selectCurrentMenuItem();
-});
-
 function extend() {
     if ($(".page-left").hasClass("extended")) {
         $(".page-left").removeClass("extended");
@@ -41,3 +37,12 @@ function confirmAction(event, message) {
     if (accept)
         form.submit();
 }
+
+$( document ).ready(function() {
+    selectCurrentMenuItem();
+
+    var sectionId = $('#sectionId').val();
+    if (typeof sectionId != "undefined") {
+        location.hash = "#" + sectionId;
+    }
+});

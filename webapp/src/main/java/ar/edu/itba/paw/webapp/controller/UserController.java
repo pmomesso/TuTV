@@ -2,6 +2,8 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.model.Genre;
+import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.either.Either;
 import ar.edu.itba.paw.model.errors.Errors;
@@ -23,10 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class UserController {
@@ -67,7 +66,21 @@ public class UserController {
         mav.addObject("userProfile", u);
         mav.addObject("hasAvatar", userService.getUserAvatar(userId).isPresent());
         mav.addObject("followedSeries",seriesService.getAddedSeries(userId));
-        mav.addObject("recentlyWatched", seriesService.getRecentlyWatchedList(7));
+        HashMap<Genre,Integer> g = new HashMap<>();
+        Genre g1 = new Genre("Soap1");
+        Genre g2 = new Genre("Soap2");
+        Genre g3 = new Genre("Soap3");
+        Genre g4 = new Genre("Soap4");
+        Genre g5 = new Genre("Soap5");
+        g.put(g1,1);
+        g.put(g2,2);
+        g.put(g3,3);
+        g.put(g4,4);
+        g.put(g5,5);
+//        TODO create method that returns Map<Genre,Integer> where integer is the number of series of the genre that the user follows
+        mav.addObject("genreStats", g);
+        mav.addObject("recentlyWatched", seriesService.getRecentlyWatchedList(6));
+        mav.addObject("favoriteShows", new ArrayList<Series>());
         return mav;
     }
 
