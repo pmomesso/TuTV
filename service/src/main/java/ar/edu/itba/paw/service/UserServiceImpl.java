@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,6 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public Either<User, Collection<Errors>> createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) {
         boolean usernameExists = userDao.userNameExists(userName);
         boolean mailIsTaken = userDao.mailIsTaken(mail);
@@ -93,6 +95,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public List<User> getAllUsersExceptLoggedOne() {
         Optional<User> loggedUser = getLoggedUser();
         List<User> usersList = userDao.getAllUsers();
@@ -100,6 +103,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void banUser(long userId) throws UnauthorizedException, NotFoundException {
         User user = getLoggedUser().orElseThrow(UnauthorizedException::new);
         if(!user.getIsAdmin()) throw new UnauthorizedException();
@@ -110,6 +114,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public boolean updateLoggedUserName(String newUsername) throws NotFoundException {
         User user = getLoggedUser().orElseThrow(NotFoundException::new);
         int result = userDao.updateUserName(user.getId(),newUsername);
@@ -117,6 +122,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void unbanUser(long userId) throws UnauthorizedException, NotFoundException {
         User user = getLoggedUser().orElseThrow(UnauthorizedException::new);
         if(!user.getIsAdmin()) throw new UnauthorizedException();
@@ -131,16 +137,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void setUserAvatar(long userId, byte[] byteArray) {
         userDao.setUserAvatar(userId, byteArray);
     }
 
     @Override
+    @Transactional
     public Optional<byte[]> getUserAvatar(long userId) {
         return userDao.getUserAvatar(userId);
     }
 
     @Override
+    @Transactional
     public boolean activateUser(String token) {
         Optional<User> u = userDao.getUserByValidationKey(token);
         u.ifPresent(user -> userDao.setValidationKey(user.getId(), null));

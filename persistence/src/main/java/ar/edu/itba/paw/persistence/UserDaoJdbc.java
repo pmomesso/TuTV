@@ -16,7 +16,8 @@ import org.springframework.stereotype.Repository;
 
 import ar.edu.itba.paw.interfaces.UserDao;
 
-@Repository
+//@Repository
+//To use this UserDao uncomment @Repository and comment @Repository in UserDaoHibernate
 public class UserDaoJdbc implements UserDao {
 	
 	private RowMapper<User> rm = (resultSet, i) -> {

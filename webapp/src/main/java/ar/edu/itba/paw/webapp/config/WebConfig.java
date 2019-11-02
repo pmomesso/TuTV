@@ -19,6 +19,7 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -35,6 +36,7 @@ import java.util.Properties;
 
 @EnableWebMvc
 @ComponentScan({"ar.edu.itba.paw.service", "ar.edu.itba.paw.persistence", "ar.edu.itba.paw.webapp.controller"})
+@EnableTransactionManagement
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
@@ -56,6 +58,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		viewResolver.setSuffix(".jsp");
 		return viewResolver;
 	}
+
 	@Bean
 	public DataSourceInitializer dataSourceInitializer(final DataSource ds){
 		final DataSourceInitializer dsi = new DataSourceInitializer();
@@ -63,6 +66,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		dsi.setDatabasePopulator(databasePopulator());
 		return dsi;
 	}
+
 	private DatabasePopulator databasePopulator(){
 		final ResourceDatabasePopulator dbp = new ResourceDatabasePopulator();
 		dbp.addScript(schemaSql);
@@ -82,7 +86,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		final LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
-		factoryBean.setPackagesToScan("ar.edu.itba.model");
+		factoryBean.setPackagesToScan("ar.edu.itba.paw.model");
 		factoryBean.setDataSource(dataSource());
 
 		final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();

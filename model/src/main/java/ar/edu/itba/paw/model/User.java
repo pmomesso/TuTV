@@ -9,16 +9,17 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq")
+    @SequenceGenerator(sequenceName = "users_id_seq", name = "users_id_seq", allocationSize = 1)
     @Column(name = "id")
     private long id;
 
-    @Column(name = "username", length = 50, nullable = false)
+    @Column(name = "username", length = 50)
     private String userName;
 
-    @Column(name = "mail", nullable = false)
+    @Column(name = "mail")
     private String mailAddress;
 
-    @Column(name = "password", length = 50, nullable = false)
+    @Column(name = "password")
     private String password;
 
     private Date birthDate;
@@ -32,7 +33,11 @@ public class User {
     @Column(name = "isbanned", nullable = false)
     private boolean isBanned = false;
 
+    @Column(name = "avatar")
+    private byte[] userAvatar;
+
     public User() {}
+
     public User(String userName,String password,String mailAddress,boolean isAdmin){
         this.userName = userName;
         this.password = password;
@@ -97,5 +102,13 @@ public class User {
 
     public void setIsBanned(boolean banned) {
         isBanned = banned;
+    }
+
+    public void setUserAvatar(byte[] userAvatar) {
+        this.userAvatar = userAvatar;
+    }
+    
+    public byte[] getUserAvatar() {
+        return userAvatar;
     }
 }
