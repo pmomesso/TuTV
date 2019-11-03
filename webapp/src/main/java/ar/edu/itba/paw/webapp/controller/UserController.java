@@ -64,7 +64,6 @@ public class UserController {
         User u = userService.findById(userId).orElseThrow(NotFoundException::new);
         ModelAndView mav = new ModelAndView("profile");
         mav.addObject("userProfile", u);
-        mav.addObject("hasAvatar", userService.getUserAvatar(userId).isPresent());
         mav.addObject("followedSeries",seriesService.getAddedSeries(userId));
         HashMap<Genre,Integer> g = new HashMap<>();
         Genre g1 = new Genre("Soap1");

@@ -46,7 +46,7 @@
                             <div class="avatar">
                                 <a href="#" class="avatar-upload-link" id="showUploadAvatarPopup">
                                     <c:choose>
-                                        <c:when test="${hasAvatar}">
+                                        <c:when test="${not empty userProfile.userAvatar}">
                                             <img src="<c:url value="/user/${userProfile.id}/avatar"/>" alt="avatar">
                                         </c:when>
                                         <c:otherwise>

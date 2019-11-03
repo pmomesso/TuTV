@@ -235,7 +235,7 @@
                                                                     </div>
                                                                     <div class="author">
                                                                         <c:choose>
-                                                                            <c:when test="${hasAvatar}">
+                                                                            <c:when test="${not empty user.userAvatar}">
                                                                                 <img class="author-picture img-circle" src="<c:url value="/user/${user.id}/avatar"/>" alt="${user.userName}">
                                                                             </c:when>
                                                                             <c:otherwise>

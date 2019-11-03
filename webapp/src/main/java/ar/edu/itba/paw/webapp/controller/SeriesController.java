@@ -38,7 +38,6 @@ public class SeriesController {
         mav.addObject("series", series);
         Optional<User> u = userService.getLoggedUser();
         u.ifPresent(user -> {
-            mav.addObject("hasAvatar", userService.getUserAvatar(user.getId()).isPresent());
             for(Rating r : series.getRatings()){
                 if(r.getUser().getId() == u.get().getId()){
                     mav.addObject("rating",r.getRating());

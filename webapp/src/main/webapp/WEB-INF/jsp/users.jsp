@@ -56,9 +56,14 @@
                                                         <c:forEach items="${users}" var="currUser">
                                                             <tr>
                                                                 <td>
-<%--                                                                    TODO modify photo--%>
-<%--                                                                    hay que poner el hasAvatar en la clase User--%>
-                                                                    <img src="<c:url value="/resources/img/user.png"/>" class="no-display-small" alt="${currUser.userName}">
+                                                                    <c:choose>
+                                                                        <c:when test="${not empty currUser.userAvatar}">
+                                                                            <img src="<c:url value="/user/${currUser.id}/avatar"/>" class="no-display-small" alt="${currUser.userName}">
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <img src="<c:url value="/resources/img/user.png"/>" class="no-display-small" alt="${currUser.userName}">
+                                                                        </c:otherwise>
+                                                                    </c:choose>
                                                                     <a href="<c:url value="/profile?id=${currUser.id}"/>" class="user-link">${currUser.userName}</a>
                                                                     <c:choose>
                                                                         <c:when test="${currUser.isAdmin}">
@@ -87,7 +92,7 @@
                                                                         <c:when test="${currUser.isBanned}">
                                                                             <form action="<c:url value="/unbanUser?userId=${currUser.id}"/>"
                                                                                   method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureUnbanUser"/>')">
-                                                                                <button type="submit" class="remove">
+                                                                                <button type="submit" class="remove" title="<spring:message code="series.unban"/>">
                                                                                     <img src="<c:url value="/resources/img/unban.png"/>" title="<spring:message code="series.unban"/>" alt="<spring:message code="series.unban"/>">
                                                                                 </button>
                                                                             </form>
@@ -95,7 +100,7 @@
                                                                         <c:otherwise>
                                                                             <form action="<c:url value="/banUser?userId=${currUser.id}"/>"
                                                                                   method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureBanUser"/>')">
-                                                                                <button class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal; font-size: 20px;">&#xf05e</button>
+                                                                                <button class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal; font-size: 20px;" title="<spring:message code="series.ban"/>">&#xf05e</button>
                                                                             </form>
                                                                         </c:otherwise>
                                                                     </c:choose>
