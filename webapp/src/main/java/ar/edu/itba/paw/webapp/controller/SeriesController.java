@@ -64,10 +64,7 @@ public class SeriesController {
 
     @RequestMapping(value = "/viewSeason", method = RequestMethod.POST)
     public ModelAndView viewSeason(@RequestParam("seriesId") long seriesId, @RequestParam("seasonId") long seasonId) throws UnauthorizedException, NotFoundException {
-        if(!seriesService.follows(seriesId)){
-            seriesService.followSeries(seriesId);
-        }
-        seriesService.setViewedSeason(seasonId);
+        seriesService.setViewedSeason(seriesId, seasonId);
         return new ModelAndView("redirect:/series?id=" + seriesId);
     }
 
@@ -80,10 +77,7 @@ public class SeriesController {
     @RequestMapping(value = "/viewEpisode", method = RequestMethod.POST)
     public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId,
                                     HttpServletRequest request) throws NotFoundException, UnauthorizedException {
-        if(!seriesService.follows(seriesId)){
-            seriesService.followSeries(seriesId);
-        }
-        seriesService.setViewedEpisode(episodeId);
+        seriesService.setViewedEpisode(seriesId, episodeId);
         String referer = request.getHeader("Referer");
         return new ModelAndView("redirect:" + referer);
     }

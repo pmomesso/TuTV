@@ -39,9 +39,10 @@ public class SeriesServiceImplTest {
     private static final String GENRE = "genre";
     private static final String NETWORK_NAME = "network";
     private static final long NETWORK_ID = 8;
-    private static final long SEASON_ID = 9;
-    private static final long EPISODE_ID = 10;
-    private static final long USER_ID = 11;
+    private static final long SERIES_ID = 9;
+    private static final long SEASON_ID = 10;
+    private static final long EPISODE_ID = 11;
+    private static final long USER_ID = 12;
 
     @Mock
     private SeriesDao mockDao;
@@ -130,7 +131,7 @@ public class SeriesServiceImplTest {
         Mockito.when(mockDao.setViewedEpisode(Mockito.eq(EPISODE_ID),Mockito.eq(USER_ID))).thenReturn(1);
         //Ejercitar
         try {
-            seriesService.setViewedEpisode(EPISODE_ID);
+            seriesService.setViewedEpisode(SERIES_ID, EPISODE_ID);
         } catch (ApiException e) {
             Assert.fail();
         }
@@ -142,7 +143,7 @@ public class SeriesServiceImplTest {
         Mockito.when(mockDao.setViewedSeason(Mockito.eq(SEASON_ID),Mockito.eq(USER_ID))).thenReturn(1);
         //Ejercitar
         try {
-            seriesService.setViewedSeason(SEASON_ID);
+            seriesService.setViewedSeason(SERIES_ID, SEASON_ID);
         } catch (ApiException e) {
             Assert.fail();
         }

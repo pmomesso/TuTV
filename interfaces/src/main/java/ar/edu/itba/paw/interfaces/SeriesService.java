@@ -28,8 +28,8 @@ public interface SeriesService {
     boolean follows(long seriesId) throws UnauthorizedException;
     void followSeries(long seriesId) throws NotFoundException, UnauthorizedException;
     void unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException;
-    void setViewedEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
-    void setViewedSeason(long seasonId) throws UnauthorizedException, NotFoundException;
+    void setViewedEpisode(long seriesId, long episodeId) throws NotFoundException, UnauthorizedException;
+    void setViewedSeason(long seriesId, long seasonId) throws UnauthorizedException, NotFoundException;
     void rateSeries(long seriesId, int rating) throws NotFoundException, UnauthorizedException, BadRequestException;
     void unviewEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
     void unviewSeason(long seasonId) throws UnauthorizedException, NotFoundException;
