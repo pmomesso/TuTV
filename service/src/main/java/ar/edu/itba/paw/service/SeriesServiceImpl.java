@@ -25,6 +25,33 @@ public class SeriesServiceImpl implements SeriesService {
     @Autowired
     private UserService userService;
 
+
+    private void setLoggedInUserRating(User u, Series s){
+        for(Rating r : u.getRatings()){
+            if(r.getSeries().getId() == s.getId()){
+                s.setLoggedInUserRating(r.getRating());
+                break;
+            }
+        }
+    }
+    private void setAiredSeasons(Series s){
+        for(Season season : s.getSeasons()){
+            for(Episode e : season.getEpisodes()){
+                if(e.getAiring().before(new Date())){
+                    season.setSeasonAired(true);
+                    break;
+                }
+            }
+        }
+    }
+    private void setViewedSeasons(User u){
+        for(Episode e : u.getViewed()){
+            e.getSeason().setEpisodesViewed(e.getSeason().getEpisodesViewed() + 1);
+            if(e.getSeason().getEpisodes().size() == e.getSeason().getEpisodesViewed()){
+                e.getSeason().setViewed(true);
+            }
+        }
+    }
     @Autowired
     public SeriesServiceImpl(SeriesDao seriesDao, UserService userService) {
         this.seriesDao = seriesDao;
@@ -47,27 +74,16 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public Optional<Series> getSerieById(long id){
         Optional<Series> series = seriesDao.getSeriesById(id);
-        //Marco las temporadas que ya salieron.
-        series.ifPresent( s -> {
-            for(Season season : s.getSeasons()){
-                for(Episode e : season.getEpisodes()){
-                    if(e.getAiring().before(new Date())){
-                        season.setSeasonAired(true);
-                        break;
-                    }
-                }
-            }
-        });
         Optional<User> u = userService.getLoggedUser();
-        //Marco las temporadas vistas.
-        if(series.isPresent() && u.isPresent()){
-            for(Episode e : u.get().getViewed()){
-                e.getSeason().setEpisodesViewed(e.getSeason().getEpisodesViewed() + 1);
-                if(e.getSeason().getEpisodes().size() == e.getSeason().getEpisodesViewed()){
-                    e.getSeason().setViewed(true);
-                }
-            }
-        }
+        series.ifPresent(s -> {
+            setAiredSeasons(s);
+            u.ifPresent(user -> {
+                //Guardo el rating del usuario.
+                setLoggedInUserRating(user, s);
+                //Marco las temporadas vistas.
+                setViewedSeasons(user);
+            });
+        });
         return series;
     }
 

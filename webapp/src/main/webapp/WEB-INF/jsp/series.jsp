@@ -117,7 +117,7 @@
                                             <div class="starrating risingstar d-flex justify-content-center flex-row-reverse">
                                                 <c:forEach var="index" begin="0" end="4">
                                                     <c:choose>
-                                                        <c:when test="${rating eq (5-index)}">
+                                                        <c:when test="${series.loggedInUserRating eq (5-index)}">
                                                             <input id="star${5-index}" name="rating" type="radio" checked value="${5-index}" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&rating=${5-index}"/>'"/>
                                                         </c:when>
                                                         <c:otherwise>

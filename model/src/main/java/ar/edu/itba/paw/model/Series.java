@@ -27,6 +27,8 @@ public class Series  {
     private String status;
     @Column
     private Double userRating;
+    @Transient
+    private Integer loggedInUserRating;
     @Column
     private Integer runtime;
     @Column(columnDefinition = "integer default 0")
@@ -327,5 +329,13 @@ public class Series  {
 
     public void setRatings(Set<Rating> ratings) {
         this.ratings = ratings;
+    }
+
+    public Integer getLoggedInUserRating() {
+        return loggedInUserRating;
+    }
+
+    public void setLoggedInUserRating(Integer loggedInUserRating) {
+        this.loggedInUserRating = loggedInUserRating;
     }
 }

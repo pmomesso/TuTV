@@ -38,12 +38,7 @@ public class SeriesController {
         mav.addObject("series", series);
         Optional<User> u = userService.getLoggedUser();
         u.ifPresent(user -> {
-            for(Rating r : series.getRatings()){
-                if(r.getUser().getId() == u.get().getId()){
-                    mav.addObject("rating",r.getRating());
-                    break;
-                }
-            }
+            mav.addObject("hasAvatar", userService.getUserAvatar(user.getId()).isPresent());
         });
         mav.addObject("postForm", postForm);
         mav.addObject("commentForm", commentForm);
