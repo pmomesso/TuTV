@@ -3,6 +3,7 @@ package ar.edu.itba.paw.service;
 import ar.edu.itba.paw.interfaces.MailService;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.model.UsersList;
 import ar.edu.itba.paw.model.either.Either;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.errors.Errors;
@@ -93,10 +94,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public List<User> getAllUsersExceptLoggedOne() {
+    public UsersList getAllUsersExceptLoggedOne(int page) throws UnauthorizedException {
         Optional<User> loggedUser = getLoggedUser();
-        List<User> usersList = userDao.getAllUsers();
-        return usersList.stream().filter(user -> !loggedUser.isPresent() || (loggedUser.get().getId() != user.getId())).collect(Collectors.toList());
+        UsersList usersList = userDao.getAllUsers(page, loggedUser.orElseThrow(UnauthorizedException::new).getId());
+        return usersList;
     }
 
     @Override

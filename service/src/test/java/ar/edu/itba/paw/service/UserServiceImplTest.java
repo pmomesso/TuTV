@@ -3,6 +3,7 @@ package ar.edu.itba.paw.service;
 import ar.edu.itba.paw.interfaces.MailService;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.UsersList;
 import ar.edu.itba.paw.model.either.Either;
 import ar.edu.itba.paw.model.errors.Errors;
 import ar.edu.itba.paw.model.exceptions.ApiException;
@@ -148,7 +149,7 @@ public class UserServiceImplTest {
     public void loggedInGetAllUsersButLoggedOneTest(){
         //Setup
         User mockUser = getMockUser();
-        Mockito.when(mockDao.getAllUsers()).thenAnswer(invocation -> {
+        Mockito.when(mockDao.getAllUsers(1, 1)).thenAnswer(invocation -> {
             User[] users = new User[1];
             users[0] = mockUser;
             return Arrays.asList(users);
@@ -157,24 +158,36 @@ public class UserServiceImplTest {
         Mockito.when(authentication.getName()).thenReturn(MAIL);
         userService.setAuthentication(authentication);
         //Ejercitar
-        List<User> users = userService.getAllUsersExceptLoggedOne();
+        UsersList users;
+        try {
+            users = userService.getAllUsersExceptLoggedOne(1);
+        } catch (UnauthorizedException e) {
+            Assert.fail();
+            return;
+        }
         //Asserts
-        Assert.assertEquals(0,users.size());
+        Assert.assertEquals(0,users.getUsersList().size());
     }
     @Test
     public void loggedOutGetAllUsersButLoggedOneTest(){
         //Setup
         User mockUser = getMockUser();
-        Mockito.when(mockDao.getAllUsers()).thenAnswer(invocation -> {
+        Mockito.when(mockDao.getAllUsers(1, 1)).thenAnswer(invocation -> {
             User[] users = new User[1];
             users[0] = mockUser;
             return Arrays.asList(users);
         });
         //Ejercitar
-        List<User> users = userService.getAllUsersExceptLoggedOne();
+        UsersList users;
+        try {
+            users = userService.getAllUsersExceptLoggedOne(1);
+        } catch (UnauthorizedException e) {
+            Assert.fail();
+            return;
+        }
         //Asserts
-        Assert.assertEquals(1,users.size());
-        assertUser(users.get(0));
+        Assert.assertEquals(1,users.getUsersList().size());
+        assertUser(users.getUsersList().get(0));
     }
     @Test
     public void activateUserTest(){

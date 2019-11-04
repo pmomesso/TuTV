@@ -2,16 +2,18 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.UsersList;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class UserDaoHibernate implements UserDao {
+
+    private static Integer OFFSET = 9;
 
     @PersistenceContext
     private EntityManager em;
@@ -127,10 +129,29 @@ public class UserDaoHibernate implements UserDao {
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public UsersList getAllUsers(int page, long userId) {
+        UsersList usersList = new UsersList();
+
         //Todo: ask if correct
-        TypedQuery<User> query = em.createQuery("from User", User.class);
-        return query.getResultList();
+        TypedQuery<User> query = em.createQuery("from User as u where u.id != :id", User.class);
+        query.setParameter("id", userId);
+        TypedQuery<Long> countQuery = em.createQuery("select count(*) from User", Long.class);
+
+        usersList.setTotal(countQuery.getSingleResult() - 1);
+        usersList.setFrom((page - 1) * OFFSET + 1);
+        if (usersList.getTotal() < (page - 1) * OFFSET + 1 + OFFSET) {
+            usersList.setTo((usersList.getTotal()) % OFFSET + (page - 1) * OFFSET);
+        } else {
+            usersList.setTo(new Long((page - 1) * OFFSET +  OFFSET));
+        }
+        usersList.setArePrevious((page - 1) * OFFSET > OFFSET - 1);
+        usersList.setAreNext(page * OFFSET - 1 < usersList.getTotal() - usersList.getTotal() % OFFSET);
+
+        query.setFirstResult((page - 1) * OFFSET);
+        query.setMaxResults(OFFSET);
+        usersList.setUsersList(query.getResultList());
+
+        return usersList;
     }
 
 }

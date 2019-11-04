@@ -53,13 +53,13 @@
                                                         <h2>${series.name}</h2>
                                                         <c:choose>
                                                             <c:when test="${series.followers ne 1}">
-                                                                <spring:message code="index.sufix" var="sufix"/>
+                                                                <spring:message code="index.suffix" var="suffix"/>
                                                             </c:when>
                                                             <c:otherwise>
-                                                                <c:set var="sufix" value=""/>
+                                                                <c:set var="suffix" value=""/>
                                                             </c:otherwise>
                                                         </c:choose>
-                                                        <span class="secondary-link"><spring:message code="index.followers" arguments="${series.followers},${sufix}"/></span>
+                                                        <span class="secondary-link"><spring:message code="index.followers" arguments="${series.followers},${suffix}"/></span>
                                                     </div>
                                                 </a>
                                             </li>

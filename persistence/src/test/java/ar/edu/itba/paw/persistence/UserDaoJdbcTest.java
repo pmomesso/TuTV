@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.UsersList;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,10 +118,10 @@ public class UserDaoJdbcTest {
         //Setup
         insertUser();
         //Ejercitar
-        List<User> users = userDao.getAllUsers();
+        UsersList users = userDao.getAllUsers(1, 1);
         //Asserts
-        Assert.assertEquals(1,users.size());
-        assertUser(users.get(0));
+        Assert.assertEquals(1,users.getUsersList().size());
+        assertUser(users.getUsersList().get(0));
     }
     @Test
     public void mailIsTakenTest(){

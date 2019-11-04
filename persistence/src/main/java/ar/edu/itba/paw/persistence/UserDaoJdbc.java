@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.sql.DataSource;
 
 import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.UsersList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -135,9 +136,10 @@ public class UserDaoJdbc implements UserDao {
 	}
 
 	@Override
-	public List<User> getAllUsers() {
-		List<User> userList = userJdbcTemplate.query("SELECT * FROM users", rm);
-		return userList;
+	public UsersList getAllUsers(int page, long userId) {
+		UsersList usersList = new UsersList();
+		usersList.setUsersList(userJdbcTemplate.query("SELECT * FROM users", rm));
+		return usersList;
 	}
 
 	@Override

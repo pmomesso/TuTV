@@ -52,9 +52,14 @@ public class UserController {
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public ModelAndView users() {
+    public ModelAndView users(@RequestParam(value = "page", required = false) Integer page) throws UnauthorizedException {
         ModelAndView mav = new ModelAndView("users");
-        mav.addObject("users", userService.getAllUsersExceptLoggedOne());
+        Integer page_to_show = 1;
+        if (page != null) {
+            page_to_show = page;
+        }
+        mav.addObject("page", page_to_show);
+        mav.addObject("users", userService.getAllUsersExceptLoggedOne(page_to_show));
         return mav;
     }
 

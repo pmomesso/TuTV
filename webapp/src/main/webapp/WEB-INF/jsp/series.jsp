@@ -50,8 +50,15 @@
                                     <div class="carousel-caption">
                                         <div class="text-center">
                                             <span class="star"></span>
-                                            <fmt:formatNumber value="${series.userRating}" var="totalRating" pattern="0.0" />
-                                            <h2><spring:message code="series.rating" arguments="${totalRating}" argumentSeparator=";"/></h2>
+                                            <c:choose>
+                                                <c:when test="${not empty series.userRating}">
+                                                    <fmt:formatNumber value="${series.userRating}" var="totalRating" pattern="0.0" />
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:set var="totalRating" value="-"/>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <h2><spring:message code="series.rating" arguments="${totalRating}"/></h2>
                                         </div>
                                         <c:if test="${isLogged}">
                                             <c:choose>
@@ -81,13 +88,13 @@
                                         <span class="separator">•</span>
                                         <c:choose>
                                             <c:when test="${fn:length(series.seasons) ne 1}">
-                                                <c:set var="sufix" value="s"/>
+                                                <c:set var="suffix" value="s"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:set var="sufix" value=""/>
+                                                <c:set var="suffix" value=""/>
                                             </c:otherwise>
                                         </c:choose>
-                                        <span><spring:message code="series.season" arguments="${fn:length(series.seasons)},${sufix}"/></span>
+                                        <span><spring:message code="series.season" arguments="${fn:length(series.seasons)},${suffix}"/></span>
                                     </div>
                                     <div class="overview">
                                         ${series.seriesDescription}
@@ -95,13 +102,13 @@
                                     <div class="followers">
                                         <c:choose>
                                             <c:when test="${series.followers ne 1}">
-                                                <spring:message code="index.sufix" var="sufix2"/>
+                                                <spring:message code="index.suffix" var="suffix"/>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:set var="sufix2" value=""/>
+                                                <c:set var="suffix" value=""/>
                                             </c:otherwise>
                                         </c:choose>
-                                        <spring:message code="index.followers" arguments="${series.followers},${sufix2}"/>
+                                        <spring:message code="index.followers" arguments="${series.followers},${suffix}"/>
                                     </div>
                                 </div>
                                 <c:if test="${isLogged}">
@@ -117,7 +124,15 @@
                                                             <input id="star${5-index}" name="rating" type="radio" value="${5-index}" onclick="window.location.href='<c:url value="/rate?seriesId=${series.id}&rating=${5-index}"/>'"/>
                                                         </c:otherwise>
                                                     </c:choose>
-                                                    <label for="star${5-index}" title="${5-index} <spring:message code="series.star"/><c:if test="${series.followers ne 1}">s</c:if>"></label>
+                                                    <c:choose>
+                                                        <c:when test="${5-index ne 1}">
+                                                            <c:set var="suffix" value="s"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:set var="suffix" value=""/>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                    <label for="star${5-index}" title="<spring:message code="series.star" arguments="${5-index},${suffix}"/>"></label>
                                                 </c:forEach>
                                             </div>
                                         </div>

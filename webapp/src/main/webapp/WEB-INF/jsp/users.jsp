@@ -53,7 +53,7 @@
                                                         </tr>
                                                         </thead>
                                                         <tbody>
-                                                        <c:forEach items="${users}" var="currUser">
+                                                        <c:forEach items="${users.usersList}" var="currUser">
                                                             <tr>
                                                                 <td>
                                                                     <c:choose>
@@ -112,6 +112,31 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <spring:message code="users.results" arguments="${users.from},${users.to},${users.total}"/>
+                                        <nav class="text-center" aria-label="...">
+                                            <ul class="pagination">
+                                                <li class="page-item <c:if test="${not users.arePrevious}">disabled</c:if>">
+                                                    <c:choose>
+                                                        <c:when test="${users.arePrevious}">
+                                                            <a class="page-link" href="<c:url value="/users?page=${page - 1}"/>"><spring:message code="users.previous"/></a>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="page-link"><spring:message code="users.previous"/></span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </li>
+                                                <li class="page-item <c:if test="${not users.areNext}">disabled</c:if>">
+                                                    <c:choose>
+                                                        <c:when test="${users.areNext}">
+                                                            <a class="page-link" href="<c:url value="/users?page=${page + 1}"/>"><spring:message code="users.next"/></a>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <span class="page-link"><spring:message code="users.next"/></span>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </li>
+                                            </ul>
+                                        </nav>
                                     </div>
                                 </div>
                             </div>

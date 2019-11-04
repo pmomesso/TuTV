@@ -198,8 +198,7 @@
                                             <h2 class="small"><spring:message code="profile.favorite"/></h2>
                                             <section>
                                                 <ul class="shows-list posters-list list-unstyled list-inline">
-                                                    <c:forEach items="${recentlyWatched}" var="series">
-<%--                                                        favoriteShows--%>
+                                                    <c:forEach items="${favoriteShows}" var="series">
                                                         <li class="first-loaded">
                                                             <div class="show">
                                                                 <a href="<c:url value="/series?id=${series.id}"/>" class="show-link">
@@ -220,6 +219,7 @@
                                                             <a href="" class="show-link" style="text-decoration: none !important; color: black">
                                                                 <div class="image-crop text-center" style="background-color: #EEEEEE">
                                                                     <div style="margin-top: 55px">
+<%--                                                                        TODO i18n--%>
                                                                         <h2 class="mt-0">+</h2>
                                                                         <h4>Add to list</h4>
                                                                     </div>
