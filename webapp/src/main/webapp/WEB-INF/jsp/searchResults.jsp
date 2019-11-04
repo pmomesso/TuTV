@@ -38,6 +38,35 @@
                         <section id="searchResultsTitle">
                             <h1><spring:message code="search.searchResults"/></h1>
                         </section>
+                        <section>
+                            <div class="row">
+                                <div class="col-1"></div>
+                                <div class="col-1">
+                                    <c:if test="${currentPage > 0}">
+                                    <c:url value="/searchResults" var="previousUrl">
+                                        <c:param name="name" value="${name}"/>
+                                        <c:param name="genre" value="${genre}"/>
+                                        <c:param name="network" value="${network}"/>
+                                        <c:param name="page" value="${currentPage - 1}"/>
+                                    </c:url>
+                                    <a class="page-link" href="${previousUrl}"><spring:message code="users.previous"/></a>
+                                    </c:if>
+                                </div>
+                                <div class="col-8"></div>
+                                <div class="col-1">
+                                    <c:if test="${not last}">
+                                    <c:url value="/searchResults" var="nextUrl">
+                                        <c:param name="name" value="${name}"/>
+                                        <c:param name="genre" value="${genre}"/>
+                                        <c:param name="network" value="${network}"/>
+                                        <c:param name="page" value="${currentPage + 1}"/>
+                                    </c:url>
+                                    <a class="page-link" href="${nextUrl}"><spring:message code="users.next"/></a>
+                                    </c:if>
+                                </div>
+                                <div class="col-1"></div>
+                            </div>
+                        </section>
                         <section id="searchResultsSection">
                             <c:choose>
                                 <c:when test="${not empty searchResults}">

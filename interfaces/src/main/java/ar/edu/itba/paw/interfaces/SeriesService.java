@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface SeriesService {
 
-    List<Series> searchSeries(String seriesName, String genreName, String networkName);
+    List<Series> searchSeries(String seriesName, String genreName, String networkName, int page);
     List<Series> getSeriesByName(String name);
 
     Optional<Series> getSerieById(long id);

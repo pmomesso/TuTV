@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -39,15 +40,23 @@ public class ViewsController {
 	}
 
 	@RequestMapping(value = "/searchResults", method = RequestMethod.GET)
-    public ModelAndView search(@Valid @ModelAttribute("searchForm") final SearchForm form, final BindingResult errors) {
+    public ModelAndView search(@Valid @ModelAttribute("searchForm") final SearchForm form, final BindingResult errors, @RequestParam(name = "page",required = false) Integer page) {
 	    if(errors.hasErrors()){
 	        return search();
         }
-	    List<Series> results = seriesService.searchSeries(form.getName(),form.getGenre(),form.getNetwork());
+	    page = page == null || page < 0 ? 0 : page;
+	    List<Series> results = seriesService.searchSeries(form.getName(),form.getGenre(),form.getNetwork(),page);
         ModelAndView mav;
 	    if(results.size() > 0){
             mav = new ModelAndView("searchResults");
             mav.addObject("searchResults",results);
+            mav.addObject("currentPage",page);
+            mav.addObject("name",form.getName());
+            mav.addObject("genre",form.getGenre());
+            mav.addObject("network",form.getNetwork());
+            if(seriesService.searchSeries(form.getName(),form.getGenre(),form.getNetwork(), page + 1).size() == 0){
+                mav.addObject("last",true);
+            }
         }
 	    else{
             mav = search();

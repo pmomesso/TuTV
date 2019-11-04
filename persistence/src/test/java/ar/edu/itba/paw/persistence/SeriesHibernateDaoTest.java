@@ -205,19 +205,19 @@ public class SeriesHibernateDaoTest {
     }
     @Test
     public void searchSeriesByNameTest(){
-        List<Series> series = seriesDao.searchSeries(SERIES_NAME,null,null);
+        List<Series> series = seriesDao.searchSeries(SERIES_NAME,null,null,0);
         Assert.assertEquals(1,series.size());
         assertSeries(series.get(0));
     }
     @Test
     public void searchSeriesByGenreTest(){
-        List<Series> series = seriesDao.searchSeries(null,GENRE_NAME,null);
+        List<Series> series = seriesDao.searchSeries(null,GENRE_NAME,null,0);
         Assert.assertEquals(1,series.size());
         assertSeries(series.get(0));
     }
     @Test
     public void searchSeriesByNetworkTest(){
-        List<Series> series = seriesDao.searchSeries(null,null,NETWORK_NAME);
+        List<Series> series = seriesDao.searchSeries(null,null,NETWORK_NAME,0);
         Assert.assertEquals(1,series.size());
         assertSeries(series.get(0));
     }

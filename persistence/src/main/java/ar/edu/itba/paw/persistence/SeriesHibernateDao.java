@@ -13,11 +13,13 @@ import java.util.*;
 @Repository
 public class SeriesHibernateDao implements SeriesDao {
 
+    private static final int PAGE_SIZE = 24;
+
     @PersistenceContext
     private EntityManager em;
 
     @Override
-    public List<Series> searchSeries(String seriesName, String genreName, String networkName) {
+    public List<Series> searchSeries(String seriesName, String genreName, String networkName, int page) {
         //Valores por defecto
         seriesName = seriesName != null ? seriesName : "";
         genreName = genreName != null ? genreName : "";
@@ -28,6 +30,8 @@ public class SeriesHibernateDao implements SeriesDao {
         query.setParameter("seriesName","%" + seriesName.toLowerCase() + "%");
         query.setParameter("networkName","%" + networkName.toLowerCase() + "%");
         query.setParameter("genreName","%" + genreName.toLowerCase() + "%");
+        query.setFirstResult(page*PAGE_SIZE);
+        query.setMaxResults(PAGE_SIZE);
         return query.getResultList();
     }
 

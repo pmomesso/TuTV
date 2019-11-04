@@ -7,7 +7,7 @@
             <a id="home-link" href="<c:url value="/"/>">
                 <img class="logo tutv" src="<c:url value="/resources/img/Tutv.png"/>" alt="TUTV"> <span id="home-text">TUTV</span>
             </a> <!--#44d9e6-->
-            <form id="global-search" method="post" class="navbar-form form-search" action="<c:url value="/search"/>">
+            <form id="global-search" method="get" class="navbar-form form-search" action="<c:url value="/searchResults"/>">
                 <div class="form-group">
                     <img class="logo logo_icon" src="<c:url value="/resources/img/search.png"/>" alt="Search">
                 </div>
