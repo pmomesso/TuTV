@@ -38,7 +38,7 @@ public class ViewsController {
 		return mav;
 	}
 
-	@RequestMapping(value = "/search", method = RequestMethod.POST)
+	@RequestMapping(value = "/searchResults", method = RequestMethod.GET)
     public ModelAndView search(@Valid @ModelAttribute("searchForm") final SearchForm form, final BindingResult errors) {
 	    if(errors.hasErrors()){
 	        return search();

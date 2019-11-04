@@ -28,7 +28,7 @@
                 <img src="<c:url value="/resources/img/shortcuticon.png"/>" alt="TUTV">
                 <span class="title-page"><spring:message code="search.advancedSearch"/></span>
             </div>
-            <form action="<c:url value="/search"/>" method="post" enctype="application/x-www-form-urlencoded">
+            <form action="<c:url value="/searchResults"/>" method="get" enctype="application/x-www-form-urlencoded">
                 <div class="form-group">
                     <label for="seriesNameInput"><spring:message code="search.name"/> </label>
                     <input type="text" class="form-control" id="seriesNameInput" name="name"
