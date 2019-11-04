@@ -51,6 +51,7 @@ public class ControllerAdvice {
         mav.addObject("status","error.500status");
         mav.addObject("body","error.500body");
         mav.addObject("details",new ArrayList<>());
+        ex.printStackTrace();
         return mav;
     }
 

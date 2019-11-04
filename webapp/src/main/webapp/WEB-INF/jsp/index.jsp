@@ -98,9 +98,9 @@
               </section>
               <c:forEach items="${genres}" var="genre">
                 <section id="new-shows">
-                  <h2 class="black-font"><c:out value="${genre.name}"/></h2>
+                  <h2 class="black-font"><c:out value="${genre.key.name}"/></h2>
                   <ul class="posters-list shows-list explore-list list-unstyled list-inline">
-                    <c:forEach items="${genre.series}" var="series">
+                    <c:forEach items="${genre.value}" var="series">
                       <li>
                         <a href="<c:url value="/series?id=${series.id}"/>">
                           <div class="image-crop">
@@ -123,7 +123,7 @@
                       </li>
                     </c:forEach>
 <%--                TODO    if hay elementos proximos--%>
-                    <a class="carousel-genre-right float-left" href="<c:url value="/genre?id=${genre.id}&page=next"/>" data-slide="next">
+                    <a class="carousel-genre-right float-left" href="<c:url value="/genre?id=${genre.key.id}&page=next"/>" data-slide="next">
                       <span class="carousel-control-next-icon my-next-icon"></span>
                     </a>
                   </ul>

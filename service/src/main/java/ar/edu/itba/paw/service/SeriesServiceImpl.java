@@ -103,7 +103,7 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Genre> getSeriesByGenre(int lowerNumber, int upperNumber) {
+    public Map<Genre,List<Series>> getSeriesByGenre(int lowerNumber, int upperNumber) {
         return seriesDao.getBestSeriesByGenres(lowerNumber, upperNumber);
     }
 

@@ -19,7 +19,7 @@ public interface SeriesService {
     List<Series> getSeriesByGenreAndNumber(int genreId, int num);
     List<Series> getAllSeriesByGenre(String genreName);
     List<Series> getAllSeriesByGenre(int id);
-    List<Genre> getSeriesByGenre(int lowerNumber, int upperNumber);
+    Map<Genre,List<Series>> getSeriesByGenre(int lowerNumber, int upperNumber);
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
     List<Season> getSeasonsBySeriesId(long seriesId);
     List<Genre> getAllGenres();

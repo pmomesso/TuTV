@@ -65,13 +65,13 @@ public class SeriesHibernateDao implements SeriesDao {
 
     @Override
     public List<Genre> getAllGenres() {
-        final TypedQuery<Genre> query = em.createQuery("from Genre", Genre.class);
+        final TypedQuery<Genre> query = em.createQuery("from Genre order by name", Genre.class);
         return query.getResultList();
     }
 
     @Override
     public List<Network> getAllNetworks() {
-        final TypedQuery<Network> query = em.createQuery("from Network", Network.class);
+        final TypedQuery<Network> query = em.createQuery("from Network order by name", Network.class);
         return query.getResultList();
     }
 
@@ -87,13 +87,23 @@ public class SeriesHibernateDao implements SeriesDao {
         return result;
     }
 
+    private List<Series> getBestSeriesByGenre(long genreId,int limit,int offset){
+        return em.createNativeQuery("SELECT * " +
+                "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.id = series.network_id) " +
+                "WHERE genreid = ?" +
+                "ORDER BY userRating DESC LIMIT ? OFFSET ?",Series.class)
+                .setParameter(1,genreId)
+                .setParameter(2,limit)
+                .setParameter(3,offset)
+                .getResultList();
+    }
     @Override
-    public List<Genre> getBestSeriesByGenres(int lowerLimit, int upperLimit) {
-        final TypedQuery<Genre> query = em.createQuery("select g from Genre as g inner join g.series as s " +
-                "where s.userRating is null or s.userRating between :lowerLimit and :upperLimit", Genre.class);
-        query.setParameter("lowerLimit",(double)lowerLimit);
-        query.setParameter("upperLimit",(double)upperLimit);
-        return query.getResultList();
+    public Map<Genre,List<Series>> getBestSeriesByGenres(int lowerLimit, int upperLimit) {
+        Map<Genre,List<Series>> genreMap = new TreeMap<>(Comparator.comparing(Genre::getName));
+        for(Genre g : getAllGenres()){
+            genreMap.put(g,getBestSeriesByGenre(g.getId(),upperLimit - lowerLimit + 1,lowerLimit));
+        }
+        return genreMap;
     }
 
     @Override

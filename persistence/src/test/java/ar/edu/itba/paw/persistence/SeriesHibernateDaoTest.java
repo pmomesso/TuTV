@@ -15,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -189,10 +190,12 @@ public class SeriesHibernateDaoTest {
     }
     @Test
     public void getBestSeriesByGenreTest(){
-        List<Genre> g = seriesDao.getBestSeriesByGenres(0,7);
-        Assert.assertEquals(1,g.size());
-        Assert.assertEquals(1,g.get(0).getSeries().size());
-        assertSeries((Series)g.get(0).getSeries().toArray()[0]);
+        Map<Genre,List<Series>> genreMap = seriesDao.getBestSeriesByGenres(0,7);
+        Assert.assertEquals(1,genreMap.size());
+        Genre g = (Genre)genreMap.keySet().toArray()[0];
+        Assert.assertEquals(1,genreMap.get(g).size());
+        Series s = genreMap.get(g).get(0);
+        assertSeries(s);
     }
     @Test
     public void getNewSeriesTest(){
