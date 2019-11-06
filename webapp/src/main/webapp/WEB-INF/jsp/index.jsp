@@ -26,6 +26,9 @@
     <script src="<c:url value="/resources/js/navigator.js"/>"></script>
   </head>
   <body id="container" class="home no-touch white   reduced-right ">
+    <c:if test="${not empty sectionId}">
+      <input type="hidden" id="sectionId" value='${sectionId}'/>
+    </c:if>
     <div class="body-inner">
       <%@ include file="sideMenu.jsp" %>
       <div class="page-center page-column ">
@@ -96,12 +99,17 @@
                   </a>
                 </div>
               </section>
-              <c:forEach items="${genres}" var="genre">
-                <section id="new-shows">
-                  <h2 class="black-font"><c:out value="${genre.key.name}"/></h2>
-                  <ul class="posters-list shows-list explore-list list-unstyled list-inline">
-                    <c:forEach items="${genre.value}" var="series">
-                      <li>
+              <c:forEach items="${genres}" var="entry">
+                <section id="${entry.key.id}">
+                  <h2 class="black-font"><c:out value="${entry.key.name}"/></h2>
+                  <ul class="posters-list shows-list explore-list list-unstyled list-inline overflow-hidden">
+                    <c:if test="${entry.key.arePrevious}">
+                      <a class="carousel-genre-left float-left" href="<c:url value="/genre?id=${entry.key.id}&page=${entry.key.page - 1}"/>" data-slide="prev">
+                        <span class="carousel-control-prev-icon my-prev-icon"></span>
+                      </a>
+                    </c:if>
+                    <c:forEach items="${entry.value}" var="series">
+                      <li class="float-left">
                         <a href="<c:url value="/series?id=${series.id}"/>">
                           <div class="image-crop">
                             <img src="<c:url value="https://image.tmdb.org/t/p/original${series.posterUrl}"/>" alt="${series.name}">
@@ -122,10 +130,11 @@
                         </a>
                       </li>
                     </c:forEach>
-<%--                TODO    if hay elementos proximos--%>
-                    <a class="carousel-genre-right float-left" href="<c:url value="/genre?id=${genre.key.id}&page=next"/>" data-slide="next">
-                      <span class="carousel-control-next-icon my-next-icon"></span>
-                    </a>
+                    <c:if test="${entry.key.areNext}">
+                      <a class="carousel-genre-right float-left" href="<c:url value="/genre?id=${entry.key.id}&page=${entry.key.page + 1}"/>" data-slide="next">
+                        <span class="carousel-control-next-icon my-next-icon"></span>
+                      </a>
+                    </c:if>
                   </ul>
                 </section>
               </c:forEach>

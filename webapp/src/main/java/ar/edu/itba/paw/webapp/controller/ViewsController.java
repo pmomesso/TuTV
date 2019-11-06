@@ -24,12 +24,22 @@ public class ViewsController {
 	private SeriesService seriesService;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView home() {
+	public ModelAndView home(@RequestParam(value = "id", required = false) Long id, @RequestParam(value = "page", required = false) Long page) {
 		final ModelAndView mav = new ModelAndView("index");
+        if (id != null) {
+            mav.addObject("sectionId", id);
+            mav.addObject("genres", seriesService.getSeriesByGenre(id, page));
+        } else {
+            mav.addObject("genres", seriesService.getSeriesByGenre());
+        }
 		mav.addObject("newShows", seriesService.getNewestSeries(0,4));
-		mav.addObject("genres", seriesService.getSeriesByGenre(0,7));
 		return mav;
 	}
+
+    @RequestMapping(value = "/genre", method = RequestMethod.GET)
+    public ModelAndView homeGenre(@RequestParam("id") Long id, @RequestParam("page") String page) {
+        return new ModelAndView(String.format("redirect:/?id=%d&&page=%s", id, page));
+    }
 
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public ModelAndView search() {

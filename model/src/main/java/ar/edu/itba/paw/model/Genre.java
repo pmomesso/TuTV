@@ -17,6 +17,12 @@ public class Genre {
     private String name;
     @ManyToMany(mappedBy = "genres",fetch = FetchType.LAZY)
     private Set<Series> series = new HashSet<>();
+    @Transient
+    private Long page;
+    @Transient
+    private boolean arePrevious;
+    @Transient
+    private boolean areNext;
 
     public Genre(){
         this.name = null;
@@ -70,5 +76,29 @@ public class Genre {
 
     public void setSeries(Set<Series> series) {
         this.series = series;
+    }
+
+    public Long getPage() {
+        return page;
+    }
+
+    public void setPage(Long page) {
+        this.page = page;
+    }
+
+    public boolean isArePrevious() {
+        return arePrevious;
+    }
+
+    public void setArePrevious(boolean arePrevious) {
+        this.arePrevious = arePrevious;
+    }
+
+    public boolean isAreNext() {
+        return areNext;
+    }
+
+    public void setAreNext(boolean areNext) {
+        this.areNext = areNext;
     }
 }

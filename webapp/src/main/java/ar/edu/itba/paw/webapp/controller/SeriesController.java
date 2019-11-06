@@ -36,10 +36,6 @@ public class SeriesController {
         final ModelAndView mav = new ModelAndView("series");
         Series series = seriesService.getSerieById(id).orElseThrow(NotFoundException::new);
         mav.addObject("series", series);
-        Optional<User> u = userService.getLoggedUser();
-        u.ifPresent(user -> {
-            mav.addObject("hasAvatar", userService.getUserAvatar(user.getId()).isPresent());
-        });
         mav.addObject("postForm", postForm);
         mav.addObject("commentForm", commentForm);
         return mav;

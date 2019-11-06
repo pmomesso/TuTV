@@ -14,6 +14,7 @@ import java.util.*;
 public class SeriesHibernateDao implements SeriesDao {
 
     private static final int PAGE_SIZE = 24;
+    private static Integer OFFSET = 8;
 
     @PersistenceContext
     private EntityManager em;
@@ -91,21 +92,42 @@ public class SeriesHibernateDao implements SeriesDao {
         return result;
     }
 
-    private List<Series> getBestSeriesByGenre(long genreId,int limit,int offset){
-        return em.createNativeQuery("SELECT * " +
+    private List<Series> getBestSeriesByGenre(Genre genre, Long page) {
+        List<Series> seriesList = em.createNativeQuery("SELECT * " +
                 "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.id = series.network_id) " +
                 "WHERE genreid = ?" +
-                "ORDER BY userRating DESC LIMIT ? OFFSET ?",Series.class)
-                .setParameter(1,genreId)
-                .setParameter(2,limit)
-                .setParameter(3,offset)
+                "ORDER BY genres.name DESC LIMIT ? OFFSET ?",Series.class)
+                .setParameter(1, genre.getId())
+                .setParameter(2, OFFSET)
+                .setParameter(3, (page - 1) * OFFSET)
                 .getResultList();
+
+        TypedQuery<Long> countQuery = em.createQuery("select count(*) from Series as s inner join s.genres as genres " +
+                "WHERE genres.id = :id", Long.class);
+        countQuery.setParameter("id", genre.getId());
+        Long count = countQuery.getSingleResult();
+
+        genre.setPage(page);
+        genre.setArePrevious((page - 1) * OFFSET > OFFSET - 1);
+        genre.setAreNext(page * OFFSET - 1 < count - count % OFFSET);
+
+        return seriesList;
     }
+
     @Override
-    public Map<Genre,List<Series>> getBestSeriesByGenres(int lowerLimit, int upperLimit) {
+    public Map<Genre,List<Series>> getBestSeriesByGenres() {
         Map<Genre,List<Series>> genreMap = new TreeMap<>(Comparator.comparing(Genre::getName));
         for(Genre g : getAllGenres()){
-            genreMap.put(g,getBestSeriesByGenre(g.getId(),upperLimit - lowerLimit + 1,lowerLimit));
+            genreMap.put(g, getBestSeriesByGenre(g, new Long(1)));
+        }
+        return genreMap;
+    }
+
+    @Override
+    public Map<Genre,List<Series>> getBestSeriesByGenres(Long id, Long page) {
+        Map<Genre,List<Series>> genreMap = new TreeMap<>(Comparator.comparing(Genre::getName));
+        for(Genre g : getAllGenres()){
+            genreMap.put(g, getBestSeriesByGenre(g, g.getId().equals(id) ? page : 1));
         }
         return genreMap;
     }

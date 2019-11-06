@@ -21,7 +21,8 @@ public interface SeriesDao {
 
     List<Series> getNewSeries(int lowerLimit, int upperLimit);
 
-    Map<Genre,List<Series>> getBestSeriesByGenres(int lowerLimit, int upperLimit);
+    Map<Genre,List<Series>> getBestSeriesByGenres();
+    Map<Genre,List<Series>> getBestSeriesByGenres(Long id, Long page);
 
     Optional<Series> getSeriesById(long id);
 

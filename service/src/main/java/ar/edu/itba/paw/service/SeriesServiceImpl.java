@@ -103,8 +103,13 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public Map<Genre,List<Series>> getSeriesByGenre(int lowerNumber, int upperNumber) {
-        return seriesDao.getBestSeriesByGenres(lowerNumber, upperNumber);
+    public Map<Genre,List<Series>> getSeriesByGenre() {
+        return seriesDao.getBestSeriesByGenres();
+    }
+
+    @Override
+    public Map<Genre,List<Series>> getSeriesByGenre(Long id, Long page) {
+        return seriesDao.getBestSeriesByGenres(id, page);
     }
 
     @Override

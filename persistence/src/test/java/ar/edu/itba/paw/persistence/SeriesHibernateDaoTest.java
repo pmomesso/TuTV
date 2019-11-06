@@ -190,7 +190,7 @@ public class SeriesHibernateDaoTest {
     }
     @Test
     public void getBestSeriesByGenreTest(){
-        Map<Genre,List<Series>> genreMap = seriesDao.getBestSeriesByGenres(0,7);
+        Map<Genre,List<Series>> genreMap = seriesDao.getBestSeriesByGenres();
         Assert.assertEquals(1,genreMap.size());
         Genre g = (Genre)genreMap.keySet().toArray()[0];
         Assert.assertEquals(1,genreMap.get(g).size());
