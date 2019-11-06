@@ -13,7 +13,7 @@ import javax.persistence.TypedQuery;
 import java.util.*;
 
 @Repository
-public class UserDaoHibernate implements UserDao {
+public class UserHibernateDao implements UserDao {
 
     private static Integer OFFSET = 9;
 
