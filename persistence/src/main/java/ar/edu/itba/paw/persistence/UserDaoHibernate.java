@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.UserDao;
+import ar.edu.itba.paw.model.Genre;
+import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.UsersList;
 import org.springframework.stereotype.Repository;
@@ -8,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class UserDaoHibernate implements UserDao {
@@ -152,6 +154,31 @@ public class UserDaoHibernate implements UserDao {
         usersList.setUsersList(query.getResultList());
 
         return usersList;
+    }
+
+    private List<Genre> getUserGenres(long userId) {
+        TypedQuery<Genre> query = em.createQuery("select genre from User as u inner join u.follows as series inner join series.genres as genre where u.id = :id", Genre.class);
+        query.setParameter("id", userId);
+        return query.getResultList();
+    }
+
+    private Long getCountSeriesByGenre(long genreId, long userId) {
+        TypedQuery<Long> countQuery = em.createQuery("select count(*) from User as u inner join u.follows as series inner join series.genres as genre " +
+                "WHERE genre.id = :id AND u.id = :userid", Long.class);
+        countQuery.setParameter("id", genreId);
+        countQuery.setParameter("userid", userId);
+        return countQuery.getSingleResult();
+    }
+
+    @Override
+    public Map<Genre, Long> getGenreStats(long userId) {
+        Map<Genre, Long> genreStats = new HashMap<>();
+
+        for (Genre genre : getUserGenres(userId)) {
+            genreStats.put(genre, getCountSeriesByGenre(genre.getId(), userId));
+        }
+
+        return genreStats;
     }
 
 }

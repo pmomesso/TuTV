@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.UsersList;
 import ar.edu.itba.paw.model.either.Either;
 import ar.edu.itba.paw.model.User;
@@ -8,6 +9,7 @@ import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
@@ -21,6 +23,8 @@ public interface UserService {
 	Optional<User> getLoggedUser();
 
 	UsersList getAllUsersExceptLoggedOne(int page) throws UnauthorizedException ;
+
+	Map<Genre, Long> getGenresStats() throws UnauthorizedException;
 
     void banUser(long userId) throws UnauthorizedException, NotFoundException;
 	void unbanUser(long userId) throws UnauthorizedException, NotFoundException;

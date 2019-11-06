@@ -237,39 +237,58 @@
                                         <div>
                                             <h2 class="small"><spring:message code="profile.favoriteGenres"/></h2>
                                             <div class="row justify-content-center">
-                                                <div class="mt-lg-5 mt-sm-0"><canvas id="genresChart" ></canvas></div>
-                                                <c:set var="labels" value="["/>
-                                                <c:forEach var="key" items="${genreStats.keySet()}">
-                                                    <c:set var="labels" value="${labels} '${key}',"/>
-                                                </c:forEach>
-                                                <c:set var="labels" value="${labels}]"/>
-                                                <script>
-                                                    var ctx = document.getElementById('genresChart');
-                                                    var myChart = new Chart(ctx, {
-                                                        type: 'doughnut',
-                                                        data: {
-                                                            labels: ${labels},
-                                                            datasets: [{
-                                                                data: ${genreStats.values()},
-                                                                backgroundColor: [
-                                                                    '#3cb44b', '#469990', '#aaffc3', '#42d4f4', '#4363d8',
-                                                                    '#000075', '#911eb4', '#f032e6', '#e6beff', '#800000',
-                                                                    '#e6194b', '#f58231', '#ffd8b1', '#ffe119', '#bfef45'
-                                                                ]
-                                                            }]
-                                                        },
-                                                        options: {
-                                                            maintainAspectRatio: false,
-                                                            legend: {
-                                                                display: true,
-                                                                position: 'bottom',
-                                                                labels: {
-                                                                    padding: 20
+                                                <c:choose>
+                                                    <c:when test="${empty genreStats}">
+                                                        <div class="container h-100">
+                                                            <div class="row justify-content-center h-100">
+                                                                <div class="col-lg-8 col-sm-12 align-self-center">
+                                                                    <div class="text-center m-4">
+                                                                        <h4><spring:message code="profile.noStats"/></h4>
+                                                                        <h4><spring:message code="watchlist.discover"/></h4>
+                                                                    </div>
+                                                                    <div class="text-center m-4">
+                                                                        <button class="tutv-button m-4" onclick="window.location.href='<c:url value="/"/>'"><spring:message code="watchlist.explore"/></button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <div class="mt-lg-5 mt-sm-0"><canvas id="genresChart" ></canvas></div>
+                                                        <c:set var="labels" value="["/>
+                                                        <c:forEach var="key" items="${genreStats.keySet()}">
+                                                            <c:set var="labels" value="${labels} '${key}',"/>
+                                                        </c:forEach>
+                                                        <c:set var="labels" value="${labels}]"/>
+                                                        <script>
+                                                            var ctx = document.getElementById('genresChart');
+                                                            var myChart = new Chart(ctx, {
+                                                                type: 'doughnut',
+                                                                data: {
+                                                                    labels: ${labels},
+                                                                    datasets: [{
+                                                                        data: ${genreStats.values()},
+                                                                        backgroundColor: [
+                                                                            '#3cb44b', '#469990', '#aaffc3', '#42d4f4', '#4363d8',
+                                                                            '#000075', '#911eb4', '#f032e6', '#e6beff', '#800000',
+                                                                            '#e6194b', '#f58231', '#ffd8b1', '#ffe119', '#bfef45'
+                                                                        ]
+                                                                    }]
+                                                                },
+                                                                options: {
+                                                                    maintainAspectRatio: false,
+                                                                    legend: {
+                                                                        display: true,
+                                                                        position: 'bottom',
+                                                                        labels: {
+                                                                            padding: 20
+                                                                        }
+                                                                    }
                                                                 }
-                                                            }
-                                                        }
-                                                    });
-                                                </script>
+                                                            });
+                                                        </script>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </div>
                                         </div>
                                     </div>

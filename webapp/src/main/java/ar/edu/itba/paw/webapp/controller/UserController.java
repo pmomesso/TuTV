@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.either.Either;
@@ -70,19 +69,7 @@ public class UserController {
         ModelAndView mav = new ModelAndView("profile");
         mav.addObject("userProfile", u);
         mav.addObject("followedSeries",seriesService.getAddedSeries(userId));
-        HashMap<Genre,Integer> g = new HashMap<>();
-        Genre g1 = new Genre("Soap1");
-        Genre g2 = new Genre("Soap2");
-        Genre g3 = new Genre("Soap3");
-        Genre g4 = new Genre("Soap4");
-        Genre g5 = new Genre("Soap5");
-        g.put(g1,1);
-        g.put(g2,2);
-        g.put(g3,3);
-        g.put(g4,4);
-        g.put(g5,5);
-//        TODO create method that returns Map<Genre,Integer> where integer is the number of series of the genre that the user follows
-        mav.addObject("genreStats", g);
+        mav.addObject("genreStats", userService.getGenresStats());
         mav.addObject("recentlyWatched", seriesService.getRecentlyWatchedList(6));
         mav.addObject("favoriteShows", new ArrayList<Series>());
         return mav;
@@ -121,6 +108,7 @@ public class UserController {
 
         Either<User, Collection<Errors>> e = userService.createUser(form.getUsername(), form.getPassword(), form.getMail(),false, baseUrl);
         ModelAndView mav;
+//        TODO review logic here
         if(!e.isValuePresent()){
             mav = showRegister(form);
             if(e.getAlternative().contains(Errors.USERNAME_ALREADY_IN_USE))
@@ -139,6 +127,7 @@ public class UserController {
         User u = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         String extension = FilenameUtils.getExtension(avatar.getOriginalFilename());
         final List<String> supportedExtensions = Arrays.asList("png","jpg","jpeg");
+//        TODO review logic here
         if(!supportedExtensions.contains(extension)){
             throw new BadRequestException();
         }

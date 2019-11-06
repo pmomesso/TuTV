@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.UsersList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,6 +157,12 @@ public class UserDaoJdbc implements UserDao {
 		else{
 			return Optional.ofNullable(results.get(0));
 		}
+	}
+
+	@Override
+	public Map<Genre, Long> getGenreStats(long userId) {
+		Map<Genre, Long> genreStats = new HashMap<>();
+		return genreStats;
 	}
 
 }

@@ -3,6 +3,7 @@ package ar.edu.itba.paw.service;
 import ar.edu.itba.paw.interfaces.MailService;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.UsersList;
 import ar.edu.itba.paw.model.either.Either;
 import ar.edu.itba.paw.model.User;
@@ -97,6 +98,14 @@ public class UserServiceImpl implements UserService {
         Optional<User> loggedUser = getLoggedUser();
         UsersList usersList = userDao.getAllUsers(page, loggedUser.orElseThrow(UnauthorizedException::new).getId());
         return usersList;
+    }
+
+    @Override
+    @Transactional
+    public Map<Genre, Long> getGenresStats() throws UnauthorizedException {
+        Optional<User> loggedUser = getLoggedUser();
+        Map<Genre, Long> genreStats = userDao.getGenreStats(loggedUser.orElseThrow(UnauthorizedException::new).getId());
+        return genreStats;
     }
 
     @Override

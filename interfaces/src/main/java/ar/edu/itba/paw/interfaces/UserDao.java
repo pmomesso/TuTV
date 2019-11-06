@@ -1,8 +1,10 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.UsersList;
 
+import java.util.Map;
 import java.util.Optional;
 
 public interface UserDao {
@@ -34,5 +36,7 @@ public interface UserDao {
     boolean userExists(long userId);
 
     UsersList getAllUsers(int page, long userId);
+
+    Map<Genre, Long> getGenreStats(long userId);
 
 }
