@@ -5,8 +5,10 @@ import ar.edu.itba.paw.model.UsersList;
 import ar.edu.itba.paw.model.either.Either;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.errors.Errors;
+import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.Map;
@@ -30,6 +32,6 @@ public interface UserService {
 	void unbanUser(long userId) throws UnauthorizedException, NotFoundException;
 
     boolean updateLoggedUserName(String newUsername) throws NotFoundException;
-	void setUserAvatar(long userId, byte[] byteArray);
+	void setUserAvatar(long userId, MultipartFile avatar) throws BadRequestException;
 	Optional<byte[]> getUserAvatar(long userId);
 }

@@ -8,8 +8,10 @@ import ar.edu.itba.paw.model.UsersList;
 import ar.edu.itba.paw.model.either.Either;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.errors.Errors;
+import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,12 +19,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
+
+    final List<String> supportedExtensions = Arrays.asList("png","jpg","jpeg");
 
     @Autowired
     private UserDao userDao;
@@ -144,8 +150,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void setUserAvatar(long userId, byte[] byteArray) {
-        userDao.setUserAvatar(userId, byteArray);
+    public void setUserAvatar(long userId, MultipartFile avatar) throws BadRequestException{
+        String extension = FilenameUtils.getExtension(avatar.getOriginalFilename());
+        if(!supportedExtensions.contains(extension)){
+            throw new BadRequestException();
+        }
+        try {
+            userDao.setUserAvatar(userId, avatar.getBytes());
+        } catch (IOException e) {
+            throw new BadRequestException();
+        }
     }
 
     @Override

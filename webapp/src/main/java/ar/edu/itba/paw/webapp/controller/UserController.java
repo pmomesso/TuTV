@@ -108,7 +108,7 @@ public class UserController {
 
         Either<User, Collection<Errors>> e = userService.createUser(form.getUsername(), form.getPassword(), form.getMail(),false, baseUrl);
         ModelAndView mav;
-//        TODO review logic here
+
         if(!e.isValuePresent()){
             mav = showRegister(form);
             if(e.getAlternative().contains(Errors.USERNAME_ALREADY_IN_USE))
@@ -125,17 +125,7 @@ public class UserController {
     @RequestMapping(value = "/uploadAvatar", method = RequestMethod.POST)
     public ModelAndView uploadAvatar(@RequestParam("avatar") MultipartFile avatar) throws UnauthorizedException, BadRequestException {
         User u = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        String extension = FilenameUtils.getExtension(avatar.getOriginalFilename());
-        final List<String> supportedExtensions = Arrays.asList("png","jpg","jpeg");
-//        TODO review logic here
-        if(!supportedExtensions.contains(extension)){
-            throw new BadRequestException();
-        }
-        try {
-            userService.setUserAvatar(u.getId(), avatar.getBytes());
-        } catch (IOException e) {
-            throw new BadRequestException();
-        }
+        userService.setUserAvatar(u.getId(), avatar);
 
         return new ModelAndView("redirect:/profile?id="+u.getId());
     }
