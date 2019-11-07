@@ -26,7 +26,7 @@ public class Series  {
     @Column(length = 16, nullable = false)
     private String status;
     @Column
-    private Double userRating;
+    private Double totalRating;
     @Transient
     private Integer loggedInUserRating;
     @Column
@@ -80,7 +80,7 @@ public class Series  {
         this.name = name;
         this.seriesDescription = seriesDescription;
     }
-    public Series(int tvdbid,String name,String seriesDescription,Network network,String posterUrl,String bannerUrl,Double userRating,
+    public Series(int tvdbid,String name,String seriesDescription,Network network,String posterUrl,String bannerUrl,Double totalRating,
                   String status,Integer runtime,int followers,String imdbid,String firstAired,String added,String updated) {
         this.tvdbid = tvdbid;
         this.name = name;
@@ -89,7 +89,7 @@ public class Series  {
         this.posterUrl = posterUrl;
         this.bannerUrl = bannerUrl;
         this.status = status;
-        this.userRating = userRating;
+        this.totalRating = totalRating;
         this.runtime = runtime;
         this.followers = followers;
         this.imdbId = imdbid;
@@ -110,7 +110,7 @@ public class Series  {
             this.updated = null;
         }
     }
-    public Series(Long id,int tvdbid,String name,String seriesDescription,Network network,String posterUrl,String bannerUrl,Double userRating,
+    public Series(Long id,int tvdbid,String name,String seriesDescription,Network network,String posterUrl,String bannerUrl,Double totalRating,
                   String status,Integer runtime,int followers,String imdbid,String firstAired,String added,String updated) {
         this.id=id;
         this.tvdbid = tvdbid;
@@ -120,7 +120,7 @@ public class Series  {
         this.posterUrl = posterUrl;
         this.bannerUrl = bannerUrl;
         this.status = status;
-        this.userRating = userRating;
+        this.totalRating = totalRating;
         this.runtime = runtime;
         this.followers = followers;
         this.imdbId = imdbid;
@@ -165,11 +165,11 @@ public class Series  {
         return updated;
     }
 
-    public Double getUserRating() {
-        return userRating;
+    public Double getTotalRating() {
+        return totalRating;
     }
 
-    public void setUserRating(Double userRating) { this.userRating = userRating; }
+    public void setTotalRating(Double totalRating) { this.totalRating = totalRating; }
 
     public String getName() {
         return name;

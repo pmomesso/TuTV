@@ -34,7 +34,7 @@ public interface SeriesService {
     void rateSeries(long seriesId, int rating) throws NotFoundException, UnauthorizedException, BadRequestException;
     void unviewEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
     void unviewSeason(long seasonId) throws UnauthorizedException, NotFoundException;
-    void addSeriesReview(String body, long seriesId) throws NotFoundException, UnauthorizedException;
+    void addSeriesReview(String body, long seriesId, boolean isSpam) throws NotFoundException, UnauthorizedException;
 
     void likePost(long postId) throws NotFoundException, UnauthorizedException;
 

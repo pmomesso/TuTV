@@ -90,7 +90,7 @@ public class SeriesController {
         if (errors.hasErrors()) {
             return series(form, new CommentForm(), form.getSeriesId());
         }
-        seriesService.addSeriesReview(form.getBody(), form.getSeriesId());
+        seriesService.addSeriesReview(form.getBody(), form.getSeriesId(), form.getIsSpam());
         return new ModelAndView("redirect:/series?id=" + form.getSeriesId());
     }
 

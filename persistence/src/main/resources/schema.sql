@@ -114,7 +114,7 @@ create table if not exists actorroles
     updated date
 );
 
-create table if not exists post
+create table if not exists seriesreview
 (
     userid integer
         constraint seriesreview_users_id_fk
@@ -124,6 +124,7 @@ create table if not exists post
     seriesid integer
         constraint seriesreview_series_id_fk
             references series,
+    isspam boolean default false,
     numlikes integer default 0,
     id serial not null
         constraint seriesreview_pk

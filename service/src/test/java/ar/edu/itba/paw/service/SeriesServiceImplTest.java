@@ -190,10 +190,10 @@ public class SeriesServiceImplTest {
         //Setup
         final String body = "body";
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.createSeriesReview(Mockito.eq(body),Mockito.eq(ID),Mockito.eq(USER_ID))).thenReturn(Optional.of(new SeriesReview()));
+        Mockito.when(mockDao.createSeriesReview(Mockito.eq(body),Mockito.eq(ID),Mockito.eq(USER_ID),Mockito.eq(false))).thenReturn(Optional.of(new SeriesReview()));
         //Ejercitar
         try {
-            seriesService.addSeriesReview(body,ID);
+            seriesService.addSeriesReview(body,ID, false);
         } catch (ApiException e) {
             Assert.fail();
         }

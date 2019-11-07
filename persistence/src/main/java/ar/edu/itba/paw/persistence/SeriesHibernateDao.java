@@ -335,13 +335,13 @@ public class SeriesHibernateDao implements SeriesDao {
     }
 
     @Override
-    public Optional<SeriesReview> createSeriesReview(String body, long seriesId, long userId) {
+    public Optional<SeriesReview> createSeriesReview(String body, long seriesId, long userId, boolean isSpam) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<Series> series = Optional.ofNullable(em.find(Series.class,seriesId));
         if(!user.isPresent() || !series.isPresent()){
             return Optional.empty();
         }
-        SeriesReview review = new SeriesReview(body,series.get(),user.get());
+        SeriesReview review = new SeriesReview(body,series.get(),user.get(),isSpam);
         em.persist(review);
         user.get().getSeriesReviews().add(review);
         series.get().getSeriesReviewList().add(review);
@@ -464,7 +464,7 @@ public class SeriesHibernateDao implements SeriesDao {
                         .setParameter("seriesId",series.get().getId())
                         .getSingleResult();
 
-                series.get().setUserRating((double)totalRating / (series.get().getRatings().size()));
+                series.get().setTotalRating((double)totalRating / (series.get().getRatings().size()));
                 done = true;
                 em.flush();
             }

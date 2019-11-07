@@ -25,3 +25,11 @@
 		}
 	}
 }());
+
+function show_spoiler(button) {
+	$(button).addClass("hidden");
+	var commentParent = $(button).parent().parent().parent();
+	var comment = $(commentParent).children("blockquote");
+	$(comment).removeClass("hidden");
+	console.log("show");
+}

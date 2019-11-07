@@ -6,6 +6,7 @@ public class PostForm {
     @Size(min = 6, max = 255)
     private String body;
     private long seriesId;
+    private boolean isSpam;
 
     public String getBody() {
         return body;
@@ -21,5 +22,13 @@ public class PostForm {
 
     public void setSeriesId(long seriesId) {
         this.seriesId = seriesId;
+    }
+
+    public boolean getIsSpam() {
+        return isSpam;
+    }
+
+    public void setIsSpam(boolean isSpam) {
+        this.isSpam = isSpam;
     }
 }

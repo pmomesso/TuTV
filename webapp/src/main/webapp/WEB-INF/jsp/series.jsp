@@ -51,8 +51,8 @@
                                         <div class="text-center">
                                             <span class="star"></span>
                                             <c:choose>
-                                                <c:when test="${not empty series.userRating}">
-                                                    <fmt:formatNumber value="${series.userRating}" var="totalRating" pattern="0.0" />
+                                                <c:when test="${not empty series.totalRating}">
+                                                    <fmt:formatNumber value="${series.totalRating}" var="totalRating" pattern="0.0" />
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:set var="totalRating" value="-"/>
@@ -260,6 +260,7 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="submit-comment">
+                                                                    <form:checkbox path="isSpam"/><span class="mr-3 ml-1"><spring:message code="series.markSpoiler"/></span>
                                                                     <button type="submit" class="submit-comment-btn">
                                                                         <spring:message code="series.post"/></button>
                                                                 </div>
@@ -286,6 +287,13 @@
                                                                                         <span>${seriesReview.user.userName}</span>
                                                                                     </c:otherwise>
                                                                                 </c:choose>
+                                                                                <c:if test="${seriesReview.isSpam}">
+                                                                                    <blockquote class="original">
+                                                                                        <span style="font-family: FontAwesome,serif; font-style: normal; font-size: 12px;">&#xf071</span>
+                                                                                        <span style="font-size: 12px" class="mr-1"><spring:message code="series.hasSpoiler"/></span>
+                                                                                        <button onclick="show_spoiler(this)" class="show_spoiler"><spring:message code="series.show"/></button>
+                                                                                    </blockquote>
+                                                                                </c:if>
                                                                                 <c:if test="${user.isAdmin && user.id ne seriesReview.user.id}">
                                                                                     <c:choose>
                                                                                         <c:when test="${seriesReview.user.isBanned}">
@@ -339,7 +347,7 @@
                                                                                     </c:choose>
                                                                                 </div>
                                                                             </div>
-                                                                            <blockquote class="original">
+                                                                            <blockquote class="original <c:if test="${seriesReview.isSpam}">hidden</c:if>">
                                                                                 <p>${seriesReview.body}</p>
                                                                             </blockquote>
                                                                         </div>

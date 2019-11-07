@@ -202,9 +202,9 @@ public class SeriesServiceImpl implements SeriesService {
         seriesDao.unviewSeason(seasonId,user.getId());
     }
     @Override
-    public void addSeriesReview(String body, long seriesId) throws NotFoundException, UnauthorizedException {
+    public void addSeriesReview(String body, long seriesId, boolean isSpam) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        seriesDao.createSeriesReview(body, seriesId, user.getId()).orElseThrow(NotFoundException::new);
+        seriesDao.createSeriesReview(body, seriesId, user.getId(), isSpam).orElseThrow(NotFoundException::new);
     }
 
     @Override

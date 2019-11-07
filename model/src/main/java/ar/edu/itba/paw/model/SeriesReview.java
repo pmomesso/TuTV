@@ -17,11 +17,14 @@ public class SeriesReview {
     private String body;
     @Column(columnDefinition = "integer default 0")
     private int numlikes;
+    @Column(name = "isspam", nullable = false)
+    private boolean isSpam;
 
     @OneToMany(mappedBy = "parent",fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private Set<SeriesReviewComment> comments = new HashSet<>();
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Series series;
     @ManyToMany(cascade = {
@@ -37,10 +40,11 @@ public class SeriesReview {
 
     public SeriesReview(){
     }
-    public SeriesReview(String body, Series series, User user){
+    public SeriesReview(String body, Series series, User user, boolean isSpam){
         this.body = body;
         this.series = series;
         this.user = user;
+        this.isSpam = isSpam;
         this.numlikes = 0;
     }
 
@@ -50,6 +54,14 @@ public class SeriesReview {
 
     public void setNumLikes(int numlikes) {
         this.numlikes = numlikes;
+    }
+
+    public boolean getIsSpam() {
+        return isSpam;
+    }
+
+    public void setIsSpam(boolean spam) {
+        isSpam = spam;
     }
 
     public long getId() {

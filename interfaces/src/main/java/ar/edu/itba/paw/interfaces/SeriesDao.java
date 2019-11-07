@@ -51,7 +51,7 @@ public interface SeriesDao {
     int unviewSeason(long seasonId, long userId);
     int unviewEpisode(long userId, long episodeId);
 
-    Optional<SeriesReview> createSeriesReview(String body, long seriesId, long userId);
+    Optional<SeriesReview> createSeriesReview(String body, long seriesId, long userId, boolean isSpam);
 
     int likePost(long userId, long postId);
 
