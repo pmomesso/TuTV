@@ -287,13 +287,6 @@
                                                                                         <span>${seriesReview.user.userName}</span>
                                                                                     </c:otherwise>
                                                                                 </c:choose>
-                                                                                <c:if test="${seriesReview.isSpam}">
-                                                                                    <blockquote class="original">
-                                                                                        <span style="font-family: FontAwesome,serif; font-style: normal; font-size: 12px;">&#xf071</span>
-                                                                                        <span style="font-size: 12px" class="mr-1"><spring:message code="series.hasSpoiler"/></span>
-                                                                                        <button onclick="show_spoiler(this)" class="show_spoiler"><spring:message code="series.show"/></button>
-                                                                                    </blockquote>
-                                                                                </c:if>
                                                                                 <c:if test="${user.isAdmin && user.id ne seriesReview.user.id}">
                                                                                     <c:choose>
                                                                                         <c:when test="${seriesReview.user.isBanned}">
@@ -346,6 +339,13 @@
                                                                                         </c:otherwise>
                                                                                     </c:choose>
                                                                                 </div>
+                                                                                <c:if test="${seriesReview.isSpam}">
+                                                                                    <blockquote class="original">
+                                                                                        <span style="font-family: FontAwesome,serif; font-style: normal; font-size: 12px;">&#xf071</span>
+                                                                                        <span style="font-size: 12px" class="mr-1"><spring:message code="series.hasSpoiler"/></span>
+                                                                                        <button onclick="show_spoiler(this)" class="show_spoiler"><spring:message code="series.show"/></button>
+                                                                                    </blockquote>
+                                                                                </c:if>
                                                                             </div>
                                                                             <blockquote class="original <c:if test="${seriesReview.isSpam}">hidden</c:if>">
                                                                                 <p>${seriesReview.body}</p>
