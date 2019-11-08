@@ -357,7 +357,7 @@
                                                         <div class="row form-group">
                                                             <form:label class="col-sm-4 control-label" path="username"><spring:message code="register.username"/></form:label>
                                                             <div class="col-sm-6">
-                                                                <form:input path="username" type="text" class="form-control" name="username" placeholder="JohnDoe" value="${userProfile.userName}"/>
+                                                                <form:input path="username" type="text"  minlength="6" maxlength="32" class="form-control" name="username" placeholder="JohnDoe" value="${userProfile.userName}"/>
                                                                 <form:errors path="username" element="p" cssClass="m-2 error"/>
                                                                 <c:if test="${exists}">
                                                                     <p class="m-2 error"><spring:message code="profile.usernameExists"/></p>

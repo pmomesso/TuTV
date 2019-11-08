@@ -238,6 +238,7 @@
                                                                                 <div class="mentions-input-box">
                                                                                     <spring:message code="series.enterComment" var="placeholder"/>
                                                                                     <form:textarea
+                                                                                            maxlength="255"
                                                                                             placeholder="${placeholder}"
                                                                                             path="body"
                                                                                             style="overflow: hidden; height: 40px;"/>
@@ -441,6 +442,7 @@
                                                                                             <spring:message code="series.enterReply" var="placeholder_reply"/>
                                                                                             <form:textarea
                                                                                                     rows="1"
+                                                                                                    maxlength="255"
                                                                                                     placeholder="${placeholder_reply}"
                                                                                                     path="commentBody"
                                                                                                     style="overflow: hidden; height: 50px;"/>

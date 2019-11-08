@@ -36,7 +36,7 @@
                             <label class="ml-lg-4" for="username"><spring:message code="login.username"/></label>
                         </div>
                         <div class="col-8 align-self-center">
-                            <input class="m-3 w-100" id="username" name="username" type="text"/>
+                            <input class="m-3 w-100" id="username" name="username" type="text" minlength="6" maxlength="32"/>
                         </div>
                     </div>
                     <div class="row w-100">
@@ -44,7 +44,7 @@
                             <label class="ml-lg-4" for="password"><spring:message code="login.password"/></label>
                         </div>
                         <div class="col-8 align-self-center">
-                            <input class="m-3 w-100" id="password" name="password" type="password"/>
+                            <input class="m-3 w-100" id="password" name="password" type="password" minlength="6" maxlength="32"/>
                         </div>
                     </div>
                     <c:if test="${param.error}">

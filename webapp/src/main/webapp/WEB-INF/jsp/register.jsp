@@ -41,7 +41,7 @@
                             <form:label class="ml-lg-5" path="mail"><spring:message code="register.mail"/></form:label>
                         </div>
                         <div class="col-7 align-self-center">
-                            <form:input class="m-3 w-100" path="mail" type="text"/>
+                            <form:input class="m-3 w-100" path="mail" type="text" minlength="6" maxlength="60"/>
                             <form:errors path="mail" element="p" cssClass="m-3 error"/>
                             <c:if test="${mailExists}">
                                 <p class="m-3 error"><spring:message code="register.mailExists"/></p>
@@ -53,7 +53,7 @@
                             <form:label class="ml-lg-5" path="username"><spring:message code="register.username"/></form:label>
                         </div>
                         <div class="col-7 align-self-center">
-                            <form:input class="m-3 w-100" path="username" type="text"/>
+                            <form:input class="m-3 w-100" path="username" type="text" minlength="6" maxlength="32"/>
                             <form:errors path="username" element="p" cssClass="m-3 error"/>
                             <c:if test="${usernameExists}">
                                 <p class="m-3 error"><spring:message code="profile.usernameExists"/></p>
@@ -65,7 +65,7 @@
                             <form:label class="ml-lg-5" path="password"><spring:message code="register.password"/></form:label>
                         </div>
                         <div class="col-7 align-self-center">
-                            <form:input id="passwordInput" class="m-3 w-100" path="password" type="password"/>
+                            <form:input id="passwordInput" class="m-3 w-100" path="password" type="password" minlength="6" maxlength="32"/>
                             <form:errors path="password" element="p" cssClass="m-3 error"/>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                             <form:label class="ml-lg-5" path="repeatPassword"><spring:message code="register.repeatPassword"/></form:label>
                         </div>
                         <div class="col-7 align-self-center">
-                            <form:input id="repeatPasswordInput" class="m-3 w-100" path="repeatPassword" type="password"/>
+                            <form:input id="repeatPasswordInput" class="m-3 w-100" path="repeatPassword" type="password" minlength="6" maxlength="32"/>
                             <form:errors path="repeatPassword" element="p" cssClass="m-3 error"/>
                             <p id="unmatchedPasswordError" class="m-3 error" style="display: none"><spring:message code="register.unmatchedPassword"/></p>
                         </div>
