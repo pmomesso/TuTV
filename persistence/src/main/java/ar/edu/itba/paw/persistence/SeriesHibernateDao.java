@@ -118,7 +118,7 @@ public class SeriesHibernateDao implements SeriesDao {
     public Map<Genre,List<Series>> getBestSeriesByGenres() {
         Map<Genre,List<Series>> genreMap = new TreeMap<>(Comparator.comparing(Genre::getName));
         for(Genre g : getAllGenres()){
-            genreMap.put(g, getBestSeriesByGenre(g, new Long(1)));
+            genreMap.put(g, getBestSeriesByGenre(g, 1L));
         }
         return genreMap;
     }
@@ -216,10 +216,11 @@ public class SeriesHibernateDao implements SeriesDao {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Set<Series> recentlyWatched = new HashSet<>();
         int i = 0;
+        boolean added = false;
         if(user.isPresent()){
             for(Episode e: user.get().getViewed()){
-                recentlyWatched.add(e.getSeason().getSeries());
-                if(i++ >= number){break;}
+                added = recentlyWatched.add(e.getSeason().getSeries());
+                if(added && i++ >= number){break;}
             }
         }
 
