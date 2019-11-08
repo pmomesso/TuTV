@@ -42,7 +42,8 @@ public class MailServiceImpl implements MailService {
     private String getConfirmationMailBody(User u, String confirmationUrl) {
         String mailPath = "/i18n/mail_messages/";
         String mailFile;
-        if(LocaleContextHolder.getLocale() == Locale.ENGLISH)
+        Locale locale = LocaleContextHolder.getLocale();
+        if(locale.getLanguage().equals("en"))
             mailFile = mailPath + "confirmation_en.mail";
         else
             mailFile = mailPath + "confirmation_es.mail";
