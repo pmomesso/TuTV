@@ -31,6 +31,28 @@
     </c:if>
 </head>
 <body id="container" class="">
+<!-- Add list Modal -->
+<%--TODO modify modal--%>
+<div class="modal" id="addList">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">What are we doing here</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Content of the modal window</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Done</button>
+                <button type="button" class="btn btn-secondary"
+                        data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="body-inner">
     <%@ include file="sideMenu.jsp" %>
     <div class="page-center page-column">
@@ -193,42 +215,74 @@
                                     </div>
                                 </div>
                                 <div id="tab-lists" class="tab-pane" role="tabpanel">
-                                    <div class="profile-shows">
-                                        <div>
-                                            <h2 class="small"><spring:message code="profile.favorite"/></h2>
-                                            <section>
-                                                <ul class="shows-list posters-list list-unstyled list-inline">
-                                                    <c:forEach items="${favoriteShows}" var="series">
-                                                        <li class="first-loaded">
-                                                            <div class="show">
-                                                                <a href="<c:url value="/series?id=${series.id}"/>" class="show-link">
-                                                                    <div class="image-crop">
-                                                                        <img src="<c:url value="https://image.tmdb.org/t/p/original${series.posterUrl}"/>"
-                                                                             alt="${series.name}">
-                                                                    </div>
-                                                                </a>
-                                                                <div class="poster-details">
-                                                                    <h2><a href="<c:url value="/series?id=${series.id}"/>">${series.name}</a></h2>
+                                    <c:choose>
+                                        <c:when test="${empty userProfile.lists}">
+                                            <div id="all-shows">
+                                                <h2 class="small"> </h2>
+                                                <section>
+                                                    <div class="container h-100">
+                                                        <div class="row justify-content-center h-100">
+                                                            <div class="col-lg-8 col-sm-12 align-self-center">
+                                                                <div class="text-center m-4">
+                                                                    <h4><spring:message code="profile.noLists"/></h4>
                                                                 </div>
                                                             </div>
-                                                        </li>
-                                                    </c:forEach>
-                                                    <li class="first-loaded">
-                                                        <div class="show">
-                                                            TODO trigger modal to add shows
-                                                            <a href="" class="show-link" style="text-decoration: none !important; color: black">
-                                                                <div class="image-crop text-center" style="background-color: #EEEEEE">
-                                                                    <div style="margin-top: 55px">
-<%--                                                                        TODO i18n--%>
-                                                                        <h2 class="mt-0">+</h2>
-                                                                        <h4>Add to list</h4>
-                                                                    </div>
-                                                                </div>
-                                                            </a>
                                                         </div>
-                                                    </li>
-                                                </ul>
-                                            </section>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:forEach items="${userProfile.lists}" var="list">
+                                                <div class="profile-shows">
+                                                    <div>
+                                                        <h2 class="small">${list.name}</h2>
+                                                        <section>
+                                                            <ul class="shows-list posters-list list-unstyled list-inline">
+                                                                <c:forEach items="${list.series}" var="series">
+                                                                    <li class="first-loaded">
+                                                                        <div class="show">
+                                                                            <a href="<c:url value="/series?id=${series.id}"/>" class="show-link">
+                                                                                <div class="image-crop">
+                                                                                    <img src="<c:url value="https://image.tmdb.org/t/p/original${series.posterUrl}"/>"
+                                                                                         alt="${series.name}">
+                                                                                </div>
+                                                                            </a>
+                                                                            <div class="poster-details">
+                                                                                <h2><a href="<c:url value="/series?id=${series.id}"/>">${series.name}</a></h2>
+                                                                            </div>
+                                                                        </div>
+                                                                    </li>
+                                                                </c:forEach>
+                                                                <li class="first-loaded">
+                                                                    <div class="show">
+<%--                                                                        TODO trigger modal to add shows--%>
+                                                                        <a href="" class="show-link" style="text-decoration: none !important; color: black">
+                                                                            <div class="image-crop text-center" style="background-color: #EEEEEE">
+                                                                                <div style="margin-top: 55px">
+                                                                                    <h2 class="mt-0">+</h2>
+                                                                                    <h4><spring:message code="profile.addToList"/></h4>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+                                                        </section>
+                                                    </div>
+                                                </div>
+                                            </c:forEach>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <div id="all-shows">
+                                        <div class="container h-100">
+                                            <div class="row justify-content-center h-100">
+                                                <div class="col-lg-8 col-sm-12 align-self-center">
+                                                    <div class="text-center m-4">
+                                                        <button type="button" class="tutv-button" data-toggle="modal" data-target="#addList"><spring:message code="profile.addList"/></button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

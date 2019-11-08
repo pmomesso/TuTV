@@ -26,7 +26,7 @@ public class Series  {
     @Column(length = 16, nullable = false)
     private String status;
     @Column
-    private Double totalRating;
+    private Double userRating;
     @Transient
     private Integer loggedInUserRating;
     @Column
@@ -57,6 +57,13 @@ public class Series  {
     private Set<Genre> genres = new HashSet<>();
     @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
     @JoinTable(
+            name = "serieslist",
+            joinColumns = { @JoinColumn(name = "seriesid") },
+            inverseJoinColumns = { @JoinColumn(name = "listid") }
+    )
+    private Set<SeriesList> seriesList;
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
+    @JoinTable(
             name = "follows",
             joinColumns = { @JoinColumn(name = "seriesid") },
             inverseJoinColumns = { @JoinColumn(name = "userid") }
@@ -80,7 +87,7 @@ public class Series  {
         this.name = name;
         this.seriesDescription = seriesDescription;
     }
-    public Series(int tvdbid,String name,String seriesDescription,Network network,String posterUrl,String bannerUrl,Double totalRating,
+    public Series(int tvdbid,String name,String seriesDescription,Network network,String posterUrl,String bannerUrl,Double userRating,
                   String status,Integer runtime,int followers,String imdbid,String firstAired,String added,String updated) {
         this.tvdbid = tvdbid;
         this.name = name;
@@ -89,7 +96,7 @@ public class Series  {
         this.posterUrl = posterUrl;
         this.bannerUrl = bannerUrl;
         this.status = status;
-        this.totalRating = totalRating;
+        this.userRating = userRating;
         this.runtime = runtime;
         this.followers = followers;
         this.imdbId = imdbid;
@@ -110,7 +117,7 @@ public class Series  {
             this.updated = null;
         }
     }
-    public Series(Long id,int tvdbid,String name,String seriesDescription,Network network,String posterUrl,String bannerUrl,Double totalRating,
+    public Series(Long id,int tvdbid,String name,String seriesDescription,Network network,String posterUrl,String bannerUrl,Double userRating,
                   String status,Integer runtime,int followers,String imdbid,String firstAired,String added,String updated) {
         this.id=id;
         this.tvdbid = tvdbid;
@@ -120,7 +127,7 @@ public class Series  {
         this.posterUrl = posterUrl;
         this.bannerUrl = bannerUrl;
         this.status = status;
-        this.totalRating = totalRating;
+        this.userRating = userRating;
         this.runtime = runtime;
         this.followers = followers;
         this.imdbId = imdbid;
@@ -165,11 +172,11 @@ public class Series  {
         return updated;
     }
 
-    public Double getTotalRating() {
-        return totalRating;
+    public Double getUserRating() {
+        return userRating;
     }
 
-    public void setTotalRating(Double totalRating) { this.totalRating = totalRating; }
+    public void setUserRating(Double userRating) { this.userRating = userRating; }
 
     public String getName() {
         return name;
@@ -337,5 +344,13 @@ public class Series  {
 
     public void setLoggedInUserRating(Integer loggedInUserRating) {
         this.loggedInUserRating = loggedInUserRating;
+    }
+
+    public Set<SeriesList> getSeriesList() {
+        return seriesList;
+    }
+
+    public void setSeriesList(Set<SeriesList> seriesList) {
+        this.seriesList = seriesList;
     }
 }

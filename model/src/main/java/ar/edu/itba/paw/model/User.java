@@ -41,6 +41,8 @@ public class User {
 
     @ManyToMany(mappedBy = "userFollowers", fetch = FetchType.LAZY)
     private Set<Series> follows = new HashSet<>();
+    @OneToMany(mappedBy = "listUser", fetch = FetchType.LAZY)
+    private Set<SeriesList> lists = new HashSet<>();
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<SeriesReview> seriesReviews = new HashSet<>();
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
@@ -184,6 +186,14 @@ public class User {
 
     public void setRatings(Set<Rating> ratings) {
         this.ratings = ratings;
+    }
+
+    public Set<SeriesList> getLists() {
+        return lists;
+    }
+
+    public void setLists(Set<SeriesList> lists) {
+        this.lists = lists;
     }
 
     @Override

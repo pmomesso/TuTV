@@ -51,8 +51,8 @@
                                         <div class="text-center">
                                             <span class="star"></span>
                                             <c:choose>
-                                                <c:when test="${not empty series.totalRating}">
-                                                    <fmt:formatNumber value="${series.totalRating}" var="totalRating" pattern="0.0" />
+                                                <c:when test="${not empty series.userRating}">
+                                                    <fmt:formatNumber value="${series.userRating}" var="totalRating" pattern="0.0" />
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:set var="totalRating" value="-"/>
@@ -260,6 +260,7 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="submit-comment">
+<%--                                                                    TODO fix css--%>
                                                                     <form:checkbox path="isSpam"/><span class="mr-3 ml-1"><spring:message code="series.markSpoiler"/></span>
                                                                     <button type="submit" class="submit-comment-btn">
                                                                         <spring:message code="series.post"/></button>

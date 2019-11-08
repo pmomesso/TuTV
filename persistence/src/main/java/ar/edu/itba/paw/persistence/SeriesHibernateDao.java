@@ -464,7 +464,7 @@ public class SeriesHibernateDao implements SeriesDao {
                         .setParameter("seriesId",series.get().getId())
                         .getSingleResult();
 
-                series.get().setTotalRating((double)totalRating / (series.get().getRatings().size()));
+                series.get().setUserRating((double)totalRating / (series.get().getRatings().size()));
                 done = true;
                 em.flush();
             }

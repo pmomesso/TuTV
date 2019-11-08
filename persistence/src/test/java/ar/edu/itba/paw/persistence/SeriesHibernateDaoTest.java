@@ -76,7 +76,7 @@ public class SeriesHibernateDaoTest {
         Assert.assertEquals(this.series.getId(),series.getId());
         Assert.assertEquals(SERIES_NAME,series.getName());
         Assert.assertEquals(DESCRIPTION,series.getSeriesDescription());
-        Assert.assertEquals(TOTAL_RATING,series.getTotalRating(),0);
+        Assert.assertEquals(TOTAL_RATING,series.getUserRating(),0);
         Assert.assertEquals(STATUS,series.getStatus());
         Assert.assertEquals(RUNTIME,series.getRuntime());
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -149,7 +149,7 @@ public class SeriesHibernateDaoTest {
         Assert.assertEquals(this.series.getId(),series.getId());
         Assert.assertEquals(SERIES_NAME,series.getName());
         Assert.assertEquals(DESCRIPTION,series.getSeriesDescription());
-        Assert.assertEquals(TOTAL_RATING,series.getTotalRating(),0);
+        Assert.assertEquals(TOTAL_RATING,series.getUserRating(),0);
         Assert.assertEquals(STATUS,series.getStatus());
         Assert.assertEquals(RUNTIME,series.getRuntime());
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -257,13 +257,13 @@ public class SeriesHibernateDaoTest {
     @Test
     public void rateSeriesTest(){
         insertUser();
-        series.setTotalRating(0.0);
+        series.setUserRating(0.0);
         int rating = 2;
         int updated = seriesDao.rateSeries(series.getId(),user.getId(),rating);
         Assert.assertEquals(1,updated);
         Assert.assertEquals(1,series.getRatings().size());
         Assert.assertEquals(1,user.getRatings().size());
-        Assert.assertEquals(rating, series.getTotalRating(),0.1);
+        Assert.assertEquals(rating, series.getUserRating(),0.1);
     }
     @Test
     public void followSeriesTest(){

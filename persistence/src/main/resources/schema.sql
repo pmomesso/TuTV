@@ -114,6 +114,27 @@ create table if not exists actorroles
     updated date
 );
 
+create table if not exists list
+(
+    id serial not null
+        constraint list_pkey
+            primary key,
+    name varchar(50)
+);
+
+create table if not exists serieslist
+(
+    userid integer not null
+        constraint list_users_id_fk
+            references users,
+    seriesid integer not null
+        constraint list_series_id_fk
+            references series,
+    listid integer not null
+        constraint list_list_id_fk
+            references list
+);
+
 create table if not exists seriesreview
 (
     userid integer
