@@ -40,6 +40,17 @@ body {
  border-radius: 10%;
  padding: 2%;
 }
+.spoiler-span {
+    position: absolute;
+    top: 8px;
+    right: 100px;
+}
+.check-spoiler {
+    position: absolute;
+    top: 10px;
+    right: 175px;
+    margin: 0 !important;
+}
 .tutv-button {
  background-color: #44d9e6;
  border: none;
@@ -330,6 +341,17 @@ body {
 #genresChart {
     height: 500px !important;
     width: 350px !important;
+}
+.spoiler-span {
+    position: absolute;
+    top: 10px;
+    right: 100px;
+}
+.check-spoiler {
+    position: absolute;
+    top: 10px;
+    right: 165px;
+    margin: 0 !important;
 }
 }
 .main-box {

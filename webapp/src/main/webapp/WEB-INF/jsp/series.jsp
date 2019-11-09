@@ -261,8 +261,7 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="submit-comment">
-<%--                                                                    TODO fix css--%>
-                                                                    <form:checkbox path="isSpam"/><span class="mr-3 ml-1"><spring:message code="series.markSpoiler"/></span>
+                                                                    <form:checkbox cssClass="check-spoiler" path="isSpam"/><span class="spoiler-span"><spring:message code="series.markSpoiler"/></span>
                                                                     <button type="submit" class="submit-comment-btn">
                                                                         <spring:message code="series.post"/></button>
                                                                 </div>
