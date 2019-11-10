@@ -9,9 +9,7 @@ import ar.edu.itba.paw.model.errors.Errors;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
-import ar.edu.itba.paw.webapp.form.UpdateUserForm;
-import ar.edu.itba.paw.webapp.form.UserForm;
-import org.apache.commons.io.FilenameUtils;
+import ar.edu.itba.paw.webapp.form.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -63,16 +61,27 @@ public class UserController {
     }
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public ModelAndView profile(@RequestParam("id") long userId,@ModelAttribute("updateUserForm") final UpdateUserForm form) throws NotFoundException, UnauthorizedException, BadRequestException {
+    public ModelAndView profile(@RequestParam("id") long userId, @ModelAttribute("listForm") final ListForm listForm, @ModelAttribute("updateUserForm") final UpdateUserForm form) throws NotFoundException, UnauthorizedException, BadRequestException {
 
         User u = userService.findById(userId).orElseThrow(NotFoundException::new);
         ModelAndView mav = new ModelAndView("profile");
+        mav.addObject("listForm", listForm);
+        mav.addObject("updateUserForm", form);
         mav.addObject("userProfile", u);
         mav.addObject("followedSeries",seriesService.getAddedSeries(userId));
         mav.addObject("genreStats", userService.getGenresStats());
         mav.addObject("recentlyWatched", seriesService.getRecentlyWatchedList(6));
         mav.addObject("favoriteShows", new ArrayList<Series>());
         return mav;
+    }
+
+    @RequestMapping(value = "/addList", method = RequestMethod.POST)
+    public ModelAndView addList(@Valid @ModelAttribute("listForm") final ListForm form, final BindingResult errors) throws Exception {
+        if (errors.hasErrors()) {
+            return profile(form.getUserId(), form, new UpdateUserForm());
+        }
+//        TODO add list
+        return new ModelAndView("redirect:/profile?id=" + form.getUserId());
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -150,7 +159,7 @@ public class UserController {
     public ModelAndView updateUsername(@Valid @ModelAttribute("updateUserForm") final UpdateUserForm form, final BindingResult errors) throws UnauthorizedException, NotFoundException, BadRequestException {
         User u = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         if(errors.hasErrors()){
-            ModelAndView mav = profile(u.getId(),form);
+            ModelAndView mav = profile(u.getId(), new ListForm(), form);
             mav.addObject("formErrors",true);
             return mav;
         }
@@ -159,7 +168,7 @@ public class UserController {
             return new ModelAndView("redirect:/profile?id="+u.getId());
         }
         else{
-            ModelAndView mav = profile(u.getId(),form);
+            ModelAndView mav = profile(u.getId(), new ListForm(), form);
             mav.addObject("exists",true);
             return mav;
         }

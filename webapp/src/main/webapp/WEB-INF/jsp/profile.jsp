@@ -33,23 +33,39 @@
 <body id="container" class="">
 <!-- Add list Modal -->
 <%--TODO modify modal--%>
+<%--TODO remember to remove class show and style display block--%>
 <div class="modal" id="addList">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">What are we doing here</h5>
+                <h2 class="modal-title m-0"><spring:message code="profile.addList"/></h2>
                 <button type="button" class="close" data-dismiss="modal">
                     <span>&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <p>Content of the modal window</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Done</button>
-                <button type="button" class="btn btn-secondary"
-                        data-dismiss="modal">Close</button>
-            </div>
+            <c:url value='addList' var="action_value"/>
+            <form:form id="listForm" modelAttribute="listForm" action="${action_value}" method="post" enctype="application/x-www-form-urlencoded">
+                <div class="modal-body container">
+                    <div class="row w-100">
+                        <div class="col-3 h-100 align-self-center">
+                            <form:label class="ml-lg-5" path="name">Name</form:label>
+                        </div>
+                        <div class="col-9 align-self-center">
+                            <form:input class="m-3 w-100" path="name" type="text" maxlength="50"/>
+                            <form:errors path="name" element="p" cssClass="m-3 error"/>
+                        </div>
+                    </div>
+                    <div class="row w-100 m-0">
+                        <h5>lista de series para clickear</h5>
+                    </div>
+                    <form:input type="hidden" path="userId" value="${userProfile.id}"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn tutv-button">Done</button>
+                    <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal">Close</button>
+                </div>
+            </form:form>
         </div>
     </div>
 </div>
