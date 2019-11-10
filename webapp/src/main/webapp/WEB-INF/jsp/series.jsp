@@ -40,7 +40,7 @@
     <div class="page-center page-column">
         <div class="page-center-inner">
             <div class="main-block">
-                <div id="explore">
+                <div id="explore" style="background-color: #ededed">
                     <section id="new-shows">
                         <h1>${series.name}</h1>
                         <div id="myCarousel" class="carousel slide" data-ride="carousel">

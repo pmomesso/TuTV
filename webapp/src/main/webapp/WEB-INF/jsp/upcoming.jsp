@@ -65,10 +65,6 @@
                                                 <a href="<c:url value="/series?id=${episode.season.series.id}"/>">
                                                     <div class="image-crop">
                                                         <img src="<c:url value="https://image.tmdb.org/t/p/original${episode.season.series.posterUrl}"/>" alt="${episode.season.series.name}">
-                                                        <div class="progress">
-                                                            <div class="progress-bar progress-bar-success uncomplete w-100" role="progressbar">
-                                                            </div>
-                                                        </div>
                                                     </div>
                                                 </a>
                                                 <div class="episode-details poster-details">

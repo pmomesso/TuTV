@@ -69,10 +69,6 @@
                                                     <a href="<c:url value="/series?id=${episode.season.series.id}"/>">
                                                         <img src="<c:url value="https://image.tmdb.org/t/p/original${episode.season.series.posterUrl}"/>" alt="${episode.season.series.name}">
                                                     </a>
-                                                    <div class="progress">
-                                                        <div class="progress-bar progress-bar-success uncomplete w-100" role="progressbar">
-                                                        </div>
-                                                    </div>
                                                 </div>
                                                 <div class="episode-details poster-details">
                                                     <h2><spring:message code="watchlist.season"/><fmt:formatNumber pattern="00" value="${episode.season.seasonNumber}"/>E<fmt:formatNumber pattern="00" value="${episode.numEpisode}"/></h2>

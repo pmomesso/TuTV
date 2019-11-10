@@ -34,7 +34,7 @@
 <!-- Add list Modal -->
 <%--TODO modify modal--%>
 <div class="modal" id="addList">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">What are we doing here</h5>
