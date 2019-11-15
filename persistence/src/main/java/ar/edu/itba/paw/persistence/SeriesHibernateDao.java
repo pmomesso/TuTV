@@ -484,4 +484,14 @@ public class SeriesHibernateDao implements SeriesDao {
         Optional<SeriesReviewComment> comment = Optional.ofNullable(em.find(SeriesReviewComment.class,commentId));
         return comment.map(SeriesReviewComment::getUserId).orElse(-1L);
     }
+
+    @Override
+    public void addList(long userId, String name, Set<Series> series) {
+        Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
+        SeriesList list = new SeriesList(user.get(), name, series);
+//        TODO help
+//        Caused by: org.postgresql.util.PSQLException: ERROR: null value in column "seriesid" violates not-null constraint
+//        Detail: Failing row contains (1, 6, null).
+        em.persist(list);
+    }
 }

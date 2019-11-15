@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.either.Either;
 import ar.edu.itba.paw.model.errors.Errors;
@@ -71,7 +70,6 @@ public class UserController {
         mav.addObject("followedSeries",seriesService.getAddedSeries(userId));
         mav.addObject("genreStats", userService.getGenresStats());
         mav.addObject("recentlyWatched", seriesService.getRecentlyWatchedList(6));
-        mav.addObject("favoriteShows", new ArrayList<Series>());
         return mav;
     }
 
@@ -80,7 +78,7 @@ public class UserController {
         if (errors.hasErrors()) {
             return profile(form.getUserId(), form, new UpdateUserForm());
         }
-//        TODO add list
+        seriesService.addList(form.getName(), form.getSeriesId());
         return new ModelAndView("redirect:/profile?id=" + form.getUserId());
     }
 

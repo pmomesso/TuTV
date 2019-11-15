@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
-import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.model.Rating;
 import ar.edu.itba.paw.model.Series;
-import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
@@ -21,12 +18,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Optional;
 
 @Controller
 public class SeriesController {
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private SeriesService seriesService;

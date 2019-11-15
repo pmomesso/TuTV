@@ -29,8 +29,10 @@ public class SeriesList {
 
     public SeriesList() {}
 
-    public SeriesList(String name) {
+    public SeriesList(User listUser, String name, Set<Series> series) {
+        this.listUser = listUser;
         this.name = name;
+        this.series = series;
     }
 
     public long getId() {

@@ -5,6 +5,7 @@ import ar.edu.itba.paw.model.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public interface SeriesDao {
 
@@ -72,4 +73,6 @@ public interface SeriesDao {
     long getPostAuthorId(long postId);
 
     long getCommentAuthorId(long commentId);
+
+    void addList(long userId, String name, Set<Series> series);
 }

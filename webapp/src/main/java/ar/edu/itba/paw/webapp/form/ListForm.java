@@ -3,9 +3,10 @@ package ar.edu.itba.paw.webapp.form;
 import javax.validation.constraints.Size;
 
 public class ListForm {
-    @Size(max = 50)
+    @Size(min = 2, max = 50)
     private String name;
     private long userId;
+    private long[] seriesId;
 
     public String getName() {
         return name;
@@ -21,5 +22,13 @@ public class ListForm {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public long[] getSeriesId() {
+        return seriesId;
+    }
+
+    public void setSeriesId(long[] seriesId) {
+        this.seriesId = seriesId;
     }
 }

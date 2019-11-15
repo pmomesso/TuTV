@@ -46,18 +46,20 @@
             <c:url value='addList' var="action_value"/>
             <form:form id="listForm" modelAttribute="listForm" action="${action_value}" method="post" enctype="application/x-www-form-urlencoded">
                 <div class="modal-body container">
-                    <div class="row w-100">
+                    <div class="row w-100 mb-4">
                         <div class="col-3 h-100 align-self-center">
                             <form:label class="ml-lg-5" path="name">Name</form:label>
                         </div>
                         <div class="col-9 align-self-center">
                             <form:input class="m-3 w-100" path="name" type="text" maxlength="50"/>
-                            <form:errors path="name" element="p" cssClass="m-3 error"/>
+                            <form:errors path="name" element="p" cssClass="ml-3 error"/>
                         </div>
                     </div>
-                    <div class="row w-100 m-0">
-                        <h5>lista de series para clickear</h5>
-                    </div>
+                    <c:forEach items="${followedSeries}" var="series">
+                        <div class="row w-100 m-0">
+                            <form:checkbox cssClass="ml-5" path="seriesId" value="${series.id}"/> <span class="ml-3">${series.name}</span>
+                        </div>
+                    </c:forEach>
                     <form:input type="hidden" path="userId" value="${userProfile.id}"/>
                 </div>
                 <div class="modal-footer">
