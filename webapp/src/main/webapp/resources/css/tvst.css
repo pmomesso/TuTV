@@ -10,6 +10,9 @@ html {
 body {
     margin-right: calc(100vw - 100%) !important;
 }
+.font {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
 .show-main {
   background-color: #ededed;
 }
@@ -4287,17 +4290,17 @@ header #global-search-results ul strong {
  right:0;
  top:11px
 }
-#user-nav .alt-user-nav a {
+#user-nav .alt-user-nav span {
  font-size:15px;
  color:#ccc;
  position:relative;
  width:24px
 }
-#user-nav .alt-user-nav a i {
+#user-nav .alt-user-nav span i {
  position:relative;
  top:1px
 }
-#user-nav .alt-user-nav a:hover {
+#user-nav .alt-user-nav span:hover {
  text-decoration:none
 }
 #user-nav .menu>li a {
@@ -5180,4 +5183,109 @@ body.alt h2.title {
  #content .content-container .right {
   display:none
  }
+}
+#notifications {
+    display:none;
+    position:absolute;
+    width:314px;
+    margin-left:-157px;
+    background-color:#f3f3f3;
+    padding:10px;
+    box-shadow:0 0 1px 1px #777;
+    border-radius:4px;
+    margin-top:10px;
+    z-index:2000
+}
+#notifications {
+    width:260px;
+    margin-left:-130px
+}
+#notifications ul{
+    max-height:330px;
+    overflow:auto
+}
+#notifications .time-ago {
+    float:right;
+    display:inline;
+    margin-top:8px
+}
+#notifications ul:after {
+    bottom:100%;
+    border:solid transparent;
+    content:" ";
+    height:0;
+    width:0;
+    position:absolute;
+    z-index:1010;
+    pointer-events:none;
+    border-color:transparent transparent #f3f3f3;
+    border-width:9px 7px;
+    left:50%;
+    margin-left:-7px
+}
+#notifications ul:before {
+    box-shadow:0 0 6px 0 #000;
+    left:50%
+}
+#notifications ul li{
+    overflow:hidden;
+    vertical-align:top;
+    position:relative;
+    font-size:16px;
+    line-height:18px;
+    list-style-image:none;
+    margin-bottom:5px;
+    background-color:#fff;
+    border-radius:4px;
+    border:1px solid #ddd
+}
+#notifications ul li {
+    font-family: proximaNova;
+    font-size:14px;
+    padding:8px
+}
+#notifications ul li {
+    cursor:pointer
+}
+#notifications ul li.active {
+    background:rgba(250,215,0,.3);
+    border-color:#fdd700;
+    color:#222
+}
+#notifications ul li:last-child {
+    margin-bottom:0
+}
+#notifications ul li a.show {
+    display:inline!important
+}
+#notifications ul li a:first-child {
+    color:#444
+}
+#notifications ul li a:not(:first-child) {
+    font-family:ProximaNovaSB
+}
+#notifications ul li.no-result{
+    background:0 0;
+    border:none;
+    color:#999;
+    text-transform:none;
+    text-align:center;
+    font-family: proximaNova;
+    font-size:18px
+}
+
+#notifications ul .image {
+    float:left;
+    height:38px;
+    width:38px;
+    overflow:hidden;
+    border-radius:4px
+}
+#notifications ul .image img{
+    width:100%
+}
+.extended_notifications {
+    top: 390px;
+    left: 200px;
+    display: block !important;
 }
