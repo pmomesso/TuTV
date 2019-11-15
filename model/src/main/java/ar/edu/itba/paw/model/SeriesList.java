@@ -20,12 +20,7 @@ public class SeriesList {
     @ManyToMany(mappedBy = "seriesList", fetch = FetchType.LAZY)
     private Set<Series> series = new HashSet<>();
 
-    @ManyToOne
-    @JoinTable(
-            name = "serieslist",
-            joinColumns = { @JoinColumn(name = "listid") },
-            inverseJoinColumns = { @JoinColumn(name = "userid") }
-    )
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User listUser;
 
     public SeriesList() {}
