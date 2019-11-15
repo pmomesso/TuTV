@@ -32,8 +32,6 @@
 </head>
 <body id="container" class="">
 <!-- Add list Modal -->
-<%--TODO modify modal--%>
-<%--TODO remember to remove class show and style display block--%>
 <div class="modal" id="addList">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -43,31 +41,51 @@
                     <span>&times;</span>
                 </button>
             </div>
-            <c:url value='addList' var="action_value"/>
-            <form:form id="listForm" modelAttribute="listForm" action="${action_value}" method="post" enctype="application/x-www-form-urlencoded">
-                <div class="modal-body container">
-                    <div class="row w-100 mb-4">
-                        <div class="col-3 h-100 align-self-center">
-                            <form:label class="ml-lg-5" path="name">Name</form:label>
-                        </div>
-                        <div class="col-9 align-self-center">
-                            <form:input class="m-3 w-100" path="name" type="text" maxlength="50"/>
-                            <form:errors path="name" element="p" cssClass="ml-3 error"/>
+            <c:choose>
+                <c:when test="${empty followedSeries}">
+                    <div class="modal-body container">
+                        <div class="row justify-content-center h-100">
+                            <div class="col-lg-8 col-sm-12 align-self-center">
+                                <div class="text-center m-4">
+                                    <h4><spring:message code="profile.noShows"/></h4>
+                                </div>
+                                <div class="text-center m-4">
+                                    <button class="tutv-button m-4" onclick="window.location.href='<c:url value="/"/>'"><spring:message code="watchlist.explore"/></button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <c:forEach items="${followedSeries}" var="series">
-                        <div class="row w-100 m-0">
-                            <form:checkbox cssClass="ml-5" path="seriesId" value="${series.id}"/> <span class="ml-3">${series.name}</span>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="profile.close"/></button>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <c:url value='addList' var="action_value"/>
+                    <form:form id="listForm" modelAttribute="listForm" action="${action_value}" method="post" enctype="application/x-www-form-urlencoded">
+                    <div class="modal-body container">
+                        <div class="row w-100 mb-4">
+                            <div class="col-3 h-100 align-self-center">
+                                <form:label class="ml-lg-5" path="name"><spring:message code="profile.listName"/></form:label>
+                            </div>
+                            <div class="col-9 align-self-center">
+                                <form:input class="m-3 w-100" path="name" type="text" maxlength="50"/>
+                                <form:errors path="name" element="p" cssClass="ml-3 error"/>
+                            </div>
                         </div>
-                    </c:forEach>
-                    <form:input type="hidden" path="userId" value="${userProfile.id}"/>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn tutv-button">Done</button>
-                    <button type="button" class="btn btn-secondary"
-                            data-dismiss="modal">Close</button>
-                </div>
-            </form:form>
+                        <c:forEach items="${followedSeries}" var="series">
+                            <div class="row w-100 m-0">
+                                <form:checkbox cssClass="ml-5" path="seriesId" value="${series.id}"/> <span class="ml-3">${series.name}</span>
+                            </div>
+                        </c:forEach>
+                        <form:input type="hidden" path="userId" value="${userProfile.id}"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn tutv-button"><spring:message code="profile.done"/></button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="profile.close"/></button>
+                    </div>
+                    </form:form>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 </div>

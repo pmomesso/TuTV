@@ -5,31 +5,24 @@
 <%--        TODO fill with DB info--%>
         <li class="" data-id="15629037-user-followed-1527548534960" data-target="/user/21109688/profile">
             <a href="/user/21109688/profile" class="user">Bianca Ritorto</a> followed you on TV Time
-            <div class="time-ago">a year ago</div>
         </li>
         <li class="" data-id="15629037-follow-on-instagram-1508250336701" data-target="https://www.instagram.com/tvtimeapp/">
             Follow us on Instagram 📷
-            <div class="time-ago">2 years ago</div>
         </li>
         <li class="" data-id="15629037-follow-on-snapchat-1507814611990" data-target="https://www.snapchat.com/add/tvshowtime">
             aaaannnndd … we have a snapchat. Add us to see exclusive news from the team. Username: tvshowtime
-            <div class="time-ago">2 years ago</div>
         </li>
         <li class="" data-id="15629037-follow-on-twitter-1507379283423" data-target="https://www.twitter.com/tvshowtime">
             Follow us on Twitter 🐦
-            <div class="time-ago">2 years ago</div>
         </li>
         <li class="" data-id="15629037-like-facebook-page-1506943722565" data-target="https://www.facebook.com/tvtimeapp">
             Give us some love and stay tuned to our latest updates. Like our Facebook page
-            <div class="time-ago">2 years ago</div>
         </li>
         <li class="" data-id="15629037-badge-unlocked-1506525060358" data-target="tvst://user/15629037/badges?badge_id=viewed-profile">
             You have just unlocked the  Stalker badge!
-            <div class="time-ago">2 years ago</div>
         </li>
         <li class="" data-id="15629037-user-followed-1506524879220" data-target="/user/13400859/profile">
             <a href="/user/13400859/profile" class="user">Coni De Rienzo</a> followed you on TV Time
-            <div class="time-ago">2 years ago</div>
         </li>
     </ul>
 </div>
