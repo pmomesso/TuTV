@@ -406,9 +406,11 @@
                                                                 <input type="email" class="form-control" name="mail" value="${userProfile.mailAddress}" disabled>
                                                             </div>
                                                         </div>
-                                                        <div class="row form-group text-center">
-                                                            <div class="col">
-                                                                <button type="submit" class="submit-seriesReviewComment-btn"><spring:message code="profile.save"/></button>
+                                                        <div class="row text-center justify-content-center">
+                                                            <div class="col align-self-center">
+                                                                <div class="text-center m-4">
+                                                                    <button type="submit" class="tutv-button m-4" ><spring:message code="profile.save"/></button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </form:form>

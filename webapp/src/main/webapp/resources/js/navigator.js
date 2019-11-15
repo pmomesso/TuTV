@@ -29,7 +29,6 @@ function extend() {
 }
 
 function extend_notifications() {
-    console.log("hola");
     if ($("#notifications").hasClass("extended_notifications")) {
         $("#notifications").removeClass("extended_notifications");
     } else {

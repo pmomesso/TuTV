@@ -4956,11 +4956,6 @@ body.alt h2.title {
 #basic-settings .other-infos .birthday-picker div {
  padding:0 3px
 }
-#basic-settings .other-infos button[type=submit] {
- margin-top:30px;
- height:35px;
- line-height:35px
-}
 .popover[class*=tour-] {
  color:#fff;
  background-color:transparent;
