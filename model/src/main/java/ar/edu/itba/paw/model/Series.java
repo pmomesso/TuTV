@@ -55,12 +55,7 @@ public class Series  {
             inverseJoinColumns = { @JoinColumn(name = "genreid") }
     )
     private Set<Genre> genres = new HashSet<>();
-    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "serieslist",
-            joinColumns = { @JoinColumn(name = "seriesid") },
-            inverseJoinColumns = { @JoinColumn(name = "listid") }
-    )
+    @ManyToMany(mappedBy = "series",fetch = FetchType.LAZY)
     private Set<SeriesList> seriesList;
     @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
     @JoinTable(

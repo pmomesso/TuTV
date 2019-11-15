@@ -17,7 +17,12 @@ public class SeriesList {
     @Column(name = "name", length = 50)
     private String name;
 
-    @ManyToMany(mappedBy = "seriesList", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "serieslist",
+            joinColumns = { @JoinColumn(name = "listid") },
+            inverseJoinColumns = { @JoinColumn(name = "seriesid") }
+    )
     private Set<Series> series = new HashSet<>();
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
