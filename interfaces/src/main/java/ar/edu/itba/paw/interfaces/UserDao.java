@@ -39,4 +39,5 @@ public interface UserDao {
 
     Map<Genre, Long> getGenreStats(long userId);
 
+    boolean setNotificationViewed(long notificationId);
 }

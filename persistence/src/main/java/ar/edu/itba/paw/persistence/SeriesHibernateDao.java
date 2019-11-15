@@ -10,6 +10,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import java.util.*;
 
+//Todo: https://www.baeldung.com/cron-expressions
+
 @Repository
 public class SeriesHibernateDao implements SeriesDao {
 
@@ -393,6 +395,13 @@ public class SeriesHibernateDao implements SeriesDao {
     }
 
     @Override
+    public Optional<Notification> createNotification(User user, Series series, String message) {
+        Notification n = new Notification(user, series, message);
+        em.persist(n);
+        return Optional.of(n);
+    }
+
+    @Override
     public int likeComment(long userId, long commentId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<SeriesReviewComment> comment = Optional.ofNullable(em.find(SeriesReviewComment.class,commentId));
@@ -493,5 +502,10 @@ public class SeriesHibernateDao implements SeriesDao {
 //        Caused by: org.postgresql.util.PSQLException: ERROR: null value in column "seriesid" violates not-null constraint
 //        Detail: Failing row contains (1, 6, null).
         em.persist(list);
+    }
+
+    @Override
+    public Optional<SeriesReview> getSeriesReviewById(long commentPostId) {
+        return Optional.ofNullable(em.find(SeriesReview.class, commentPostId));
     }
 }

@@ -60,6 +60,8 @@ public interface SeriesDao {
 
     Optional<SeriesReviewComment> addCommentToPost(long commentPostId, String commentBody, long commentUserId);
 
+    Optional<Notification> createNotification(User user, Series series, String message);
+
     int likeComment(long userId, long commentId);
 
     int unlikeComment(long userId, long commentId);
@@ -75,4 +77,6 @@ public interface SeriesDao {
     long getCommentAuthorId(long commentId);
 
     void addList(long userId, String name, Set<Series> series);
+
+    Optional<SeriesReview> getSeriesReviewById(long commentPostId);
 }

@@ -77,6 +77,9 @@ public class Series  {
     @OneToMany(mappedBy = "series",fetch = FetchType.LAZY)
     private Set<Rating> ratings = new HashSet<>();
 
+    @OneToMany(mappedBy = "resource", fetch = FetchType.LAZY)
+    private Set<Notification> notifications = new HashSet<>();
+
     public Series(String name) {
         this.name = name;
     }

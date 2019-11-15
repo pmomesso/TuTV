@@ -25,7 +25,7 @@ public class SeriesReview {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Series series;
     @ManyToMany(cascade = {
             CascadeType.PERSIST,

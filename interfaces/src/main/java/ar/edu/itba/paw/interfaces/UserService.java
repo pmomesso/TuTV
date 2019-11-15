@@ -34,4 +34,6 @@ public interface UserService {
     boolean updateLoggedUserName(String newUsername) throws NotFoundException;
 	void setUserAvatar(long userId, MultipartFile avatar) throws BadRequestException;
 	Optional<byte[]> getUserAvatar(long userId);
+
+    void setNotificationViewed(long notificationId) throws NotFoundException;
 }

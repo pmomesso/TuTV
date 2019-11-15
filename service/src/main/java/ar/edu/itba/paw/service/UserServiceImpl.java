@@ -93,7 +93,11 @@ public class UserServiceImpl implements UserService {
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserMail = authentication.getName();
-            return findByMail(currentUserMail);
+            Optional<User> ret = findByMail(currentUserMail);
+            if(ret.isPresent()) {
+                ret.get().setNotificationsToView(ret.get().getNotifications().stream().filter(n -> !n.getViewed()).count());
+            }
+            return ret;
         }
         return Optional.empty();
     }
@@ -174,5 +178,11 @@ public class UserServiceImpl implements UserService {
         Optional<User> u = userDao.getUserByValidationKey(token);
         u.ifPresent(user -> userDao.setValidationKey(user.getId(), null));
         return u.isPresent();
+    }
+
+    @Override
+    @Transactional
+    public void setNotificationViewed(long notificationId) throws NotFoundException {
+        if(userDao.setNotificationViewed(notificationId)) throw new NotFoundException();
     }
 }

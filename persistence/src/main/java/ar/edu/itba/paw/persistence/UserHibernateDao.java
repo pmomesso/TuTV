@@ -177,4 +177,12 @@ public class UserHibernateDao implements UserDao {
 
         return genreStats;
     }
+
+    @Override
+    public boolean setNotificationViewed(long notificationId) {
+        Optional<Notification> n = Optional.ofNullable(em.find(Notification.class, notificationId));
+        n.ifPresent(notification -> notification.setViewed(true));
+        return n.isPresent();
+    }
+
 }

@@ -226,9 +226,15 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public void addCommentToPost(long commentPostId, String commentBody) throws NotFoundException, UnauthorizedException {
+    public SeriesReviewComment addCommentToPost(long commentPostId, String body) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        seriesDao.addCommentToPost(commentPostId, commentBody, user.getId()).orElseThrow(NotFoundException::new);
+        notifyPoster(commentPostId, body);
+        return seriesDao.addCommentToPost(commentPostId, body, user.getId()).orElseThrow(NotFoundException::new);
+    }
+
+    private void notifyPoster(long commentPostId, String body) throws NotFoundException {
+        SeriesReview review = seriesDao.getSeriesReviewById(commentPostId).orElseThrow(NotFoundException::new);
+        seriesDao.createNotification(review.getUser(), review.getSeries(), body);
     }
 
     @Override

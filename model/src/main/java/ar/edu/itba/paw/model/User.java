@@ -2,7 +2,6 @@ package ar.edu.itba.paw.model;
 
 import javax.persistence.*;
 import java.util.Date;
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,8 +54,12 @@ public class User {
     private Set<Episode> viewed = new HashSet<>();
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private Set<Rating> ratings = new HashSet<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<Notification> notifications = new HashSet<>();
+    @Transient
+    private long notificationsToView = 0;
 
-    public User() {}
+    /* Hibernate*/ public User() {}
 
     public User(String userName,String password,String mailAddress,boolean isAdmin){
         this.userName = userName;
@@ -194,6 +197,22 @@ public class User {
 
     public void setLists(Set<SeriesList> lists) {
         this.lists = lists;
+    }
+
+    public Set<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Set<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+    public long getNotificationsToView() {
+        return notificationsToView;
+    }
+
+    public void setNotificationsToView(long notificationsToView) {
+        this.notificationsToView = notificationsToView;
     }
 
     @Override
