@@ -1,6 +1,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
@@ -74,7 +75,9 @@
                         </div>
                         <c:forEach items="${followedSeries}" var="series">
                             <div class="row w-100 m-0">
-                                <form:checkbox cssClass="ml-5" path="seriesId" value="${series.id}"/> <span class="ml-3">${series.name}</span>
+                                <label for="seriesId${series.id}" class="font-weight-normal">
+                                    <form:checkbox cssClass="ml-5 mr-3" path="seriesId" id="seriesId${series.id}" value="${series.id}"/>${series.name}
+                                </label>
                             </div>
                         </c:forEach>
                         <form:input type="hidden" path="userId" value="${userProfile.id}"/>
@@ -272,7 +275,16 @@
                                             <c:forEach items="${userProfile.lists}" var="list">
                                                 <div class="profile-shows">
                                                     <div>
-                                                        <h2 class="small">${list.name}</h2>
+                                                        <div class="overflow-hidden">
+                                                            <h2 class="small float-left">${list.name}</h2>
+                                                            <a type="button" class="show-link float-left icon-margin" data-toggle="modal" data-target="#modifyList${list.id}" style="text-decoration: none !important; color: black">
+                                                                <span style="font-family: FontAwesome,serif; font-style: normal; color: gray">&#xf040</span>
+                                                            </a>
+                                                            <form action="<c:url value="/removeList?id=${list.id}&userId=${userProfile.id}"/>"
+                                                                  method="post" class="icon-margin float-left" onsubmit="confirmAction(event,'<spring:message code="profile.sureRemove" arguments="${list.name}"/>')">
+                                                                <button type="submit" class="heart no-padding" style="font-family: FontAwesome,serif; font-style: normal">&#xf1f8</button>
+                                                            </form>
+                                                        </div>
                                                         <section>
                                                             <ul class="shows-list posters-list list-unstyled list-inline">
                                                                 <c:forEach items="${list.series}" var="series">
@@ -290,21 +302,77 @@
                                                                         </div>
                                                                     </li>
                                                                 </c:forEach>
-                                                                <li class="first-loaded">
-                                                                    <div class="show">
-<%--                                                                        TODO trigger modal to add shows--%>
-                                                                        <a href="" class="show-link" style="text-decoration: none !important; color: black">
-                                                                            <div class="image-crop text-center" style="background-color: #EEEEEE">
-                                                                                <div style="margin-top: 55px">
-                                                                                    <h2 class="mt-0">+</h2>
-                                                                                    <h4><spring:message code="profile.addToList"/></h4>
-                                                                                </div>
-                                                                            </div>
-                                                                        </a>
-                                                                    </div>
-                                                                </li>
                                                             </ul>
                                                         </section>
+                                                    </div>
+                                                </div>
+                                                <!-- Modify list Modal -->
+                                                <div class="modal" id="modifyList${list.id}">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h2 class="modal-title m-0"><spring:message code="profile.modifyList"/></h2>
+                                                                <button type="button" class="close" data-dismiss="modal">
+                                                                    <span>&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <c:choose>
+                                                                <c:when test="${empty followedSeries}">
+                                                                    <div class="modal-body container">
+                                                                        <div class="row justify-content-center h-100">
+                                                                            <div class="col-lg-8 col-sm-12 align-self-center">
+                                                                                <div class="text-center m-4">
+                                                                                    <h4><spring:message code="profile.noShows"/></h4>
+                                                                                </div>
+                                                                                <div class="text-center m-4">
+                                                                                    <button class="tutv-button m-4" onclick="window.location.href='<c:url value="/"/>'"><spring:message code="watchlist.explore"/></button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="profile.close"/></button>
+                                                                    </div>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <c:url value='modifyList' var="action_value"/>
+                                                                    <form:form id="listForm" modelAttribute="listModifyForm" action="${action_value}" method="post" enctype="application/x-www-form-urlencoded">
+                                                                        <div class="modal-body container">
+                                                                            <div class="row w-100 mb-4">
+                                                                                <div class="col-3 h-100 align-self-center">
+                                                                                    <form:label class="ml-lg-5" path="name"><spring:message code="profile.listName"/></form:label>
+                                                                                </div>
+                                                                                <div class="col-9 align-self-center">
+                                                                                    <form:input class="m-3 w-100" path="name" type="text" maxlength="50" value="${list.name}"/>
+                                                                                    <form:errors path="name" element="p" cssClass="ml-3 error"/>
+                                                                                </div>
+                                                                            </div>
+                                                                            <c:forEach items="${followedSeries}" var="series">
+                                                                                <div class="row w-100 m-0">
+                                                                                    <label for="seriesId${series.id}modify" class="font-weight-normal">
+                                                                                        <c:choose>
+                                                                                            <c:when test="${fn:contains(list.series, series)}">
+                                                                                                <form:checkbox cssClass="ml-5 mr-3" path="seriesId" id="seriesId${series.id}modify" value="${series.id}" checked="true"/>
+                                                                                            </c:when>
+                                                                                            <c:otherwise>
+                                                                                                <form:checkbox cssClass="ml-5 mr-3" path="seriesId" id="seriesId${series.id}modify" value="${series.id}"/>
+                                                                                            </c:otherwise>
+                                                                                        </c:choose>
+                                                                                        ${series.name}
+                                                                                    </label>
+                                                                                </div>
+                                                                            </c:forEach>
+                                                                            <form:input type="hidden" path="id" value="${list.id}"/>
+                                                                            <form:input type="hidden" path="userId" value="${userProfile.id}"/>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="submit" class="btn tutv-button"><spring:message code="profile.done"/></button>
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><spring:message code="profile.close"/></button>
+                                                                        </div>
+                                                                    </form:form>
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </c:forEach>

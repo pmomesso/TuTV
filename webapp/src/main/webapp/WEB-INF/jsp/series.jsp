@@ -261,7 +261,10 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="submit-comment">
-                                                                    <form:checkbox cssClass="check-spoiler" path="isSpam"/><span class="spoiler-span"><spring:message code="series.markSpoiler"/></span>
+                                                                    <label for="isSpam" class="spoiler-span">
+                                                                        <form:checkbox cssClass="check-spoiler" path="isSpam" id="isSpam"/>
+                                                                        <spring:message code="series.markSpoiler"/>
+                                                                    </label>
                                                                     <button type="submit" class="submit-comment-btn">
                                                                         <spring:message code="series.post"/></button>
                                                                 </div>
@@ -311,7 +314,7 @@
                                                                                         <form action="<c:url value="/removePost?seriesId=${series.id}&postId=${seriesReview.id}"/>"
                                                                                               method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureRemovePort"/>')">
                                                                                             <button type="submit" class="remove">
-                                                                                                <img src="<c:url value="/resources/img/remove.png"/>" alt="<spring:message code="series.remove"/>">
+                                                                                                <span style="font-family: FontAwesome,serif; font-style: normal; color: gray">&#xf1f8</span>
                                                                                             </button>
                                                                                         </form>
                                                                                     </c:if>
@@ -392,8 +395,8 @@
                                                                                             <c:if test="${user.isAdmin || user.id eq seriesReviewComment.user.id}">
                                                                                                 <form action="<c:url value="/removeComment?seriesId=${series.id}&postId=${seriesReview.id}&commentId=${seriesReviewComment.id}"/>"
                                                                                                       method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureRemoveComment"/>')">
-                                                                                                    <button type="submit" class="remove-small">
-                                                                                                        <img src="<c:url value="/resources/img/remove.png"/>" alt="<spring:message code="series.remove"/>">
+                                                                                                    <button type="submit" class="remove-small p-0">
+                                                                                                        <span style="font-family: FontAwesome,serif; font-style: normal; color: gray">&#xf1f8</span>
                                                                                                     </button>
                                                                                                 </form>
                                                                                             </c:if>

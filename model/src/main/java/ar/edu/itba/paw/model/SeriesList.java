@@ -17,7 +17,7 @@ public class SeriesList {
     @Column(name = "name", length = 50)
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "serieslist",
             joinColumns = { @JoinColumn(name = "listid") },

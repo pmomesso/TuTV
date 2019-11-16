@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+@import url(https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css);
 html, body {
  margin: 0;
  height: 100%;
@@ -30,12 +30,13 @@ body {
 .spoiler-span {
     position: absolute;
     top: 8px;
-    right: 100px;
+    right: 110px;
+    color: gray;
 }
 .check-spoiler {
     position: absolute;
-    top: 10px;
-    right: 175px;
+    top: 2px;
+    right: 80px;
     margin: 0 !important;
 }
 .tutv-button {
@@ -5278,4 +5279,8 @@ body.alt h2.title {
     top: 390px;
     left: 200px;
     display: block !important;
+}
+.icon-margin {
+    margin-top: 25px;
+    margin-right: 10px;
 }

@@ -4,7 +4,6 @@ import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -60,4 +59,8 @@ public interface SeriesService {
     List<Episode> getUpcomingEpisodes() throws UnauthorizedException;
 
     void addList(String name, long[] seriesId) throws UnauthorizedException;
+
+    void modifyList(long id, String name, long[] seriesId) throws UnauthorizedException, NotFoundException;
+
+    void removeList(long id) throws UnauthorizedException, NotFoundException;
 }

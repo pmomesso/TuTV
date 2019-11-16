@@ -60,11 +60,12 @@ public class UserController {
     }
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public ModelAndView profile(@RequestParam("id") long userId, @ModelAttribute("listForm") final ListForm listForm, @ModelAttribute("updateUserForm") final UpdateUserForm form) throws NotFoundException, UnauthorizedException, BadRequestException {
+    public ModelAndView profile(@RequestParam("id") long userId, @ModelAttribute("listForm") final ListForm listForm, @ModelAttribute("listModifyForm") final ListForm listModifyForm, @ModelAttribute("updateUserForm") final UpdateUserForm form) throws NotFoundException, UnauthorizedException, BadRequestException {
 
         User u = userService.findById(userId).orElseThrow(NotFoundException::new);
         ModelAndView mav = new ModelAndView("profile");
         mav.addObject("listForm", listForm);
+        mav.addObject("listModifyForm", listModifyForm);
         mav.addObject("updateUserForm", form);
         mav.addObject("userProfile", u);
         mav.addObject("followedSeries",seriesService.getAddedSeries(userId));
@@ -76,10 +77,25 @@ public class UserController {
     @RequestMapping(value = "/addList", method = RequestMethod.POST)
     public ModelAndView addList(@Valid @ModelAttribute("listForm") final ListForm form, final BindingResult errors) throws Exception {
         if (errors.hasErrors()) {
-            return profile(form.getUserId(), form, new UpdateUserForm());
+            return profile(form.getUserId(), form, new ListForm(), new UpdateUserForm());
         }
         seriesService.addList(form.getName(), form.getSeriesId());
         return new ModelAndView("redirect:/profile?id=" + form.getUserId());
+    }
+
+    @RequestMapping(value = "/modifyList", method = RequestMethod.POST)
+    public ModelAndView modifyList(@Valid @ModelAttribute("listModifyForm") final ListForm form, final BindingResult errors) throws Exception {
+        if (errors.hasErrors()) {
+            return profile(form.getUserId(), new ListForm(), form, new UpdateUserForm());
+        }
+        seriesService.modifyList(form.getId(), form.getName(), form.getSeriesId());
+        return new ModelAndView("redirect:/profile?id=" + form.getUserId());
+    }
+
+    @RequestMapping(value = "/removeList", method = RequestMethod.POST)
+    public ModelAndView deleteList(@RequestParam(required = true) long id, @RequestParam(required = true) long userId) throws Exception {
+        seriesService.removeList(id);
+        return new ModelAndView("redirect:/profile?id=" + userId);
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -157,7 +173,7 @@ public class UserController {
     public ModelAndView updateUsername(@Valid @ModelAttribute("updateUserForm") final UpdateUserForm form, final BindingResult errors) throws UnauthorizedException, NotFoundException, BadRequestException {
         User u = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         if(errors.hasErrors()){
-            ModelAndView mav = profile(u.getId(), new ListForm(), form);
+            ModelAndView mav = profile(u.getId(), new ListForm(), new ListForm(), form);
             mav.addObject("formErrors",true);
             return mav;
         }
@@ -166,7 +182,7 @@ public class UserController {
             return new ModelAndView("redirect:/profile?id="+u.getId());
         }
         else{
-            ModelAndView mav = profile(u.getId(), new ListForm(), form);
+            ModelAndView mav = profile(u.getId(), new ListForm(), new ListForm(), form);
             mav.addObject("exists",true);
             return mav;
         }

@@ -497,8 +497,37 @@ public class SeriesHibernateDao implements SeriesDao {
     @Override
     public void addList(long userId, String name, Set<Series> series) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
-        SeriesList list = new SeriesList(user.get(), name, series);
-        em.persist(list);
+        if (user.isPresent()) {
+            SeriesList list = new SeriesList(user.get(), name, series);
+            em.persist(list);
+            user.get().getLists().add(list);
+            for (Series currSeries : series) {
+                currSeries.getSeriesList().add(list);
+            }
+        }
+    }
+
+    @Override
+    public int modifyList(long id, long userId, String name, Set<Series> series) {
+        Optional<SeriesList> list = Optional.ofNullable(em.find(SeriesList.class, id));
+        if (list.isPresent()) {
+            list.get().setName(name);
+            list.get().setSeries(series);
+            em.persist(list.get());
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public int removeList(long id) {
+        Optional<SeriesList> list = Optional.ofNullable(em.find(SeriesList.class, id));
+        int updated = 0;
+        if(list.isPresent()) {
+            em.remove(list.get());
+            updated++;
+        }
+        return updated;
     }
 
     @Override

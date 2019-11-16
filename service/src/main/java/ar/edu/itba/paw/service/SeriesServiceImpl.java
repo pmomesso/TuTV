@@ -8,6 +8,8 @@ import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,8 @@ public class SeriesServiceImpl implements SeriesService {
     private SeriesDao seriesDao;
     @Autowired
     private UserService userService;
+    @Autowired
+    private MessageSource messageSource;
 
 
     private void setLoggedInUserRating(User u, Series s){
@@ -228,13 +232,15 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public SeriesReviewComment addCommentToPost(long commentPostId, String body) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        notifyPoster(commentPostId, body);
+        notifyPoster(commentPostId);
         return seriesDao.addCommentToPost(commentPostId, body, user.getId()).orElseThrow(NotFoundException::new);
     }
 
-    private void notifyPoster(long commentPostId, String body) throws NotFoundException {
+    private void notifyPoster(long commentPostId) throws NotFoundException {
         SeriesReview review = seriesDao.getSeriesReviewById(commentPostId).orElseThrow(NotFoundException::new);
-        seriesDao.createNotification(review.getUser(), review.getSeries(), body);
+        Object[] args = {review.getSeries().getName()};
+        String message = messageSource.getMessage("index.commentNotification", args, LocaleContextHolder.getLocale());
+        seriesDao.createNotification(review.getUser(), review.getSeries(), message);
     }
 
     @Override
@@ -320,5 +326,29 @@ public class SeriesServiceImpl implements SeriesService {
             series.add(seriesDao.getSeriesById(id).orElseThrow(UnauthorizedException::new));
         }
         seriesDao.addList(user.getId(), name, series);
+    }
+
+    @Override
+    @Transactional
+    public void modifyList(long id, String name, long[] seriesIdList) throws UnauthorizedException, NotFoundException {
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        Set<Series> series = new HashSet<>();
+        for (long seriesId : seriesIdList) {
+            series.add(seriesDao.getSeriesById(seriesId).orElseThrow(UnauthorizedException::new));
+        }
+        int result = seriesDao.modifyList(id, user.getId(), name, series);
+        if(result == 0) {
+            throw new NotFoundException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void removeList(long id) throws UnauthorizedException, NotFoundException {
+        userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        int result = seriesDao.removeList(id);
+        if(result == 0) {
+            throw new NotFoundException();
+        }
     }
 }

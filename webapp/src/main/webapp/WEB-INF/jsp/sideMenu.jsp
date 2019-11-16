@@ -1,31 +1,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
-<div id="notifications">
-    <ul class="notifications-list list-unstyled">
-<%--        TODO fill with DB info--%>
-        <li class="" data-id="15629037-user-followed-1527548534960" data-target="/user/21109688/profile">
-            <a href="/user/21109688/profile" class="user">Bianca Ritorto</a> followed you on TV Time
-        </li>
-        <li class="" data-id="15629037-follow-on-instagram-1508250336701" data-target="https://www.instagram.com/tvtimeapp/">
-            Follow us on Instagram 📷
-        </li>
-        <li class="" data-id="15629037-follow-on-snapchat-1507814611990" data-target="https://www.snapchat.com/add/tvshowtime">
-            aaaannnndd … we have a snapchat. Add us to see exclusive news from the team. Username: tvshowtime
-        </li>
-        <li class="" data-id="15629037-follow-on-twitter-1507379283423" data-target="https://www.twitter.com/tvshowtime">
-            Follow us on Twitter 🐦
-        </li>
-        <li class="" data-id="15629037-like-facebook-page-1506943722565" data-target="https://www.facebook.com/tvtimeapp">
-            Give us some love and stay tuned to our latest updates. Like our Facebook page
-        </li>
-        <li class="" data-id="15629037-badge-unlocked-1506525060358" data-target="tvst://user/15629037/badges?badge_id=viewed-profile">
-            You have just unlocked the  Stalker badge!
-        </li>
-        <li class="" data-id="15629037-user-followed-1506524879220" data-target="/user/13400859/profile">
-            <a href="/user/13400859/profile" class="user">Coni De Rienzo</a> followed you on TV Time
-        </li>
-    </ul>
-</div>
+<c:if test="${isLogged}">
+    <div id="notifications">
+        <ul class="notifications-list list-unstyled">
+            <c:forEach var="notification" items="${user.notifications}">
+                <li class="" data-id="15629037-user-followed-1527548534960" data-target="/user/21109688/profile">
+                        <%--                TODO poner un puntito si no esta viewed--%>
+                    <a href="/user/21109688/profile" class="user">${notification.message}</a>
+                </li>
+            </c:forEach>
+        </ul>
+    </div>
+</c:if>
 <div class="page-left page-sidebar page-column">
     <a href="#" class="extend-left-link"><span style="font-family: FontAwesome,serif; font-style: normal" onclick="extend()">&#xf0c9</span></a>
     <div class="scrollable scrolling-element">
@@ -87,8 +73,7 @@
                             <a href="#">
                                 <span onclick="extend_notifications()" class="notifications-btn icon-btn">
                                     <span class="icon-tvst-notifications" style="font-family: FontAwesome,serif; font-style: normal" onclick="">&#xf0f3</span>
-<%--                                    TODO fill number with DB data--%>
-                                    <div class="badge zero font">0</div>
+                                    <div class="badge zero font">${user.notificationsToView}</div>
                                 </span>
                             </a>
                         </div>
