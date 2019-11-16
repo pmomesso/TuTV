@@ -5231,7 +5231,6 @@ body.alt h2.title {
     border:1px solid #ddd
 }
 #notifications ul li {
-    font-family: proximaNova;
     font-size:14px;
     padding:8px
 }
@@ -5252,16 +5251,12 @@ body.alt h2.title {
 #notifications ul li a:first-child {
     color:#444
 }
-#notifications ul li a:not(:first-child) {
-    font-family:ProximaNovaSB
-}
 #notifications ul li.no-result{
     background:0 0;
     border:none;
     color:#999;
     text-transform:none;
     text-align:center;
-    font-family: proximaNova;
     font-size:18px
 }
 

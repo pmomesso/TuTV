@@ -5,7 +5,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "notification")
-public class Notification {
+public class Notification implements Comparable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notification_id_seq")
@@ -29,6 +29,14 @@ public class Notification {
         this.resource = resource;
         this.message = message;
         this.viewed = false;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public User getUser() {
@@ -74,5 +82,13 @@ public class Notification {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (this == o) return 0;
+        if (o == null || getClass() != o.getClass()) return 1;
+        Notification that = (Notification) o;
+        return (int) (that.getId() - this.getId());
     }
 }

@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.model;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -54,8 +52,9 @@ public class User {
     private Set<Episode> viewed = new HashSet<>();
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private Set<Rating> ratings = new HashSet<>();
+    @OrderBy("id DESC")
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<Notification> notifications = new HashSet<>();
+    private SortedSet<Notification> notifications = new TreeSet<>();
     @Transient
     private long notificationsToView = 0;
 
@@ -199,11 +198,11 @@ public class User {
         this.lists = lists;
     }
 
-    public Set<Notification> getNotifications() {
+    public SortedSet<Notification> getNotifications() {
         return notifications;
     }
 
-    public void setNotifications(Set<Notification> notifications) {
+    public void setNotifications(SortedSet<Notification> notifications) {
         this.notifications = notifications;
     }
 
