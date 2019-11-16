@@ -177,6 +177,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void setNotificationViewed(long notificationId) throws NotFoundException {
-        if(userDao.setNotificationViewed(notificationId)) throw new NotFoundException();
+        if(!userDao.setNotificationViewed(notificationId)) throw new NotFoundException();
     }
 }

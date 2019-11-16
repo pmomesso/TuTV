@@ -2,14 +2,27 @@
 <html>
 <c:if test="${isLogged}">
     <div id="notifications">
-        <ul class="notifications-list list-unstyled">
-            <c:forEach var="notification" items="${user.notifications}">
-                <li class="" data-id="15629037-user-followed-1527548534960" data-target="/user/21109688/profile">
-                        <%--                TODO poner un puntito si no esta viewed--%>
-                    <a href="/user/21109688/profile" class="user">${notification.message}</a>
-                </li>
-            </c:forEach>
-        </ul>
+        <c:choose>
+            <c:when test="${empty user.notifications}">
+                <ul class="notifications-list list-unstyled container">
+                    <spring:message code="menu.noNotifications"/>
+                </ul>
+            </c:when>
+            <c:otherwise>
+                <ul class="notifications-list list-unstyled container">
+                    <c:forEach var="notification" items="${user.notifications}">
+                        <li class="row justify-content-center">
+                            <div class="col-10"><a href="<c:url value="/seeNotification?notificationId=${notification.id}&seriesId=${notification.resource.id}"/>">${notification.message}</a></div>
+                            <div class="col-2 text-center align-self-center">
+                                <c:if test="${not notification.viewed}">
+                                    <span style="font-family: FontAwesome,serif; font-style: normal; font-size: 12px; color: red">&#xf111</span>
+                                </c:if>
+                            </div>
+                        </li>
+                    </c:forEach>
+                </ul>
+            </c:otherwise>
+        </c:choose>
     </div>
 </c:if>
 <div class="page-left page-sidebar page-column">
@@ -72,7 +85,7 @@
                         <div class="alt-user-nav">
                             <a href="#">
                                 <span onclick="extend_notifications()" class="notifications-btn icon-btn">
-                                    <span class="icon-tvst-notifications" style="font-family: FontAwesome,serif; font-style: normal" onclick="">&#xf0f3</span>
+                                    <span class="icon-tvst-notifications" style="font-family: FontAwesome,serif; font-style: normal">&#xf0f3</span>
                                     <div class="badge zero font">${user.notificationsToView}</div>
                                 </span>
                             </a>

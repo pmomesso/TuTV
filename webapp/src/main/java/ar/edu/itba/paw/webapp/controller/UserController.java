@@ -185,4 +185,10 @@ public class UserController {
             return mav;
         }
     }
+
+    @RequestMapping(value = "/seeNotification", method = RequestMethod.GET)
+    public ModelAndView seeNotification(@RequestParam("notificationId") long notificationId, @RequestParam("seriesId") long seriesId) throws NotFoundException{
+        userService.setNotificationViewed(notificationId);
+        return new ModelAndView("redirect:/series?id=" + seriesId);
+    }
 }

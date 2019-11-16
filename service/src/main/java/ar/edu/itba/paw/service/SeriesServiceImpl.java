@@ -232,15 +232,18 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public SeriesReviewComment addCommentToPost(long commentPostId, String body) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        notifyPoster(commentPostId);
-        return seriesDao.addCommentToPost(commentPostId, body, user.getId()).orElseThrow(NotFoundException::new);
-    }
 
-    private void notifyPoster(long commentPostId) throws NotFoundException {
         SeriesReview review = seriesDao.getSeriesReviewById(commentPostId).orElseThrow(NotFoundException::new);
         Object[] args = {review.getSeries().getName()};
         String message = messageSource.getMessage("index.commentNotification", args, LocaleContextHolder.getLocale());
-        seriesDao.createNotification(review.getUser(), review.getSeries(), message);
+
+        SeriesReviewComment s = seriesDao.addCommentToPost(commentPostId, body, user.getId()).orElseThrow(NotFoundException::new);
+        notifyPoster(review.getUser(), review.getSeries(), message);
+        return s;
+    }
+
+    private void notifyPoster(User user, Series series, String message) {
+        seriesDao.createNotification(user, series, message);
     }
 
     @Override

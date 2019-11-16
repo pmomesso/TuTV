@@ -4066,7 +4066,8 @@ body.very-light {
  background-color:#efefef
 }
 body a {
- color:#3282b6
+ color:#3282b6;
+    text-decoration: none !important;
 }
 body a:hover {
  color:#373737
@@ -4948,6 +4949,9 @@ body.alt h2.title {
  border-width:26px;
  margin-left:-26px
 }
+#community-title {
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
 #community-title i {
  color:#b2db8d
 }
@@ -5083,7 +5087,7 @@ body.alt h2.title {
   overflow:hidden;
   bottom:auto;
   max-height:60px;
-  z-index:7000;
+  z-index:5000;
   -webkit-transition:max-height .5s ease-in-out;
   -moz-transition:max-height .5s ease-in-out;
   -ms-transition:max-height .5s ease-in-out;
@@ -5182,7 +5186,7 @@ body.alt h2.title {
 }
 #notifications {
     display:none;
-    position:absolute;
+    position:fixed;
     width:314px;
     margin-left:-157px;
     background-color:#f3f3f3;
@@ -5190,7 +5194,7 @@ body.alt h2.title {
     box-shadow:0 0 1px 1px #777;
     border-radius:4px;
     margin-top:10px;
-    z-index:2000
+    z-index:6000
 }
 #notifications {
     width:260px;
@@ -5234,9 +5238,6 @@ body.alt h2.title {
     font-size:14px;
     padding:8px
 }
-#notifications ul li {
-    cursor:pointer
-}
 #notifications ul li.active {
     background:rgba(250,215,0,.3);
     border-color:#fdd700;
@@ -5272,8 +5273,15 @@ body.alt h2.title {
 }
 .extended_notifications {
     top: 390px;
-    left: 200px;
+    left: 205px;
     display: block !important;
+}
+@media (max-width: 768px) {
+    .extended_notifications {
+        top: 280px;
+        left: 225px;
+        display: block !important;
+    }
 }
 .icon-margin {
     margin-top: 25px;
