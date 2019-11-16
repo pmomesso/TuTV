@@ -238,7 +238,9 @@ public class SeriesServiceImpl implements SeriesService {
         String message = messageSource.getMessage("index.commentNotification", args, LocaleContextHolder.getLocale());
 
         SeriesReviewComment s = seriesDao.addCommentToPost(commentPostId, body, user.getId()).orElseThrow(NotFoundException::new);
-        notifyPoster(review.getUser(), review.getSeries(), message);
+        if (!user.equals(review.getUser())) {
+            notifyPoster(review.getUser(), review.getSeries(), message);
+        }
         return s;
     }
 

@@ -33,7 +33,7 @@
     <script src="<c:url value="/resources/js/main.js"/>"></script>
     <script src="<c:url value="/resources/js/navigator.js"/>"></script>
 </head>
-<body id="container" class="home no-touch white   reduced-right ">
+<body id="container" class="home no-touch white reduced-right ">
 <div class="body-inner">
     <%@ include file="sideMenu.jsp" %>
     <div class="page-center page-column">
