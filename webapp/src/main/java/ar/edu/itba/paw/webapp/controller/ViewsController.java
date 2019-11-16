@@ -77,7 +77,7 @@ public class ViewsController {
     }
 
     @RequestMapping(value = "/upcoming", method = RequestMethod.GET)
-    public ModelAndView upcoming() throws UnauthorizedException {
+    public ModelAndView upcoming() throws UnauthorizedException, NotFoundException {
         ModelAndView mav = new ModelAndView("upcoming");
         mav.addObject("upcoming", seriesService.getUpcomingEpisodes());
         return mav;

@@ -28,7 +28,7 @@ import java.util.*;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    final List<String> supportedExtensions = Arrays.asList("png","jpg","jpeg");
+    private final List<String> supportedExtensions = Arrays.asList("png","jpg","jpeg");
 
     @Autowired
     private UserDao userDao;
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Either<User, Collection<Errors>> createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) {
+    public Either<User, Collection<Errors>> createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) throws UnauthorizedException {
         boolean usernameExists = userDao.userNameExists(userName);
         boolean mailIsTaken = userDao.mailIsTaken(mail);
         if(usernameExists || mailIsTaken){
@@ -73,14 +73,11 @@ public class UserServiceImpl implements UserService {
         }
 
         String hashedPassword = passwordEncoder.encode(password);
-        User u = userDao.createUser(userName, hashedPassword, mail, isAdmin).get();
+        User u = userDao.createUser(userName, hashedPassword, mail, isAdmin).orElseThrow(UnauthorizedException::new);
         String token = UUID.randomUUID().toString();
         userDao.setValidationKey(u.getId(), token);
         u.setConfirmationKey(token);
         mailService.sendConfirmationMail(u, baseUrl);
-        //if(u == null) {
-        //    throw new UnauthorizedException();
-        //}
         return Either.value(u);
         //TODO ESTO ESTA BIEN? NO PUEDO ENTRAR EN UN LOOP SI NO CAMBIA LA SEMILLA?
     }
@@ -94,9 +91,7 @@ public class UserServiceImpl implements UserService {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserMail = authentication.getName();
             Optional<User> ret = findByMail(currentUserMail);
-            if(ret.isPresent()) {
-                ret.get().setNotificationsToView(ret.get().getNotifications().stream().filter(n -> !n.getViewed()).count());
-            }
+            ret.ifPresent(user -> user.setNotificationsToView(user.getNotifications().stream().filter(n -> !n.getViewed()).count()));
             return ret;
         }
         return Optional.empty();
@@ -106,16 +101,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UsersList getAllUsersExceptLoggedOne(int page) throws UnauthorizedException {
         Optional<User> loggedUser = getLoggedUser();
-        UsersList usersList = userDao.getAllUsers(page, loggedUser.orElseThrow(UnauthorizedException::new).getId());
-        return usersList;
+        return userDao.getAllUsers(page, loggedUser.orElseThrow(UnauthorizedException::new).getId());
     }
 
     @Override
     @Transactional
     public Map<Genre, Long> getGenresStats() throws UnauthorizedException {
         Optional<User> loggedUser = getLoggedUser();
-        Map<Genre, Long> genreStats = userDao.getGenreStats(loggedUser.orElseThrow(UnauthorizedException::new).getId());
-        return genreStats;
+        return userDao.getGenreStats(loggedUser.orElseThrow(UnauthorizedException::new).getId());
+
     }
 
     @Override

@@ -393,7 +393,7 @@
                                                                                         </c:if>
                                                                                         <div class="float-right">
                                                                                             <c:if test="${user.isAdmin || user.id eq seriesReviewComment.user.id}">
-                                                                                                <form action="<c:url value="/removeComment?seriesId=${series.id}&postId=${seriesReview.id}&commentId=${seriesReviewComment.id}"/>"
+                                                                                                <form action="<c:url value="/removeComment?seriesId=${series.id}&commentId=${seriesReviewComment.id}"/>"
                                                                                                       method="post" class="float-left" onsubmit="confirmAction(event,'<spring:message code="series.sureRemoveComment"/>')">
                                                                                                     <button type="submit" class="remove-small p-0">
                                                                                                         <span style="font-family: FontAwesome,serif; font-style: normal; color: gray">&#xf1f8</span>
@@ -404,14 +404,14 @@
                                                                                                 <c:when test="${isLogged}">
                                                                                                     <c:choose>
                                                                                                         <c:when test="${fn:contains(seriesReviewComment.likes,user)}">
-                                                                                                            <form action="<c:url value="/unlikeComment?seriesId=${series.id}&postId=${seriesReview.id}&commentId=${seriesReviewComment.id}"/>"
+                                                                                                            <form action="<c:url value="/unlikeComment?seriesId=${series.id}&commentId=${seriesReviewComment.id}"/>"
                                                                                                                   method="post" class="float-left">
                                                                                                                 <button type="submit" class="heart post-liked" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
                                                                                                                 <span>${seriesReviewComment.numLikes}</span>
                                                                                                             </form>
                                                                                                         </c:when>
                                                                                                         <c:otherwise>
-                                                                                                            <form action="<c:url value="/likeComment?seriesId=${series.id}&postId=${seriesReview.id}&commentId=${seriesReviewComment.id}"/>"
+                                                                                                            <form action="<c:url value="/likeComment?seriesId=${series.id}&commentId=${seriesReviewComment.id}"/>"
                                                                                                                   method="post" class="float-left">
                                                                                                                 <button type="submit" class="heart" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
                                                                                                                 <span>${seriesReviewComment.numLikes}</span>

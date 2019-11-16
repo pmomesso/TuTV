@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -29,24 +28,24 @@ public class ControllerAdvice {
 
     @ExceptionHandler({BadRequestException.class,MaxUploadSizeExceededException.class})
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public final ModelAndView badRequestHandler(Exception ex, WebRequest request){
+    public final ModelAndView badRequestHandler(Exception ex){
         ApiException apiException = (ex instanceof  BadRequestException) ? (ApiException)ex : new BadRequestException();
         return setupErrorModelAndView(apiException);
     }
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-    public final ModelAndView unauthorizedHandler(UnauthorizedException ex, WebRequest request){
+    public final ModelAndView unauthorizedHandler(UnauthorizedException ex){
         return setupErrorModelAndView(ex);
     }
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
-    public final ModelAndView notFoundHandler(NotFoundException ex, WebRequest request){
+    public final ModelAndView notFoundHandler(NotFoundException ex){
         return setupErrorModelAndView(ex);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-    public final ModelAndView serverErrorHandler(Exception ex, WebRequest request) {
+    public final ModelAndView serverErrorHandler(Exception ex) {
         final ModelAndView mav = new ModelAndView("error");
         mav.addObject("status","error.500status");
         mav.addObject("body","error.500body");

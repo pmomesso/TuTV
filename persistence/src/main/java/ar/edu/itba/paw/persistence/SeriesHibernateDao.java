@@ -218,7 +218,7 @@ public class SeriesHibernateDao implements SeriesDao {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Set<Series> recentlyWatched = new HashSet<>();
         int i = 0;
-        boolean added = false;
+        boolean added;
         if(user.isPresent()){
             for(Episode e: user.get().getViewed()){
                 added = recentlyWatched.add(e.getSeason().getSeries());
@@ -381,7 +381,6 @@ public class SeriesHibernateDao implements SeriesDao {
     public Optional<SeriesReviewComment> addCommentToPost(long commentPostId, String commentBody, long commentUserId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,commentUserId));
         Optional<SeriesReview> review = Optional.ofNullable(em.find(SeriesReview.class,commentPostId));
-        int updated = 0;
         if(user.isPresent() && review.isPresent()){
             SeriesReviewComment comment = new SeriesReviewComment(commentBody,review.get(),user.get());
             em.persist(comment);

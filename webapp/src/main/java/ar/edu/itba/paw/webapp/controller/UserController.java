@@ -18,9 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -93,13 +91,13 @@ public class UserController {
     }
 
     @RequestMapping(value = "/removeList", method = RequestMethod.POST)
-    public ModelAndView deleteList(@RequestParam(required = true) long id, @RequestParam(required = true) long userId) throws Exception {
+    public ModelAndView deleteList(@RequestParam long id, @RequestParam long userId) throws Exception {
         seriesService.removeList(id);
         return new ModelAndView("redirect:/profile?id=" + userId);
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView showLogin(@RequestParam(required = false) String error) {
+    public ModelAndView showLogin() {
         Optional<User> user = userService.getLoggedUser();
         if(user.isPresent()){
             return new ModelAndView("redirect:/");
@@ -120,7 +118,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ModelAndView register(HttpServletRequest request, @Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors) throws UnauthorizedException, BadRequestException {
+    public ModelAndView register(@Valid @ModelAttribute("registerForm") final UserForm form, final BindingResult errors) throws UnauthorizedException, BadRequestException {
         if (errors.hasErrors()) {
             return showRegister(form);
         }
@@ -165,7 +163,7 @@ public class UserController {
 
     @RequestMapping(value = "/user/{userId}/avatar", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_GIF_VALUE})
     public @ResponseBody
-    byte[] getImageWithMediaType(@PathVariable long userId) throws IOException, NotFoundException {
+    byte[] getImageWithMediaType(@PathVariable long userId) throws NotFoundException {
         return userService.getUserAvatar(userId).orElseThrow(NotFoundException::new);
     }
 

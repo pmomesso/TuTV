@@ -301,9 +301,10 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Series> getAddedSeries() throws UnauthorizedException {
+    public List<Series> getAddedSeries() throws UnauthorizedException, NotFoundException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        return seriesDao.getAddedSeries(user.getId()).get();
+        Optional<List<Series>> series = seriesDao.getAddedSeries(user.getId());
+        return series.orElseThrow(NotFoundException::new);
     }
 
     @Override
@@ -312,9 +313,10 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Episode> getUpcomingEpisodes() throws UnauthorizedException {
+    public List<Episode> getUpcomingEpisodes() throws UnauthorizedException, NotFoundException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        return seriesDao.getUpcomingEpisodes(user.getId()).get();
+        Optional<List<Episode>> episodes = seriesDao.getUpcomingEpisodes(user.getId());
+        return episodes.orElseThrow(NotFoundException::new);
     }
 
     @Override

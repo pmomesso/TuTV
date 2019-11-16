@@ -73,7 +73,13 @@ public class UserServiceImplTest {
                 .thenReturn(Optional.of(retUser));
         Mockito.when(passwordEncoder.encode(Mockito.eq(PASSWORD))).thenReturn(PASSWORD);
         //Ejercitar
-        Either<User, Collection<Errors>> either  = userService.createUser(USERNAME, PASSWORD, MAIL,IS_ADMIN,"baseurl");
+        Either<User, Collection<Errors>> either;
+        try {
+            either = userService.createUser(USERNAME, PASSWORD, MAIL,IS_ADMIN,"baseurl");
+        } catch (UnauthorizedException e) {
+            Assert.fail();
+            return;
+        }
         //Asserts
         Assert.assertTrue(either.isValuePresent());
         User u = either.getValue();
