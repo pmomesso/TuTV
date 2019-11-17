@@ -83,4 +83,6 @@ public interface SeriesDao {
     int removeList(long id);
 
     Optional<SeriesReview> getSeriesReviewById(long commentPostId);
+
+    void viewUntilEpisode(long episodeId, User u);
 }
