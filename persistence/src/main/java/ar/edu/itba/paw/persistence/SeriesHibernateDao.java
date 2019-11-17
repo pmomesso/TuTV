@@ -535,9 +535,12 @@ public class SeriesHibernateDao implements SeriesDao {
     }
 
     @Override
-    public void viewUntilEpisode(long episodeId, User u) {
+    public boolean viewUntilEpisode(long episodeId, User u) {
         /*Get the episodes that come before the current one*/
         Episode episode = em.find(Episode.class, episodeId);
+        if(episode == null) {
+            return false;
+        }
         final TypedQuery<Episode> query = em.createQuery("from Episode AS e WHERE e.season.seasonNumber <= :seasonNumber AND e.numEpisode <= :numEpisode AND e.season.series.id = :seriesId", Episode.class)
                 .setParameter("seasonNumber", episode.getSeason().getSeasonNumber())
                 .setParameter("numEpisode", episode.getNumEpisode())
@@ -548,5 +551,6 @@ public class SeriesHibernateDao implements SeriesDao {
         for(Episode e : episodeList) {
             e.getViewers().add(u);
         }
+        return true;
     }
 }

@@ -84,5 +84,5 @@ public interface SeriesDao {
 
     Optional<SeriesReview> getSeriesReviewById(long commentPostId);
 
-    void viewUntilEpisode(long episodeId, User u);
+    boolean viewUntilEpisode(long episodeId, User u);
 }

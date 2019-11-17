@@ -252,7 +252,7 @@ public class SeriesServiceImpl implements SeriesService {
     @Transactional
     public void viewUntilEpisode(long episodeId) throws NotFoundException, UnauthorizedException {
         User u = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        seriesDao.viewUntilEpisode(episodeId, u);
+        if(!seriesDao.viewUntilEpisode(episodeId, u)) throw new NotFoundException();
     }
 
     @Override
