@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -111,7 +112,9 @@ public class SeriesController {
         if (errors.hasErrors()) {
             return series(new PostForm(), form, form.getCommentSeriesId());
         }
-        seriesService.addCommentToPost(form.getCommentPostId(), form.getCommentBody());
+
+        final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        seriesService.addCommentToPost(form.getCommentPostId(), form.getCommentBody(), baseUrl);
         return new ModelAndView("redirect:/series?id=" + form.getCommentSeriesId());
     }
 

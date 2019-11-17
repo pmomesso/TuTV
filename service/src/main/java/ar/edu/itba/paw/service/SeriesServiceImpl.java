@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.service;
 
+import ar.edu.itba.paw.interfaces.MailService;
 import ar.edu.itba.paw.interfaces.SeriesDao;
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
@@ -28,6 +29,8 @@ public class SeriesServiceImpl implements SeriesService {
     private UserService userService;
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private MailService mailService;
 
 
     private void setLoggedInUserRating(User u, Series s){
@@ -230,7 +233,7 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public SeriesReviewComment addCommentToPost(long commentPostId, String body) throws NotFoundException, UnauthorizedException {
+    public SeriesReviewComment addCommentToPost(long commentPostId, String body, String baseUrl) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
 
         SeriesReview review = seriesDao.getSeriesReviewById(commentPostId).orElseThrow(NotFoundException::new);
@@ -239,6 +242,7 @@ public class SeriesServiceImpl implements SeriesService {
 
         SeriesReviewComment s = seriesDao.addCommentToPost(commentPostId, body, user.getId()).orElseThrow(NotFoundException::new);
         if (!user.equals(review.getUser())) {
+            mailService.sendCommentResponseMail(s, baseUrl);
             notifyPoster(review.getUser(), review.getSeries(), message);
         }
         return s;

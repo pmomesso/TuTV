@@ -233,7 +233,7 @@ public class SeriesServiceImplTest {
         Mockito.when(mockDao.addCommentToPost(Mockito.eq(postId),Mockito.eq(body),Mockito.eq(USER_ID))).thenReturn(Optional.of(new SeriesReviewComment()));
         //Ejercitar
         try {
-            seriesService.addCommentToPost(postId,body);
+            seriesService.addCommentToPost(postId,body,"baseUrl");
         } catch (ApiException e) {
             Assert.fail();
         }

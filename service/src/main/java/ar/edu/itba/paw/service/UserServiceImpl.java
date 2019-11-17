@@ -79,7 +79,6 @@ public class UserServiceImpl implements UserService {
         u.setConfirmationKey(token);
         mailService.sendConfirmationMail(u, baseUrl);
         return Either.value(u);
-        //TODO ESTO ESTA BIEN? NO PUEDO ENTRAR EN UN LOOP SI NO CAMBIA LA SEMILLA?
     }
 
     @Override
