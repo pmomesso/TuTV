@@ -87,8 +87,26 @@ public class SeriesServiceImpl implements SeriesService {
                 //Marco las temporadas vistas.
                 setViewedSeasons(user);
             });
+            userService.getLoggedUser().ifPresent(user->setHasPreviousUnseenEpisodes(s, user));
         });
         return series;
+    }
+
+    private void setHasPreviousUnseenEpisodes(Series series, User u) {
+        //TODO. Find better way
+        for(Season season : series.getSeasons()) {
+            for(Episode episode : season.getEpisodes()) {
+                if(series.getSeasons().stream().anyMatch(s ->
+                    s.getEpisodes().stream().anyMatch(e ->
+                            (s.getSeasonNumber() < e.getSeason().getSeasonNumber()
+                                    || (s.getSeasonNumber() == e.getSeason().getSeasonNumber() && e.getNumEpisode() < episode.getNumEpisode()))
+                                    && !e.getViewers().contains(u)
+                    )
+                )) {
+                    episode.setHasPreviousUnseenEpisodes(true);
+                }
+            }
+        }
     }
 
     @Override

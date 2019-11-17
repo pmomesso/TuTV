@@ -546,6 +546,7 @@ public class SeriesHibernateDao implements SeriesDao {
                 .setParameter("numEpisode", episode.getNumEpisode())
                 .setParameter("seriesId", episode.getSeason().getSeries().getId());
         List<Episode> episodeList = query.getResultList();
+        /*Set the episodes as viewed*/
         Set<Episode> episodesViewed = u.getViewed();
         episodesViewed.addAll(episodeList);
         for(Episode e : episodeList) {

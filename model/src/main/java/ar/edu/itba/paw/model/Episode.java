@@ -41,6 +41,9 @@ public class Episode {
     )
     private Set<User> viewers = new HashSet<>();
 
+    @Transient
+    private boolean hasPreviousUnseenEpisodes = false;
+
     public Episode(){
     }
     public Episode(String name, String overview, int numEpisode, String aired){
@@ -118,6 +121,15 @@ public class Episode {
         this.viewers.remove(viewer);
         viewer.getViewed().remove(this);
     }
+
+    public boolean isHasPreviousUnseenEpisodes() {
+        return hasPreviousUnseenEpisodes;
+    }
+
+    public void setHasPreviousUnseenEpisodes(boolean hasPreviousUnseenEpisodes) {
+        this.hasPreviousUnseenEpisodes = hasPreviousUnseenEpisodes;
+    }
+
     @Override
     public boolean equals(Object obj){
         if(this == obj){
