@@ -359,7 +359,8 @@
                                                                 <c:if test="${(isLogged && not user.isBanned)|| not empty seriesReview.comments}">
                                                                     <div class="replies sub-comment">
                                                                         <c:forEach var="seriesReviewComment" items="${seriesReview.comments}">
-                                                                            <article class="reply clearfix initialized">
+                                                                            <a name="Reply${seriesReviewComment.id}">
+                                                                                <article class="reply clearfix initialized">
                                                                                 <div class="holder">
                                                                                     <div class="author-label">
                                                                                         <c:choose>
@@ -430,6 +431,7 @@
                                                                                     </blockquote>
                                                                                 </div>
                                                                             </article>
+                                                                            </a>
                                                                         </c:forEach>
                                                                         <c:if test="${isLogged && not user.isBanned}">
                                                                             <c:url value='comment' var="actionCommentValue"/>

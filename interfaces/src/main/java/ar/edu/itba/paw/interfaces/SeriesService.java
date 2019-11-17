@@ -39,7 +39,7 @@ public interface SeriesService {
 
     void unlikePost(long postId) throws NotFoundException, UnauthorizedException;
 
-    SeriesReviewComment addCommentToPost(long commentPostId, String commentBody) throws NotFoundException, UnauthorizedException;
+    SeriesReviewComment addCommentToPost(long commentPostId, String body, String baseUrl) throws NotFoundException, UnauthorizedException;
 
     void viewUntilEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
 
