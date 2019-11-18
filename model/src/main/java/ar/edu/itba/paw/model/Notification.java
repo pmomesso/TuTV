@@ -26,7 +26,9 @@ public class Notification implements Comparable {
 
     public Notification(User user, Series resource, String message) {
         this.user = user;
+        user.getNotifications().add(this);
         this.resource = resource;
+        resource.getNotifications().add(this);
         this.message = message;
         this.viewed = false;
     }

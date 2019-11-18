@@ -13,9 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -56,6 +54,10 @@ public class SeriesHibernateDaoTest {
     private static final String REVIEW_BODY = "review body";
     /* Valores test comentario */
     private static final String COMMENT_BODY = "comment body";
+    /* Valores test lista de series */
+    private static final String SERIES_LIST_NAME = "list name";
+    /* Valores test notificacion */
+    private static final String NOTIFICATION_MESSAGE= "notification name";
 
     @Autowired
     private SeriesHibernateDao seriesDao;
@@ -70,6 +72,7 @@ public class SeriesHibernateDaoTest {
     private User user = new User();
     private SeriesReview review = new SeriesReview();
     private SeriesReviewComment comment = new SeriesReviewComment();
+    private SeriesList seriesList = new SeriesList();
 
     private void assertSeries(Series series){
         Assert.assertNotNull(series);
@@ -125,6 +128,14 @@ public class SeriesHibernateDaoTest {
         em.persist(comment);
         user.getSeriesReviewComments().add(comment);
         review.getComments().add(comment);
+    }
+    private void insertSeriesList(){
+        Set<Series> seriesSet = new HashSet<>();
+        seriesSet.add(series);
+        seriesList = new SeriesList(user,SERIES_LIST_NAME,seriesSet);
+        em.persist(seriesList);
+        series.getSeriesList().add(seriesList);
+        user.getLists().add(seriesList);
     }
     @Before
     public void populateDatabase(){
@@ -368,6 +379,19 @@ public class SeriesHibernateDaoTest {
         assertSeries(review.get().getSeries());
     }
     @Test
+    public void getSeriesReviewByIdTest(){
+        insertUser();
+        insertReview();
+        Optional<SeriesReview> seriesReview = seriesDao.getSeriesReviewById(review.getId());
+        Assert.assertTrue(seriesReview.isPresent());
+        Assert.assertEquals(REVIEW_BODY,seriesReview.get().getBody());
+        Assert.assertEquals(user.getId(),seriesReview.get().getUserId());
+        Assert.assertEquals(1,user.getSeriesReviews().size());
+        Assert.assertEquals(1,series.getSeriesReviewList().size());
+        Assert.assertEquals(0,seriesReview.get().getNumLikes());
+        assertSeries(seriesReview.get().getSeries());
+    }
+    @Test
     public void likePostTest(){
         insertUser();
         insertReview();
@@ -403,6 +427,21 @@ public class SeriesHibernateDaoTest {
         Assert.assertEquals(1,review.getComments().size());
     }
     @Test
+    public void getPostAuthorIdTest(){
+        insertUser();
+        insertReview();
+        long id = seriesDao.getPostAuthorId(review.getId());
+        Assert.assertEquals(user.getId(),id);
+    }
+    @Test
+    public void getCommentAuthorId(){
+        insertUser();
+        insertReview();
+        insertComment();
+        long id = seriesDao.getCommentAuthorId(comment.getId());
+        Assert.assertEquals(user.getId(),id);
+    }
+    @Test
     public void likeCommentTest(){
         insertUser();
         insertReview();
@@ -425,5 +464,77 @@ public class SeriesHibernateDaoTest {
         Assert.assertEquals(0,comment.getNumLikes());
         Assert.assertEquals(0,comment.getLikes().size());
         Assert.assertEquals(0,user.getSeriesReviewCommentLikes().size());
+    }
+    @Test
+    public void removePostTest(){
+        insertUser();
+        insertReview();
+        int updated = seriesDao.removePost(review.getId());
+        Assert.assertEquals(1,updated);
+        Assert.assertNull(em.find(SeriesReview.class,review.getId()));
+    }
+    @Test
+    public void removeCommentTest(){
+        insertUser();
+        insertReview();
+        insertComment();
+        int updated = seriesDao.removeComment(comment.getId());
+        Assert.assertEquals(1,updated);
+        Assert.assertNull(em.find(SeriesReview.class,comment.getId()));
+    }
+    @Test
+    public void addList(){
+        insertUser();
+        Set<Series> seriesSet = new HashSet<>();
+        seriesSet.add(series);
+        seriesDao.addList(user.getId(),SERIES_LIST_NAME,seriesSet);
+        Assert.assertEquals(1,series.getSeriesList().size());
+        SeriesList list = (SeriesList)series.getSeriesList().toArray()[0];
+        Assert.assertEquals(SERIES_LIST_NAME,list.getName());
+        Assert.assertEquals(user.getId(),list.getListUser().getId());
+        Assert.assertEquals(1,list.getSeries().size());
+    }
+    @Test
+    public void modifyListTest(){
+        insertUser();
+        insertSeriesList();
+        String newName = "new list name";
+        int updated = seriesDao.modifyList(seriesList.getId(),user.getId(),newName,new HashSet<>());
+        Assert.assertEquals(1,updated);
+        Assert.assertEquals(newName,seriesList.getName());
+        Assert.assertEquals(0,seriesList.getSeries().size());
+    }
+    @Test
+    public void removeListTest(){
+        insertUser();
+        insertSeriesList();
+        int updated = seriesDao.removeList(seriesList.getId());
+        Assert.assertEquals(1,updated);
+        Assert.assertNull(em.find(SeriesList.class,seriesList.getId()));
+    }
+    @Test
+    public void createNotificationTest(){
+        insertUser();
+        Optional<Notification> notification = seriesDao.createNotification(user,series,NOTIFICATION_MESSAGE);
+        Assert.assertTrue(notification.isPresent());
+        Assert.assertEquals(NOTIFICATION_MESSAGE,notification.get().getMessage());
+        Assert.assertEquals(user,notification.get().getUser());
+        Assert.assertEquals(series,notification.get().getResource());
+    }
+    @Test
+    public void viewUntilEpisodeTest(){
+        String name = "new episode name";
+        String overview = "new episode overview";
+        Episode newEpisode = new Episode(name,overview,2,"2100-01-08");
+        newEpisode.setSeason(season);
+        season.getEpisodes().add(newEpisode);
+        em.persist(newEpisode);
+        insertUser();
+        boolean result = seriesDao.viewUntilEpisode(episode.getId(),user);
+        Assert.assertTrue(result);
+        Assert.assertTrue(episode.getViewers().contains(user));
+        Assert.assertTrue(user.getViewed().contains(episode));
+        Assert.assertFalse(newEpisode.getViewers().contains(user));
+        Assert.assertFalse(user.getViewed().contains(newEpisode));
     }
 }

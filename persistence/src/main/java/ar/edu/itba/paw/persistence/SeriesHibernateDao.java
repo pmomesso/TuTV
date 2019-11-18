@@ -88,7 +88,7 @@ public class SeriesHibernateDao implements SeriesDao {
                 "order by e.aired desc",Series.class);
         Object[] distinctSeries = new HashSet<>(query.getResultList()).toArray();
         List<Series> result = new ArrayList<>();
-        for(int i = lowerLimit; i < upperLimit ; i++){
+        for(int i = lowerLimit; i < upperLimit && i < distinctSeries.length; i++){
             result.add((Series)distinctSeries[i]);
         }
         return result;

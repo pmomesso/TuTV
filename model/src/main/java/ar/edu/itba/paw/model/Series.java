@@ -56,7 +56,7 @@ public class Series  {
     )
     private Set<Genre> genres = new HashSet<>();
     @ManyToMany(mappedBy = "series",fetch = FetchType.LAZY)
-    private Set<SeriesList> seriesList;
+    private Set<SeriesList> seriesList = new HashSet<>();
     @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
     @JoinTable(
             name = "follows",
@@ -350,5 +350,13 @@ public class Series  {
 
     public void setSeriesList(Set<SeriesList> seriesList) {
         this.seriesList = seriesList;
+    }
+
+    public Set<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(Set<Notification> notifications) {
+        this.notifications = notifications;
     }
 }
