@@ -64,7 +64,7 @@ public class SeriesController {
     public ModelAndView viewEpisode(@RequestParam("seriesId") long seriesId, @RequestParam("episodeId") long episodeId, @RequestParam("markPrevious") boolean markPrevious,
                                     HttpServletRequest request) throws NotFoundException, UnauthorizedException {
         if (markPrevious) {
-            seriesService.viewUntilEpisode(episodeId);
+            seriesService.viewUntilEpisode(seriesId, episodeId);
         } else {
             seriesService.setViewedEpisode(seriesId, episodeId);
         }

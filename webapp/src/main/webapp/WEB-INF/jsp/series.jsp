@@ -39,6 +39,11 @@
     <div class="page-center page-column">
         <div class="page-center-inner">
             <div class="main-block">
+                <div id="confirm">
+                    <div class="message p-3"></div>
+                    <button class="no tutv-button-no m-3"><spring:message code="series.no"/></button>
+                    <button class="yes tutv-button m-3"><spring:message code="series.yes"/></button>
+                </div>
                 <div id="explore" style="background-color: #ededed">
                     <section id="new-shows">
                         <h1>${series.name}</h1>
@@ -194,23 +199,18 @@
                                                                                 <c:otherwise>
                                                                                     <c:choose>
                                                                                         <c:when test="${episode.hasPreviousUnseenEpisodes}">
-                                                                                            <div id="confirm">
-                                                                                                <div class="message p-3"></div>
-                                                                                                <button class="no tutv-button-no m-3"><spring:message code="series.no"/></button>
-                                                                                                <button class="yes tutv-button m-3"><spring:message code="series.yes"/></button>
-                                                                                            </div>
                                                                                             <button style="font-family: FontAwesome,serif; font-style: normal" class="check"
                                                                                                     onclick="functionConfirm('<spring:message code="series.markPrevious"/>', function yes() {
-                                                                                                            document.getElementById('yesMark').submit();
+                                                                                                            document.getElementById('yesMark${episode.id}').submit();
                                                                                                 },
                                                                                                 function no() {
-                                                                                                            document.getElementById('noMark').submit();
+                                                                                                            document.getElementById('noMark${episode.id}').submit();
                                                                                                 });">&#xf058</button>
                                                                                             </body>
-                                                                                            <form id="noMark" action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${episode.id}&markPrevious=false"/>"
+                                                                                            <form id="noMark${episode.id}" action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${episode.id}&markPrevious=false"/>"
                                                                                                   method="post">
                                                                                             </form>
-                                                                                            <form id="yesMark" action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${episode.id}&markPrevious=true"/>"
+                                                                                            <form id="yesMark${episode.id}" action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${episode.id}&markPrevious=true"/>"
                                                                                                   method="post">
                                                                                             </form>
                                                                                         </c:when>
