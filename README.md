@@ -10,7 +10,7 @@ Track and comment TV shows online
 ## Built With
 
 * [Spring Web MVC​](https://spring.io/) - Web framework
-* [JDBC](https://www.oracle.com/technetwork/java/javase/jdbc/index.html) - Persistence
+* [Hibernate](https://hibernate.org/) and [JPA](https://www.oracle.com/technetwork/java/javaee/tech/persistence-jsp-140049.html) - Persistence
 * [Maven](https://maven.apache.org/) - Dependency Management
 * [PostgreSQL](https://www.postgresql.org/) - Database
 * [GIT](https://www.git-scm.com/) - Code versioning
