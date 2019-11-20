@@ -131,9 +131,14 @@ public class UserHibernateDao implements UserDao {
     public UsersList getAllUsers(int page, long userId) {
         UsersList usersList = new UsersList();
 
-        //Todo: ask if correct
-        TypedQuery<User> query = em.createQuery("from User as u where u.id != :id", User.class);
-        query.setParameter("id", userId);
+        List<User> list = em.createNativeQuery("SELECT * " +
+                "FROM users WHERE users.id != ? " +
+                "LIMIT ? OFFSET ?", User.class)
+                .setParameter(1, userId)
+                .setParameter(2, OFFSET)
+                .setParameter(3, (page-1)*OFFSET)
+                .getResultList();
+
         TypedQuery<Long> countQuery = em.createQuery("select count(*) from User", Long.class);
 
         usersList.setTotal(countQuery.getSingleResult() - 1);
@@ -145,10 +150,7 @@ public class UserHibernateDao implements UserDao {
         }
         usersList.setArePrevious((page - 1) * OFFSET > OFFSET - 1);
         usersList.setAreNext(page * OFFSET - 1 < usersList.getTotal() - usersList.getTotal() % OFFSET);
-
-        query.setFirstResult((page - 1) * OFFSET);
-        query.setMaxResults(OFFSET);
-        usersList.setUsersList(query.getResultList());
+        usersList.setUsersList(list);
 
         return usersList;
     }

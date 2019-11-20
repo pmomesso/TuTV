@@ -29,14 +29,14 @@ public class SeriesHibernateDao implements SeriesDao {
         genreName = genreName != null ? genreName : "";
         networkName = networkName != null ? networkName : "";
 
-        final TypedQuery<Series> query = em.createQuery("select distinct s from Series as s inner join s.genres as g " +
-                "where lower(s.name) like :seriesName and lower(s.network.name) like :networkName and lower(g.name) like :genreName",Series.class);
-        query.setParameter("seriesName","%" + seriesName.toLowerCase() + "%");
-        query.setParameter("networkName","%" + networkName.toLowerCase() + "%");
-        query.setParameter("genreName","%" + genreName.toLowerCase() + "%");
-        query.setFirstResult(page*PAGE_SIZE);
-        query.setMaxResults(PAGE_SIZE);
-        return query.getResultList();
+        return em.createNativeQuery("SELECT DISTINCT(series.*) FROM series INNER JOIN hasgenre ON series.id = hasgenre.seriesid INNER JOIN genres ON hasgenre.genreid = genres.id INNER JOIN network ON series.network_id = network.id WHERE LOWER(series.name) like ? " +
+                " AND LOWER(network.name) like ? AND LOWER(genres.name) like ? LIMIT ? OFFSET ?", Series.class)
+                .setParameter(1, "%" + seriesName.toLowerCase() + "%")
+                .setParameter(2, "%" + networkName.toLowerCase() + "%")
+                .setParameter(3, "%" + genreName.toLowerCase() + "%")
+                .setParameter(4, PAGE_SIZE)
+                .setParameter(5, page*PAGE_SIZE)
+                .getResultList();
     }
 
     @Override
