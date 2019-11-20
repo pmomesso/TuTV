@@ -7615,7 +7615,6 @@ COPY public.ratings (id, user_id, series_id, rating) FROM stdin;
 31	1	85509	3
 32	1	85486	4
 33	1	85547	2
-34	8	57255	10000
 35	9	57243	5
 \.
 

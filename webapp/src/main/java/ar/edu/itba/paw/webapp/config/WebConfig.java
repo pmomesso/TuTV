@@ -63,9 +63,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	public DataSource dataSource() {
 		final SimpleDriverDataSource ds = new SimpleDriverDataSource();
 		ds.setDriverClass(org.postgresql.Driver.class);
-		ds.setUrl("jdbc:postgresql://localhost/paw");
-		ds.setUsername("root");
-		ds.setPassword("root");
+		ds.setUrl("jdbc:postgresql://localhost/paw-2019b-1");
+		ds.setUsername("paw-2019b-1");
+		ds.setPassword("cm7nsSf1K");
 		return ds;
 	}
 
@@ -79,7 +79,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		factoryBean.setJpaVendorAdapter(vendorAdapter);
 
 		final Properties properties = new Properties();
-		properties.setProperty("hibernate.hbm2ddl.auto", "update");
+		//properties.setProperty("hibernate.hbm2ddl.auto", "update");
 		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
 		properties.setProperty("format_sql", "true");
 
