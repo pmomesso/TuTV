@@ -148,7 +148,7 @@
                                                         <input class="cd-accordion__input" type="checkbox"
                                                                name="group-${item.index}" id="group-${item.index}">
                                                         <c:choose>
-                                                            <c:when test="${isLogged && season.viewed}">
+                                                            <c:when test="${season.viewed}">
                                                                 <label class="cd-accordion__label cd-accordion__label--icon-folder drop drop-watched" for="group-${item.index}">
                                                                     <span class="big-size"><spring:message code="series.Season" arguments="${season.seasonNumber}"/></span>
                                                                     <span class="ml-3 viewed-episodes"><spring:message code="series.slash" arguments="${season.episodesViewed},${fn:length(season.episodes)}"/></span>
@@ -164,7 +164,6 @@
                                                             <c:otherwise>
                                                                 <label class="cd-accordion__label cd-accordion__label--icon-folder drop" for="group-${item.index}">
                                                                     <span class="big-size"><spring:message code="series.Season" arguments="${season.seasonNumber}"/></span>
-                                                                    <c:if test="${isLogged}">
                                                                         <span class="ml-3 viewed-episodes"><spring:message code="series.slash" arguments="${season.episodesViewed},${fn:length(season.episodes)}"/></span>
                                                                         <c:if test="${season.seasonAired}">
                                                                             <form action="<c:url value="/viewSeason?seriesId=${series.id}&seasonId=${season.id}"/>"
@@ -175,7 +174,6 @@
                                                                                 </button>
                                                                             </form>
                                                                         </c:if>
-                                                                    </c:if>
                                                                 </label>
                                                             </c:otherwise>
                                                         </c:choose>

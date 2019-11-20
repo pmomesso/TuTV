@@ -12,12 +12,14 @@ import ar.edu.itba.paw.webapp.form.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -97,12 +99,13 @@ public class UserController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView showLogin() {
+    public ModelAndView showLogin(HttpServletRequest request, Model model) {
         Optional<User> user = userService.getLoggedUser();
-        if(user.isPresent()){
+        if(user.isPresent()) {
             return new ModelAndView("redirect:/");
-        }
-        else{
+        } else {
+            //String referrer = request.getHeader("Referer");
+            //request.getSession().setAttribute("URL_BEFORE_AUTH", referrer);
             return new ModelAndView("login");
         }
     }
