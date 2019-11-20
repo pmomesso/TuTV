@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.interfaces.AuthenticationService;
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.User;
@@ -30,6 +31,9 @@ public class UserController {
 
     @Autowired
     private SeriesService seriesService;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @RequestMapping(value = "/banUser", method = RequestMethod.POST)
     public ModelAndView banUser(@RequestParam(value = "seriesId", required = false) Long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException, NotFoundException {
@@ -158,6 +162,10 @@ public class UserController {
     public ModelAndView showRegister(@RequestParam("token") String token) {
 
         boolean activated = userService.activateUser(token);
+
+        if(activated) {
+
+        }
 
         ModelAndView mav = new ModelAndView("mailconfirm");
         mav.addObject("activated", activated);
