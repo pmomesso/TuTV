@@ -151,12 +151,15 @@ public class UserServiceImplTest {
         Assert.assertEquals(newUsername,mockUser.getUserName());
     }
     //TODO
-    /*
     @Test
     public void loggedInGetAllUsersButLoggedOneTest(){
         //Setup
         User mockUser = getMockUser();
-        Mockito.when(mockDao.getAllUsers(1, 1)).thenReturn(new UsersList());
+        Mockito.when(mockDao.getAllUsers(1, 1)).thenAnswer(invocation -> {
+            UsersList list = new UsersList();
+            list.setUsersList(Collections.EMPTY_LIST);
+            return list;
+        });
         Mockito.when(mockDao.getUserByMail(Mockito.eq(MAIL))).thenReturn(Optional.of(mockUser));
         Mockito.when(authentication.getLoggedUserMail()).thenReturn(Optional.of(MAIL));
         //Ejercitar
@@ -170,17 +173,17 @@ public class UserServiceImplTest {
         //Asserts
         Assert.assertEquals(0,users.getUsersList().size());
     }
-    */
-    //TODO
-    /*
+
     @Test
     public void loggedOutGetAllUsersButLoggedOneTest(){
         //Setup
         User mockUser = getMockUser();
         Mockito.when(mockDao.getAllUsers(1, 1)).thenAnswer(invocation -> {
+            UsersList list = new UsersList();
             User[] users = new User[1];
             users[0] = mockUser;
-            return Arrays.asList(users);
+            list.setUsersList(Arrays.asList(users));
+            return list;
         });
         Mockito.when(authentication.getLoggedUserMail()).thenReturn(Optional.of(MAIL));
         //Ejercitar
@@ -188,14 +191,14 @@ public class UserServiceImplTest {
         try {
             users = userService.getAllUsersExceptLoggedOne(1);
         } catch (UnauthorizedException e) {
-            Assert.fail();
+            // Should throw exception if there is no logged user
             return;
         }
         //Asserts
-        Assert.assertEquals(1,users.getUsersList().size());
-        assertUser(users.getUsersList().get(0));
+        Assert.fail();
     }
-    */
+
+
     @Test
     public void activateUserTest(){
         //Setup
