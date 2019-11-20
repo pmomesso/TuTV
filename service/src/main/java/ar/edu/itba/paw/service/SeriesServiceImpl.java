@@ -96,8 +96,6 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     private void setHasPreviousUnseenEpisodes(Series series, User u) {
-        /* Avoid doing the search if the user does not currently follow the series*/
-        if(!u.getFollows().contains(series)) return;
         for(Season season : series.getSeasons()) {
             for(Episode episode : season.getEpisodes()) {
                 if(series.getSeasons().stream().anyMatch(s ->
@@ -273,8 +271,11 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     @Transactional
-    public void viewUntilEpisode(long episodeId) throws NotFoundException, UnauthorizedException {
+    public void viewUntilEpisode(long seriesId, long episodeId) throws NotFoundException, UnauthorizedException {
         User u = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        if(!this.follows(seriesId)){
+            this.followSeries(seriesId);
+        }
         if(!seriesDao.viewUntilEpisode(episodeId, u)) throw new NotFoundException();
     }
 

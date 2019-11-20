@@ -30,13 +30,13 @@ body {
 .spoiler-span {
     position: absolute;
     top: 8px;
-    right: 110px;
+    right: 155px;
     color: gray;
 }
 .check-spoiler {
     position: absolute;
     top: 2px;
-    right: 80px;
+    right: 105px;
     margin: 0 !important;
 }
 .tutv-button {
@@ -45,6 +45,13 @@ body {
  border-radius: 10px;
  padding: 1rem;
  min-width: 100px;
+}
+.tutv-button-no {
+    background-color: gray;
+    border: none;
+    border-radius: 10px;
+    padding: 1rem;
+    min-width: 100px;
 }
 .error {
     color: red;
@@ -323,12 +330,12 @@ body {
 .spoiler-span {
     position: absolute;
     top: 10px;
-    right: 100px;
+    right: 160px;
 }
 .check-spoiler {
     position: absolute;
     top: 10px;
-    right: 165px;
+    right: 100px;
     margin: 0 !important;
 }
 }
@@ -5286,4 +5293,18 @@ body.alt h2.title {
 .icon-margin {
     margin-top: 25px;
     margin-right: 10px;
+}
+#confirm {
+    display: none;
+    border: 1px solid #aaa;
+    background-color: white;
+    position: fixed;
+    left: 50%;
+    margin-left: -100px;
+    margin-top: 200px;
+    padding: 6px 8px 8px;
+    box-sizing: border-box;
+    text-align: center;
+    z-index: 2000;
+    font-size: 14px;
 }

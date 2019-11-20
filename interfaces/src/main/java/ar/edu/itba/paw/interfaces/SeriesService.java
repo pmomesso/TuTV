@@ -41,7 +41,7 @@ public interface SeriesService {
 
     SeriesReviewComment addCommentToPost(long commentPostId, String body, String baseUrl) throws NotFoundException, UnauthorizedException;
 
-    void viewUntilEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
+    void viewUntilEpisode(long seriesId, long episodeId) throws NotFoundException, UnauthorizedException;
 
     void likeComment(long commentId) throws NotFoundException, UnauthorizedException;
 

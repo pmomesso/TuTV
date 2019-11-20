@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.interfaces.AuthenticationService;
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.User;
@@ -12,12 +13,14 @@ import ar.edu.itba.paw.webapp.form.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -28,6 +31,9 @@ public class UserController {
 
     @Autowired
     private SeriesService seriesService;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @RequestMapping(value = "/banUser", method = RequestMethod.POST)
     public ModelAndView banUser(@RequestParam(value = "seriesId", required = false) Long seriesId, @RequestParam("userId") long userId) throws UnauthorizedException, NotFoundException {
@@ -97,12 +103,13 @@ public class UserController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView showLogin() {
+    public ModelAndView showLogin(HttpServletRequest request, Model model) {
         Optional<User> user = userService.getLoggedUser();
-        if(user.isPresent()){
+        if(user.isPresent()) {
             return new ModelAndView("redirect:/");
-        }
-        else{
+        } else {
+            //String referrer = request.getHeader("Referer");
+            //request.getSession().setAttribute("URL_BEFORE_AUTH", referrer);
             return new ModelAndView("login");
         }
     }
@@ -152,9 +159,14 @@ public class UserController {
     }
 
     @RequestMapping(value = "/mailconfirm", method = RequestMethod.GET)
-    public ModelAndView showRegister(@RequestParam("token") String token) {
+    public ModelAndView showRegister(HttpServletRequest request, Model model, @RequestParam("token") String token) {
 
-        boolean activated = userService.activateUser(token);
+        Optional<User> user = userService.activateUser(token);
+
+        boolean activated = user.isPresent();
+
+        if(activated)
+            authenticationService.authenticate(user.get(), request);
 
         ModelAndView mav = new ModelAndView("mailconfirm");
         mav.addObject("activated", activated);

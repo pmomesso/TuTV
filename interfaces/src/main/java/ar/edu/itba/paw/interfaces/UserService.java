@@ -10,6 +10,7 @@ import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.Option;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +21,7 @@ public interface UserService {
 	Optional<User> findByMail(String mail);
 
 	Either<User, Collection<Errors>> createUser(String userName, String password, String mail, boolean isAdmin, String baseUrl) throws UnauthorizedException;
-	boolean activateUser(String token);
+	Optional<User> activateUser(String token);
 
 	Optional<User> getLoggedUser();
 

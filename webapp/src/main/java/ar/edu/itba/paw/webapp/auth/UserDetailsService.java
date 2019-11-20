@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.interfaces.AuthenticationService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +17,18 @@ public class UserDetailsService implements org.springframework.security.core.use
     @Autowired
     private UserService us;
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
     @Override
     public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
         final User user = us.findByMail(mail).orElseThrow(() -> { return new UsernameNotFoundException("No such user"); });
 
-        final Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        final Set<GrantedAuthority> authorities = authenticationService.getUserAuthorities(user);
 
-        boolean isUserEnabled = (user.getConfirmationKey() == null || user.getConfirmationKey().isEmpty()); //TODO AGREGAR SI ESTA BANEADO
+        boolean isUserEnabled = (user.getConfirmationKey() == null || user.getConfirmationKey().isEmpty());
 
         return new UserDetails(user.getMailAddress(), user.getPassword(), isUserEnabled, authorities);
     }
 }
+

@@ -1,12 +1,16 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.interfaces.AuthenticationService;
 import ar.edu.itba.paw.interfaces.SeriesService;
+import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.Series;
+import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.form.SearchForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,18 +18,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class ViewsController {
 
-	@Autowired
+    @Autowired
 	private SeriesService seriesService;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView home(@RequestParam(value = "id", required = false) Long id, @RequestParam(value = "page", required = false) Long page) {
+	public ModelAndView home(HttpServletRequest request, Model model, @RequestParam(value = "id", required = false) Long id, @RequestParam(value = "page", required = false) Long page) {
 		final ModelAndView mav = new ModelAndView("index");
+
         if (id != null) {
             mav.addObject("sectionId", id);
             mav.addObject("genres", seriesService.getSeriesByGenre(id, page));

@@ -205,7 +205,7 @@ public class UserServiceImplTest {
             return mockUser;
         }).when(mockDao).setValidationKey(Mockito.eq(USER_ID),Mockito.eq(null));
         //Ejercitar
-        boolean activateUser = userService.activateUser(CONFIRMATION_KEY);
+        boolean activateUser = userService.activateUser(CONFIRMATION_KEY).isPresent();
         //Asserts
         Assert.assertTrue(activateUser);
         Assert.assertNull(mockUser.getConfirmationKey());
@@ -319,7 +319,7 @@ public class UserServiceImplTest {
         User mockUser = getMockUser();
         Mockito.when(mockDao.getUserByValidationKey(AdditionalMatchers.not(Mockito.eq(CONFIRMATION_KEY)))).thenReturn(Optional.empty());
         //Ejercitar
-        boolean activateUser = userService.activateUser(CONFIRMATION_KEY + "other");
+        boolean activateUser = userService.activateUser(CONFIRMATION_KEY + "other").isPresent();
         //Asserts
         Assert.assertFalse(activateUser);
         Assert.assertNotNull(mockUser.getConfirmationKey());

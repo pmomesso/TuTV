@@ -1,11 +1,13 @@
 package ar.edu.itba.paw.webapp.config;
 
+import ar.edu.itba.paw.webapp.auth.OurAuthenticationSuccessHandler;
 import ar.edu.itba.paw.webapp.auth.UrlAuthenticationFailureHandler;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -14,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -25,12 +28,12 @@ import java.util.concurrent.TimeUnit;
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
+
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
-        //return bCryptPasswordEncoder;
     }
 
     @Override
@@ -45,13 +48,23 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .invalidSessionUrl("/login")
                 .and().authorizeRequests()
                     .antMatchers("/admin/**").hasRole("ADMIN")
-                    .antMatchers("/login").permitAll()
+                    .antMatchers("/viewSeason").hasRole("USER")
+                    .antMatchers("/unviewSeason").hasRole("USER")
+                    .antMatchers("/viewEpisode").hasRole("USER")
+                    .antMatchers("/unviewEpisode").hasRole("USER")
+                    .antMatchers("/addSeries").hasRole("USER")
+                    .antMatchers("/unfollowSeries").hasRole("USER")
+                    .antMatchers("/likePost").hasRole("USER")
+                    .antMatchers("/unlikePost").hasRole("USER")
+                    .antMatchers("/rate").hasRole("USER")
+                    .antMatchers("/login").anonymous()
                     .antMatchers("/**").permitAll()
                 .and().formLogin()
                     .usernameParameter("username")
                     .passwordParameter("password")
-                    .defaultSuccessUrl("/", false)
+                    //.defaultSuccessUrl("/", false)
                     .loginPage("/login")
+                    .successHandler(getAuthenticationSuccessHandler())
                     .failureHandler(new UrlAuthenticationFailureHandler())
                 .and().rememberMe()
                     .rememberMeParameter("rememberme")
@@ -79,5 +92,16 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         } catch (Exception e) {
             throw new RuntimeException();
         }
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler getAuthenticationSuccessHandler() {
+        return new OurAuthenticationSuccessHandler("/");
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }
