@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Transactional
-public class UserDaoHibernateTest {
+public class UserHibernateDaoTest {
     /* Valores test para usuario*/
     private static final String USERNAME = "username";
     private static final String MAILADDRESS = "mailaddress";
