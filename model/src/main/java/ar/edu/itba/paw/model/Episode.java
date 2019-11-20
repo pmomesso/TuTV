@@ -10,8 +10,8 @@ import java.util.*;
 public class Episode {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "series_id_seq")
-    @SequenceGenerator(sequenceName = "series_id_seq", name = "series_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "episode_id_seq")
+    @SequenceGenerator(sequenceName = "episode_id_seq", name = "episode_id_seq", allocationSize = 1)
     private Long id = -1L;
     @Column(nullable = true)
     private Long tvdbid;

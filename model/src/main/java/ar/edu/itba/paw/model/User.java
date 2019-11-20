@@ -27,10 +27,10 @@ public class User {
     @Column(name = "confirmation_key", length = 60)
     private String confirmationKey;
 
-    @Column(name = "isadmin", nullable = false)
+    @Column(name = "isadmin", nullable = false, columnDefinition = "boolean default false")
     private boolean isAdmin = false;
 
-    @Column(name = "isbanned", nullable = false)
+    @Column(name = "isbanned", nullable = false, columnDefinition = "boolean default false")
     private boolean isBanned = false;
 
     @Column(name = "avatar")

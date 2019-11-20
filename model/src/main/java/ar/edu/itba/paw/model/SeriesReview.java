@@ -17,7 +17,7 @@ public class SeriesReview {
     private String body;
     @Column(columnDefinition = "integer default 0")
     private int numlikes;
-    @Column(name = "isspam", nullable = false)
+    @Column(name = "isspam", nullable = false,columnDefinition = "boolean default false")
     private boolean isSpam;
 
     @OneToMany(mappedBy = "parent",fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
