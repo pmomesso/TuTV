@@ -108,6 +108,7 @@ public class SeriesServiceImpl implements SeriesService {
                     )
                 )) {
                     episode.setHasPreviousUnseenEpisodes(true);
+                    return;
                 }
             }
         }

@@ -192,13 +192,38 @@
                                                                                     </form>
                                                                                 </c:when>
                                                                                 <c:otherwise>
-                                                                                    <form action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${episode.id}"/>"
-                                                                                          method="post">
-                                                                                        <button type="submit"
-                                                                                                style="font-family: FontAwesome,serif; font-style: normal"
-                                                                                                class="check">&#xf058
-                                                                                        </button>
-                                                                                    </form>
+                                                                                    <c:choose>
+                                                                                        <c:when test="${episode.hasPreviousUnseenEpisodes}">
+                                                                                            <div id="confirm">
+                                                                                                <div class="message p-3"></div>
+                                                                                                <button class="no tutv-button-no m-3"><spring:message code="series.no"/></button>
+                                                                                                <button class="yes tutv-button m-3"><spring:message code="series.yes"/></button>
+                                                                                            </div>
+                                                                                            <button style="font-family: FontAwesome,serif; font-style: normal" class="check"
+                                                                                                    onclick="functionConfirm('<spring:message code="series.markPrevious"/>', function yes() {
+                                                                                                            document.getElementById('yesMark').submit();
+                                                                                                },
+                                                                                                function no() {
+                                                                                                            document.getElementById('noMark').submit();
+                                                                                                });">&#xf058</button>
+                                                                                            </body>
+                                                                                            <form id="noMark" action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${episode.id}&markPrevious=false"/>"
+                                                                                                  method="post">
+                                                                                            </form>
+                                                                                            <form id="yesMark" action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${episode.id}&markPrevious=true"/>"
+                                                                                                  method="post">
+                                                                                            </form>
+                                                                                        </c:when>
+                                                                                        <c:otherwise>
+                                                                                            <form action="<c:url value="/viewEpisode?seriesId=${series.id}&episodeId=${episode.id}&markPrevious=false"/>"
+                                                                                                  method="post">
+                                                                                                <button type="submit"
+                                                                                                        style="font-family: FontAwesome,serif; font-style: normal"
+                                                                                                        class="check">&#xf058
+                                                                                                </button>
+                                                                                            </form>
+                                                                                        </c:otherwise>
+                                                                                    </c:choose>
                                                                                 </c:otherwise>
                                                                             </c:choose>
                                                                         </c:if>

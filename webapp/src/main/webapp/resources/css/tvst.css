@@ -46,6 +46,13 @@ body {
  padding: 1rem;
  min-width: 100px;
 }
+.tutv-button-no {
+    background-color: gray;
+    border: none;
+    border-radius: 10px;
+    padding: 1rem;
+    min-width: 100px;
+}
 .error {
     color: red;
     font-size: 13px;
@@ -5286,4 +5293,16 @@ body.alt h2.title {
 .icon-margin {
     margin-top: 25px;
     margin-right: 10px;
+}
+#confirm {
+    display: none;
+    border: 1px solid #aaa;
+    background-color: white;
+    position: fixed;
+    left: 50%;
+    margin-left: -100px;
+    padding: 6px 8px 8px;
+    box-sizing: border-box;
+    text-align: center;
+    z-index: 2000;
 }
