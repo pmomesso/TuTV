@@ -262,13 +262,9 @@ public class SeriesServiceImpl implements SeriesService {
         SeriesReviewComment s = seriesDao.addCommentToPost(commentPostId, body, user.getId()).orElseThrow(NotFoundException::new);
         if (!user.equals(review.getUser())) {
             mailService.sendCommentResponseMail(s, baseUrl);
-            notifyPoster(review.getUser(), review.getSeries(), message);
+            seriesDao.createNotification(review.getUser(), review.getSeries(), message);
         }
         return s;
-    }
-
-    private void notifyPoster(User user, Series series, String message) {
-        seriesDao.createNotification(user, series, message);
     }
 
     @Override
