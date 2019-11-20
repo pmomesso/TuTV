@@ -62,9 +62,10 @@ public class SeriesServiceImpl implements SeriesService {
         }
     }
     @Autowired
-    public SeriesServiceImpl(SeriesDao seriesDao, UserService userService) {
+    public SeriesServiceImpl(SeriesDao seriesDao, UserService userService,MessageSource messageSource) {
         this.seriesDao = seriesDao;
         this.userService = userService;
+        this.messageSource = messageSource;
     }
 
     @Override

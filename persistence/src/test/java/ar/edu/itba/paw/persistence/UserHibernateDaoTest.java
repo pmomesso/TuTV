@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.model.Genre;
-import ar.edu.itba.paw.model.Notification;
-import ar.edu.itba.paw.model.Series;
-import ar.edu.itba.paw.model.User;
+import ar.edu.itba.paw.model.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +20,22 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = TestConfig.class)
 @Transactional
 public class UserHibernateDaoTest {
+
+    /* Valores test serie */
+    private static final int TVDB_ID = 2;
+    private static final String SERIES_NAME_1 = "name";
+    private static final String SERIES_NAME_2 = "series name 2";
+    private static final String DESCRIPTION = "description";
+    private static final double TOTAL_RATING = 3;
+    private static final String STATUS = "status";
+    private static final int RUNTIME = 4;
+    private static final String FIRST_AIRED = "2000-01-01";
+    private static final String ID_IMDB = "5";
+    private static final String ADDED = "2000-01-01";
+    private static final String UPDATED = "2000-01-01";
+    private static final String POSTER_URL = "url/poster";
+    private static final String BANNER_URL = "url/banner";
+    private static final int FOLLOWERS = 6;
     /* Valores test para usuario*/
     private static final String USERNAME = "username";
     private static final String MAILADDRESS = "mailaddress";
@@ -32,9 +45,6 @@ public class UserHibernateDaoTest {
     private static final boolean ISADMIN = true;
     private static final boolean BANNED = false;
 
-    /* Valores test para serie*/
-    private static final String SERIES_NAME_1 = "series name 1";
-    private static final String SERIES_NAME_2 = "series name 2";
 
     /* Valores test para genre*/
     private static final String GENRE_1 = "genre 1";
@@ -78,11 +88,10 @@ public class UserHibernateDaoTest {
         genre2 = new Genre(GENRE_2);
         em.persist(genre1);
         em.persist(genre2);
-
-        series1 = new Series();
-        series1.setName(SERIES_NAME_1);
-        series2 = new Series();
-        series2.setName(SERIES_NAME_2);
+        Network network = new Network("name");
+        em.persist(network);
+        series1 = new Series(TVDB_ID, SERIES_NAME_1,DESCRIPTION, network,POSTER_URL,BANNER_URL,TOTAL_RATING,STATUS,RUNTIME,FOLLOWERS,ID_IMDB,FIRST_AIRED,ADDED,UPDATED);
+        series2 = new Series(TVDB_ID, SERIES_NAME_2,DESCRIPTION, network,POSTER_URL,BANNER_URL,TOTAL_RATING,STATUS,RUNTIME,FOLLOWERS,ID_IMDB,FIRST_AIRED,ADDED,UPDATED);
         em.persist(series1);
         em.persist(series2);
 
@@ -107,9 +116,14 @@ public class UserHibernateDaoTest {
 
     @Test
     public void createUserTest() {
-        Optional<User> u = userHibernateDao.createUser(USERNAME, PASSWORD, MAILADDRESS, ISADMIN);
-        assertTrue(u.isPresent());
-        assertUser(u.get());
+        Optional<User> user = userHibernateDao.createUser(USERNAME, PASSWORD, MAILADDRESS, ISADMIN);
+        assertTrue(user.isPresent());
+        User u = user.get();
+        assertEquals(USERNAME, u.getUserName());
+        assertEquals(MAILADDRESS, u.getMailAddress());
+        assertEquals(PASSWORD, u.getPassword());
+        assertEquals(ISADMIN, u.getIsAdmin());
+        assertEquals(BANNED, u.getIsBanned());
     }
 
     @Test

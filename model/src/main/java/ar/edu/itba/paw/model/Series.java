@@ -17,11 +17,11 @@ public class Series  {
     private Integer tvdbid;
     @Column(length = 255, nullable = false)
     private String name;
-    @Column(name = "description",length = 2048, nullable = false)
+    @Column(name = "description",length = 2048, nullable = true)
     private String seriesDescription;
-    @Column(length = 255, nullable = false)
+    @Column(length = 255, nullable = true)
     private String posterUrl;
-    @Column(length = 255, nullable = false)
+    @Column(length = 255, nullable = true)
     private String bannerUrl;
     @Column(length = 16, nullable = false)
     private String status;

@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.context.MessageSource;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,8 +51,11 @@ public class SeriesServiceImplTest {
     @Mock
     private UserService mockUserService;
 
+    @Mock
+    private MessageSource mockMessageSource;
+
     @InjectMocks
-    private SeriesServiceImpl seriesService = new SeriesServiceImpl(mockDao,mockUserService);
+    private SeriesServiceImpl seriesService;
 
     private User getMockUser() {
         User u = new User();
@@ -89,7 +93,7 @@ public class SeriesServiceImplTest {
     public void searchSeriesByNameTest(){
         //Setup
         Series s = getMockSeries();
-        Mockito.when(mockDao.searchSeries(Mockito.eq(NAME),Mockito.eq(GENRE),Mockito.eq(NETWORK_NAME),0)).thenAnswer(invocation -> {
+        Mockito.when(mockDao.searchSeries(Mockito.eq(NAME),Mockito.eq(GENRE),Mockito.eq(NETWORK_NAME),Mockito.eq(0))).thenAnswer(invocation -> {
             List<Series> seriesList = new ArrayList<>();
             seriesList.add(s);
             return seriesList;
@@ -129,6 +133,7 @@ public class SeriesServiceImplTest {
         //Setup
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
         Mockito.when(mockDao.setViewedEpisode(Mockito.eq(EPISODE_ID),Mockito.eq(USER_ID))).thenReturn(1);
+        Mockito.when(mockDao.followSeries(Mockito.eq(SERIES_ID),Mockito.eq(USER_ID))).thenReturn(1);
         //Ejercitar
         try {
             seriesService.setViewedEpisode(SERIES_ID, EPISODE_ID);
@@ -141,6 +146,7 @@ public class SeriesServiceImplTest {
         //Setup
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
         Mockito.when(mockDao.setViewedSeason(Mockito.eq(SEASON_ID),Mockito.eq(USER_ID))).thenReturn(1);
+        Mockito.when(mockDao.followSeries(Mockito.eq(SERIES_ID),Mockito.eq(USER_ID))).thenReturn(1);
         //Ejercitar
         try {
             seriesService.setViewedSeason(SERIES_ID, SEASON_ID);
@@ -229,8 +235,13 @@ public class SeriesServiceImplTest {
         //Setup
         final long postId = 1;
         final String body = "body";
+        SeriesReview review = new SeriesReview();
+        review.setSeries(getMockSeries());
+        review.setUser(getMockUser());
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
+        Mockito.when(mockDao.getSeriesReviewById(Mockito.eq(postId))).thenReturn(Optional.of(review));
         Mockito.when(mockDao.addCommentToPost(Mockito.eq(postId),Mockito.eq(body),Mockito.eq(USER_ID))).thenReturn(Optional.of(new SeriesReviewComment()));
+        Mockito.when(mockMessageSource.getMessage(Mockito.anyString(),Mockito.any(),Mockito.any())).thenReturn("message");
         //Ejercitar
         try {
             seriesService.addCommentToPost(postId,body,"baseUrl");

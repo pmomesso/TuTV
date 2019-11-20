@@ -72,7 +72,7 @@ public class UserHibernateDao implements UserDao {
     @Override
     public boolean checkIfValidationKeyExists(String key) {
         TypedQuery<User> query = em.createQuery("from User as u where u.confirmationKey = :key", User.class);
-        return query.setParameter("key", key).getResultList().isEmpty();
+        return !query.setParameter("key", key).getResultList().isEmpty();
     }
 
     @Override

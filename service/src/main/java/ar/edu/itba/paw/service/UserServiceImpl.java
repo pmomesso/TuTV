@@ -44,10 +44,11 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao,MailService mailService,PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserDao userDao,MailService mailService,PasswordEncoder passwordEncoder,AuthenticationService authenticationService) {
         this.userDao = userDao;
         this.mailService = mailService;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationService = authenticationService;
     }
 
     @Override
