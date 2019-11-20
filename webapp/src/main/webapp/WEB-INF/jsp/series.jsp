@@ -59,9 +59,8 @@
                                             </c:choose>
                                             <h2><spring:message code="series.rating" arguments="${totalRating}"/></h2>
                                         </div>
-                                        <c:if test="${isLogged}">
                                             <c:choose>
-                                                <c:when test="${fn:contains(series.userFollowers,user)}">
+                                                <c:when test="${fn:contains(series.userFollowers,user) && isLogged}">
                                                     <form action="<c:url value="/unfollowSeries?seriesId=${series.id}"/>" method="post">
                                                         <button class="add-button" type="submit"><spring:message code="series.unfollow"/></button>
                                                     </form>
@@ -72,7 +71,6 @@
                                                     </form>
                                                 </c:otherwise>
                                             </c:choose>
-                                        </c:if>
                                     </div>
                                 </div>
                             </div>
@@ -110,7 +108,6 @@
                                         <spring:message code="index.followers" arguments="${series.followers},${suffix}"/>
                                     </div>
                                 </div>
-                                <c:if test="${isLogged}">
                                     <div class="col-lg-4">
                                         <div class="container h-20">
                                             <div class="starrating risingstar d-flex justify-content-center flex-row-reverse">
@@ -136,7 +133,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </c:if>
                             </div>
                             <div id="content" class="show-main alt">
                                 <div class="content-container">
@@ -184,9 +180,9 @@
                                                                         <h3><spring:message code="series.minus" arguments="${episode.numEpisode},${episode.name}"/></h3>
                                                                         <span class="ml-3 episode-date"><fmt:formatDate value="${episode.airing}" type="date" dateStyle="short"/></span>
                                                                         <c:set var="today_date" value="<%=new java.util.Date()%>"/>
-                                                                        <c:if test="${isLogged && (episode.airing lt today_date)}">
+                                                                        <c:if test="${(episode.airing lt today_date)}">
                                                                             <c:choose>
-                                                                                <c:when test="${fn:contains(episode.viewers,user)}">
+                                                                                <c:when test="${fn:contains(episode.viewers,user) && isLogged}">
                                                                                     <form action="<c:url value="/unviewEpisode?seriesId=${series.id}&episodeId=${episode.id}"/>"
                                                                                           method="post">
                                                                                         <button type="submit"
@@ -315,10 +311,8 @@
                                                                                             </button>
                                                                                         </form>
                                                                                     </c:if>
-                                                                                    <c:choose>
-                                                                                        <c:when test="${isLogged}">
                                                                                             <c:choose>
-                                                                                                <c:when test="${fn:contains(seriesReview.likes,user)}">
+                                                                                                <c:when test="${fn:contains(seriesReview.likes,user) && isLogged}">
                                                                                                     <form action="<c:url value="/unlikePost?seriesId=${series.id}&postId=${seriesReview.id}"/>"
                                                                                                           method="post" class="float-left">
                                                                                                         <button type="submit" class="heart post-liked no-padding" style="font-family: FontAwesome,serif; font-style: normal">&#xf004</button>
@@ -333,12 +327,6 @@
                                                                                                     </form>
                                                                                                 </c:otherwise>
                                                                                             </c:choose>
-                                                                                        </c:when>
-                                                                                        <c:otherwise>
-                                                                                            <span style="font-family: FontAwesome,serif; font-style: normal">&#xf004</span>
-                                                                                            <span>${seriesReview.numLikes}</span>
-                                                                                        </c:otherwise>
-                                                                                    </c:choose>
                                                                                 </div>
                                                                                 <c:if test="${seriesReview.isSpam}">
                                                                                     <blockquote class="original">
