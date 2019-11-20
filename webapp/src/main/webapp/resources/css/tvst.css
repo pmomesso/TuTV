@@ -30,13 +30,13 @@ body {
 .spoiler-span {
     position: absolute;
     top: 8px;
-    right: 110px;
+    right: 155px;
     color: gray;
 }
 .check-spoiler {
     position: absolute;
     top: 2px;
-    right: 80px;
+    right: 105px;
     margin: 0 !important;
 }
 .tutv-button {
@@ -330,12 +330,12 @@ body {
 .spoiler-span {
     position: absolute;
     top: 10px;
-    right: 100px;
+    right: 160px;
 }
 .check-spoiler {
     position: absolute;
     top: 10px;
-    right: 165px;
+    right: 100px;
     margin: 0 !important;
 }
 }
