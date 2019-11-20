@@ -85,4 +85,7 @@ public interface SeriesDao {
     Optional<SeriesReview> getSeriesReviewById(long commentPostId);
 
     boolean viewUntilEpisode(long episodeId, User u);
+
+    List<Episode> getToBeReleasedEpisodes();
+
 }

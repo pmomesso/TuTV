@@ -11,9 +11,11 @@ import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.TypedQuery;
 import java.util.*;
 
 @Service
@@ -389,4 +391,21 @@ public class SeriesServiceImpl implements SeriesService {
             throw new NotFoundException();
         }
     }
+
+    @Override
+    @Scheduled(cron = "0 0 0 ? * *") /* Corre a las 12am todos los d￿ias*/
+    @Transactional
+    public void createNotificationsForNewEpisodes() {
+        List<Episode> toBeReleased = seriesDao.getToBeReleasedEpisodes();
+        for(Episode episode : toBeReleased) {
+            Series series = episode.getSeason().getSeries();
+            for(User user : series.getUserFollowers()) {
+                /* Creo una notificacion y la persisto*/
+                Object[] args = {series.getName()};
+                String message = messageSource.getMessage("index.releaseNotification", args, LocaleContextHolder.getLocale());
+                seriesDao.createNotification(user, series, message);
+            }
+        }
+    }
+
 }

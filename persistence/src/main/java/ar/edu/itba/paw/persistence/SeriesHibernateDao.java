@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.SeriesDao;
 import ar.edu.itba.paw.model.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -560,4 +561,16 @@ public class SeriesHibernateDao implements SeriesDao {
         }
         return true;
     }
+
+    @Override
+    public List<Episode> getToBeReleasedEpisodes() {
+        /* Query para conseguir todos los episodios que saldr￿an en 1 semana*/
+        TypedQuery<Episode> query = em.createQuery("FROM Episode e " +
+                "WHERE year(e.aired) = year(current_date()) " +
+                "AND month(e.aired) = month(current_date()) " +
+                "AND day(e.aired) - day(current_date) = 7", Episode.class);
+        List<Episode> toBeReleased = query.getResultList();
+        return toBeReleased;
+    }
+
 }

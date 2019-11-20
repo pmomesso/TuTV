@@ -4,6 +4,8 @@ import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
+import org.springframework.scheduling.annotation.Scheduled;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -65,4 +67,6 @@ public interface SeriesService {
     void modifyList(long id, String name, long[] seriesId) throws UnauthorizedException, NotFoundException;
 
     void removeList(long id) throws UnauthorizedException, NotFoundException;
+
+    void createNotificationsForNewEpisodes();
 }
