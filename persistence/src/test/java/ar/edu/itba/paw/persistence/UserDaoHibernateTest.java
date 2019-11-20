@@ -96,6 +96,7 @@ public class UserDaoHibernateTest {
         genre2.getSeries().add(series2);
 
         notification = new Notification();
+        notification.setViewed(false);
         em.persist(notification);
 
         user.getNotifications().add(notification);
