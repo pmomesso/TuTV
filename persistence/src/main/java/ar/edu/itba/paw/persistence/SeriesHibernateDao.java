@@ -544,8 +544,8 @@ public class SeriesHibernateDao implements SeriesDao {
         /*Get the episodes that come before the current one and are not viewed by the current user*/
         final TypedQuery<Episode> query = em.createQuery("SELECT e " +
                 "FROM Episode e " +
-                "WHERE e.season.seasonNumber <= :seasonNumber " +
-                "AND e.numEpisode <= :numEpisode " +
+                "WHERE (e.season.seasonNumber < :seasonNumber " +
+                "OR e.numEpisode <= :numEpisode) " +
                 "AND e.season.series.id = :seriesId " +
                 "AND :userId NOT IN (SELECT id FROM User u WHERE u IN elements(e.viewers))", Episode.class)
                 .setParameter("seasonNumber", episode.getSeason().getSeasonNumber())
