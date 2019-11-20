@@ -536,15 +536,21 @@ public class SeriesHibernateDao implements SeriesDao {
 
     @Override
     public boolean viewUntilEpisode(long episodeId, User u) {
-        /*Get the episodes that come before the current one*/
         Episode episode = em.find(Episode.class, episodeId);
         if(episode == null) {
             return false;
         }
-        final TypedQuery<Episode> query = em.createQuery("from Episode AS e WHERE e.season.seasonNumber <= :seasonNumber AND e.numEpisode <= :numEpisode AND e.season.series.id = :seriesId", Episode.class)
+        /*Get the episodes that come before the current one and are not viewed by the current user*/
+        final TypedQuery<Episode> query = em.createQuery("SELECT e " +
+                "FROM Episode e " +
+                "WHERE e.season.seasonNumber <= :seasonNumber " +
+                "AND e.numEpisode <= :numEpisode " +
+                "AND e.season.series.id = :seriesId " +
+                "AND :userId NOT IN (SELECT id FROM User u WHERE u IN elements(e.viewers))", Episode.class)
                 .setParameter("seasonNumber", episode.getSeason().getSeasonNumber())
                 .setParameter("numEpisode", episode.getNumEpisode())
-                .setParameter("seriesId", episode.getSeason().getSeries().getId());
+                .setParameter("seriesId", episode.getSeason().getSeries().getId())
+                .setParameter("userId", u.getId());
         List<Episode> episodeList = query.getResultList();
         /*Set the episodes as viewed*/
         Set<Episode> episodesViewed = u.getViewed();

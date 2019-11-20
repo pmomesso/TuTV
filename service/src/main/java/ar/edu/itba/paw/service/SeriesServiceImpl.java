@@ -89,14 +89,15 @@ public class SeriesServiceImpl implements SeriesService {
                 setLoggedInUserRating(user, s);
                 //Marco las temporadas vistas.
                 setViewedSeasons(user);
+                setHasPreviousUnseenEpisodes(s, user);
             });
-            userService.getLoggedUser().ifPresent(user->setHasPreviousUnseenEpisodes(s, user));
         });
         return series;
     }
 
     private void setHasPreviousUnseenEpisodes(Series series, User u) {
-        //TODO. Find better way
+        /* Avoid doing the search if the user does not currently follow the series*/
+        if(!u.getFollows().contains(series)) return;
         for(Season season : series.getSeasons()) {
             for(Episode episode : season.getEpisodes()) {
                 if(series.getSeasons().stream().anyMatch(s ->
