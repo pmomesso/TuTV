@@ -11,14 +11,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -40,13 +44,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void authenticate(User u, HttpServletRequest request) {
         request.getSession();
 
-        final Set<GrantedAuthority> authorities = getUserAuthorities(u);
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(u, null, authorities);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(u.getMailAddress(), u.getPassword());
 
         Authentication auth = authenticationManager.authenticate(token);
 
         token.setDetails(new WebAuthenticationDetails(request));
         SecurityContextHolder.getContext().setAuthentication(auth);
+
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(auth);
+        HttpSession session = request.getSession(true);
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
     }
 
     @Override

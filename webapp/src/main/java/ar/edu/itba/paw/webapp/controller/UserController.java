@@ -165,8 +165,8 @@ public class UserController {
 
         boolean activated = user.isPresent();
 
-        //if(activated)
-        //    authenticationService.authenticate(user.get(), request);
+        if(activated)
+            authenticationService.authenticate(user.get(), request);
 
         ModelAndView mav = new ModelAndView("mailconfirm");
         mav.addObject("activated", activated);

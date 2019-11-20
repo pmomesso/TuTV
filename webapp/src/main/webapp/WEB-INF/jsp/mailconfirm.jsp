@@ -31,12 +31,9 @@
                 <spring:message code="mailconfirm"/>
             </div>
             <div class="text-center m-3">
-                <a href="<c:url value="/login"/>" title="Explore">
-                    <input class="tutv-button" type="submit" value="<spring:message code="login.submit"/>"/>
+                <a href="<c:url value="/"/>" title="Explore">
+                    <input class="tutv-button" type="submit" value="<spring:message code="login.StartExploring"/>"/>
                 </a>
-            </div>
-            <div class="divide-section-top text-center">
-                <a href="<c:url value="/"/>"><spring:message code="login.continue"/></a>
             </div>
         </div>
     </div>
