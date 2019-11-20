@@ -159,13 +159,14 @@ public class UserController {
     }
 
     @RequestMapping(value = "/mailconfirm", method = RequestMethod.GET)
-    public ModelAndView showRegister(@RequestParam("token") String token) {
+    public ModelAndView showRegister(HttpServletRequest request, Model model, @RequestParam("token") String token) {
 
-        boolean activated = userService.activateUser(token);
+        Optional<User> user = userService.activateUser(token);
 
-        if(activated) {
+        boolean activated = user.isPresent();
 
-        }
+        //if(activated)
+        //    authenticationService.authenticate(user.get(), request);
 
         ModelAndView mav = new ModelAndView("mailconfirm");
         mav.addObject("activated", activated);

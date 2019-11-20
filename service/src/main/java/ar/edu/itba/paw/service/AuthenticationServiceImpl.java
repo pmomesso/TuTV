@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.AuthenticationService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -45,6 +47,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         token.setDetails(new WebAuthenticationDetails(request));
         SecurityContextHolder.getContext().setAuthentication(auth);
+    }
 
+    @Override
+    public Optional<String> getLoggedUserMail() {
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserMail = authentication.getName();
+            Optional<String> ret = Optional.of(currentUserMail);
+            return ret;
+        }
+        return Optional.empty();
     }
 }

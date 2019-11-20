@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.service;
 
+import ar.edu.itba.paw.interfaces.AuthenticationService;
 import ar.edu.itba.paw.interfaces.MailService;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.interfaces.UserService;
@@ -37,9 +38,10 @@ public class UserServiceImpl implements UserService {
     private MailService mailService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private AuthenticationService authenticationService;
 
-    private Authentication authentication = null;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl(UserDao userDao,MailService mailService,PasswordEncoder passwordEncoder) {
@@ -83,17 +85,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> getLoggedUser() {
-        Authentication authentication = this.authentication;
-        if(authentication == null)
-            authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<String> loggedUserMail = authenticationService.getLoggedUserMail();
 
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            String currentUserMail = authentication.getName();
-            Optional<User> ret = findByMail(currentUserMail);
-            ret.ifPresent(user -> user.setNotificationsToView(user.getNotifications().stream().filter(n -> !n.getViewed()).count()));
-            return ret;
-        }
-        return Optional.empty();
+        if(!loggedUserMail.isPresent())
+            return Optional.empty();
+
+        Optional<User> ret = findByMail(loggedUserMail.get());
+        ret.ifPresent(user -> user.setNotificationsToView(user.getNotifications().stream().filter(n -> !n.getViewed()).count()));
+
+        return ret;
     }
 
     @Override
@@ -141,8 +141,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    //Todo no depender más de este método
     void setAuthentication(Authentication authentication) {
-        this.authentication = authentication;
+        //this.authentication = authentication;
     }
 
     @Override
@@ -167,10 +168,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean activateUser(String token) {
+    public Optional<User> activateUser(String token) {
         Optional<User> u = userDao.getUserByValidationKey(token);
-        u.ifPresent(user -> userDao.setValidationKey(user.getId(), null));
-        return u.isPresent();
+        if(u.isPresent()) {
+            userDao.setValidationKey(u.get().getId(), null);
+        }
+
+        return u;
     }
 
     @Override
