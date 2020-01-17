@@ -545,7 +545,7 @@ public class SeriesHibernateDao implements SeriesDao {
         final TypedQuery<Episode> query = em.createQuery("SELECT e " +
                 "FROM Episode e " +
                 "WHERE (e.season.seasonNumber < :seasonNumber " +
-                "OR e.numEpisode <= :numEpisode) " +
+                "OR (e.numEpisode <= :numEpisode AND e.season.seasonNumber = :seasonNumber)) " +
                 "AND e.season.series.id = :seriesId " +
                 "AND :userId NOT IN (SELECT id FROM User u WHERE u IN elements(e.viewers))", Episode.class)
                 .setParameter("seasonNumber", episode.getSeason().getSeasonNumber())
