@@ -2,10 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.webapp.dtos.SampleEchoDTO;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
@@ -25,8 +22,9 @@ public class EchoControllerJersey {
 
     @POST
     @Path("/")
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
-    public SampleEchoDTO echo(final SampleEchoDTO message) {
-        return new SampleEchoDTO(message.getMessage());
+    public String echo(String message) {
+        return message;
     }
 }
