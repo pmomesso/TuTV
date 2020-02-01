@@ -23,8 +23,8 @@ public class EchoControllerJersey {
     @POST
     @Path("/")
     @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.TEXT_PLAIN)
-    public String echo(String message) {
-        return message;
+    @Produces(MediaType.APPLICATION_JSON)
+    public SampleEchoDTO echo(String message) {
+        return new SampleEchoDTO(message);
     }
 }
