@@ -2,12 +2,11 @@ package ar.edu.itba.paw.webapp.controller;
 
 
 import ar.edu.itba.paw.interfaces.SeriesService;
+import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
-import ar.edu.itba.paw.webapp.dtos.MainPageDTO;
-import ar.edu.itba.paw.webapp.dtos.SeriesDTO;
-import ar.edu.itba.paw.webapp.dtos.SeriesReviewCommentDTO;
-import ar.edu.itba.paw.webapp.dtos.SeriesReviewsDTO;
+import ar.edu.itba.paw.webapp.dtos.*;
+import com.sun.tools.javac.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.print.attribute.standard.Media;
@@ -16,6 +15,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.Map;
 
 @Path("series")
 public class SeriesControllerJersey {

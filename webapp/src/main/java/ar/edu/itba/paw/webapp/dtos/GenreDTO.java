@@ -9,6 +9,7 @@ import java.util.List;
 
 public class GenreDTO {
 
+    private Long id;
     private String name;
     private List<SeriesDTO> series = Collections.emptyList();
 
@@ -17,6 +18,7 @@ public class GenreDTO {
     }
 
     public GenreDTO(Genre genre, List<Series> seriesList) {
+        this.id = genre.getId();
         this.name = genre.getName();
         this.series = new ArrayList<>(seriesList.size());
         seriesList.stream().forEach(series -> this.series.add(new SeriesDTO(series)));

@@ -25,6 +25,9 @@ public interface SeriesService {
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
     List<Season> getSeasonsBySeriesId(long seriesId);
     List<Genre> getAllGenres();
+
+    Genre getGenreById(long genreId) throws NotFoundException;
+
     List<Network> getAllNetworks();
 
     boolean follows(long seriesId) throws UnauthorizedException;

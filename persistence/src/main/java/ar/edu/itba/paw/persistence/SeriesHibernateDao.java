@@ -246,6 +246,11 @@ public class SeriesHibernateDao implements SeriesDao {
     }
 
     @Override
+    public Optional<Genre> getGenreById(long genreId) {
+        return Optional.of(em.find(Genre.class ,genreId));
+    }
+
+    @Override
     public boolean userFollows(long seriesId, long userId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         boolean result = false;

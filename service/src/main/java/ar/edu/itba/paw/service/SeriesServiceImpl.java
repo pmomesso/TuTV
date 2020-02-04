@@ -155,6 +155,11 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
+    public Genre getGenreById(long genreId) throws NotFoundException {
+        return seriesDao.getGenreById(genreId).orElseThrow(NotFoundException::new);
+    }
+
+    @Override
     public List<Network> getAllNetworks() {
         return seriesDao.getAllNetworks();
     }
