@@ -17,10 +17,10 @@ public class MainPageDTO {
         //Empty constructor for JAX-RS
     }
 
-    public MainPageDTO(List<Series> banner_series, Map<Genre,List<Series>> seriesByGenre) {
+    public MainPageDTO(List<Series> banner, Map<Genre,List<Series>> seriesByGenre) {
         banner_series = new ArrayList<>(banner_series.size());
-        banner_series.stream().forEach(series -> this.banner_series.add(new SeriesDTO(series)));
-        series_list = new ArrayList<>(seriesByGenre.keySet().size());
+        banner.stream().forEach(series -> banner_series.add(new SeriesDTO(series)));
+        this.series_list = new ArrayList<>(seriesByGenre.keySet().size());
         seriesByGenre.keySet().stream().forEach(genre -> this.series_list.add(new GenreDTO(genre, seriesByGenre.get(genre))));
     }
 
