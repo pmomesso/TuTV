@@ -31,11 +31,6 @@ public class SeriesDTO {
         this.loggedInUserFollows = false;
         this.userRating = series.getUserRating();
         this.followers = series.getFollowers();
-        if(series.getSeasons() != null) {
-            seasons = new ArrayList<>(series.getSeasons().size());
-            series.getSeasons().stream().forEach(season -> seasons.add(new SeasonDTO(season)));
-            this.seasons.sort(Comparator.comparingInt(SeasonDTO::getNumber));
-        }
     }
 
     public String getName() {
@@ -117,4 +112,10 @@ public class SeriesDTO {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public void setSeasonsList(Series series) {
+        series.getSeasons().stream().forEach(season -> seasons.add(new SeasonDTO(season)));
+        seasons.sort(Comparator.comparingInt(SeasonDTO::getNumber));
+    }
+
 }

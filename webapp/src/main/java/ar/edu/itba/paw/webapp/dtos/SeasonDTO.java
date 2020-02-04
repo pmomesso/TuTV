@@ -19,11 +19,6 @@ public class SeasonDTO {
         this.id = season.getId();
         this.number = season.getSeasonNumber();
         this.viewedByUser = false;
-        if(season.getEpisodes() != null) {
-            episodes = new ArrayList<>(season.getEpisodes().size());
-            season.getEpisodes().stream().forEach(episode -> episodes.add(new EpisodeDTO(episode)));
-            episodes.sort(Comparator.comparingInt(EpisodeDTO::getNumEpisode));
-        }
     }
 
     public Long getId() {
@@ -56,6 +51,11 @@ public class SeasonDTO {
 
     public void setEpisodes(List<EpisodeDTO> episodes) {
         this.episodes = episodes;
+    }
+
+    public void setEpisodesList(Season season) {
+        season.getEpisodes().stream().forEach(episode -> episodes.add(new EpisodeDTO(episode)));
+        episodes.sort(Comparator.comparingInt(EpisodeDTO::getNumEpisode));
     }
 
 }
