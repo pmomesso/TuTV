@@ -8,13 +8,11 @@ import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.webapp.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.Map;
 
 @Path("series")
 public class SeriesControllerJersey {
