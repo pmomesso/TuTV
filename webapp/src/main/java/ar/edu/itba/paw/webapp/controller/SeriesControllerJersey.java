@@ -6,7 +6,6 @@ import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.webapp.dtos.*;
-import com.sun.tools.javac.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.print.attribute.standard.Media;
