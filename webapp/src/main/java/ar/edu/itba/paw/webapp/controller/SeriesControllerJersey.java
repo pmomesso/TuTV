@@ -5,6 +5,8 @@ import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.webapp.dtos.MainPageDTO;
 import ar.edu.itba.paw.webapp.dtos.SeriesDTO;
+import ar.edu.itba.paw.webapp.dtos.SeriesReviewCommentDTO;
+import ar.edu.itba.paw.webapp.dtos.SeriesReviewsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.GET;
@@ -40,7 +42,11 @@ public class SeriesControllerJersey {
     @Path("/{seriesId}/comments")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSeriesComments(@PathParam("seriesId") Long seriesId) {
-        return null;
+        try {
+            return Response.ok(new SeriesReviewsDTO(seriesService.getSerieById(seriesId).orElseThrow(NotFoundException::new))).build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
     }
 
     @GET

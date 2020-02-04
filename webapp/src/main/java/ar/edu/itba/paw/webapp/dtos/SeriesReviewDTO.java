@@ -1,23 +1,62 @@
 package ar.edu.itba.paw.webapp.dtos;
 
 import ar.edu.itba.paw.model.SeriesReview;
+import ar.edu.itba.paw.model.SeriesReviewComment;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class SeriesReviewDTO {
 
-    private List<SeriesReviewCommentDTO> seriesReviewDTOList = Collections.emptyList();
+    private List<SeriesReviewCommentDTO> seriesReviewCommentDTOList = Collections.emptyList();
+    private String body;
+    private Integer likes;
+    private boolean isSpam;
 
     public SeriesReviewDTO() {
         //Empty constructor for JAX-RS
     }
 
-    public List<SeriesReviewCommentDTO> getSeriesReviewDTOList() {
-        return seriesReviewDTOList;
+    public SeriesReviewDTO(SeriesReview review) {
+        Set<SeriesReviewComment> comments = review.getComments();
+        seriesReviewCommentDTOList = new ArrayList<>(comments.size());
+        comments.stream().forEach(comment -> seriesReviewCommentDTOList.add(new SeriesReviewCommentDTO(comment)));
+        this.body = review.getBody();
+        this.likes = review.getNumLikes();
+        this.isSpam = review.getIsSpam();
     }
 
-    public void setSeriesReviewDTOList(List<SeriesReviewCommentDTO> seriesReviewDTOList) {
-        this.seriesReviewDTOList = seriesReviewDTOList;
+    public List<SeriesReviewCommentDTO> getSeriesReviewCommentDTOList() {
+        return seriesReviewCommentDTOList;
+    }
+
+    public void setSeriesReviewCommentDTOList(List<SeriesReviewCommentDTO> seriesReviewCommentDTOList) {
+        this.seriesReviewCommentDTOList = seriesReviewCommentDTOList;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public Integer getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Integer likes) {
+        this.likes = likes;
+    }
+
+    public boolean isSpam() {
+        return isSpam;
+    }
+
+    public void setSpam(boolean spam) {
+        isSpam = spam;
     }
 }
