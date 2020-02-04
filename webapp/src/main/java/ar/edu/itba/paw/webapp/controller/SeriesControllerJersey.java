@@ -37,6 +37,13 @@ public class SeriesControllerJersey {
     }
 
     @GET
+    @Path("/{seriesId}/comments")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSeriesComments(@PathParam("seriesId") Long seriesId) {
+        return null;
+    }
+
+    @GET
     @Path("/main")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMainPageJson() {
