@@ -19,6 +19,7 @@ public class SeasonDTO {
         this.id = season.getId();
         this.number = season.getSeasonNumber();
         this.viewedByUser = false;
+        setEpisodesList(season);
     }
 
     public Long getId() {
@@ -54,6 +55,7 @@ public class SeasonDTO {
     }
 
     public void setEpisodesList(Season season) {
+        episodes = new ArrayList<>(season.getEpisodes().size());
         season.getEpisodes().stream().forEach(episode -> episodes.add(new EpisodeDTO(episode)));
         episodes.sort(Comparator.comparingInt(EpisodeDTO::getNumEpisode));
     }
