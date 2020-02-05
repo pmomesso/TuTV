@@ -19,7 +19,7 @@ public interface SeriesService {
 
     List<Series> getSeriesByGenreAndNumber(int genreId, int num);
     List<Series> getAllSeriesByGenre(String genreName);
-    List<Series> getAllSeriesByGenre(int id);
+    List<Series> getAllSeriesByGenre(long id);
     Map<Genre,List<Series>> getSeriesByGenre();
     Map<Genre,List<Series>> getSeriesByGenre(Long id, Long page);
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
@@ -72,4 +72,5 @@ public interface SeriesService {
     void removeList(long id) throws UnauthorizedException, NotFoundException;
 
     void createNotificationsForNewEpisodes();
+
 }

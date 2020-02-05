@@ -125,7 +125,7 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Series> getAllSeriesByGenre(int id){
+    public List<Series> getAllSeriesByGenre(long id){
         return seriesDao.getSeriesByGenre(id);
     }
 

@@ -2,16 +2,19 @@ package ar.edu.itba.paw.webapp.controller;
 
 
 import ar.edu.itba.paw.interfaces.SeriesService;
+import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.webapp.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
 @Path("series")
 public class SeriesControllerJersey {
@@ -42,6 +45,19 @@ public class SeriesControllerJersey {
     public Response getSeriesComments(@PathParam("seriesId") Long seriesId) {
         try {
             return Response.ok(new SeriesReviewsDTO(seriesService.getSerieById(seriesId).orElseThrow(NotFoundException::new))).build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/genres/{genreId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSeriesInGenre(@PathParam("genreId") Long genreId) {
+        try {
+            Genre genre = seriesService.getGenreById(genreId);
+            List<Series> series = seriesService.getAllSeriesByGenre(genreId);
+            return Response.ok(new GenreDTO(genre, series)).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
