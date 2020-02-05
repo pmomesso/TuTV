@@ -2,13 +2,14 @@ package ar.edu.itba.paw.webapp.controller;
 
 
 import ar.edu.itba.paw.interfaces.SeriesService;
+import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.Genre;
+import ar.edu.itba.paw.model.Rating;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.webapp.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +25,8 @@ public class SeriesControllerJersey {
 
     @Autowired
     private SeriesService seriesService;
+    @Autowired
+    private UserService userService;
 
     @GET
     @Path("/{seriesId}")
@@ -33,6 +36,15 @@ public class SeriesControllerJersey {
             Series series = seriesService.getSerieById(seriesId).orElseThrow(NotFoundException::new);
             SeriesDTO seriesDTO = new SeriesDTO(series);
             seriesDTO.setSeasonsList(series);
+            userService.getLoggedUser().ifPresent(user -> {
+                seriesDTO.setLoggedInUserFollows(series.getUserFollowers().contains(user));
+                for(Rating rating : user.getRatings()) {
+                    if(rating.getSeries().getId() == series.getId()) {
+                        seriesDTO.setLoggedInUserRating(rating.getRating());
+                        break;
+                    }
+                }
+            });
             return Response.ok(seriesDTO).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
