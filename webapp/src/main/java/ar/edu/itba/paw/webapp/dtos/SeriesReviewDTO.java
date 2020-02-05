@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.dtos;
 
 import ar.edu.itba.paw.model.SeriesReview;
 import ar.edu.itba.paw.model.SeriesReviewComment;
+import ar.edu.itba.paw.model.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +12,7 @@ import java.util.Set;
 public class SeriesReviewDTO {
 
     private List<SeriesReviewCommentDTO> seriesReviewCommentDTOList = Collections.emptyList();
+    private UserDTO user;
     private String body;
     private Integer likes;
     private boolean isSpam;
@@ -26,6 +28,7 @@ public class SeriesReviewDTO {
         this.body = review.getBody();
         this.likes = review.getNumLikes();
         this.isSpam = review.getIsSpam();
+        this.user = new UserDTO(review.getUser());
     }
 
     public List<SeriesReviewCommentDTO> getSeriesReviewCommentDTOList() {
@@ -58,5 +61,13 @@ public class SeriesReviewDTO {
 
     public void setSpam(boolean spam) {
         isSpam = spam;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 }
