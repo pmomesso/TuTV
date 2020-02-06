@@ -1,7 +1,6 @@
-package ar.edu.itba.paw.webapp.auth;
+package ar.edu.itba.paw.webapp.auth.jwt;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import ar.edu.itba.paw.webapp.auth.UserDetails;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,20 +12,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-
-    private static final String SECRET_KEY = "secret_key";
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
+    private JwtUtil jwtUtil;
 
     private AuthenticationManager authenticationManager;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
         setFilterProcessesUrl("/login");
     }
 
@@ -53,16 +50,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toList());
 
-            String token = Jwts.builder()
-                    .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-                    .setHeaderParam("type", "JWT")
-                    .setIssuer("bilazy-api")
-                    .setAudience("bilazy-app")
-                    .setSubject(user.getUsername())
-                    .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                    .claim("role", roles)
-                    .compact();
-
+            String token = jwtUtil.generateToken(user,roles);
             response.addHeader("Authorization", "Bearer " + token);
         }
         filterChain.doFilter(request,response);

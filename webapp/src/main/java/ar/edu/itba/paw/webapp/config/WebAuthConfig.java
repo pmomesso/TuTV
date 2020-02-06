@@ -1,9 +1,9 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.webapp.auth.JwtAuthenticationFilter;
-import ar.edu.itba.paw.webapp.auth.JwtAuthorizationFilter;
-import ar.edu.itba.paw.webapp.auth.OurAuthenticationSuccessHandler;
-import ar.edu.itba.paw.webapp.auth.UrlAuthenticationFailureHandler;
+import ar.edu.itba.paw.webapp.auth.*;
+import ar.edu.itba.paw.webapp.auth.jwt.JwtAuthenticationFilter;
+import ar.edu.itba.paw.webapp.auth.jwt.JwtAuthorizationFilter;
+import ar.edu.itba.paw.webapp.auth.jwt.JwtUtil;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +31,9 @@ import java.util.concurrent.TimeUnit;
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
@@ -83,8 +86,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .accessDeniedPage("/403")
                 .and()
                     /*** FILTROS JWT (ELIMINAR SI SE QUIERE USAR AUTENTICACION SIN JWT)***/
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager()))
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager(),jwtUtil))
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager(),jwtUtil))
                     /********************************************************************/
                 .csrf()
                     .disable();

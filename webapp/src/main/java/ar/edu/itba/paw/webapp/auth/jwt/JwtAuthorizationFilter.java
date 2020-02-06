@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.auth;
+package ar.edu.itba.paw.webapp.auth.jwt;
 
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
@@ -15,14 +15,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private static final Logger log = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
+    private JwtUtil jwtUtil;
+
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager,JwtUtil jwtUtil) {
         super(authenticationManager);
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -39,35 +41,28 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
-        if (token != null && token.startsWith("Bearer ")) {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
             try {
-                Jws<Claims> parsedToken = Jwts.parser()
-                        .setSigningKey("secret_key")
-                        .parseClaimsJws(token.replace("Bearer ", ""));
+                String token = header.replace("Bearer ", "");
 
-                String username = parsedToken
-                        .getBody()
-                        .getSubject();
+                String username = jwtUtil.getTokenUsername(token);
 
-                List<SimpleGrantedAuthority> authorities = ((List<?>) parsedToken.getBody()
-                        .get("role")).stream()
-                        .map(authority -> new SimpleGrantedAuthority((String) authority))
-                        .collect(Collectors.toList());
+                List<SimpleGrantedAuthority> authorities = jwtUtil.getTokenAuthorities(token);
 
                 if (username != null && username.length() > 0) {
                     return new UsernamePasswordAuthenticationToken(username, null, authorities);
                 }
             } catch (ExpiredJwtException exception) {
-                log.warn("Request to parse expired JWT : {} failed : {}", token, exception.getMessage());
+                log.warn("Request to parse expired JWT : {} failed : {}", header, exception.getMessage());
             } catch (UnsupportedJwtException exception) {
-                log.warn("Request to parse unsupported JWT : {} failed : {}", token, exception.getMessage());
+                log.warn("Request to parse unsupported JWT : {} failed : {}", header, exception.getMessage());
             } catch (MalformedJwtException exception) {
-                log.warn("Request to parse invalid JWT : {} failed : {}", token, exception.getMessage());
+                log.warn("Request to parse invalid JWT : {} failed : {}", header, exception.getMessage());
             } catch (SignatureException exception) {
-                log.warn("Request to parse JWT with invalid signature : {} failed : {}", token, exception.getMessage());
+                log.warn("Request to parse JWT with invalid signature : {} failed : {}", header, exception.getMessage());
             } catch (IllegalArgumentException exception) {
-                log.warn("Request to parse empty or null JWT : {} failed : {}", token, exception.getMessage());
+                log.warn("Request to parse empty or null JWT : {} failed : {}", header, exception.getMessage());
             }
         }
 
