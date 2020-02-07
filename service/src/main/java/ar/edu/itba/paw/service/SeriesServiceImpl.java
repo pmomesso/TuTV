@@ -125,7 +125,7 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Series> getAllSeriesByGenre(long id){
+    public List<Series> getAllSeriesByGenre(long id) {
         return seriesDao.getSeriesByGenre(id);
     }
 
@@ -135,8 +135,10 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public Map<Genre,List<Series>> getSeriesByGenre(Long id, Long page) {
-        return seriesDao.getBestSeriesByGenres(id, page);
+    public Map<Genre,List<Series>> getSeriesByGenre(Long id, Long page) throws NotFoundException {
+        Map<Genre, List<Series>> ret = seriesDao.getBestSeriesByGenres(id, page);
+        if(ret.isEmpty()) throw new NotFoundException();
+        return ret;
     }
 
     @Override

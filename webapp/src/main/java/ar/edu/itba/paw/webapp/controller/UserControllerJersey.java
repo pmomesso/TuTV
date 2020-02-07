@@ -6,13 +6,14 @@ import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.dtos.UserDTO;
 import ar.edu.itba.paw.webapp.dtos.SeriesListsDTO;
 import ar.edu.itba.paw.webapp.dtos.UsersListDTO;
-import com.sun.tools.javac.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Path("users")
 public class UserControllerJersey {
@@ -61,7 +62,7 @@ public class UserControllerJersey {
         try {
             Optional<User> user = userService.findById(userId);
             if(!user.isPresent()) throw new NotFoundException();
-            return Response.ok(new SeriesListsDTO(List.from(user.get().getLists()))).build();
+            return Response.ok(new SeriesListsDTO(user.get().getLists().stream().collect(Collectors.toList()))).build();
         } catch(NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }

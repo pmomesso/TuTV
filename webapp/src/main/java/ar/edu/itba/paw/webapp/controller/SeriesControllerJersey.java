@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
+import java.util.Map;
 
 @Path("series")
 public class SeriesControllerJersey {
@@ -65,11 +66,11 @@ public class SeriesControllerJersey {
     @GET
     @Path("/genres/{genreId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSeriesInGenre(@PathParam("genreId") Long genreId) {
+    public Response getSeriesInGenre(@PathParam("genreId") Long genreId, @QueryParam("page") Integer page) {
         try {
-            Genre genre = seriesService.getGenreById(genreId);
-            List<Series> series = seriesService.getAllSeriesByGenre(genreId);
-            return Response.ok(new GenreDTO(genre, series)).build();
+            Map<Genre, List<Series>> map = seriesService.getSeriesByGenre(genreId, Long.valueOf(page));
+            Genre genre = map.keySet().stream().findFirst().get();
+            return Response.ok(new GenreDTO(genre, map.get(genre))).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }

@@ -57,6 +57,7 @@ public class SeriesHibernateDao implements SeriesDao {
 
     @Override
     public List<Series> getSeriesByGenre(long id) {
+
         final TypedQuery<Series> query = em.createQuery("select s from Series as s inner join s.genres as g " +
                 "where g.id = :genreId",Series.class);
         query.setParameter("genreId",id);
@@ -130,7 +131,10 @@ public class SeriesHibernateDao implements SeriesDao {
     public Map<Genre,List<Series>> getBestSeriesByGenres(Long id, Long page) {
         Map<Genre,List<Series>> genreMap = new TreeMap<>(Comparator.comparing(Genre::getName));
         for(Genre g : getAllGenres()){
-            genreMap.put(g, getBestSeriesByGenre(g, g.getId().equals(id) ? page : 1));
+            if(g.getId().equals(id)) {
+                genreMap.put(g, getBestSeriesByGenre(g, page));
+                break;
+            }
         }
         return genreMap;
     }
