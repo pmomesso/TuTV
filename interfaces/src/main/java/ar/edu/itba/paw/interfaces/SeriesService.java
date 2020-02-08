@@ -4,7 +4,6 @@ import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,7 @@ public interface SeriesService {
     void rateSeries(long seriesId, int rating) throws NotFoundException, UnauthorizedException, BadRequestException;
     void unviewEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
     void unviewSeason(long seasonId) throws UnauthorizedException, NotFoundException;
-    void addSeriesReview(String body, long seriesId, boolean isSpam) throws NotFoundException, UnauthorizedException;
+    Optional<SeriesReview> addSeriesReview(String body, long seriesId, boolean isSpam) throws UnauthorizedException;
 
     void likePost(long postId) throws NotFoundException, UnauthorizedException;
 

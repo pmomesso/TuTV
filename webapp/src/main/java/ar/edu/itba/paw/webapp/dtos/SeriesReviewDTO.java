@@ -4,6 +4,8 @@ import ar.edu.itba.paw.model.SeriesReview;
 import ar.edu.itba.paw.model.SeriesReviewComment;
 import ar.edu.itba.paw.model.User;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +15,11 @@ public class SeriesReviewDTO {
 
     private List<SeriesReviewCommentDTO> seriesReviewCommentDTOList = Collections.emptyList();
     private UserDTO user;
+
+    @NotNull
+    @Size(min = 10, max = 255)
     private String body;
+
     private Integer likes;
     private boolean isSpam;
 
