@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Path("series")
 public class SeriesControllerJersey {
@@ -33,47 +34,47 @@ public class SeriesControllerJersey {
     @Path("/{seriesId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEpisode(@PathParam("seriesId") Long seriesId) {
-        try {
-            Series series = seriesService.getSerieById(seriesId).orElseThrow(NotFoundException::new);
-            SeriesDTO seriesDTO = new SeriesDTO(series);
-            seriesDTO.setSeasonsList(series);
-            userService.getLoggedUser().ifPresent(user -> {
-                seriesDTO.setLoggedInUserFollows(series.getUserFollowers().contains(user));
-                for(Rating rating : user.getRatings()) {
-                    if(rating.getSeries().getId() == series.getId()) {
-                        seriesDTO.setLoggedInUserRating(rating.getRating());
-                        break;
-                    }
-                }
-            });
-            return Response.ok(seriesDTO).build();
-        } catch (NotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        Optional<Series> optSeries = seriesService.getSerieById(seriesId);
+        if (!optSeries.isPresent()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
+        Series series = optSeries.get();
+        SeriesDTO seriesDTO = new SeriesDTO(series);
+        seriesDTO.setSeasonsList(series);
+        userService.getLoggedUser().ifPresent(user -> {
+            seriesDTO.setLoggedInUserFollows(series.getUserFollowers().contains(user));
+            for (Rating rating : user.getRatings()) {
+                if (rating.getSeries().getId() == series.getId()) {
+                    seriesDTO.setLoggedInUserRating(rating.getRating());
+                    break;
+                }
+            }
+        });
+        return Response.ok(seriesDTO).build();
     }
 
     @GET
     @Path("/{seriesId}/comments")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSeriesComments(@PathParam("seriesId") Long seriesId) {
-        try {
-            return Response.ok(new SeriesReviewsDTO(seriesService.getSerieById(seriesId).orElseThrow(NotFoundException::new))).build();
-        } catch (NotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        Optional<Series> optSeries = seriesService.getSerieById(seriesId);
+        if(!optSeries.isPresent()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
+        Series series = optSeries.get();
+        return Response.ok(new SeriesReviewsDTO(series)).build();
     }
 
     @GET
     @Path("/genres/{genreId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSeriesInGenre(@PathParam("genreId") Long genreId, @QueryParam("page") Integer page) {
-        try {
-            Map<Genre, List<Series>> map = seriesService.getSeriesByGenre(genreId, Long.valueOf(page));
-            Genre genre = map.keySet().stream().findFirst().get();
-            return Response.ok(new GenreDTO(genre, map.get(genre))).build();
-        } catch (NotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        Map<Genre, List<Series>> map = seriesService.getSeriesByGenre(genreId, Long.valueOf(page));
+        Optional<Genre> optGenre = map.keySet().stream().findFirst();
+        if(!optGenre.isPresent()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
+        return Response.ok(new GenreDTO(optGenre.get(), map.get(optGenre.get()))).build();
     }
 
     @GET

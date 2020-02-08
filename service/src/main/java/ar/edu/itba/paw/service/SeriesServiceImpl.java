@@ -135,9 +135,8 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public Map<Genre,List<Series>> getSeriesByGenre(Long id, Long page) throws NotFoundException {
+    public Map<Genre,List<Series>> getSeriesByGenre(Long id, Long page) {
         Map<Genre, List<Series>> ret = seriesDao.getBestSeriesByGenres(id, page);
-        if(ret.isEmpty()) throw new NotFoundException();
         return ret;
     }
 

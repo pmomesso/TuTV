@@ -21,7 +21,7 @@ public interface SeriesService {
     List<Series> getAllSeriesByGenre(String genreName);
     List<Series> getAllSeriesByGenre(long id);
     Map<Genre,List<Series>> getSeriesByGenre();
-    Map<Genre,List<Series>> getSeriesByGenre(Long id, Long page) throws NotFoundException;
+    Map<Genre,List<Series>> getSeriesByGenre(Long id, Long page);
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
     List<Season> getSeasonsBySeriesId(long seriesId);
     List<Genre> getAllGenres();
