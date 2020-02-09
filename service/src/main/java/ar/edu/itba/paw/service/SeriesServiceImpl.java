@@ -373,6 +373,16 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     @Transactional
+    public Optional<Boolean> getLoggedInUserLikesSeriesReview(long seriesReviewId) {
+        Optional<User> loggedInUser = userService.getLoggedUser();
+        if(!loggedInUser.isPresent()) {
+            return Optional.empty();
+        }
+        return seriesDao.userLikesSeriesReview(loggedInUser.get(), seriesReviewId);
+    }
+
+    @Override
+    @Transactional
     public void modifyList(long id, String name, long[] seriesIdList) throws UnauthorizedException, NotFoundException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         Set<Series> series = new HashSet<>();
@@ -409,6 +419,13 @@ public class SeriesServiceImpl implements SeriesService {
                 seriesDao.createNotification(user, series, message);
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public Optional<SeriesReview> getSeriesReviewById(Long seriesId) {
+        Optional<SeriesReview> seriesReview = seriesDao.getSeriesReviewById(seriesId);
+        return seriesReview;
     }
 
 }

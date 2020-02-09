@@ -12,7 +12,7 @@ public class SeriesDTO {
     private String seriesDescription;
     private String bannerUrl;
     private Integer loggedInUserRating;
-    private boolean loggedInUserFollows;
+    private Boolean loggedInUserFollows;
     private Double userRating;
     private Integer followers;
     private List<SeasonDTO> seasons = Collections.emptyList();
@@ -73,11 +73,11 @@ public class SeriesDTO {
         this.loggedInUserRating = loggedInUserRating;
     }
 
-    public boolean isLoggedInUserFollows() {
+    public Boolean isLoggedInUserFollows() {
         return loggedInUserFollows;
     }
 
-    public void setLoggedInUserFollows(boolean loggedInUserFollows) {
+    public void setLoggedInUserFollows(Boolean loggedInUserFollows) {
         this.loggedInUserFollows = loggedInUserFollows;
     }
 

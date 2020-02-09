@@ -4,14 +4,17 @@ import ar.edu.itba.paw.model.SeriesReviewComment;
 
 public class SeriesReviewCommentDTO {
 
+    private Long id;
     private String body;
     private Integer numLikes;
+    private Boolean loggedInUserLikes;
 
     public SeriesReviewCommentDTO() {
         //Empty constructor for JAX-RS
     }
 
     public SeriesReviewCommentDTO(SeriesReviewComment comment) {
+        this.id = comment.getId();
         this.body = comment.getBody();
         this.numLikes = comment.getNumLikes();
     }
@@ -30,5 +33,21 @@ public class SeriesReviewCommentDTO {
 
     public void setNumLikes(Integer numLikes) {
         this.numLikes = numLikes;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Boolean getLoggedInUserLikes() {
+        return loggedInUserLikes;
+    }
+
+    public void setLoggedInUserLikes(Boolean loggedInUserLikes) {
+        this.loggedInUserLikes = loggedInUserLikes;
     }
 }

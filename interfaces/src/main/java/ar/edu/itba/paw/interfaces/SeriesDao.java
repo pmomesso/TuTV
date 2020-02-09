@@ -90,4 +90,5 @@ public interface SeriesDao {
 
     List<Episode> getToBeReleasedEpisodes();
 
+    Optional<Boolean> userLikesSeriesReview(User user, long seriesReviewId);
 }

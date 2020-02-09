@@ -20,8 +20,10 @@ public class SeriesReviewDTO {
     @Size(min = 10, max = 255)
     private String body;
 
-    private Integer likes;
-    private boolean isSpam;
+    private Integer likes = 0;
+    private Boolean loggedInUserLikes = Boolean.FALSE;
+    private Boolean isSpam = Boolean.FALSE;
+    private Long id;
 
     public SeriesReviewDTO() {
         //Empty constructor for JAX-RS
@@ -31,6 +33,7 @@ public class SeriesReviewDTO {
         Set<SeriesReviewComment> comments = review.getComments();
         seriesReviewCommentDTOList = new ArrayList<>(comments.size());
         comments.stream().forEach(comment -> seriesReviewCommentDTOList.add(new SeriesReviewCommentDTO(comment)));
+        this.id = review.getId();
         this.body = review.getBody();
         this.likes = review.getNumLikes();
         this.isSpam = review.getIsSpam();
@@ -61,14 +64,6 @@ public class SeriesReviewDTO {
         this.likes = likes;
     }
 
-    public boolean isSpam() {
-        return isSpam;
-    }
-
-    public void setSpam(boolean spam) {
-        isSpam = spam;
-    }
-
     public UserDTO getUser() {
         return user;
     }
@@ -76,4 +71,29 @@ public class SeriesReviewDTO {
     public void setUser(UserDTO user) {
         this.user = user;
     }
+
+    public Boolean getLoggedInUserLikes() {
+        return loggedInUserLikes;
+    }
+
+    public void setLoggedInUserLikes(Boolean loggedInUserLikes) {
+        this.loggedInUserLikes = loggedInUserLikes;
+    }
+
+    public Boolean getSpam() {
+        return isSpam;
+    }
+
+    public void setSpam(Boolean spam) {
+        isSpam = spam;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }

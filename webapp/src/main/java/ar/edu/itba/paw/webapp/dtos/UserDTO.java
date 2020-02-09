@@ -6,8 +6,8 @@ public class UserDTO {
 
     private Long id;
     private String userName;
-    private boolean isAdmin = false;
-    private boolean isBanned = false;
+    private Boolean isAdmin = Boolean.FALSE;
+    private Boolean isBanned = Boolean.FALSE;
 
     public UserDTO() {
         //Empty constructor for JAX-RS
@@ -40,7 +40,7 @@ public class UserDTO {
         return isAdmin;
     }
 
-    public void setAdmin(boolean admin) {
+    public void setAdmin(Boolean admin) {
         isAdmin = admin;
     }
 
@@ -48,7 +48,7 @@ public class UserDTO {
         return isBanned;
     }
 
-    public void setBanned(boolean banned) {
+    public void setBanned(Boolean banned) {
         isBanned = banned;
     }
 }

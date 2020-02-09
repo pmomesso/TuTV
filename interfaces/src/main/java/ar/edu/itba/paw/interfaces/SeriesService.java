@@ -66,10 +66,13 @@ public interface SeriesService {
 
     void addList(String name, long[] seriesId) throws UnauthorizedException;
 
+    Optional<Boolean> getLoggedInUserLikesSeriesReview(long seriesReviewId);
+
     void modifyList(long id, String name, long[] seriesId) throws UnauthorizedException, NotFoundException;
 
     void removeList(long id) throws UnauthorizedException, NotFoundException;
 
     void createNotificationsForNewEpisodes();
 
+    Optional<SeriesReview> getSeriesReviewById(Long seriesId);
 }

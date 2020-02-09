@@ -2,7 +2,6 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.SeriesDao;
 import ar.edu.itba.paw.model.*;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -580,6 +579,16 @@ public class SeriesHibernateDao implements SeriesDao {
                 "AND day(e.aired) - day(current_date) = 7", Episode.class);
         List<Episode> toBeReleased = query.getResultList();
         return toBeReleased;
+    }
+
+    @Override
+    public Optional<Boolean> userLikesSeriesReview(User user, long seriesReviewId) {
+        Optional<SeriesReview> seriesReview = Optional.ofNullable(em.find(SeriesReview.class, seriesReviewId));
+        Optional<Boolean> ret = Optional.empty();
+        if(seriesReview.isPresent()) {
+            ret = Optional.of(Boolean.valueOf(seriesReview.get().getLikes().contains(user)));
+        }
+        return ret;
     }
 
 }
