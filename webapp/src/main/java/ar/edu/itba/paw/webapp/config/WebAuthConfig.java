@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.webapp.auth.OurAuthenticationSuccessHandler;
-import ar.edu.itba.paw.webapp.auth.UrlAuthenticationFailureHandler;
+import ar.edu.itba.paw.webapp.auth.*;
+import ar.edu.itba.paw.webapp.auth.jwt.JwtAuthenticationFilter;
+import ar.edu.itba.paw.webapp.auth.jwt.JwtAuthorizationFilter;
+import ar.edu.itba.paw.webapp.auth.jwt.JwtUtil;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +31,9 @@ import java.util.concurrent.TimeUnit;
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
@@ -46,6 +52,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         http.userDetailsService(userDetailsService)
                 .sessionManagement()
                     .invalidSessionUrl("/login")
+                    /**ELIMINAR SI SE QUIERE USAR AUTENTICACION SIN JWT **/
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    /****************************************************/
                 .and().authorizeRequests()
                     .antMatchers("/admin/**").hasRole("ADMIN")
                     .antMatchers("/viewSeason").hasRole("USER")
@@ -75,8 +84,14 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .logoutSuccessUrl("/login")
                 .and().exceptionHandling()
                     .accessDeniedPage("/403")
-                .and().csrf()
+                .and()
+                    /*** FILTROS JWT (ELIMINAR SI SE QUIERE USAR AUTENTICACION SIN JWT)***/
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager(),jwtUtil))
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager(),jwtUtil))
+                    /********************************************************************/
+                .csrf()
                     .disable();
+
     }
 
     @Override
