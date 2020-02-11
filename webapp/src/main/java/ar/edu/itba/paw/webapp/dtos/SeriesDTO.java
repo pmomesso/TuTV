@@ -114,7 +114,7 @@ public class SeriesDTO {
     }
 
     public void setSeasonsList(Series series) {
-        seasons = new ArrayList<>(series.getSeasons().size());
+        seasons = new ArrayList<>();
         series.getSeasons().stream().forEach(season -> seasons.add(new SeasonDTO(season)));
         seasons.sort(Comparator.comparingInt(SeasonDTO::getNumber));
     }

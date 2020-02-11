@@ -55,7 +55,8 @@ public class SeasonDTO {
     }
 
     public void setEpisodesList(Season season) {
-        episodes = new ArrayList<>(season.getEpisodes().size());
+        //episodes = new ArrayList<>(season.getEpisodes().size());
+        episodes = new ArrayList<>();
         season.getEpisodes().stream().forEach(episode -> episodes.add(new EpisodeDTO(episode)));
         episodes.sort(Comparator.comparingInt(EpisodeDTO::getNumEpisode));
     }

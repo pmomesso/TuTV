@@ -11,14 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static javax.ws.rs.core.Response.*;
 
 @Path("series")
 public class SeriesControllerJersey {
@@ -32,10 +31,16 @@ public class SeriesControllerJersey {
     private UserService userService;
 
     @GET
+    @Path("/featured")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMainPageJson() {
         //Todo: fix paging
-        return Response.ok(new MainPageDTO(seriesService.getNewestSeries(0, 4), seriesService.getSeriesByGenre())).build();
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(86400);
+        cc.setPrivate(true);
+        ResponseBuilder builder = Response.ok(new MainPageDTO(seriesService.getNewestSeries(0, 4)));
+        builder.cacheControl(cc);
+        return builder.build();
     }
 
     @GET
@@ -44,7 +49,7 @@ public class SeriesControllerJersey {
     public Response getEpisode(@PathParam("seriesId") Long seriesId) {
         Optional<Series> optSeries = seriesService.getSerieById(seriesId);
         if (!optSeries.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).build();
         }
         Series series = optSeries.get();
         SeriesDTO seriesDTO = new SeriesDTO(series);
@@ -59,7 +64,7 @@ public class SeriesControllerJersey {
                     }
                 }
         }
-        return Response.ok(seriesDTO).build();
+        return ok(seriesDTO).build();
     }
 
     @GET
@@ -68,7 +73,7 @@ public class SeriesControllerJersey {
     public Response getSeriesComments(@PathParam("seriesId") Long seriesId) {
         Optional<Series> optSeries = seriesService.getSerieById(seriesId);
         if(!optSeries.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).build();
         }
         Series series = optSeries.get();
         SeriesReviewsDTO seriesReviewsDTO = new SeriesReviewsDTO(series);
@@ -77,7 +82,7 @@ public class SeriesControllerJersey {
                 seriesReviewDTO.setLoggedInUserLikes(seriesService.getLoggedInUserLikesSeriesReview(seriesReviewDTO.getId()).get());
             }
         }
-        return Response.ok(seriesReviewsDTO).build();
+        return ok(seriesReviewsDTO).build();
     }
 
     @POST
@@ -88,11 +93,11 @@ public class SeriesControllerJersey {
         try {
             Optional<SeriesReview> optSeriesReview = seriesService.addSeriesReview(seriesReviewDTO.getBody(), seriesId, seriesReviewDTO.getSpam());
             if(!optSeriesReview.isPresent()) {
-                return Response.status(Response.Status.NOT_FOUND).build();
+                return status(Status.NOT_FOUND).build();
             }
-            return Response.ok(new SeriesReviewDTO(optSeriesReview.get())).build();
+            return ok(new SeriesReviewDTO(optSeriesReview.get())).build();
         } catch (UnauthorizedException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return status(Status.UNAUTHORIZED).build();
         }
     }
 
@@ -104,11 +109,11 @@ public class SeriesControllerJersey {
         //Todo: fix baseUrl
         try {
             SeriesReviewComment seriesReviewComment = seriesService.addCommentToPost(seriesReviewId, seriesReviewCommentDTO.getBody(), null);
-            return Response.ok(new SeriesReviewCommentDTO(seriesReviewComment)).build();
+            return ok(new SeriesReviewCommentDTO(seriesReviewComment)).build();
         } catch (NotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).build();
         } catch (UnauthorizedException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return status(Status.UNAUTHORIZED).build();
         }
     }
 
@@ -118,7 +123,7 @@ public class SeriesControllerJersey {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateSeriesReview(SeriesReviewDTO seriesReviewDTO) {
         if(seriesReviewDTO.getLoggedInUserLikes() == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return status(Status.BAD_REQUEST).build();
         }
         try {
             if(seriesReviewDTO.getLoggedInUserLikes()) {
@@ -126,11 +131,11 @@ public class SeriesControllerJersey {
             } else {
                 seriesService.unlikePost(seriesReviewDTO.getId());
             }
-            return Response.accepted().entity(seriesService.getSeriesReviewById(seriesReviewDTO.getId()).get()).build();
+            return accepted().entity(seriesService.getSeriesReviewById(seriesReviewDTO.getId()).get()).build();
         } catch (UnauthorizedException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).build();
         }
     }
 
@@ -139,7 +144,7 @@ public class SeriesControllerJersey {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateSeriesReviewComment(SeriesReviewCommentDTO seriesReviewCommentDTO) {
         if(seriesReviewCommentDTO.getLoggedInUserLikes() == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return status(Status.BAD_REQUEST).build();
         }
         try {
             if (seriesReviewCommentDTO.getLoggedInUserLikes()) {
@@ -147,11 +152,11 @@ public class SeriesControllerJersey {
             } else {
                 seriesService.unlikeComment(seriesReviewCommentDTO.getId());
             }
-            return Response.accepted().build();
+            return accepted().build();
         } catch (UnauthorizedException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).build();
         }
     }
 
@@ -159,7 +164,7 @@ public class SeriesControllerJersey {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateSeries(SeriesDTO seriesDTO) {
         if(seriesDTO.getId() == null || (seriesDTO.getLoggedInUserRating() == null && seriesDTO.isLoggedInUserFollows() == null)) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return status(Status.BAD_REQUEST).build();
         }
         try {
             if(seriesDTO.isLoggedInUserFollows()) {
@@ -170,13 +175,13 @@ public class SeriesControllerJersey {
             if(seriesDTO.getLoggedInUserRating() != null) {
                 seriesService.rateSeries(seriesDTO.getId(), seriesDTO.getLoggedInUserRating());
             }
-            return Response.accepted().entity(new SeriesDTO(seriesService.getSerieById(seriesDTO.getId()).get())).build();
+            return accepted().entity(new SeriesDTO(seriesService.getSerieById(seriesDTO.getId()).get())).build();
         } catch (UnauthorizedException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).build();
         } catch (BadRequestException e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            return status(Status.BAD_REQUEST).build();
         }
     }
 
@@ -184,12 +189,17 @@ public class SeriesControllerJersey {
     @Path("/genres/{genreId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSeriesInGenre(@PathParam("genreId") Long genreId, @QueryParam("page") Integer page) {
-        Map<Genre, List<Series>> map = seriesService.getSeriesByGenre(genreId, Long.valueOf(page));
+        Map<Genre, List<Series>> map;
+        if(page == null) {
+            map = seriesService.getSeriesByGenre(genreId, Long.valueOf(1));
+        } else {
+            map = seriesService.getSeriesByGenre(genreId, Long.valueOf(page));
+        }
         Optional<Genre> optGenre = map.keySet().stream().findFirst();
         if(!optGenre.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).build();
         }
-        return Response.ok(new GenreDTO(optGenre.get(), map.get(optGenre.get()))).build();
+        return ok(new GenreDTO(optGenre.get(), map.get(optGenre.get()))).build();
     }
 
 }
