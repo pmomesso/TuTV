@@ -1,19 +1,11 @@
 package ar.edu.itba.paw.webapp.auth.jwt;
 
-import ar.edu.itba.paw.webapp.auth.UserDetails;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.commons.io.IOUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import ar.edu.itba.paw.model.User;
+import io.jsonwebtoken.*;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class JwtUtil {
@@ -26,42 +18,45 @@ public class JwtUtil {
 
     public JwtUtil() {}
 
-    public String generateToken(UserDetails user, List<String> roles) {
-        return Jwts.builder()
-                .signWith(SignatureAlgorithm.HS512, getSecretKey())
-                .setHeaderParam("type", "JWT")
-                .setIssuer(ISSUER)
-                .setAudience(AUDIENCE)
-                .setSubject(user.getUsername())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .claim(ROLE, roles)
-                .compact();
-    }
-    private Jws<Claims> getTokenClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(getSecretKey())
-                .parseClaimsJws(token);
-    }
-    public String getTokenUsername(String token) {
-        Jws<Claims> parsedToken = getTokenClaims(token);
-        return parsedToken
-                .getBody()
-                .getSubject();
-    }
-    public List<SimpleGrantedAuthority> getTokenAuthorities(String token) {
-        Jws<Claims> parsedToken = getTokenClaims(token);
-        return  ((List<?>) parsedToken.getBody()
-                .get(ROLE)).stream()
-                .map(authority -> new SimpleGrantedAuthority((String) authority))
-                .collect(Collectors.toList());
-    }
-    private String getSecretKey() {
-        InputStream inputStream = getClass()
-                .getClassLoader().getResourceAsStream(KEY_FILE);
+    /**
+     * Tries to parse specified String as a JWT token. If successful, returns User object with username, id and role prefilled (extracted from token).
+     * If unsuccessful (token is invalid or not containing all required user properties), simply returns null.
+     *
+     * @param token the JWT token to parse
+     * @return the User object extracted from specified token or null if a token is invalid.
+     */
+    public User parseToken(String token) {
         try {
-            return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            throw new RuntimeException();
+            Claims body = Jwts.parser()
+                    .setSigningKey("secret_key")
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            User u = new User();
+            u.setMailAddress(body.getSubject());
+            u.setIsAdmin(body.get("isAdmin",Boolean.class));
+
+            return u;
+
+        } catch (JwtException | ClassCastException e) {
+            return null;
         }
+    }
+
+    /**
+     * Generates a JWT token containing username as subject, and userId and role as additional claims. These properties are taken from the specified
+     * User object. Tokens validity is infinite.
+     *
+     * @param u the user for which the token will be generated
+     * @return the JWT token
+     */
+    public String generateToken(User u) {
+        Claims claims = Jwts.claims().setSubject(u.getMailAddress());
+        claims.put("isAdmin", u.getIsAdmin());
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .signWith(SignatureAlgorithm.HS512, "secret_key")
+                .compact();
     }
 }
