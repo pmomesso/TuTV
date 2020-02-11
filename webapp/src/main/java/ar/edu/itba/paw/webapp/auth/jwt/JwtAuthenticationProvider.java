@@ -46,6 +46,7 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
             throw new JwtTokenMalformedException("JWT token is not valid");
         }
         List<GrantedAuthority> authorityList = new ArrayList<>();
+        authorityList.add(new SimpleGrantedAuthority("ROLE_USER"));
         if(parsedUser.getIsAdmin()){
             authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
