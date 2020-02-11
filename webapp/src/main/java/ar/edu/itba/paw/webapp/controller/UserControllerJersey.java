@@ -27,11 +27,6 @@ public class UserControllerJersey {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}")
     public Response getUserById(@PathParam("userId") Long userId) {
-        //Should be only for admins
-        Optional<User> optLoggedUser = userService.getLoggedUser();
-        if(!optLoggedUser.isPresent() || !optLoggedUser.get().getIsAdmin()) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
         Optional<User> optUser = userService.findById(userId);
         if(!optUser.isPresent()) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -43,11 +38,6 @@ public class UserControllerJersey {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/")
     public Response getUsersList(@QueryParam("page") Integer page) {
-        //Should be only for admins
-        Optional<User> optLoggedUser = userService.getLoggedUser();
-        if(!optLoggedUser.isPresent() || !optLoggedUser.get().getIsAdmin()) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
         UsersList usersList = null;
         try {
             usersList = userService.getAllUsersExceptLoggedOne(page);
