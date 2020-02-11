@@ -49,7 +49,7 @@ public class UserControllerJersey {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         String token = jwtUtil.generateToken(user.get());
-        return Response.accepted().entity(new UserDTO(user.get())).header("Authorization","Bearer " + token).build();
+        return Response.accepted().header("Authorization","Bearer " + token).build();
     }
 
     @GET

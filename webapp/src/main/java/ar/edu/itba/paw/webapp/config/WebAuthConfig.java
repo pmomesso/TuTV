@@ -60,7 +60,15 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(final WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources/**");
+        web.ignoring()
+                .antMatchers("/resources/**")
+                .antMatchers("/users/login")
+                .antMatchers("/series")
+                .antMatchers("/series/{\\d+}")
+                .antMatchers("/series/{\\d+}/reviews")
+                .antMatchers("/series/genres/{\\d+}")
+                .antMatchers("/users/{\\d+}")
+                .antMatchers("/users/{\\d+}/lists");
     }
 
     private String getEncryptationKey() {

@@ -20,7 +20,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
     @Override
     protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        return !request.getPathInfo().equals("/users/login");
+        return true;
     }
 
     @Override
