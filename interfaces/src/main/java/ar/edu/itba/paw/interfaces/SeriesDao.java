@@ -44,6 +44,8 @@ public interface SeriesDao {
 
     Optional<List<Episode>> getUpcomingEpisodes(long userId);
 
+    Optional<Genre> getGenreById(long genreId);
+
     boolean userFollows(long seriesId, long userId);
     int followSeries(long seriesId, long userId);
     int unfollowSeries(long seriesId, long userId);
@@ -88,4 +90,5 @@ public interface SeriesDao {
 
     List<Episode> getToBeReleasedEpisodes();
 
+    Optional<Boolean> userLikesSeriesReview(User user, long seriesReviewId);
 }

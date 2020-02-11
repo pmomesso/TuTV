@@ -2,7 +2,6 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.SeriesDao;
 import ar.edu.itba.paw.model.*;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -57,6 +56,7 @@ public class SeriesHibernateDao implements SeriesDao {
 
     @Override
     public List<Series> getSeriesByGenre(long id) {
+
         final TypedQuery<Series> query = em.createQuery("select s from Series as s inner join s.genres as g " +
                 "where g.id = :genreId",Series.class);
         query.setParameter("genreId",id);
@@ -130,7 +130,10 @@ public class SeriesHibernateDao implements SeriesDao {
     public Map<Genre,List<Series>> getBestSeriesByGenres(Long id, Long page) {
         Map<Genre,List<Series>> genreMap = new TreeMap<>(Comparator.comparing(Genre::getName));
         for(Genre g : getAllGenres()){
-            genreMap.put(g, getBestSeriesByGenre(g, g.getId().equals(id) ? page : 1));
+            if(g.getId().equals(id)) {
+                genreMap.put(g, getBestSeriesByGenre(g, page));
+                break;
+            }
         }
         return genreMap;
     }
@@ -243,6 +246,11 @@ public class SeriesHibernateDao implements SeriesDao {
         TypedQuery<Episode> query = em.createQuery("from Episode as e where e.aired >= :today",Episode.class);
         query.setParameter("today",new Date(), TemporalType.DATE);
         return Optional.of(query.getResultList());
+    }
+
+    @Override
+    public Optional<Genre> getGenreById(long genreId) {
+        return Optional.of(em.find(Genre.class ,genreId));
     }
 
     @Override
@@ -571,6 +579,16 @@ public class SeriesHibernateDao implements SeriesDao {
                 "AND day(e.aired) - day(current_date) = 7", Episode.class);
         List<Episode> toBeReleased = query.getResultList();
         return toBeReleased;
+    }
+
+    @Override
+    public Optional<Boolean> userLikesSeriesReview(User user, long seriesReviewId) {
+        Optional<SeriesReview> seriesReview = Optional.ofNullable(em.find(SeriesReview.class, seriesReviewId));
+        Optional<Boolean> ret = Optional.empty();
+        if(seriesReview.isPresent()) {
+            ret = Optional.of(Boolean.valueOf(seriesReview.get().getLikes().contains(user)));
+        }
+        return ret;
     }
 
 }

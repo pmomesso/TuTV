@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.TypedQuery;
 import java.util.*;
 
 @Service
@@ -125,7 +124,7 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Series> getAllSeriesByGenre(int id){
+    public List<Series> getAllSeriesByGenre(long id) {
         return seriesDao.getSeriesByGenre(id);
     }
 
@@ -136,7 +135,8 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public Map<Genre,List<Series>> getSeriesByGenre(Long id, Long page) {
-        return seriesDao.getBestSeriesByGenres(id, page);
+        Map<Genre, List<Series>> ret = seriesDao.getBestSeriesByGenres(id, page);
+        return ret;
     }
 
     @Override
@@ -152,6 +152,11 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public List<Genre> getAllGenres() {
         return seriesDao.getAllGenres();
+    }
+
+    @Override
+    public Genre getGenreById(long genreId) throws NotFoundException {
+        return seriesDao.getGenreById(genreId).orElseThrow(NotFoundException::new);
     }
 
     @Override
@@ -229,9 +234,10 @@ public class SeriesServiceImpl implements SeriesService {
         seriesDao.unviewSeason(seasonId,user.getId());
     }
     @Override
-    public void addSeriesReview(String body, long seriesId, boolean isSpam) throws NotFoundException, UnauthorizedException {
+    public Optional<SeriesReview> addSeriesReview(String body, long seriesId, boolean isSpam) throws UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        seriesDao.createSeriesReview(body, seriesId, user.getId(), isSpam).orElseThrow(NotFoundException::new);
+        Optional<SeriesReview> optSeriesReview = seriesDao.createSeriesReview(body, seriesId, user.getId(), isSpam);
+        return optSeriesReview;
     }
 
     @Override
@@ -367,6 +373,16 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     @Transactional
+    public Optional<Boolean> getLoggedInUserLikesSeriesReview(long seriesReviewId) {
+        Optional<User> loggedInUser = userService.getLoggedUser();
+        if(!loggedInUser.isPresent()) {
+            return Optional.empty();
+        }
+        return seriesDao.userLikesSeriesReview(loggedInUser.get(), seriesReviewId);
+    }
+
+    @Override
+    @Transactional
     public void modifyList(long id, String name, long[] seriesIdList) throws UnauthorizedException, NotFoundException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         Set<Series> series = new HashSet<>();
@@ -403,6 +419,13 @@ public class SeriesServiceImpl implements SeriesService {
                 seriesDao.createNotification(user, series, message);
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public Optional<SeriesReview> getSeriesReviewById(Long seriesId) {
+        Optional<SeriesReview> seriesReview = seriesDao.getSeriesReviewById(seriesId);
+        return seriesReview;
     }
 
 }
