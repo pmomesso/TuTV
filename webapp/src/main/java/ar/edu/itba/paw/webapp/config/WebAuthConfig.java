@@ -1,9 +1,7 @@
 package ar.edu.itba.paw.webapp.config;
 
 import ar.edu.itba.paw.webapp.auth.*;
-import ar.edu.itba.paw.webapp.auth.jwt.JwtAuthenticationFilter;
-import ar.edu.itba.paw.webapp.auth.jwt.JwtAuthorizationFilter;
-import ar.edu.itba.paw.webapp.auth.jwt.JwtUtil;
+import ar.edu.itba.paw.webapp.auth.jwt.*;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,87 +14,58 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableWebSecurity
 @ComponentScan("ar.edu.itba.paw.webapp.auth")
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private JwtUtil jwtUtil;
+    private JwtAuthenticationProvider jwtAuthenticationProvider;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+        return bCryptPasswordEncoder;
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(jwtAuthenticationProvider);
     }
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http.userDetailsService(userDetailsService)
-                .sessionManagement()
-                    .invalidSessionUrl("/login")
-                    /**ELIMINAR SI SE QUIERE USAR AUTENTICACION SIN JWT **/
+        http.sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    /****************************************************/
                 .and().authorizeRequests()
-                    .antMatchers("/admin/**").hasRole("ADMIN")
-                    .antMatchers("/viewSeason").hasRole("USER")
-                    .antMatchers("/unviewSeason").hasRole("USER")
-                    .antMatchers("/viewEpisode").hasRole("USER")
-                    .antMatchers("/unviewEpisode").hasRole("USER")
-                    .antMatchers("/addSeries").hasRole("USER")
-                    .antMatchers("/unfollowSeries").hasRole("USER")
-                    .antMatchers("/likePost").hasRole("USER")
-                    .antMatchers("/unlikePost").hasRole("USER")
-                    .antMatchers("/rate").hasRole("USER")
-                    .antMatchers("/login").anonymous()
-                    .antMatchers("/**").permitAll()
-                .and().formLogin()
-                    .usernameParameter("username")
-                    .passwordParameter("password")
-                    //.defaultSuccessUrl("/", false)
-                    .loginPage("/login")
-                    .successHandler(getAuthenticationSuccessHandler())
-                    .failureHandler(new UrlAuthenticationFailureHandler())
-                .and().rememberMe()
-                    .rememberMeParameter("rememberme")
-                    .userDetailsService(userDetailsService).key(getEncryptationKey())
-                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
-                .and().logout()
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/login")
+                    .antMatchers("/users").hasRole("ADMIN")
                 .and().exceptionHandling()
-                    .accessDeniedPage("/403")
+                    .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
-                    /*** FILTROS JWT (ELIMINAR SI SE QUIERE USAR AUTENTICACION SIN JWT)***/
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager(),jwtUtil))
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager(),jwtUtil))
-                    /********************************************************************/
+                    .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .csrf()
                     .disable();
 
     }
 
     @Override
-    public void configure(final WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources/**");
+    public void configure(final WebSecurity web) {
+        web.ignoring()
+                .antMatchers("/resources/**")
+                .antMatchers("/users/login")
+                .antMatchers("/series")
+                .antMatchers("/series/{\\d+}")
+                .antMatchers("/series/{\\d+}/reviews")
+                .antMatchers("/series/genres/{\\d+}")
+                .antMatchers("/users/{\\d+}")
+                .antMatchers("/users/{\\d+}/lists");
     }
 
     private String getEncryptationKey() {
@@ -110,10 +79,12 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationSuccessHandler getAuthenticationSuccessHandler() {
-        return new OurAuthenticationSuccessHandler("/");
+    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
+        jwtAuthenticationFilter.setAuthenticationManager(authenticationManager());
+        jwtAuthenticationFilter.setAuthenticationSuccessHandler(new OurAuthenticationSuccessHandler());
+        return jwtAuthenticationFilter;
     }
-
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {

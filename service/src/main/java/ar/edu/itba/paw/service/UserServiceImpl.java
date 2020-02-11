@@ -86,7 +86,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> getLoggedUser() {
-        Optional<String> loggedUserMail = authenticationService.getLoggedUserMail();
+        Optional<String> loggedUserMail;
+        try{
+            loggedUserMail = authenticationService.getLoggedUserMail();
+        }catch(Exception ex){
+            return Optional.empty();
+        }
 
         if(!loggedUserMail.isPresent())
             return Optional.empty();

@@ -129,6 +129,9 @@ public class UserHibernateDao implements UserDao {
 
     @Override
     public UsersList getAllUsers(int page, long userId) {
+        if(page <=0 ){
+            page = 1;
+        }
         UsersList usersList = new UsersList();
 
         List<User> list = em.createNativeQuery("SELECT * " +
