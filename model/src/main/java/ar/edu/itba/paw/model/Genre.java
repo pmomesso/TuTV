@@ -15,6 +15,8 @@ public class Genre {
     private Long id = -1L;
     @Column(length = 255,nullable = false)
     private String name;
+    @Column(length = 255,nullable = false)
+    private String i18Key;
     @ManyToMany(mappedBy = "genres",fetch = FetchType.LAZY)
     private Set<Series> series = new HashSet<>();
     @Transient
@@ -100,5 +102,13 @@ public class Genre {
 
     public void setAreNext(boolean areNext) {
         this.areNext = areNext;
+    }
+
+    public String getI18Key() {
+        return i18Key;
+    }
+
+    public void setI18Key(String i18Key) {
+        this.i18Key = i18Key;
     }
 }

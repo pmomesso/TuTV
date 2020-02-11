@@ -11,6 +11,7 @@ public class GenreDTO {
 
     private Long id;
     private String name;
+    private String i18Key;
     private List<SeriesDTO> series = Collections.emptyList();
     private Long page;
     private boolean arePrevious;
@@ -32,6 +33,7 @@ public class GenreDTO {
     public GenreDTO(Genre genre) {
         this.id = genre.getId();
         this.name = genre.getName();
+        this.i18Key = genre.getI18Key();
     }
 
     public String getName() {
@@ -80,5 +82,13 @@ public class GenreDTO {
 
     public void setAreNext(boolean areNext) {
         this.areNext = areNext;
+    }
+
+    public String getI18Key() {
+        return i18Key;
+    }
+
+    public void setI18Key(String i18Key) {
+        this.i18Key = i18Key;
     }
 }

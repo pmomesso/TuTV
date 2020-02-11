@@ -21,6 +21,7 @@ create table if not exists genres
         constraint genres_pk
             primary key,
     genre varchar(255),
+    i18key varchar(255),
     constraint genres_id_genre_key
         unique (id, genre)
 );
