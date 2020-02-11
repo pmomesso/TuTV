@@ -35,7 +35,7 @@
         <java.mail.version>1.4</java.mail.version>
         <org.hibernate.version>5.1.0.Final</org.hibernate.version>
         <org.hibernate.jpa.version>1.0.0.Final</org.hibernate.jpa.version>
-        <org.hibernate.validator.version>5.2.4.Final</org.hibernate.validator.version>
+        <org.hibernate.validator.version>4.3.1.Final</org.hibernate.validator.version>
         <jersey.version>3.0-SNAPSHOT</jersey.version>
     </properties>
 
@@ -252,6 +252,7 @@
                 <artifactId>jjwt</artifactId>
                 <version>0.9.1</version>
             </dependency>
+            <!-- JERSEY DEPENDENCIES -->
             <dependency>
                 <groupId>org.glassfish.jersey.containers</groupId>
                 <artifactId>jersey-container-servlet-core</artifactId>
@@ -261,17 +262,6 @@
                 <groupId>org.glassfish.jersey.ext</groupId>
                 <artifactId>jersey-spring4</artifactId>
                 <version>${jersey.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.glassfish.hk2</groupId>
-                        <artifactId>hk2</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.hk2</groupId>
-                <artifactId>hk2</artifactId>
-                <version>2.5.0-b05</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>

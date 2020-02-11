@@ -32,7 +32,6 @@ public class SeriesControllerJersey {
     private UserService userService;
 
     @GET
-    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMainPageJson() {
         //Todo: fix paging
@@ -157,7 +156,6 @@ public class SeriesControllerJersey {
     }
 
     @PUT
-    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateSeries(SeriesDTO seriesDTO) {
         if(seriesDTO.getId() == null || (seriesDTO.getLoggedInUserRating() == null && seriesDTO.isLoggedInUserFollows() == null)) {
