@@ -113,10 +113,10 @@ public class SeriesControllerJersey {
     }
 
     @PUT
-    @Path("/{seriesId}/reviews")
+    @Path("/reviews")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateSeriesReview(@PathParam("seriesId") Long seriesId, SeriesReviewDTO seriesReviewDTO) {
+    public Response updateSeriesReview(SeriesReviewDTO seriesReviewDTO) {
         if(seriesReviewDTO.getLoggedInUserLikes() == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
@@ -126,7 +126,7 @@ public class SeriesControllerJersey {
             } else {
                 seriesService.unlikePost(seriesReviewDTO.getId());
             }
-            return Response.accepted().entity(seriesService.getSeriesReviewById(seriesId).get()).build();
+            return Response.accepted().entity(seriesService.getSeriesReviewById(seriesReviewDTO.getId()).get()).build();
         } catch (UnauthorizedException e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
@@ -135,9 +135,9 @@ public class SeriesControllerJersey {
     }
 
     @PUT
-    @Path("/reviews/{seriesReviewId}")
+    @Path("/reviews/comments")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateSeriesReviewComment(@PathParam("seriesReviewId") Long seriesReviewId, SeriesReviewCommentDTO seriesReviewCommentDTO) {
+    public Response updateSeriesReviewComment(SeriesReviewCommentDTO seriesReviewCommentDTO) {
         if(seriesReviewCommentDTO.getLoggedInUserLikes() == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
