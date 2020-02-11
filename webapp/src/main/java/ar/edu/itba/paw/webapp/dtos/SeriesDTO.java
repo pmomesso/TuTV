@@ -11,6 +11,7 @@ public class SeriesDTO {
     private String network;
     private String seriesDescription;
     private String bannerUrl;
+    private String posterUrl;
     private Integer loggedInUserRating;
     private Boolean loggedInUserFollows;
     private Double userRating;
@@ -27,6 +28,7 @@ public class SeriesDTO {
         this.network = series.getNetwork().getName();
         this.seriesDescription = series.getSeriesDescription();
         this.bannerUrl = series.getBannerUrl();
+        this.posterUrl = series.getPosterUrl();
         this.loggedInUserRating = -1;
         this.loggedInUserFollows = false;
         this.userRating = series.getUserRating();
@@ -111,6 +113,14 @@ public class SeriesDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
     }
 
     public void setSeasonsList(Series series) {
