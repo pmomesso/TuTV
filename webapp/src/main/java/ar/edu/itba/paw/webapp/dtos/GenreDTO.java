@@ -21,13 +21,17 @@ public class GenreDTO {
     }
 
     public GenreDTO(Genre genre, List<Series> seriesList) {
-        this.id = genre.getId();
-        this.name = genre.getName();
+        this(genre);
         this.series = new ArrayList<>();
         seriesList.stream().forEach(series -> this.series.add(new SeriesDTO(series)));
         this.page = genre.getPage();
         this.arePrevious = genre.isArePrevious();
         this.areNext = genre.isAreNext();
+    }
+
+    public GenreDTO(Genre genre) {
+        this.id = genre.getId();
+        this.name = genre.getName();
     }
 
     public String getName() {

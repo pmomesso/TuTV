@@ -186,6 +186,13 @@ public class SeriesControllerJersey {
     }
 
     @GET
+    @Path("/genres")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getGenreList() {
+        return ok(new GenreListDTO(seriesService.getAllGenres())).build();
+    }
+
+    @GET
     @Path("/genres/{genreId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSeriesInGenre(@PathParam("genreId") Long genreId, @QueryParam("page") Integer page) {
