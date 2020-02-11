@@ -14,15 +14,12 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableWebSecurity
@@ -30,8 +27,6 @@ import java.util.concurrent.TimeUnit;
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtAuthenticationProvider jwtAuthenticationProvider;
-    @Autowired
-    private JwtUtil jwtUtil;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
@@ -41,7 +36,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(jwtAuthenticationProvider);
     }
 
@@ -49,6 +44,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     protected void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().authorizeRequests()
+                    .antMatchers("/users").hasRole("ADMIN")
                 .and().exceptionHandling()
                     .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
@@ -59,8 +56,16 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(final WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources/**");
+    public void configure(final WebSecurity web) {
+        web.ignoring()
+                .antMatchers("/resources/**")
+                .antMatchers("/users/login")
+                .antMatchers("/series")
+                .antMatchers("/series/{\\d+}")
+                .antMatchers("/series/{\\d+}/reviews")
+                .antMatchers("/series/genres/{\\d+}")
+                .antMatchers("/users/{\\d+}")
+                .antMatchers("/users/{\\d+}/lists");
     }
 
     private String getEncryptationKey() {

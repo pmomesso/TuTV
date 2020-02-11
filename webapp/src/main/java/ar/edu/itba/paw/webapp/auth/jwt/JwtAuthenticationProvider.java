@@ -10,10 +10,12 @@ import org.springframework.security.authentication.dao.AbstractUserDetailsAuthen
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -43,8 +45,10 @@ public class JwtAuthenticationProvider extends AbstractUserDetailsAuthentication
         if (parsedUser == null) {
             throw new JwtTokenMalformedException("JWT token is not valid");
         }
-
-        List<GrantedAuthority> authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList(parsedUser.getIsAdmin() ? "ADMIN" : "USER");
+        List<GrantedAuthority> authorityList = new ArrayList<>();
+        if(parsedUser.getIsAdmin()){
+            authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
 
         return new AuthenticatedUser(parsedUser.getMailAddress(),token,authorityList);
     }
