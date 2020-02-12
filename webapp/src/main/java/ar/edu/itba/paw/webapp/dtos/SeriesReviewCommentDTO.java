@@ -11,7 +11,7 @@ public class SeriesReviewCommentDTO {
     private String body;
     private Integer numLikes;
     private Boolean loggedInUserLikes = null;
-    private UserDTO userDTO;
+    private UserDTO user;
 
     public SeriesReviewCommentDTO() {
         //Empty constructor for JAX-RS
@@ -21,7 +21,7 @@ public class SeriesReviewCommentDTO {
         this.id = comment.getId();
         this.body = comment.getBody();
         this.numLikes = comment.getNumLikes();
-        this.userDTO = new UserDTO(comment.getUser());
+        this.user = new UserDTO(comment.getUser());
         setUserFields(comment, loggedUser);
     }
 
@@ -58,12 +58,12 @@ public class SeriesReviewCommentDTO {
         this.loggedInUserLikes = loggedInUserLikes;
     }
 
-    public UserDTO getUserDTO() {
-        return userDTO;
+    public UserDTO getUser() {
+        return user;
     }
 
-    public void setUserDTO(UserDTO userDTO) {
-        this.userDTO = userDTO;
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
     private void setUserFields(SeriesReviewComment comment, Optional<User> loggedUser) {
