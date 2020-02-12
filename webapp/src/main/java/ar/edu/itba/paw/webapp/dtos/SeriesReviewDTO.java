@@ -26,15 +26,19 @@ public class SeriesReviewDTO {
         //Empty constructor for JAX-RS
     }
 
-    public SeriesReviewDTO(SeriesReview review) {
+    public SeriesReviewDTO(SeriesReview review, Optional<User> loggedUser) {
         Set<SeriesReviewComment> comments = review.getComments();
         seriesReviewComments = new ArrayList<>(comments.size());
-        comments.stream().forEach(comment -> seriesReviewComments.add(new SeriesReviewCommentDTO(comment)));
+        comments.stream().forEach(comment -> {
+            SeriesReviewCommentDTO seriesReviewCommentDTO = new SeriesReviewCommentDTO(comment, loggedUser);
+            seriesReviewComments.add(seriesReviewCommentDTO);
+        });
         this.id = review.getId();
         this.body = review.getBody();
         this.likes = review.getNumLikes();
         this.isSpam = review.getIsSpam();
         this.user = new UserDTO(review.getUser());
+        setUserFields(review, loggedUser);
     }
 
     public List<SeriesReviewCommentDTO> getSeriesReviewComments() {
@@ -93,7 +97,7 @@ public class SeriesReviewDTO {
         this.id = id;
     }
 
-    public void setUserFields(SeriesReview seriesReview, Optional<User> loggedUser) {
+    private void setUserFields(SeriesReview seriesReview, Optional<User> loggedUser) {
         loggedUser.ifPresent(user -> {
             if(user.getId() != seriesReview.getUser().getId()) {
                 if(seriesReview.getLikes().contains(user)) {

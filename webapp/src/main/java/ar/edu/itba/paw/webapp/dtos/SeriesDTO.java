@@ -24,6 +24,11 @@ public class SeriesDTO {
         //Empty constructor for JAX-RS
     }
 
+    public SeriesDTO(Series series, Optional<User> loggedUser) {
+        this(series);
+        setUserFields(series, loggedUser);
+    }
+
     public SeriesDTO(Series series) {
         this.id = series.getId();
         this.name = series.getName();
@@ -134,7 +139,7 @@ public class SeriesDTO {
         seasons.sort(Comparator.comparingInt(SeasonDTO::getNumber));
     }
 
-    public void setUserFields(Optional<User> loggedUser, Series series) {
+    private void setUserFields(Series series, Optional<User> loggedUser) {
         if(loggedUser.isPresent()) {
             setLoggedInUserFollows(series.getUserFollowers().contains(loggedUser.get()));
             for (Rating rating : loggedUser.get().getRatings()) {

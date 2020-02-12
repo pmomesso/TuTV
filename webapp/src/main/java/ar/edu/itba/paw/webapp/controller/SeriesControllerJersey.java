@@ -52,9 +52,9 @@ public class SeriesControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
         Series series = optSeries.get();
-        SeriesDTO seriesDTO = new SeriesDTO(series);
+        SeriesDTO seriesDTO = new SeriesDTO(series, userService.getLoggedUser());
         seriesDTO.setSeasonsList(series, userService.getLoggedUser());
-        seriesDTO.setUserFields(userService.getLoggedUser(), series);
+        //seriesDTO.setUserFields(userService.getLoggedUser(), series);
         return ok(seriesDTO).build();
     }
 
@@ -81,7 +81,7 @@ public class SeriesControllerJersey {
             if(!optSeriesReview.isPresent()) {
                 return status(Status.NOT_FOUND).build();
             }
-            return ok(new SeriesReviewDTO(optSeriesReview.get())).build();
+            return ok(new SeriesReviewDTO(optSeriesReview.get(), userService.getLoggedUser())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         }
@@ -95,7 +95,7 @@ public class SeriesControllerJersey {
         //Todo: fix baseUrl
         try {
             SeriesReviewComment seriesReviewComment = seriesService.addCommentToPost(seriesReviewId, seriesReviewCommentDTO.getBody(), null);
-            return ok(new SeriesReviewCommentDTO(seriesReviewComment)).build();
+            return ok(new SeriesReviewCommentDTO(seriesReviewComment, userService.getLoggedUser())).build();
         } catch (NotFoundException e) {
             return status(Status.NOT_FOUND).build();
         } catch (UnauthorizedException e) {
@@ -161,7 +161,7 @@ public class SeriesControllerJersey {
             if(seriesDTO.getLoggedInUserRating() != null) {
                 seriesService.rateSeries(seriesDTO.getId(), seriesDTO.getLoggedInUserRating());
             }
-            return accepted().entity(new SeriesDTO(seriesService.getSerieById(seriesDTO.getId()).get())).build();
+            return accepted().entity(new SeriesDTO(seriesService.getSerieById(seriesDTO.getId()).get(), userService.getLoggedUser())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {

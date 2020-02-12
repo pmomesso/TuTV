@@ -1,23 +1,30 @@
 package ar.edu.itba.paw.webapp.dtos;
 
 import ar.edu.itba.paw.model.SeriesReviewComment;
+import ar.edu.itba.paw.model.User;
+
+import java.util.Optional;
 
 public class SeriesReviewCommentDTO {
 
     private Long id;
     private String body;
     private Integer numLikes;
-    private Boolean loggedInUserLikes;
+    private Boolean loggedInUserLikes = null;
+    private UserDTO userDTO;
 
     public SeriesReviewCommentDTO() {
         //Empty constructor for JAX-RS
     }
 
-    public SeriesReviewCommentDTO(SeriesReviewComment comment) {
+    public SeriesReviewCommentDTO(SeriesReviewComment comment, Optional<User> loggedUser) {
         this.id = comment.getId();
         this.body = comment.getBody();
         this.numLikes = comment.getNumLikes();
+        this.userDTO = new UserDTO(comment.getUser());
+        setUserFields(comment, loggedUser);
     }
+
 
     public String getBody() {
         return body;
@@ -50,4 +57,25 @@ public class SeriesReviewCommentDTO {
     public void setLoggedInUserLikes(Boolean loggedInUserLikes) {
         this.loggedInUserLikes = loggedInUserLikes;
     }
+
+    public UserDTO getUserDTO() {
+        return userDTO;
+    }
+
+    public void setUserDTO(UserDTO userDTO) {
+        this.userDTO = userDTO;
+    }
+
+    private void setUserFields(SeriesReviewComment comment, Optional<User> loggedUser) {
+        loggedUser.ifPresent(user -> {
+            if(comment.getUser().getId() != user.getId()) {
+                if(comment.getLikes().contains(user)) {
+                    loggedInUserLikes = Boolean.FALSE;
+                } else {
+                    loggedInUserLikes = Boolean.TRUE;
+                }
+            }
+        });
+    }
+
 }

@@ -14,9 +14,8 @@ public class SeriesReviewsDTO {
         Set<SeriesReview> reviews = series.getSeriesReviewList();
         seriesReviews = new ArrayList<>(reviews.size());
         reviews.stream().forEach(seriesReview -> {
-            SeriesReviewDTO seriesReviewDTO = new SeriesReviewDTO(seriesReview);
+            SeriesReviewDTO seriesReviewDTO = new SeriesReviewDTO(seriesReview, loggedUser);
             seriesReviews.add(seriesReviewDTO);
-            seriesReviewDTO.setUserFields(seriesReview, loggedUser);
         });
     }
 
