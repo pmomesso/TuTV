@@ -79,14 +79,17 @@ public class UserControllerJersey {
             return accepted().entity(new UserDTO(u.getValue())).build();
         }
         else{
-            String conflictMsg;
+            StringBuilder conflictMsg = new StringBuilder();
             if(u.getAlternative().contains(Errors.MAIL_ALREADY_IN_USE)){
-                conflictMsg = "Mail Conflict";
+                conflictMsg.append("Mail Conflict");
             }
-            else {
-                conflictMsg = "Username Conflict";
+            if(u.getAlternative().contains(Errors.USERNAME_ALREADY_IN_USE)){
+                if(conflictMsg.length() > 0) {
+                    conflictMsg.append("/");
+                }
+                conflictMsg.append("Username Conflict");
             }
-            return status(Status.CONFLICT).entity(conflictMsg).build();
+            return status(Status.CONFLICT).entity(new ErrorDTO(conflictMsg.toString())).build();
         }
     }
 

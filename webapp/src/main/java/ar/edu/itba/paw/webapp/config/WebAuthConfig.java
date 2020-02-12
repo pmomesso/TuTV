@@ -52,6 +52,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.PUT,"/series/reviews/").hasRole("USER")
                     .antMatchers(HttpMethod.PUT,"/series/reviews/comments").hasRole("USER")
                     .antMatchers(HttpMethod.PUT,"/series").hasRole("USER")
+                    .antMatchers(HttpMethod.PUT,"/series/{//d+}/seasons/{//d+}").hasRole("USER")
+                    .antMatchers(HttpMethod.PUT,"/series/{//d+}/seasons/{//d+}/episodes/{//d+}").hasRole("USER")
                     .antMatchers("/users/login").anonymous()
                     .antMatchers("/users/register").anonymous()
                     .antMatchers("/**").permitAll()

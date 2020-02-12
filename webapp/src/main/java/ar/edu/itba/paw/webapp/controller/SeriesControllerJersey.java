@@ -192,7 +192,7 @@ public class SeriesControllerJersey {
     public Response getSeriesInGenre(@PathParam("genreId") Long genreId, @QueryParam("page") Integer page) {
         Map<Genre, List<Series>> map;
         if(page == null) {
-            map = seriesService.getSeriesByGenre(genreId, Long.valueOf(1));
+            map = seriesService.getSeriesByGenre(genreId, 1L);
         } else {
             map = seriesService.getSeriesByGenre(genreId, Long.valueOf(page));
         }
@@ -209,4 +209,46 @@ public class SeriesControllerJersey {
         return rb.build();
     }
 
+    @PUT
+    @Path("/{seriesId}/seasons/{seasonId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response viewSeason(@PathParam("seriesId") Long seriesId, @PathParam("seasonId") Long seasonId, ViewedResourceDTO viewedResourceDTO){
+        if(seriesId < 0 || seasonId < 0){
+            return status(Status.BAD_REQUEST).build();
+        }
+        try {
+            if(viewedResourceDTO.getViewed()){
+                seriesService.setViewedSeason(seriesId,seasonId);
+            }
+            else{
+                seriesService.unviewSeason(seasonId);
+            }
+        } catch (UnauthorizedException e) {
+            return status(Status.UNAUTHORIZED).build();
+        } catch (NotFoundException e) {
+            return status(Status.NOT_FOUND).build();
+        }
+        return status(Status.NO_CONTENT).build();
+    }
+    @PUT
+    @Path("/{seriesId}/seasons/{seasonId}/episodes/{episodeId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response viewEpisode(@PathParam("seriesId") Long seriesId, @PathParam("seasonId") Long seasonId, @PathParam("episodeId") Long episodeId, ViewedResourceDTO viewedResourceDTO){
+        if(seriesId < 0 || seasonId < 0 || episodeId < 0){
+            return status(Status.BAD_REQUEST).build();
+        }
+        try {
+            if(viewedResourceDTO.getViewed()){
+                seriesService.setViewedEpisode(seriesId,episodeId);
+            }
+            else{
+                seriesService.unviewEpisode(episodeId);
+            }
+        } catch (UnauthorizedException e) {
+            return status(Status.UNAUTHORIZED).build();
+        } catch (NotFoundException e) {
+            return status(Status.NOT_FOUND).build();
+        }
+        return status(Status.NO_CONTENT).build();
+    }
 }
