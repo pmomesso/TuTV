@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import './css/resize_images.css';
 import './css/bootstrap.min.css';
-import './css/tvst.css';
 import './index.css';
 import './i18n';
 import './js/navigator.js';

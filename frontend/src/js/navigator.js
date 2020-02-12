@@ -29,14 +29,6 @@ function extend() {
     }
 }
 
-function extend_notifications() {
-    if ($("#notifications").hasClass("extended_notifications")) {
-        $("#notifications").removeClass("extended_notifications");
-    } else {
-        $("#notifications").addClass("extended_notifications");
-    }
-}
-
 function confirmAction(event, message) {
     event.preventDefault();
 

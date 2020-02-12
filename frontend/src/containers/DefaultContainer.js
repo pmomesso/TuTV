@@ -6,7 +6,6 @@ import Explore from './Explore';
 import SeriesPage from './SeriesPage';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../css/tvst.css';
 import ProfilePage from './ProfilePage';
 
 const DefaultContainer = () => {

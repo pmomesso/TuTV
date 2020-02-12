@@ -5209,22 +5209,6 @@ body.alt h2.title {
         display:none
     }
 }
-#notifications {
-    display:none;
-    position:fixed;
-    width:314px;
-    margin-left:-157px;
-    background-color:#f3f3f3;
-    padding:10px;
-    box-shadow:0 0 1px 1px #777;
-    border-radius:4px;
-    margin-top:10px;
-    z-index:6000
-}
-#notifications {
-    width:260px;
-    margin-left:-130px
-}
 #notifications ul{
     max-height:330px;
     overflow:auto

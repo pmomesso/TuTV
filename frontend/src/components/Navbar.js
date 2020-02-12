@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Modal from 'react-modal';
 import { connect } from 'react-redux';
 
 /*import $ from 'jquery';
@@ -8,13 +9,57 @@ import Popper from 'popper.js';*/
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faBell } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faBell, faTasks } from '@fortawesome/free-solid-svg-icons'
+import { faCompass, faCalendarCheck, faUser } from '@fortawesome/free-regular-svg-icons'
+import NotificationItem from "./NotificationItem";
+
+const customStyles = {
+    content : {
+        display               : 'block !important',
+        top                   : '390px',
+        left                  : '205px',
+        marginLeft            : '-130px',
+        width                 : '260px',
+        backgroundColor       : '#f3f3f3',
+        padding               : '10px',
+        boxShadow             : '0 0 1px 1px #777',
+        borderRadius          : '4px',
+        marginTop             : '10px',
+        maxHeight             : '330px',
+        overflow              : 'hidden'
+    },
+    overlay: {
+        zIndex: 100,
+        backgroundColor: 'none'
+    }
+};
 
 const Navbar = (props) => {
     const { t } = useTranslation();
 
+    const [modalIsOpen,setIsOpen] = React.useState(false);
+    function openModal() {
+        setIsOpen(true);
+    }
+    function closeModal(){
+        setIsOpen(false);
+    }
+
     return (
         <div className="page-left page-sidebar page-column">
+            <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles} contentLabel="Example Modal">
+                <div id="notifications" style={{maxHeight: '330px'}}>
+                    <ul className="notifications-list list-unstyled container">
+                        <NotificationItem message="notification message with link to resource" viewed={true}/>
+                        <NotificationItem message="notification message with link to resource" viewed={false}/>
+                        <NotificationItem message="notification message with link to resource" viewed={false}/>
+                        <NotificationItem message="notification message with link to resource" viewed={false}/>
+                        <NotificationItem message="notification message with link to resource" viewed={true}/>
+                        <NotificationItem message="notification message with link to resource" viewed={true}/>
+                    </ul>
+                </div>
+            </Modal>
+
             <a href="/#" className="extend-left-link">
                 <span className="fa-normal" /*onclick="extend()"*/>
                     <FontAwesomeIcon icon={ faBars } />
