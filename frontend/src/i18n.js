@@ -10,6 +10,8 @@ i18n
     resources: {
       es: {
         translations: {
+            "index.upcoming":               "Próximamente",
+            "index.watchlist":              "Series Pendientes",
             "index.explore":                "Explorar",
             "index.signin":                 "Iniciar sesión",
             "index.followers":              "{{count}} seguidor",
@@ -89,6 +91,8 @@ i18n
       },
       en: {
         translations: {
+            "index.upcoming":               "Upcoming",
+            "index.watchlist":              "Watchlist",
             "index.explore":                "Explore",
             "index.signin":                 "Log in",
             "index.followers":              "{{count}} follower",

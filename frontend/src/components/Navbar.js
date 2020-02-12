@@ -85,13 +85,28 @@ const Navbar = (props) => {
                         </div>
                         <input type="submit" className="novisible" />
                     </form>
-                    <br/>
                     <div className="all-left-navs">
                         <section id="menu">
                             <ul className="menu list-unstyled">
+                                <li className="upcoming">
+                                    <NavLink id="menu_upcoming" to="/upcoming" activeClassName="active">
+                                        <FontAwesomeIcon icon={ faCalendarCheck } style={{marginRight: "15px", verticalAlign: "middle", fontSize: "30px", fontWeight: "300", color: "#999"}} />
+                                        <span>
+                                            { t("index.upcoming") }
+                                        </span>
+                                    </NavLink>
+                                </li>
+                                <li className="home ">
+                                    <NavLink id="menu_watchlist" to="/watchlist" activeClassName="active">
+                                        <FontAwesomeIcon icon={ faTasks } style={{marginRight: "15px", verticalAlign: "middle", fontSize: "30px", fontWeight: "300", color: "#999"}} />
+                                        <span>
+                                            { t("index.watchlist") }
+                                        </span>
+                                    </NavLink>
+                                </li>
                                 <li className="explore">
-                                    <NavLink id="menu_home" to="/">
-                                        <img className="logo logo_icon" src={require('../img/explore.png')} alt={ t("index.explore") }/>
+                                    <NavLink exact id="menu_home" to="/" activeClassName="active">
+                                        <FontAwesomeIcon icon={ faCompass } style={{marginRight: "15px", verticalAlign: "middle", fontSize: "30px", fontWeight: "300", color: "#999"}} />
                                         <span>
                                             { t("index.explore") }
                                         </span>
@@ -106,17 +121,17 @@ const Navbar = (props) => {
                                     {props.logged_user.userName}
                                 </h1>
                                 <div className="alt-user-nav">
-                                    <button href="#">
-                                        <span /*onclick="extend_notifications()"*/ className="notifications-btn icon-btn">
+                                    <NavLink to="#" activeClassName="active">
+                                        <span onClick={openModal} className="notifications-btn icon-btn">
                                             <FontAwesomeIcon icon={ faBell } />
-                                            <div className="badge zero font">#NOTIF</div>
+                                            <div className="badge zero font" style={{color: "#ccc"}}>count</div>
                                         </span>
-                                    </button>
+                                    </NavLink>
                                 </div>
                                 <ul className="menu list-unstyled">
                                     <li className="profile">
                                         <NavLink to={"/profiles/" + props.logged_user.id}>
-                                            <img className="logo logo_icon" src={require('../img/profile.png')} alt={ t("index.profile") }/>
+                                        <FontAwesomeIcon icon={ faUser } style={{marginRight: "15px", verticalAlign: "middle", fontSize: "30px", fontWeight: "300", color: "#999"}} />
                                             <span>
                                                 { t("index.profile") }
                                             </span>
