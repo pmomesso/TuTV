@@ -2,10 +2,13 @@ package ar.edu.itba.paw.webapp.dtos;
 
 import ar.edu.itba.paw.model.User;
 
+
 public class UserDTO {
 
     private Long id;
     private String userName;
+    private String mail;
+    private Integer pendingNotifications;
     private Boolean isAdmin = Boolean.FALSE;
     private Boolean isBanned = Boolean.FALSE;
 
@@ -16,8 +19,10 @@ public class UserDTO {
     public UserDTO(User user) {
         this.id = user.getId();
         this.userName = user.getUserName();
+        this.mail = user.getMailAddress();
         this.isAdmin = user.getIsAdmin();
         this.isBanned = user.getIsBanned();
+        this.pendingNotifications = user.getNotifications().size();
     }
 
     public Long getId() {
@@ -50,5 +55,21 @@ public class UserDTO {
 
     public void setBanned(Boolean banned) {
         isBanned = banned;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public Integer getPendingNotifications() {
+        return pendingNotifications;
+    }
+
+    public void setNotifications(Integer pendingNotifications) {
+        this.pendingNotifications = pendingNotifications;
     }
 }

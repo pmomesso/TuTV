@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.ws.rs.HttpMethod;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -45,17 +46,12 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
-                    .antMatchers("/admin/**").hasRole("ADMIN")
                     .antMatchers("/users").hasRole("ADMIN")
-                    .antMatchers("/viewSeason").hasRole("USER")
-                    .antMatchers("/unviewSeason").hasRole("USER")
-                    .antMatchers("/viewEpisode").hasRole("USER")
-                    .antMatchers("/unviewEpisode").hasRole("USER")
-                    .antMatchers("/addSeries").hasRole("USER")
-                    .antMatchers("/unfollowSeries").hasRole("USER")
-                    .antMatchers("/likePost").hasRole("USER")
-                    .antMatchers("/unlikePost").hasRole("USER")
-                    .antMatchers("/rate").hasRole("USER")
+                    .antMatchers(HttpMethod.POST,"/series/{//d+}/reviews").hasRole("USER")
+                    .antMatchers(HttpMethod.POST,"/series/reviews/{//d+}/comments").hasRole("USER")
+                    .antMatchers(HttpMethod.PUT,"/series/reviews/").hasRole("USER")
+                    .antMatchers(HttpMethod.PUT,"/series/reviews/comments").hasRole("USER")
+                    .antMatchers(HttpMethod.PUT,"/series").hasRole("USER")
                     .antMatchers("/users/login").anonymous()
                     .antMatchers("/users/register").anonymous()
                     .antMatchers("/**").permitAll()

@@ -61,7 +61,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public Optional<String> getLoggedUserMail() {
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
 
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+        if (!(authentication instanceof AnonymousAuthenticationToken) && authentication != null) {
             String currentUserMail = authentication.getName();
             Optional<String> ret = Optional.of(currentUserMail);
             return ret;
