@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.dtos;
 
 import ar.edu.itba.paw.model.Season;
+import ar.edu.itba.paw.model.User;
 
 import java.util.*;
 
@@ -8,7 +9,7 @@ public class SeasonDTO {
 
     private Long id;
     private Integer number;
-    private boolean viewedByUser;
+    private Boolean viewedByUser;
     private List<EpisodeDTO> episodes = Collections.emptyList();
 
     public SeasonDTO() {
@@ -19,7 +20,6 @@ public class SeasonDTO {
         this.id = season.getId();
         this.number = season.getSeasonNumber();
         this.viewedByUser = false;
-        setEpisodesList(season);
     }
 
     public Long getId() {
@@ -38,11 +38,11 @@ public class SeasonDTO {
         this.number = number;
     }
 
-    public boolean isViewedByUser() {
+    public Boolean isViewedByUser() {
         return viewedByUser;
     }
 
-    public void setViewedByUser(boolean viewedByUser) {
+    public void setViewedByUser(Boolean viewedByUser) {
         this.viewedByUser = viewedByUser;
     }
 
@@ -54,11 +54,22 @@ public class SeasonDTO {
         this.episodes = episodes;
     }
 
-    public void setEpisodesList(Season season) {
-        //episodes = new ArrayList<>(season.getEpisodes().size());
+    public void setEpisodesList(Season season, Optional<User> loggedUser) {
         episodes = new ArrayList<>();
-        season.getEpisodes().stream().forEach(episode -> episodes.add(new EpisodeDTO(episode)));
+        season.getEpisodes().stream().forEach(episode -> {
+            EpisodeDTO episodeDTO = new EpisodeDTO(episode);
+            episodes.add(episodeDTO);
+            episodeDTO.setUserFields(episode, loggedUser);
+        });
         episodes.sort(Comparator.comparingInt(EpisodeDTO::getNumEpisode));
     }
 
+    public void setUserFields(Season season, Optional<User> loggedUser) {
+        loggedUser.ifPresent(user -> {
+            setViewedByUser(season.getViewed());
+        });
+        if(!loggedUser.isPresent()) {
+            viewedByUser = null;
+        }
+    }
 }

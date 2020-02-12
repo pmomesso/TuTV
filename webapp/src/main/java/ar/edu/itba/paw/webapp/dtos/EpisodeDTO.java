@@ -1,13 +1,16 @@
 package ar.edu.itba.paw.webapp.dtos;
 
 import ar.edu.itba.paw.model.Episode;
+import ar.edu.itba.paw.model.User;
+
+import java.util.Optional;
 
 public class EpisodeDTO {
 
     private Long id;
     private String name;
     private String air_date;
-    private boolean viewedByUser;
+    private Boolean viewedByUser;
     private Integer numEpisode;
 
     public EpisodeDTO() {
@@ -47,11 +50,11 @@ public class EpisodeDTO {
         this.air_date = air_date;
     }
 
-    public boolean isViewedByUser() {
+    public Boolean isViewedByUser() {
         return viewedByUser;
     }
 
-    public void setViewedByUser(boolean viewedByUser) {
+    public void setViewedByUser(Boolean viewedByUser) {
         this.viewedByUser = viewedByUser;
     }
 
@@ -61,5 +64,14 @@ public class EpisodeDTO {
 
     public void setNumEpisode(Integer numEpisode) {
         this.numEpisode = numEpisode;
+    }
+
+    public void setUserFields(Episode episode, Optional<User> loggedUser) {
+        loggedUser.ifPresent(user -> {
+            setViewedByUser(episode.getViewers().contains(user));
+        });
+        if(!loggedUser.isPresent()) {
+            viewedByUser = null;
+        }
     }
 }

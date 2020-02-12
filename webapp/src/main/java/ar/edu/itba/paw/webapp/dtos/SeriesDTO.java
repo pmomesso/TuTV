@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.webapp.dtos;
 
+import ar.edu.itba.paw.model.Rating;
 import ar.edu.itba.paw.model.Series;
+import ar.edu.itba.paw.model.User;
 
 import java.util.*;
 
@@ -123,10 +125,30 @@ public class SeriesDTO {
         this.posterUrl = posterUrl;
     }
 
-    public void setSeasonsList(Series series) {
+    public void setSeasonsList(Series series, Optional<User> loggedUser) {
         seasons = new ArrayList<>();
-        series.getSeasons().stream().forEach(season -> seasons.add(new SeasonDTO(season)));
+        series.getSeasons().stream().forEach(season -> {
+            SeasonDTO seasonDTO = new SeasonDTO(season);
+            seasonDTO.setEpisodesList(season, loggedUser);
+            seasonDTO.setUserFields(season, loggedUser);
+            seasons.add(seasonDTO);
+        });;
         seasons.sort(Comparator.comparingInt(SeasonDTO::getNumber));
     }
 
+    public void setUserFields(Optional<User> loggedUser, Series series) {
+        if(loggedUser.isPresent()) {
+            setLoggedInUserFollows(series.getUserFollowers().contains(loggedUser.get()));
+            for (Rating rating : loggedUser.get().getRatings()) {
+                if (rating.getSeries().getId() == series.getId()) {
+                    setLoggedInUserRating(rating.getRating());
+                    break;
+                }
+            }
+        }
+        if(!loggedUser.isPresent()) {
+            setLoggedInUserFollows(null);
+            setLoggedInUserRating(null);
+        }
+    }
 }

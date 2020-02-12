@@ -53,17 +53,8 @@ public class SeriesControllerJersey {
         }
         Series series = optSeries.get();
         SeriesDTO seriesDTO = new SeriesDTO(series);
-        seriesDTO.setSeasonsList(series);
-        Optional<User> loggedUser = userService.getLoggedUser();
-        if(loggedUser.isPresent()) {
-                seriesDTO.setLoggedInUserFollows(series.getUserFollowers().contains(loggedUser.get()));
-                for (Rating rating : loggedUser.get().getRatings()) {
-                    if (rating.getSeries().getId() == series.getId()) {
-                        seriesDTO.setLoggedInUserRating(rating.getRating());
-                        break;
-                    }
-                }
-        }
+        seriesDTO.setSeasonsList(series, userService.getLoggedUser());
+        seriesDTO.setUserFields(userService.getLoggedUser(), series);
         return ok(seriesDTO).build();
     }
 
