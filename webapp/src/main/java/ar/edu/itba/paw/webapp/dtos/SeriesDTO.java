@@ -14,8 +14,8 @@ public class SeriesDTO {
     private String seriesDescription;
     private String bannerUrl;
     private String posterUrl;
-    private Integer loggedInUserRating;
-    private Boolean loggedInUserFollows;
+    private Integer loggedInUserRating = null;
+    private Boolean loggedInUserFollows = null;
     private Double userRating;
     private Integer followers;
     private List<SeasonDTO> seasons = Collections.emptyList();
@@ -31,8 +31,6 @@ public class SeriesDTO {
         this.seriesDescription = series.getSeriesDescription();
         this.bannerUrl = series.getBannerUrl();
         this.posterUrl = series.getPosterUrl();
-        this.loggedInUserRating = -1;
-        this.loggedInUserFollows = false;
         this.userRating = series.getUserRating();
         this.followers = series.getFollowers();
     }
@@ -132,7 +130,7 @@ public class SeriesDTO {
             seasonDTO.setEpisodesList(season, loggedUser);
             seasonDTO.setUserFields(season, loggedUser);
             seasons.add(seasonDTO);
-        });;
+        });
         seasons.sort(Comparator.comparingInt(SeasonDTO::getNumber));
     }
 
@@ -145,10 +143,6 @@ public class SeriesDTO {
                     break;
                 }
             }
-        }
-        if(!loggedUser.isPresent()) {
-            setLoggedInUserFollows(null);
-            setLoggedInUserRating(null);
         }
     }
 }

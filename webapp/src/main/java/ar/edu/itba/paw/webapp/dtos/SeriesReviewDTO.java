@@ -6,14 +6,11 @@ import ar.edu.itba.paw.model.User;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class SeriesReviewDTO {
 
-    private List<SeriesReviewCommentDTO> seriesReviewCommentDTOList = Collections.emptyList();
+    private List<SeriesReviewCommentDTO> seriesReviewComments = Collections.emptyList();
     private UserDTO user;
 
     @NotNull
@@ -21,7 +18,7 @@ public class SeriesReviewDTO {
     private String body;
 
     private Integer likes = 0;
-    private Boolean loggedInUserLikes = Boolean.FALSE;
+    private Boolean loggedInUserLikes = null;
     private Boolean isSpam = Boolean.FALSE;
     private Long id;
 
@@ -31,8 +28,8 @@ public class SeriesReviewDTO {
 
     public SeriesReviewDTO(SeriesReview review) {
         Set<SeriesReviewComment> comments = review.getComments();
-        seriesReviewCommentDTOList = new ArrayList<>(comments.size());
-        comments.stream().forEach(comment -> seriesReviewCommentDTOList.add(new SeriesReviewCommentDTO(comment)));
+        seriesReviewComments = new ArrayList<>(comments.size());
+        comments.stream().forEach(comment -> seriesReviewComments.add(new SeriesReviewCommentDTO(comment)));
         this.id = review.getId();
         this.body = review.getBody();
         this.likes = review.getNumLikes();
@@ -40,12 +37,12 @@ public class SeriesReviewDTO {
         this.user = new UserDTO(review.getUser());
     }
 
-    public List<SeriesReviewCommentDTO> getSeriesReviewCommentDTOList() {
-        return seriesReviewCommentDTOList;
+    public List<SeriesReviewCommentDTO> getSeriesReviewComments() {
+        return seriesReviewComments;
     }
 
-    public void setSeriesReviewCommentDTOList(List<SeriesReviewCommentDTO> seriesReviewCommentDTOList) {
-        this.seriesReviewCommentDTOList = seriesReviewCommentDTOList;
+    public void setSeriesReviewComments(List<SeriesReviewCommentDTO> seriesReviewComments) {
+        this.seriesReviewComments = seriesReviewComments;
     }
 
     public String getBody() {
@@ -96,4 +93,15 @@ public class SeriesReviewDTO {
         this.id = id;
     }
 
+    public void setUserFields(SeriesReview seriesReview, Optional<User> loggedUser) {
+        loggedUser.ifPresent(user -> {
+            if(user.getId() != seriesReview.getUser().getId()) {
+                if(seriesReview.getLikes().contains(user)) {
+                    loggedInUserLikes = Boolean.TRUE;
+                } else {
+                    loggedInUserLikes = Boolean.FALSE;
+                }
+            }
+        });
+    }
 }

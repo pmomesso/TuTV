@@ -67,12 +67,7 @@ public class SeriesControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
         Series series = optSeries.get();
-        SeriesReviewsDTO seriesReviewsDTO = new SeriesReviewsDTO(series);
-        if(userService.getLoggedUser().isPresent()) {
-            for(SeriesReviewDTO seriesReviewDTO : seriesReviewsDTO.getSeriesReviews()) {
-                seriesReviewDTO.setLoggedInUserLikes(seriesService.getLoggedInUserLikesSeriesReview(seriesReviewDTO.getId()).get());
-            }
-        }
+        SeriesReviewsDTO seriesReviewsDTO = new SeriesReviewsDTO(series, userService.getLoggedUser());
         return ok(seriesReviewsDTO).build();
     }
 
