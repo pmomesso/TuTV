@@ -36,5 +36,5 @@ public interface UserService {
 	void setUserAvatar(long userId, MultipartFile avatar) throws BadRequestException;
 	Optional<byte[]> getUserAvatar(long userId);
 
-    void setNotificationViewed(long notificationId) throws NotFoundException;
+    void setNotificationViewed(long notificationId) throws NotFoundException, UnauthorizedException;
 }

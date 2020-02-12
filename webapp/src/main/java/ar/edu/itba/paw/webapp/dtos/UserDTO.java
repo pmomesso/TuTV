@@ -11,10 +11,8 @@ public class UserDTO {
     private Long id;
     private String userName;
     private String mail;
-    private Long pendingNotifications;
     private Boolean isAdmin = Boolean.FALSE;
     private Boolean isBanned = Boolean.FALSE;
-    private List<NotificationDTO> notifications = null;
 
     public UserDTO() {
         //Empty constructor for JAX-RS
@@ -60,21 +58,6 @@ public class UserDTO {
         isBanned = banned;
     }
 
-    public List<NotificationDTO> getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(List<NotificationDTO> notifications) {
-        this.notifications = notifications;
-    }
-
-    public void setNotifications(User user) {
-        setPendingNotifications(user.getNotificationsToView());
-        notifications = new ArrayList<>();
-        user.getNotifications().stream().forEach(notification -> notifications.add(new NotificationDTO(notification)));
-    }
-
-
     public String getMail() {
         return mail;
     }
@@ -83,11 +66,4 @@ public class UserDTO {
         this.mail = mail;
     }
 
-    public Long getPendingNotifications() {
-        return pendingNotifications;
-    }
-
-    public void setPendingNotifications(Long pendingNotifications) {
-        this.pendingNotifications = pendingNotifications;
-    }
 }

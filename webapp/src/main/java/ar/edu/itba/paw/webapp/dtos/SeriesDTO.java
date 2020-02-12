@@ -18,7 +18,7 @@ public class SeriesDTO {
     private Boolean loggedInUserFollows = null;
     private Double userRating;
     private Integer followers;
-    private List<SeasonDTO> seasons = Collections.emptyList();
+    private List<SeasonDTO> seasons = null;
 
     public SeriesDTO() {
         //Empty constructor for JAX-RS

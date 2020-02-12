@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controller;
 
+import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.UsersList;
@@ -10,10 +11,13 @@ import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.auth.jwt.JwtUtil;
 import ar.edu.itba.paw.webapp.dtos.*;
 
+import ar.edu.itba.paw.webapp.http.PATCH;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -36,6 +40,8 @@ public class UserControllerJersey {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private SeriesService seriesService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -83,6 +89,7 @@ public class UserControllerJersey {
             return status(Status.CONFLICT).entity(conflictMsg).build();
         }
     }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -97,6 +104,7 @@ public class UserControllerJersey {
             return accepted().header("Authorization","Bearer " + token).entity(new UserDTO(user.get())).build();
         }
     }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}")
@@ -106,8 +114,43 @@ public class UserControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
         UserDTO userDTO = new UserDTO(optUser.get());
-        userDTO.setNotifications(optUser.get());
         return ok(userDTO).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/notifications")
+    public Response getUserNotifications(@PathParam("userId") Long userId) {
+        if(userService.getLoggedUser().get().getId() != userId) {
+            return status(Status.UNAUTHORIZED).build();
+        }
+        NotificationsListDTO notificationsListDTO = new NotificationsListDTO(userService.getLoggedUser().get());
+        return ok(notificationsListDTO).build();
+    }
+
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/notifications")
+    public Response editUserNotifications(@PathParam("userId") Long userId, NotificationsListDTO notificationsListDTO) {
+        if(userService.getLoggedUser().get().getId() != userId) {
+            return status(Status.UNAUTHORIZED).build();
+        }
+        try {
+            User loggedUser = userService.getLoggedUser().get();
+            for(NotificationDTO notificationDTO : notificationsListDTO.getNotifications()) {
+                if(notificationDTO.getId() == null ||notificationDTO.getViewedByUser() == null) {
+                    return status(Status.BAD_REQUEST).build();
+                }
+                if(notificationDTO.getViewedByUser()) {
+                    userService.setNotificationViewed(notificationDTO.getId());
+                }
+            }
+            return accepted(new NotificationsListDTO(loggedUser)).build();
+        } catch (UnauthorizedException e) {
+            return status(Status.UNAUTHORIZED).build();
+        } catch (NotFoundException e) {
+            return status(Status.NOT_FOUND).build();
+        }
     }
 
     @GET
@@ -144,12 +187,14 @@ public class UserControllerJersey {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/")
-    public Response banUser(UserDTO userDTO) {
+    public Response editUser(UserDTO userDTO) {
         try {
             if(userDTO.getId() == null) {
                 return status(Status.BAD_REQUEST).build();
             }
-            userService.banUser(userDTO.getId());
+            if(userDTO.getBanned()) {
+                userService.banUser(userDTO.getId());
+            }
             return accepted().entity(new UserDTO(userService.findById(userDTO.getId()).get())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
@@ -157,6 +202,5 @@ public class UserControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
     }
-
 
 }

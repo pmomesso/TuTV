@@ -6,7 +6,7 @@ public class NotificationDTO {
 
     private Long id;
     private Boolean viewedByUser;
-    private SeriesDTO seriesDTO;
+    private SeriesDTO series;
 
     public NotificationDTO() {
         //Empty constructor for JAX-RS
@@ -14,9 +14,9 @@ public class NotificationDTO {
 
     public NotificationDTO(Notification notification) {
         this.id = notification.getId();
-        this.seriesDTO = new SeriesDTO();
-        this.seriesDTO.setId(notification.getResource().getId());
-        this.seriesDTO.setName(notification.getResource().getName());
+        this.series = new SeriesDTO();
+        this.series.setId(notification.getResource().getId());
+        this.series.setName(notification.getResource().getName());
         this.viewedByUser = Boolean.valueOf(notification.getViewed());
     }
 
@@ -36,12 +36,12 @@ public class NotificationDTO {
         this.viewedByUser = viewedByUser;
     }
 
-    public SeriesDTO getSeriesDTO() {
-        return seriesDTO;
+    public SeriesDTO getSeries() {
+        return series;
     }
 
-    public void setSeriesDTO(SeriesDTO seriesDTO) {
-        this.seriesDTO = seriesDTO;
+    public void setSeries(SeriesDTO series) {
+        this.series = series;
     }
 
 }
