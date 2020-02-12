@@ -48,10 +48,10 @@ public class UserControllerJersey {
     @Path("/login")
     public Response login(LoginDTO loginDto) {
         Optional<User> user = userService.findByMail(loginDto.getUsername());
-        if(!user.isPresent() || (user.get().getConfirmationKey() != null && !user.get().getConfirmationKey().isEmpty())){
-            return status(Status.UNAUTHORIZED).build();
+        if(!user.isPresent() || !passwordEncoder.matches(loginDto.getPassword(),user.get().getPassword())){
+            return status(Status.BAD_REQUEST).build();
         }
-        if(!passwordEncoder.matches(loginDto.getPassword(),user.get().getPassword())){
+        if(user.get().getConfirmationKey() != null && !user.get().getConfirmationKey().isEmpty()){
             return status(Status.UNAUTHORIZED).build();
         }
         String token = jwtUtil.generateToken(user.get());
