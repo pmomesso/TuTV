@@ -49,6 +49,8 @@ public class UserHibernateDaoTest {
     /* Valores test para genre*/
     private static final String GENRE_1 = "genre 1";
     private static final String GENRE_2 = "genre 2";
+    private static final String GENRE1_I18KEY = "genre1";
+    private static final String GENRE2_I18KEY = "genre2";
 
     private User user;
     private Series series1;
@@ -85,7 +87,9 @@ public class UserHibernateDaoTest {
         em.persist(user);
 
         genre1 = new Genre(GENRE_1);
+        genre1.setI18Key(GENRE1_I18KEY);
         genre2 = new Genre(GENRE_2);
+        genre2.setI18Key(GENRE2_I18KEY);
         em.persist(genre1);
         em.persist(genre2);
         Network network = new Network("name");

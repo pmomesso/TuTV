@@ -36,6 +36,7 @@ public class SeriesHibernateDaoTest {
     private static final int FOLLOWERS = 6;
     /* Valores test genero */
     private static final String GENRE_NAME = "genre";
+    private static final String I18KEY = "genre";
     /* Valores test network */
     private static final String NETWORK_NAME = "network";
     /* Valores test temporada */
@@ -141,6 +142,7 @@ public class SeriesHibernateDaoTest {
     public void populateDatabase(){
         network = new Network(NETWORK_NAME);
         genre =  new Genre(GENRE_NAME);
+        genre.setI18Key(I18KEY) ;
         episode = new Episode(EPISODE_NAME,EPISODE_OVERVIEW,EPISODE_NUM,EPISODE_AIRED);
         season = new Season(SEASON_NAME,SEASON_NUM);
         season.addEpisode(episode);
