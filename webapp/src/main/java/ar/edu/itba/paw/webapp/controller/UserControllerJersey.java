@@ -13,7 +13,6 @@ import ar.edu.itba.paw.webapp.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -23,8 +22,9 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static javax.ws.rs.core.Response.*;
 
 @Path("users")
 @Component
@@ -32,7 +32,7 @@ public class UserControllerJersey {
 
 
     @Context
-    UriInfo uri;
+    UriInfo uriInfo;
 
     @Autowired
     private UserService userService;
@@ -49,28 +49,28 @@ public class UserControllerJersey {
     public Response login(LoginDTO loginDto) {
         Optional<User> user = userService.findByMail(loginDto.getUsername());
         if(!user.isPresent() || (user.get().getConfirmationKey() != null && !user.get().getConfirmationKey().isEmpty())){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return status(Status.UNAUTHORIZED).build();
         }
         if(!passwordEncoder.matches(loginDto.getPassword(),user.get().getPassword())){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return status(Status.UNAUTHORIZED).build();
         }
         String token = jwtUtil.generateToken(user.get());
-        return Response.accepted().header("Authorization","Bearer " + token).entity(new UserDTO(user.get())).build();
+        return accepted().header("Authorization","Bearer " + token).entity(new UserDTO(user.get())).build();
     }
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/register")
     public Response register(RegisterDTO register) {
-        final URI baseUri = uri.getBaseUri();
+        final URI baseUri = uriInfo.getBaseUri();
         Either<User, Collection<Errors>> u;
         try{
             u = userService.createUser(register.getUsername(),register.getPassword(),register.getMail(),false,baseUri.toString());
         }catch(UnauthorizedException e){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return status(Status.UNAUTHORIZED).build();
         }
         if(u.isValuePresent()){
-            return Response.accepted().entity(new UserDTO(u.getValue())).build();
+            return accepted().entity(new UserDTO(u.getValue())).build();
         }
         else{
             String conflictMsg;
@@ -80,7 +80,7 @@ public class UserControllerJersey {
             else {
                 conflictMsg = "Username Conflict";
             }
-            return Response.status(Response.Status.CONFLICT).entity(conflictMsg).build();
+            return status(Status.CONFLICT).entity(conflictMsg).build();
         }
     }
     @POST
@@ -90,11 +90,11 @@ public class UserControllerJersey {
     public Response confirmMail(ConfirmationDTO confirmation){
         Optional<User> user = userService.activateUser(confirmation.getConfirmationKey());
         if(!user.isPresent()){
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).build();
         }
         else{
             String token = jwtUtil.generateToken(user.get());
-            return Response.accepted().header("Authorization","Bearer " + token).entity(new UserDTO(user.get())).build();
+            return accepted().header("Authorization","Bearer " + token).entity(new UserDTO(user.get())).build();
         }
     }
     @GET
@@ -103,9 +103,9 @@ public class UserControllerJersey {
     public Response getUserById(@PathParam("userId") Long userId) {
         Optional<User> optUser = userService.findById(userId);
         if(!optUser.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).build();
         }
-        return Response.ok(new UserDTO(optUser.get())).build();
+        return ok(new UserDTO(optUser.get())).build();
     }
 
     @GET
@@ -116,9 +116,14 @@ public class UserControllerJersey {
         try {
             usersList = userService.getAllUsersExceptLoggedOne(page);
         } catch (UnauthorizedException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return status(Status.UNAUTHORIZED).build();
         }
-        return Response.ok(new UsersListDTO(usersList)).build();
+        ResponseBuilder rb = Response.ok(new UsersListDTO(usersList));
+        if(usersList.isAreNext() || usersList.isArePrevious()) {
+            rb.header("Link", (usersList.isAreNext() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build().toString() + " , rel = next") : "")
+                    + ((usersList.isAreNext() && usersList.isArePrevious()) ? " ; " : "") + (usersList.isArePrevious() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build().toString()) : ""));
+        }
+        return ok(new UsersListDTO(usersList)).build();
     }
 
     @GET
@@ -127,10 +132,10 @@ public class UserControllerJersey {
     public Response getUserFavourites(@PathParam("userId") Long userId) {
         Optional<User> optUser = userService.findById(userId);
         if(!optUser.isPresent()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).build();
         }
         User user = optUser.get();
-        return Response.ok(new SeriesListsDTO(user.getLists().stream().collect(Collectors.toList()))).build();
+        return ok(new SeriesListsDTO(user.getLists().stream().collect(Collectors.toList()))).build();
     }
 
     @PUT
@@ -140,14 +145,14 @@ public class UserControllerJersey {
     public Response banUser(UserDTO userDTO) {
         try {
             if(userDTO.getId() == null) {
-                return Response.status(Response.Status.BAD_REQUEST).build();
+                return status(Status.BAD_REQUEST).build();
             }
             userService.banUser(userDTO.getId());
-            return Response.accepted().entity(new UserDTO(userService.findById(userDTO.getId()).get())).build();
+            return accepted().entity(new UserDTO(userService.findById(userDTO.getId()).get())).build();
         } catch (UnauthorizedException e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).build();
         }
     }
 
