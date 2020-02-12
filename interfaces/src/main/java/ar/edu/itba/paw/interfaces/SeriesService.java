@@ -75,4 +75,10 @@ public interface SeriesService {
     void createNotificationsForNewEpisodes();
 
     Optional<SeriesReview> getSeriesReviewById(Long seriesId);
+
+    Optional<SeriesReview> reviewWithComment(Long commentId);
+
+    Optional<SeriesReviewComment> getSeriesReviewCommentById(Long commentId);
+
+    Optional<Series> serieWithReview(Long seriesReviewId);
 }

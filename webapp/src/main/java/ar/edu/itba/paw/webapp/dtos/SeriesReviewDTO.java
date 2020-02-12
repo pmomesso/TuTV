@@ -13,8 +13,6 @@ public class SeriesReviewDTO {
     private List<SeriesReviewCommentDTO> seriesReviewComments = Collections.emptyList();
     private UserDTO user;
 
-    @NotNull
-    @Size(min = 10, max = 255)
     private String body;
 
     private Integer likes = 0;

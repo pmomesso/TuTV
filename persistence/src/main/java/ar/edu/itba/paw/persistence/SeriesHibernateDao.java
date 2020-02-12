@@ -40,7 +40,7 @@ public class SeriesHibernateDao implements SeriesDao {
 
     @Override
     public List<Series> getSeriesByName(String seriesName) {
-        final TypedQuery<Series> query = em.createQuery("select s from Series as s inner join s.genres as g " +
+        final TypedQuery<Series> query = em.createQuery("select s from Series as s  s.genres as g " +
                 "where s.name like :seriesName",Series.class);
         query.setParameter("seriesName",seriesName);
         return query.getResultList();
@@ -589,6 +589,25 @@ public class SeriesHibernateDao implements SeriesDao {
             ret = Optional.of(Boolean.valueOf(seriesReview.get().getLikes().contains(user)));
         }
         return ret;
+    }
+
+    @Override
+    public SeriesReview reviewWithComment(Long commentId) {
+        TypedQuery<SeriesReview> query = em.createQuery("select sr from SeriesReview sr inner join sr.comments c " +
+                "where c.id = :commentId", SeriesReview.class).setParameter("commentId", commentId);
+        return query.getSingleResult();
+    }
+
+    @Override
+    public SeriesReviewComment getCommentById(Long commentId) {
+        return em.createQuery("from SeriesReviewComment src where src.id = :commentId", SeriesReviewComment.class)
+                .setParameter("commentId", commentId).getSingleResult();
+    }
+
+    @Override
+    public Series serieWithReview(Long seriesReviewId) {
+        return em.createQuery("select s from Series s inner join s.seriesReviewList sr " +
+                "where sr.id = :seriesReviewId", Series.class).setParameter("seriesReviewId", seriesReviewId).getSingleResult();
     }
 
 }

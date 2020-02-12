@@ -428,4 +428,20 @@ public class SeriesServiceImpl implements SeriesService {
         return seriesReview;
     }
 
+    @Override
+    @Transactional
+    public Optional<SeriesReview> reviewWithComment(Long commentId) {
+        return Optional.ofNullable(seriesDao.reviewWithComment(commentId));
+    }
+
+    @Override
+    public Optional<SeriesReviewComment> getSeriesReviewCommentById(Long commentId) {
+        return Optional.ofNullable(seriesDao.getCommentById(commentId));
+    }
+
+    @Override
+    public Optional<Series> serieWithReview(Long seriesReviewId) {
+        return Optional.ofNullable(seriesDao.serieWithReview(seriesReviewId));
+    }
+
 }

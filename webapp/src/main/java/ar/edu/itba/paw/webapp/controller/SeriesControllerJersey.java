@@ -104,20 +104,22 @@ public class SeriesControllerJersey {
     }
 
     @PUT
-    @Path("/reviews")
+    @Path("/{seriesId}/reviews/{seriesReviewId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateSeriesReview(SeriesReviewDTO seriesReviewDTO) {
-        if(seriesReviewDTO.getLoggedInUserLikes() == null) {
+    public Response updateSeriesReview(@PathParam("seriesId") Long seriesId, @PathParam("seriesReviewId") Long seriesReviewId, SeriesReviewDTO seriesReviewDTO) {
+        Optional<Series> series = seriesService.getSerieById(seriesId);
+        if(seriesReviewDTO.getLoggedInUserLikes() == null || !series.isPresent()
+            || !seriesService.serieWithReview(seriesReviewId).isPresent()) {
             return status(Status.BAD_REQUEST).build();
         }
         try {
             if(seriesReviewDTO.getLoggedInUserLikes()) {
-                seriesService.likePost(seriesReviewDTO.getId());
+                seriesService.likePost(seriesReviewId);
             } else {
-                seriesService.unlikePost(seriesReviewDTO.getId());
+                seriesService.unlikePost(seriesReviewId);
             }
-            return accepted().entity(seriesService.getSeriesReviewById(seriesReviewDTO.getId()).get()).build();
+            return accepted(new SeriesReviewDTO(seriesService.getSeriesReviewById(seriesReviewId).get(), userService.getLoggedUser())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
@@ -128,19 +130,20 @@ public class SeriesControllerJersey {
 
 
     @PUT
-    @Path("/reviews/comments")
+    @Path("/{seriesId}/reviews/{seriesReviewId}/comments/{commentId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateSeriesReviewComment(SeriesReviewCommentDTO seriesReviewCommentDTO) {
-        if(seriesReviewCommentDTO.getLoggedInUserLikes() == null) {
+    public Response updateSeriesReviewComment(@PathParam("seriesId") Long seriesId, @PathParam("seriesReviewId") Long seriesReviewId,
+            @PathParam("commentId") Long commentId, SeriesReviewCommentDTO seriesReviewCommentDTO) {
+        if(seriesReviewCommentDTO.getLoggedInUserLikes() == null || !seriesService.reviewWithComment(commentId).isPresent()) {
             return status(Status.BAD_REQUEST).build();
         }
         try {
             if (seriesReviewCommentDTO.getLoggedInUserLikes()) {
-                seriesService.likeComment(seriesReviewCommentDTO.getId());
+                seriesService.likeComment(commentId);
             } else {
-                seriesService.unlikeComment(seriesReviewCommentDTO.getId());
+                seriesService.unlikeComment(commentId);
             }
-            return accepted().build();
+            return accepted(new SeriesReviewCommentDTO(seriesService.getSeriesReviewCommentById(commentId).get(), userService.getLoggedUser())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
