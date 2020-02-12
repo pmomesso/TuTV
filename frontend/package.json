@@ -27,7 +27,8 @@
     "react-router-dom": "latest",
     "react-scripts": "3.3.0",
     "redux": "^4.0.5",
-    "yup": "^0.28.1"
+    "yup": "^0.28.1",
+    "react-modal": "^3.11.1"
   },
   "scripts": {
     "start": "react-scripts start",
