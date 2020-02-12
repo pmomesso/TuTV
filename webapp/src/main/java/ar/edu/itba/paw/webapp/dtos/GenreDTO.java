@@ -13,9 +13,6 @@ public class GenreDTO {
     private String name;
     private String i18Key;
     private List<SeriesDTO> series = Collections.emptyList();
-    private Long page;
-    private boolean arePrevious;
-    private boolean areNext;
 
     public GenreDTO() {
         //Empty constructor for JAX-RS
@@ -25,9 +22,6 @@ public class GenreDTO {
         this(genre);
         this.series = new ArrayList<>();
         seriesList.stream().forEach(series -> this.series.add(new SeriesDTO(series)));
-        this.page = genre.getPage();
-        this.arePrevious = genre.isArePrevious();
-        this.areNext = genre.isAreNext();
     }
 
     public GenreDTO(Genre genre) {
@@ -58,30 +52,6 @@ public class GenreDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getPage() {
-        return page;
-    }
-
-    public void setPage(Long page) {
-        this.page = page;
-    }
-
-    public boolean isArePrevious() {
-        return arePrevious;
-    }
-
-    public void setArePrevious(boolean arePrevious) {
-        this.arePrevious = arePrevious;
-    }
-
-    public boolean isAreNext() {
-        return areNext;
-    }
-
-    public void setAreNext(boolean areNext) {
-        this.areNext = areNext;
     }
 
     public String getI18Key() {

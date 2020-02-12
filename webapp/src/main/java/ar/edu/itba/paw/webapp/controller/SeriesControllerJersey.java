@@ -189,7 +189,10 @@ public class SeriesControllerJersey {
     @Path("/genres")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getGenreList() {
-        return ok(new GenreListDTO(seriesService.getAllGenres())).build();
+        GenreListDTO genreListDTO = new GenreListDTO(seriesService.getAllGenres());
+        genreListDTO.getGenres().stream().forEach(genreDTO -> genreDTO.setSeries(null));
+        ResponseBuilder rb = ok(genreListDTO);
+        return rb.build();
     }
 
     @GET
@@ -206,7 +209,13 @@ public class SeriesControllerJersey {
         if(!optGenre.isPresent()) {
             return status(Status.NOT_FOUND).build();
         }
-        return ok(new GenreDTO(optGenre.get(), map.get(optGenre.get()))).build();
+        Genre g = optGenre.get();
+        ResponseBuilder rb = ok(new GenreDTO(g, map.get(g)));
+        if(g.isAreNext() || g.isArePrevious()) {
+            rb.header("Link", (g.isAreNext() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() + 1).build().toString() + " , rel = next") : "")
+                    + ((g.isAreNext() && g.isArePrevious()) ? " ; " : "") + (g.isArePrevious() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() - 1).build().toString() + " , rel = prev") : ""));
+        }
+        return rb.build();
     }
 
 }
