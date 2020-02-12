@@ -262,6 +262,17 @@
                 <groupId>org.glassfish.jersey.ext</groupId>
                 <artifactId>jersey-spring4</artifactId>
                 <version>${jersey.version}</version>
+                <exclusions>
+                    <exclusion><!-- La versión incluida requiere Java 9+ -->
+                        <groupId>org.glassfish.hk2</groupId>
+                        <artifactId>hk2</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2</artifactId>
+                <version>2.5.0-b05</version><!-- última versión compatible con Java 8 -->
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
@@ -282,6 +293,11 @@
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-jaxb</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-json-jackson</artifactId>
                 <version>${jersey.version}</version>
             </dependency>
         </dependencies>
