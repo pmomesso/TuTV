@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
@@ -18,7 +19,10 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
+import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -34,6 +38,7 @@ import javax.sql.DataSource;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 @EnableWebMvc
 @ComponentScan({"ar.edu.itba.paw.service", "ar.edu.itba.paw.persistence", "ar.edu.itba.paw.webapp.controller"})
@@ -43,6 +48,18 @@ import java.util.Properties;
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     private static final int MAX_UPLOAD_SIZE = 2 * 1024 * 1024;
+
+    //Bean definition in order to avoid exception
+    @Bean
+	public TaskScheduler taskScheduler() {
+    	return new ConcurrentTaskScheduler();
+	}
+
+	//Bean definition in order to avoid exception
+	@Bean
+	public Executor executor(){
+    	return new SimpleAsyncTaskExecutor();
+	}
 
 	@Bean
 	public CommonsMultipartResolver multipartResolver() {
