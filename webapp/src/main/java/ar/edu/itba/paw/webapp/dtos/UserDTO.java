@@ -36,7 +36,7 @@ public class UserDTO {
         this.userName = userName;
     }
 
-    public boolean getIsAdmin() {
+    public Boolean getAdmin() {
         return isAdmin;
     }
 
@@ -44,7 +44,7 @@ public class UserDTO {
         isAdmin = admin;
     }
 
-    public boolean getIsBanned() {
+    public Boolean getBanned() {
         return isBanned;
     }
 

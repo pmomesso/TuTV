@@ -3,6 +3,7 @@ package ar.edu.itba.paw.model;
 import java.util.List;
 
 public class UsersList {
+
     private List<User> usersList;
     private Integer from;
     private Long to;
