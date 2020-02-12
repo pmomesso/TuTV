@@ -88,22 +88,38 @@ const Navbar = (props) => {
                     <div className="all-left-navs">
                         <section id="menu">
                             <ul className="menu list-unstyled">
+                                {props.logged_user !== null &&
                                 <li className="upcoming">
                                     <NavLink id="menu_upcoming" to="/upcoming" activeClassName="active">
-                                        <FontAwesomeIcon icon={ faCalendarCheck } style={{marginRight: "15px", verticalAlign: "middle", fontSize: "30px", fontWeight: "300", color: "#999"}} />
+                                        <FontAwesomeIcon icon={faCalendarCheck} style={{
+                                            marginRight: "15px",
+                                            verticalAlign: "middle",
+                                            fontSize: "30px",
+                                            fontWeight: "300",
+                                            color: "#999"
+                                        }}/>
                                         <span>
-                                            { t("index.upcoming") }
-                                        </span>
+                                                {t("index.upcoming")}
+                                            </span>
                                     </NavLink>
                                 </li>
+                                }
+                                {props.logged_user !== null &&
                                 <li className="home ">
                                     <NavLink id="menu_watchlist" to="/watchlist" activeClassName="active">
-                                        <FontAwesomeIcon icon={ faTasks } style={{marginRight: "15px", verticalAlign: "middle", fontSize: "30px", fontWeight: "300", color: "#999"}} />
+                                        <FontAwesomeIcon icon={faTasks} style={{
+                                            marginRight: "15px",
+                                            verticalAlign: "middle",
+                                            fontSize: "30px",
+                                            fontWeight: "300",
+                                            color: "#999"
+                                        }}/>
                                         <span>
-                                            { t("index.watchlist") }
-                                        </span>
+                                                {t("index.watchlist")}
+                                            </span>
                                     </NavLink>
                                 </li>
+                                }
                                 <li className="explore">
                                     <NavLink exact id="menu_home" to="/" activeClassName="active">
                                         <FontAwesomeIcon icon={ faCompass } style={{marginRight: "15px", verticalAlign: "middle", fontSize: "30px", fontWeight: "300", color: "#999"}} />
