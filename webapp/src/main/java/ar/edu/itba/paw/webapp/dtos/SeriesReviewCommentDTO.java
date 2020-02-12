@@ -70,9 +70,9 @@ public class SeriesReviewCommentDTO {
         loggedUser.ifPresent(user -> {
             if(comment.getUser().getId() != user.getId()) {
                 if(comment.getLikes().contains(user)) {
-                    loggedInUserLikes = Boolean.FALSE;
-                } else {
                     loggedInUserLikes = Boolean.TRUE;
+                } else {
+                    loggedInUserLikes = Boolean.FALSE;
                 }
             }
         });
