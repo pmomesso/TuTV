@@ -105,7 +105,9 @@ public class UserControllerJersey {
         if(!optUser.isPresent()) {
             return status(Status.NOT_FOUND).build();
         }
-        return ok(new UserDTO(optUser.get())).build();
+        UserDTO userDTO = new UserDTO(optUser.get());
+        userDTO.setNotifications(optUser.get());
+        return ok(userDTO).build();
     }
 
     @GET

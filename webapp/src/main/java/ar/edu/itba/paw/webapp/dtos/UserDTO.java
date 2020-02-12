@@ -1,6 +1,11 @@
 package ar.edu.itba.paw.webapp.dtos;
 
+import ar.edu.itba.paw.model.Notification;
 import ar.edu.itba.paw.model.User;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 public class UserDTO {
@@ -11,6 +16,7 @@ public class UserDTO {
     private Integer pendingNotifications;
     private Boolean isAdmin = Boolean.FALSE;
     private Boolean isBanned = Boolean.FALSE;
+    private List<NotificationDTO> notificationDTOList = null;
 
     public UserDTO() {
         //Empty constructor for JAX-RS
@@ -56,6 +62,20 @@ public class UserDTO {
     public void setBanned(Boolean banned) {
         isBanned = banned;
     }
+
+    public List<NotificationDTO> getNotificationDTOList() {
+        return notificationDTOList;
+    }
+
+    public void setNotificationDTOList(List<NotificationDTO> notificationDTOList) {
+        this.notificationDTOList = notificationDTOList;
+    }
+
+    public void setNotifications(User user) {
+        notificationDTOList = new ArrayList<>();
+        user.getNotifications().stream().forEach(notification -> notificationDTOList.add(new NotificationDTO(notification)));
+    }
+
 
     public String getMail() {
         return mail;

@@ -422,7 +422,7 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    @Transactional
+    @Transactionalº
     public Optional<SeriesReview> getSeriesReviewById(Long seriesReviewId) {
         Optional<SeriesReview> seriesReview = seriesDao.getSeriesReviewById(seriesReviewId);
         return seriesReview;
