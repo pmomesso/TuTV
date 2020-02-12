@@ -45,7 +45,20 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
+                    .antMatchers("/admin/**").hasRole("ADMIN")
                     .antMatchers("/users").hasRole("ADMIN")
+                    .antMatchers("/viewSeason").hasRole("USER")
+                    .antMatchers("/unviewSeason").hasRole("USER")
+                    .antMatchers("/viewEpisode").hasRole("USER")
+                    .antMatchers("/unviewEpisode").hasRole("USER")
+                    .antMatchers("/addSeries").hasRole("USER")
+                    .antMatchers("/unfollowSeries").hasRole("USER")
+                    .antMatchers("/likePost").hasRole("USER")
+                    .antMatchers("/unlikePost").hasRole("USER")
+                    .antMatchers("/rate").hasRole("USER")
+                    .antMatchers("/users/login").anonymous()
+                    .antMatchers("/users/register").anonymous()
+                    .antMatchers("/**").permitAll()
                 .and().exceptionHandling()
                     .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
@@ -59,16 +72,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     public void configure(final WebSecurity web) {
         web.ignoring()
                 .antMatchers("/resources/**")
-                .antMatchers("/users/login")
-                .antMatchers("/users/register")
-                .antMatchers("/users/mailconfirm")
-                .antMatchers("/series")
-                .antMatchers("/series/featured")
-                .antMatchers("/series/{\\d+}")
-                .antMatchers("/series/{\\d+}/reviews")
-                .antMatchers("/series/genres/{\\d+}")
-                .antMatchers("/users/{\\d+}")
-                .antMatchers("/users/{\\d+}/lists");
+                .antMatchers("/users/mailconfirm");
     }
 
     private String getEncryptationKey() {
