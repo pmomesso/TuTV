@@ -74,7 +74,89 @@ class ProfilePage extends Component {
                 "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
               }
         ];
+        const lists = [
+            {
+                "id": 1,
+                "name": "All Time Favourites",
+                "series": [
+                    {
+                        "id": 4,
+                        "name": "Cleverman",
+                        "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
+                        "followers": 0,
+                        "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
+                    },
+                    {
+                        "id": 2,
+                        "name": "Cleverman",
+                        "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
+                        "followers": 0,
+                        "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "name": "Addictive",
+                "series": [
+                    {
+                        "id": 4,
+                        "name": "Cleverman",
+                        "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
+                        "followers": 0,
+                        "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
+                    },
+                    {
+                        "id": 2,
+                        "name": "Cleverman",
+                        "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
+                        "followers": 0,
+                        "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "name": "Abandoned",
+                "series": [
+                    {
+                        "id": 4,
+                        "name": "Cleverman",
+                        "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
+                        "followers": 0,
+                        "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
+                    },
+                    {
+                        "id": 2,
+                        "name": "Cleverman",
+                        "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
+                        "followers": 0,
+                        "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
+                    }
+                ]
+            }
+        ];
         const followedSeries = [];
+
+        const listsElement = lists.map(list => {
+            return(
+                <div key={list.id} className="profile-shows">
+                    <div>
+                        <div className="overflow-hidden">
+                            <h2 className="small float-left">{list.name}</h2>
+                            <a type="button" className="show-link float-left icon-margin" data-toggle="modal" data-target="#modifyList${list.id}">
+                                <span>MODIFY</span>
+                            </a>
+                            {/* <form action="/removeList?id=${list.id}&userId=${userProfile.id}"
+                                                                        method="post" class="icon-margin float-left" onsubmit="confirmAction(event,'<spring:message code="profile.sureRemove" arguments="${list.name}"/>')">
+                                 <button type="submit" class="heart no-padding" style="font-family: FontAwesome,serif; font-style: normal">&#xf1f8</button>
+                               </form> */}
+                        </div>
+                        <SeriesList source={list.series} />
+                    </div>
+                </div>
+            );
+        });
 
         return (
             <div>
@@ -213,6 +295,29 @@ class ProfilePage extends Component {
                                         </div>
                                     </div>
 
+                                    <div id="tab-lists" className="tab-pane" role="tabpanel">
+                                        {(listsElement.length) ?
+                                            listsElement
+                                            :
+                                            (<div id="all-shows">
+                                                <h2 className="small"> </h2>
+                                                <section>
+                                                    <div className="container h-100">
+                                                        <div className="row justify-content-center h-100">
+                                                            <div className="col-lg-8 col-sm-12 align-self-center">
+                                                                <div className="text-center m-4">
+                                                                    <h4>
+                                                                        <Trans i18nKey="profile.noLists" />
+                                                                    </h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </div>)
+                                        }
+                                    </div>
+
 
                                     <div id="tab-information" className="tab-pane" role="tabpanel">
                                         <section id="basic-settings" className="container">
@@ -260,7 +365,7 @@ class ProfilePage extends Component {
                                                                             <Trans i18nKey="register.username" />
                                                                         </label>
                                                                         <div className="col-sm-6">
-                                                                            <input {...formik.getFieldProps('username')} path="username" type="text" minlength="6" maxlength="32" className="form-control" name="username" placeholder="JohnDoe" />
+                                                                            <input {...formik.getFieldProps('username')} path="username" type="text" minLength="6" maxLength="32" className="form-control" name="username" placeholder="JohnDoe" />
                                                                             {formik.touched.username && formik.errors.username ? (
                                                                                     <span className="error m-3 w-100">{formik.errors.username}</span>
                                                                                 ) : null}
