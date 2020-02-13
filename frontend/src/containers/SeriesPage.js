@@ -12,7 +12,7 @@ import Axios from 'axios';
 import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
 
-import * as CONSTANTS from '../constants.js'
+import { connect } from 'react-redux';
 
 class SeriesPage extends Component {
     state = {
@@ -25,7 +25,7 @@ class SeriesPage extends Component {
     componentDidMount = () => {
         let seriesId = this.props.match.params.series_id;
 
-        Axios.get(CONSTANTS.APIURL + "/series/" + seriesId)
+        Axios.get("/series/" + seriesId)
                 .then(res => {
                     this.setState({
                         series: res.data,
@@ -36,19 +36,113 @@ class SeriesPage extends Component {
 
     onEpisodeWatchedClickedHandler = (event, season_index, episode_index) => {
         event.preventDefault();
-        alert("onEpisodeWatched S" + season_index + "E" + episode_index);
+
+        let newValue = !this.state.series.seasons[season_index].episodes[episode_index].viewedByUser;
+
+        let newEpisode = {
+            ...this.state.series.seasons[season_index].episodes[episode_index],
+            "viewedByUser": newValue
+        }
+
+        let newSeasonEpisodeList = [ ...this.state.series.seasons[season_index].episodes ]
+        newSeasonEpisodeList[episode_index] = newEpisode;
+
+        let newSeason = {
+            ...this.state.series.seasons[season_index],
+            "episodes": newSeasonEpisodeList
+        }
+
+        let newSeasonList = [ ...this.state.series.seasons ]
+        newSeasonList[season_index] = newSeason;
+
+        let newSeries = {
+            ...this.state.series,
+            "seasons": newSeasonList
+        }
+
+        this.setState({ "series": newSeries });
+
     }
 
-    onSeasonWatchedClicked = (event) => {
+    onSeasonWatchedClicked = (event, season_index) => {
         event.preventDefault();
-        alert("onSeasonWatched");
-        /*this.setState({
-            "series.season[0].viewedByUser": true
-        });*/
+
+        let newValue;// = true;
+        
+        if(this.state.series.seasons[season_index].episodes.length > 0)
+            newValue = !this.state.series.seasons[season_index].episodes.every((episode) => episode.viewedByUser === true);
+
+        let newSeasonEpisodeList = [];
+
+        this.state.series.seasons[season_index].episodes.forEach((episode) => {
+            let newEpisode = {
+                ...episode,
+                "viewedByUser": newValue
+            }
+
+            newSeasonEpisodeList.push(newEpisode);
+        });
+
+        let newSeason = {
+            ...this.state.series.seasons[season_index],
+            "episodes": newSeasonEpisodeList
+        };
+
+        let newSeasonList = [ ...this.state.series.seasons ];
+        newSeasonList[season_index] = newSeason;
+
+        let newSeries = {
+            ...this.state.series,
+            "seasons": newSeasonList
+        };
+
+        this.setState({ "series": newSeries });
     }
 
     onRatingChanged = (newValue) => {
-        alert("Puntaje: " + newValue);
+        //alert("Puntaje: " + newValue);
+    }
+
+    onSeriesFollowClicked = () => {
+
+        if(this.props.logged_user === null) {
+            this.props.history.push("/login" + this.props.location.pathname);
+            return;
+        }
+
+        let newValue = !this.state.series.loggedInUserFollows;
+
+        if(newValue) {
+            let data = { "id": this.state.series.id };
+            console.log("/users/" + this.props.logged_user.id + "/follows");
+            console.log(JSON.stringify(data));
+            Axios.post("/users/" + this.props.logged_user.id + "/follows", JSON.stringify(data))
+                .then((res) => {
+    
+                })
+                .catch((err) => {
+                    /* TODO SI CADUCO LA SESION? */
+                    //alert("Error: " + err.response.status);
+                });
+        } else {
+            Axios.delete("/users/" + this.props.logged_user.id + "/follows/" + this.state.series.id)
+                .then((res) => {
+        
+                })
+                .catch((err) => {
+                    /* TODO SI CADUCO LA SESION? */
+                    //alert("Error: " + err.response.status);
+                });
+        }
+
+        let newSeries = {
+            ...this.state.series,
+            loggedInUserFollows: newValue
+        }
+
+        this.setState({
+            series: newSeries
+        });
     }
 
     render() {
@@ -69,7 +163,7 @@ class SeriesPage extends Component {
         let seasonCount = series.seasons.length;
         for(let i = 0; i < seasonCount; i++) {
             seasonList.push(
-                <SeasonAccordion number={i} key={i} season={series.seasons[i]} onEpisodeWatchedClickedHandler={this.onEpisodeWatchedClickedHandler}/>
+                <SeasonAccordion number={i} key={i} season={series.seasons[i]} onSeasonWatchedClicked={this.onSeasonWatchedClicked} onEpisodeWatchedClickedHandler={this.onEpisodeWatchedClickedHandler}/>
             );
         }
 
@@ -87,7 +181,7 @@ class SeriesPage extends Component {
                                             <span className={series.loggedInUserFollows ? "star" : "star-unchecked"} />
                                             <h2>{series.userRating + " / 5"}</h2>
                                         </div>
-                                        <button className="add-button" type="submit">
+                                        <button className="add-button" onClick={this.onSeriesFollowClicked}>
                                             <Trans i18nKey={series.loggedInUserFollows ? "series.unfollow" : "series.follow"} />
                                         </button>
                                     </div>
@@ -145,4 +239,10 @@ class SeriesPage extends Component {
     }
 }
 
-export default SeriesPage;
+const mapStateToProps = (state) => {
+    return {
+        logged_user: state.auth.user
+    }
+}
+
+export default connect(mapStateToProps)(SeriesPage);

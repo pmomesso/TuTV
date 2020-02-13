@@ -14,6 +14,7 @@ i18n
             "index.watchlist":              "Series Pendientes",
             "index.explore":                "Explorar",
             "index.signin":                 "Iniciar sesión",
+            "index.signout":                "Cerrar sesión",
             "index.followers":              "{{count}} seguidor",
             "index.followers_plural":       "{{count}} seguidores",
             "index.newShows":               "Recientemente agregadas",
@@ -55,6 +56,7 @@ i18n
             "login.password":               "Contraseña: ",
             "login.rememberme":             " Recordarme",
             "login.submit":                 "Iniciar sesión",
+            "login.invalidCredentials":     "Usuario o contraseña incorrectos",
 
             "register.title":               "Registrarse",
             "register.username":            "Nombre de usuario:",
@@ -67,6 +69,14 @@ i18n
             "register.continue":            "Continuar sin registrarse",
             "register.unmatchedPassword":   "Las contraseñas no coinciden.",
             "register.mailExists":          "El mail ingresado ya existe.",
+            "register.usernameExists":      "El nombre de usuario ya existe.",
+            "register.successModalTitle":   "¡Ya casi!",
+            "register.successModalBody":    "Su registro se ha completado exitosamente. Para finalizar, active su cuenta mediante el enlace enviado por correo a la casilla que especificó.",
+
+            "mailconfirm.title":            "Bienvenido a TuTv, {{name}}",
+            "mailconfirm.success":          "Su cuenta ha sido activada con éxito. Ya puedes disfrutar de todos los beneficios.",
+            "mailconfirm.loading":          "Activando su cuenta...",
+            "mailconfirm.error":            "Error activando su cuenta. El enlace es inválido o ya ha sido utilizado con anterioridad.",
 
             "profile.usernameExists":       "El nombre de usuario ya existe.",
             "profile.followed":             "Series",
@@ -95,6 +105,7 @@ i18n
             "index.watchlist":              "Watchlist",
             "index.explore":                "Explore",
             "index.signin":                 "Log in",
+            "index.signout":                "Log out",
             "index.followers":              "{{count}} follower",
             "index.followers_plural":       "{{count}} followers",
             "index.newShows":               "Recently added",
@@ -136,6 +147,7 @@ i18n
             "login.password":               "Password: ",
             "login.rememberme":             " Remember me",
             "login.submit":                 "Log in",
+            "login.invalidCredentials":     "Incorrect username or password",
 
             "register.title":               "Register",
             "register.username":            "Username:",
@@ -148,6 +160,14 @@ i18n
             "register.continue":            "Continue without register",
             "register.unmatchedPassword":   "Passwords do not match.",
             "register.mailExists":          "The mail already exists.",
+            "register.usernameExists":      "The username already exists.",
+            "register.successModalTitle":   "Almost ready!",
+            "register.successModalBody":    "Your information was registered successfully. To complete the process, activate your account through the link sent to your mail address.",
+
+            "mailconfirm.title":            "Welcome to TuTv, {{name}}",
+            "mailconfirm.success":          "Your account has been successfully activated. You can now fully enjoy the site.",
+            "mailconfirm.loading":          "Activating your account...",
+            "mailconfirm.error":            "Error activating your account. The link followed is invalid or has been already used.",
 
             "profile.usernameExists":       "The username already exists.",
             "profile.followed":             "Shows",

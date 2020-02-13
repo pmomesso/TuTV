@@ -10,8 +10,15 @@ import * as serviceWorker from './serviceWorker';
 import { createStore } from 'redux'
 import rootReducer from './store/reducers/rootReducer'
 import { Provider } from 'react-redux'
+import Axios from 'axios';
+
 
 const store = createStore(rootReducer);
+
+const APIURL = "http://localhost:8080/webapp_war_exploded"
+
+Axios.defaults.baseURL = APIURL;
+Axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 ReactDOM.render(
     <Provider store={store}>

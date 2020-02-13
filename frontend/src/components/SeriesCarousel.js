@@ -8,8 +8,6 @@ import Axios from 'axios';
 import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
 
-import * as CONSTANTS from '../constants.js'
-
 class SeriesCarousel extends Component {
 
     state = {
@@ -21,7 +19,7 @@ class SeriesCarousel extends Component {
         let source = this.props.source;
 
         if (typeof source === "string") {
-            Axios.get(CONSTANTS.APIURL + source)
+            Axios.get(source)
                 .then(res => {
                     this.setState({
                         showList: res.data.banner_series,
