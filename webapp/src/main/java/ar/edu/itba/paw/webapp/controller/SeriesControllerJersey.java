@@ -251,4 +251,21 @@ public class SeriesControllerJersey {
         }
         return status(Status.NO_CONTENT).build();
     }
+
+    @GET
+    @Path("/watchlist")
+    public Response getWatchlist() {
+        try {
+            List<Episode> episodeList = seriesService.getWatchList();
+            WatchlistDTO[] watchlist = new WatchlistDTO[episodeList.size()];
+            for(int i = 0; i < episodeList.size(); i++){
+                watchlist[i] = new WatchlistDTO(episodeList.get(i));
+            }
+            return ok(watchlist).build();
+        } catch (UnauthorizedException e) {
+            return status(Status.UNAUTHORIZED).build();
+        } catch (NotFoundException e) {
+            return status(Status.NOT_FOUND).build();
+        }
+    }
 }
