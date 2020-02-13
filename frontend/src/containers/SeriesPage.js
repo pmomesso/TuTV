@@ -37,6 +37,11 @@ class SeriesPage extends Component {
     onEpisodeWatchedClickedHandler = (event, season_index, episode_index) => {
         event.preventDefault();
 
+        if(this.props.logged_user === null) {
+            this.props.history.push("/login" + this.props.location.pathname);
+            return;
+        }
+
         let newValue = !this.state.series.seasons[season_index].episodes[episode_index].viewedByUser;
 
         let newEpisode = {
@@ -66,6 +71,11 @@ class SeriesPage extends Component {
 
     onSeasonWatchedClicked = (event, season_index) => {
         event.preventDefault();
+
+        if(this.props.logged_user === null) {
+            this.props.history.push("/login" + this.props.location.pathname);
+            return;
+        }
 
         let newValue;// = true;
         
@@ -100,6 +110,31 @@ class SeriesPage extends Component {
     }
 
     onRatingChanged = (newValue) => {
+        if(this.props.logged_user === null) {
+            this.props.history.push("/login" + this.props.location.pathname);
+            return;
+        }
+
+        let data = { "loggedInUserRatings": newValue };
+
+        Axios.put("/series/" + this.state.series.id, JSON.stringify(data))
+            .then((res) => {
+
+            })
+            .catch((err) => {
+                /* TODO SI CADUCO LA SESION? */
+                //alert("Error: " + err.response.status);
+            });
+
+        let newSeries = {
+            ...this.state.series,
+            loggedInUserRatings: newValue
+        }
+
+        this.setState({
+            series: newSeries
+        });
+
         //alert("Puntaje: " + newValue);
     }
 
@@ -112,7 +147,20 @@ class SeriesPage extends Component {
 
         let newValue = !this.state.series.loggedInUserFollows;
 
-        if(newValue) {
+        let data = { "loggedInUserFollows": newValue };
+
+        Axios.put("/series/" + this.state.series.id, JSON.stringify(data), {headers: {
+            'Content-Type': 'application/json',
+        }})
+            .then((res) => {
+
+            })
+            .catch((err) => {
+                /* TODO SI CADUCO LA SESION? */
+                //alert("Error: " + err.response.status);
+            });
+
+        /*if(newValue) {
             let data = { "id": this.state.series.id };
             console.log("/users/" + this.props.logged_user.id + "/follows");
             console.log(JSON.stringify(data));
@@ -123,7 +171,7 @@ class SeriesPage extends Component {
                 .catch((err) => {
                     /* TODO SI CADUCO LA SESION? */
                     //alert("Error: " + err.response.status);
-                });
+                /*});
         } else {
             Axios.delete("/users/" + this.props.logged_user.id + "/follows/" + this.state.series.id)
                 .then((res) => {
@@ -132,8 +180,8 @@ class SeriesPage extends Component {
                 .catch((err) => {
                     /* TODO SI CADUCO LA SESION? */
                     //alert("Error: " + err.response.status);
-                });
-        }
+                /*});
+        }*/
 
         let newSeries = {
             ...this.state.series,
@@ -179,7 +227,11 @@ class SeriesPage extends Component {
                                     <div className="carousel-caption">
                                         <div className="text-center">
                                             <span className={series.loggedInUserFollows ? "star" : "star-unchecked"} />
-                                            <h2>{series.userRating + " / 5"}</h2>
+                                            <h2>
+                                                {(series.userRating == null) ? 
+                                                <Trans i18nKey="series.no_rating"/>
+                                                : series.userRating + " / 5"}
+                                                </h2>
                                         </div>
                                         <button className="add-button" onClick={this.onSeriesFollowClicked}>
                                             <Trans i18nKey={series.loggedInUserFollows ? "series.unfollow" : "series.follow"} />

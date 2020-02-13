@@ -47,6 +47,7 @@ i18n
             "series.seasons":               "{{count}} temporada",
             "series.seasons_plural":        "{{count}} temporadas",
             "series.season_number":         "Temporada {{count}}",
+            "series.no_rating":             "Sin calificaciones aún",
 
             "login.continue":               "Continuar sin iniciar sesión",
             "login.noaccount":              "¿No tienes una cuenta?",
@@ -138,6 +139,7 @@ i18n
             "series.seasons":               "{{count}} season",
             "series.seasons_plural":        "{{count}} seasons",
             "series.season_number":         "Season {{count}}",
+            "series.no_rating":             "No rating yet",
 
             "login.continue":               "Continue without login",
             "login.noaccount":              "Don't have an account?",
