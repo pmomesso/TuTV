@@ -171,12 +171,9 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public void followSeries(long seriesId) throws NotFoundException, UnauthorizedException {
+    public Optional<Series> followSeries(long seriesId) throws UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        int result = seriesDao.followSeries(seriesId, user.getId());
-        if(result == 0) {
-            throw new NotFoundException();
-        }
+        return seriesDao.followSeries(seriesId, user.getId());
     }
 
     @Override

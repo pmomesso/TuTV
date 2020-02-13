@@ -30,7 +30,7 @@ public interface SeriesService {
     List<Network> getAllNetworks();
 
     boolean follows(long seriesId) throws UnauthorizedException;
-    void followSeries(long seriesId) throws NotFoundException, UnauthorizedException;
+    Optional<Series> followSeries(long seriesId) throws UnauthorizedException;
     void unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException;
     void setViewedEpisode(long seriesId, long episodeId) throws NotFoundException, UnauthorizedException;
     void setViewedSeason(long seriesId, long seasonId) throws UnauthorizedException, NotFoundException;
