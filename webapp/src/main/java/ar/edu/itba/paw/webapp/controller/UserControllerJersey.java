@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.SeriesList;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.UsersList;
@@ -281,4 +280,17 @@ public class UserControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
     }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/stats")
+    public Response getUserStats(@PathParam("userId") Long userId) {
+        try {
+            if(!userService.findById(userId).isPresent()) return status(Status.NOT_FOUND).build();
+            return ok(new GenresStatsDTO(userService.getGenresStats())).build();
+        } catch (UnauthorizedException e) {
+            return status(Status.UNAUTHORIZED).build();
+        }
+    }
+
 }
