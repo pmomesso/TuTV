@@ -88,10 +88,14 @@ public class SeriesControllerJersey {
     }
 
     @POST
-    @Path("/reviews/{seriesReviewId}/comments")
+    @Path("/{seriesId}/reviews/{seriesReviewId}/comments")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createComment(@PathParam("seriesReviewId") Long seriesReviewId, SeriesReviewCommentDTO seriesReviewCommentDTO) {
+    public Response createComment(@PathParam("seriesId") Long seriesId, @PathParam("seriesReviewId") Long seriesReviewId, SeriesReviewCommentDTO seriesReviewCommentDTO) {
+        Optional<Series> series = seriesService.serieWithReview(seriesReviewId);
+        if(!series.isPresent() || series.get().getId() != seriesId) {
+            return status(Status.BAD_REQUEST).build();
+        }
         //Todo: fix baseUrl
         try {
             SeriesReviewComment seriesReviewComment = seriesService.addCommentToPost(seriesReviewId, seriesReviewCommentDTO.getBody(), null);
@@ -152,21 +156,22 @@ public class SeriesControllerJersey {
     }
 
     @PUT
+    @Path("/{seriesId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateSeries(SeriesDTO seriesDTO) {
-        if(seriesDTO.getId() == null || (seriesDTO.getLoggedInUserRating() == null && seriesDTO.isLoggedInUserFollows() == null)) {
+    public Response updateSeries(SeriesDTO seriesDTO, @PathParam("seriesId") Long seriesId) {
+        if(seriesDTO.getLoggedInUserRating() == null && seriesDTO.isLoggedInUserFollows() == null) {
             return status(Status.BAD_REQUEST).build();
         }
         try {
             if(seriesDTO.isLoggedInUserFollows()) {
-                seriesService.followSeries(seriesDTO.getId());
+                seriesService.followSeries(seriesId);
             } else {
-                seriesService.unfollowSeries(seriesDTO.getId());
+                seriesService.unfollowSeries(seriesId);
             }
-            if(seriesDTO.getLoggedInUserRating() != null) {
-                seriesService.rateSeries(seriesDTO.getId(), seriesDTO.getLoggedInUserRating());
+            if((seriesDTO.isLoggedInUserFollows() == null || seriesDTO.isLoggedInUserFollows() == true) && seriesDTO.getLoggedInUserRating() != null) {
+                seriesService.rateSeries(seriesId, seriesDTO.getLoggedInUserRating());
             }
-            return accepted().entity(new SeriesDTO(seriesService.getSerieById(seriesDTO.getId()).get(), userService.getLoggedUser())).build();
+            return accepted().entity(new SeriesDTO(seriesService.getSerieById(seriesId).get(), userService.getLoggedUser())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
