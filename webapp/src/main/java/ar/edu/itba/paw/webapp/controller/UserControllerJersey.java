@@ -283,48 +283,4 @@ public class UserControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
     }
-
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{userId}/follows")
-    public Response followSeries(@PathParam("userId") Long userId, SeriesDTO seriesDTO){
-        if(userId < 0 || seriesDTO.getId() == null){
-            return status(Status.BAD_REQUEST).build();
-        }
-        Optional<User> loggedUser = userService.getLoggedUser();
-        if(!loggedUser.isPresent() || loggedUser.get().getId() != userId){
-            return status(Status.UNAUTHORIZED).build();
-        }
-        try {
-            Optional<Series> series = seriesService.followSeries(seriesDTO.getId());
-            if(!series.isPresent()){
-                return status(Status.NOT_FOUND).build();
-            }
-            else{
-                return ok(new SeriesDTO(series.get())).build();
-            }
-        } catch (UnauthorizedException e) {
-            return status(Status.UNAUTHORIZED).build();
-        }
-    }
-    @DELETE
-    @Path("/{userId}/follows/{seriesId}")
-    public Response unfollowSeries(@PathParam("userId") Long userId, @PathParam("seriesId") Long seriesId){
-        if(userId < 0 || seriesId < 0){
-            return status(Status.BAD_REQUEST).build();
-        }
-        Optional<User> loggedUser = userService.getLoggedUser();
-        if(!loggedUser.isPresent() || loggedUser.get().getId() != userId){
-            return status(Status.UNAUTHORIZED).build();
-        }
-        try {
-            seriesService.unfollowSeries(seriesId);
-            return status(Status.NO_CONTENT).build();
-        } catch (NotFoundException e) {
-            return status(Status.NOT_FOUND).build();
-        } catch (UnauthorizedException e) {
-            return status(Status.UNAUTHORIZED).build();
-        }
-    }
 }
