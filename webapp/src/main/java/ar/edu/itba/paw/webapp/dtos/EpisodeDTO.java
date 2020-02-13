@@ -12,6 +12,7 @@ public class EpisodeDTO {
     private String air_date;
     private Boolean viewedByUser;
     private Integer numEpisode;
+    private Integer seasonNumber;
 
     public EpisodeDTO() {
         //Empty constructor for JAX-RS
@@ -24,6 +25,7 @@ public class EpisodeDTO {
             this.air_date = episode.getAiring().toString();
         }
         this.numEpisode = episode.getNumEpisode();
+        this.seasonNumber = episode.getSeason().getSeasonNumber();
     }
 
     public Long getId() {
@@ -73,5 +75,13 @@ public class EpisodeDTO {
         if(!loggedUser.isPresent()) {
             viewedByUser = null;
         }
+    }
+
+    public Integer getSeasonNumber() {
+        return seasonNumber;
+    }
+
+    public void setSeasonNumber(Integer seasonNumber) {
+        this.seasonNumber = seasonNumber;
     }
 }

@@ -106,7 +106,7 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void sendConfirmationMail(User u, String BaseUrl) {
-        String body = getConfirmationMailBody(u, BaseUrl + "/mailconfirm?token=" + u.getConfirmationKey());
+        String body = getConfirmationMailBody(u, BaseUrl + "/mailconfirm/" + u.getConfirmationKey());
 
         MimeMessage message = mailSender.createMimeMessage();
         try {

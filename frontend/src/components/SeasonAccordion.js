@@ -7,6 +7,8 @@ import SeasonAccordionItem from './SeasonAccordionItem';
 
 class SeasonAccordion extends PureComponent {
 
+    onSeasonWatchedClicked = (event) => this.props.onSeasonWatchedClicked(event, this.props.number);
+
     render() {
         const season = this.props.season;
         let season_index = this.props.number;

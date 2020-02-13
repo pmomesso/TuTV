@@ -10,8 +10,6 @@ import Axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-import * as CONSTANTS from '../constants.js'
-
 class ProfilePage extends Component {
 
     state = {
@@ -22,7 +20,7 @@ class ProfilePage extends Component {
     componentDidMount = () => {
         let user_id = this.props.match.params.profile_id;
 
-        Axios.get(CONSTANTS.APIURL + "/users/" + user_id)
+        Axios.get("/users/" + user_id)
                 .then(res => {
                     this.setState({
                         user: res.data,
@@ -91,7 +89,7 @@ class ProfilePage extends Component {
                                 <div className="avatar">
                                     {/* TODO: UPLOAD AVATAR */}
                                     <button href="#" className="avatar-upload-link" id="showUploadAvatarPopup">
-                                        <img src={CONSTANTS.APIURL + "/user/" + user.id + "/avatar"} alt="avatar" />
+                                        <img src={"/api/user/" + user.id + "/avatar"} alt="avatar" />
                                     </button>
                                 </div>
                                 <div className="profile-infos">

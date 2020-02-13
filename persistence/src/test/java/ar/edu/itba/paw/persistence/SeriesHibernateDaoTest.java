@@ -281,8 +281,8 @@ public class SeriesHibernateDaoTest {
     @Test
     public void followSeriesTest(){
         insertUser();
-        int updated = seriesDao.followSeries(series.getId(),user.getId());
-        Assert.assertEquals(1,updated);
+        Optional<Series> s =  seriesDao.followSeries(series.getId(),user.getId());
+        Assert.assertTrue(s.isPresent());
         Assert.assertEquals(FOLLOWERS + 1,series.getFollowers());
         Assert.assertEquals(1,series.getUserFollowers().size());
         Assert.assertEquals(1,user.getFollows().size());

@@ -4,12 +4,10 @@ import { NavLink } from 'react-router-dom';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-import * as CONSTANTS from '../constants.js'
 import Axios from 'axios';
 import { connect } from 'react-redux';
 
 class Login extends Component {
-
     render() {
 
         return (
@@ -36,11 +34,7 @@ class Login extends Component {
                                         .required('Required'),
                                 })}
                                 onSubmit={(values, actions) => {
-                                    const options = {
-                                        headers: {'Content-Type': 'application/json'}
-                                      };
-
-                                    Axios.post(CONSTANTS.APIURL + "/users/login", JSON.stringify(values), options)
+                                    Axios.post("/users/login", JSON.stringify(values))
                                         .then((res) => {
                                             let token = res.headers.authorization;
                                             let user = res.data;
@@ -49,8 +43,8 @@ class Login extends Component {
                                             this.props.history.push("/");
                                         })
                                         .catch((err) => {
-                                            if(err.response.status === 401)
-                                                actions.setFieldError("general", "MENSAJE USER O PASS INCORRECTA!");
+                                            if(err.response.status === 400)
+                                                actions.setFieldError("general", "err");
                                             else
                                                 alert("Error: " + err.response.status);
                                         })
@@ -102,14 +96,13 @@ class Login extends Component {
                                             </div>
 
 
-                                            <div className="row w-100">
-                                                <div className="col-4 align-self-center"></div>
-                                                <div className="col-8 align-self-center">
-                                                    <span className="error m-3 w-100">
-                                                        {formik.errors.general}
-                                                    </span>
-                                                </div>
-                                            </div>
+                                            {formik.errors.general && 
+                                                <div className="text-center w-100">
+                                                        <span className="error m-3 w-100">
+                                                            <Trans i18nKey="login.invalidCredentials"/>
+                                                        </span>
+                                                    </div>
+                                            }
 
 
                                             <div className="text-center m-3">
@@ -155,7 +148,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        loginUser: (token, user) => { dispatch({ type: "LOGIN", payload: { "token": token, "user": user } }) }
+        loginUser: (token, user) => { dispatch({ type: "LOGIN", payload: { "token": token, "user": user, "updateLocalStorage": true } }) }
     }
 }
 

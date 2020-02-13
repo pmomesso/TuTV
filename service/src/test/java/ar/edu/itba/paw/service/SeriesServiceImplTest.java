@@ -120,7 +120,7 @@ public class SeriesServiceImplTest {
     public void followSeriesTest(){
         //Setup
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.followSeries(Mockito.eq(ID),Mockito.eq(USER_ID))).thenReturn(1);
+        Mockito.when(mockDao.followSeries(Mockito.eq(ID),Mockito.eq(USER_ID))).thenReturn(Optional.of(getMockSeries()));
         //Ejercitar
         try {
             seriesService.followSeries(ID);
@@ -133,7 +133,7 @@ public class SeriesServiceImplTest {
         //Setup
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
         Mockito.when(mockDao.setViewedEpisode(Mockito.eq(EPISODE_ID),Mockito.eq(USER_ID))).thenReturn(1);
-        Mockito.when(mockDao.followSeries(Mockito.eq(SERIES_ID),Mockito.eq(USER_ID))).thenReturn(1);
+        Mockito.when(mockDao.followSeries(Mockito.eq(SERIES_ID),Mockito.eq(USER_ID))).thenReturn(Optional.of(getMockSeries()));
         //Ejercitar
         try {
             seriesService.setViewedEpisode(SERIES_ID, EPISODE_ID);
@@ -146,7 +146,7 @@ public class SeriesServiceImplTest {
         //Setup
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
         Mockito.when(mockDao.setViewedSeason(Mockito.eq(SEASON_ID),Mockito.eq(USER_ID))).thenReturn(1);
-        Mockito.when(mockDao.followSeries(Mockito.eq(SERIES_ID),Mockito.eq(USER_ID))).thenReturn(1);
+        Mockito.when(mockDao.followSeries(Mockito.eq(SERIES_ID),Mockito.eq(USER_ID))).thenReturn(Optional.of(getMockSeries()));
         //Ejercitar
         try {
             seriesService.setViewedSeason(SERIES_ID, SEASON_ID);

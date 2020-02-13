@@ -156,16 +156,23 @@ const Navbar = (props) => {
                                 </ul>
                             </section>
                         }
-                        {props.logged_user === null && 
-                            <section>
+                        <section>
+                            {props.logged_user === null ? 
                                 <NavLink className="signout-link" to="/login">
                                     <img className="logo logo_icon" src={require('../img/sign_in.png')} alt={ t("index.signin") }/>
                                     <span>
                                         { t("index.signin") }
                                     </span>
                                 </NavLink>
-                            </section>
-                        }
+                            :
+                                <NavLink className="signout-link" to="/logout">
+                                    <img className="logo logo_icon" src={require('../img/sign_out.png')} alt={ t("index.signout")} />
+                                    <span>
+                                        { t("index.signout") }
+                                    </span>
+                                </NavLink>
+                            }
+                        </section>
                     </div>
                 </div>
             </div>

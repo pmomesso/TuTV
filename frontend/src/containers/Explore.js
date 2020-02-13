@@ -3,8 +3,6 @@ import SeriesList from '../components/SeriesList'
 import Axios from 'axios';
 import SeriesCarousel from '../components/SeriesCarousel';
 
-import * as CONSTANTS from '../constants.js'
-
 class Explore extends Component {
     state = {
         bannerSeries: [ ],
@@ -13,7 +11,7 @@ class Explore extends Component {
     }
 
     componentDidMount = () => {
-        Axios.get(CONSTANTS.APIURL + "/series/genres")
+        Axios.get("/series/genres")
         .then(res => {
             this.setState({
                 genreList: res.data.genres,
@@ -23,7 +21,6 @@ class Explore extends Component {
 
     render() {
         const seriesLists = this.state.genreList.map(genre => {
-            console.log(genre.name);
             return(
                 <SeriesList key={ genre.id } name={ genre.i18Key } source={ "/series/genres/" + genre.id }/>
             )

@@ -47,7 +47,7 @@ public interface SeriesDao {
     Optional<Genre> getGenreById(long genreId);
 
     boolean userFollows(long seriesId, long userId);
-    int followSeries(long seriesId, long userId);
+    Optional<Series> followSeries(long seriesId, long userId);
     int unfollowSeries(long seriesId, long userId);
     int setViewedEpisode(long episodeId, long userId);
     int setViewedSeason(long seasonId, long userId);
