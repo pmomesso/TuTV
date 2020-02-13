@@ -213,6 +213,7 @@ public class UserControllerJersey {
             return ok(new SeriesListDTO(list.get())).build();
         }
     }
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -267,16 +268,13 @@ public class UserControllerJersey {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/")
-    public Response editUser(UserDTO userDTO) {
+    @Path("/{userId}")
+    public Response editUser(@PathParam("userId") Long userId, UserDTO userDTO) {
         try {
-            if(userDTO.getId() == null) {
-                return status(Status.BAD_REQUEST).build();
-            }
             if(userDTO.getBanned()) {
-                userService.banUser(userDTO.getId());
+                userService.banUser(userId);
             }
-            return accepted().entity(new UserDTO(userService.findById(userDTO.getId()).get())).build();
+            return accepted().entity(new UserDTO(userService.findById(userId).get())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
