@@ -268,32 +268,4 @@ public class SeriesControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
     }
-    @PUT
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{seriesId}/follows")
-    public Response followSeries(@PathParam("seriesId") Long seriesId){
-        try {
-            Optional<Series> series = seriesService.followSeries(seriesId);
-            if(!series.isPresent()){
-                return status(Status.NOT_FOUND).build();
-            }
-            else{
-                return ok(new SeriesDTO(series.get())).build();
-            }
-        } catch (UnauthorizedException e) {
-            return status(Status.UNAUTHORIZED).build();
-        }
-    }
-    @DELETE
-    @Path("/{seriesId}/follows")
-    public Response unfollowSeries(@PathParam("seriesId") Long seriesId){
-        try {
-            seriesService.unfollowSeries(seriesId);
-            return status(Status.NO_CONTENT).build();
-        } catch (NotFoundException e) {
-            return status(Status.NOT_FOUND).build();
-        } catch (UnauthorizedException e) {
-            return status(Status.UNAUTHORIZED).build();
-        }
-    }
 }
