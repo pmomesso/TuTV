@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.model.SeriesList;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.UsersList;
 import ar.edu.itba.paw.model.either.Either;
@@ -11,13 +12,11 @@ import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.auth.jwt.JwtUtil;
 import ar.edu.itba.paw.webapp.dtos.*;
 
-import ar.edu.itba.paw.webapp.http.PATCH;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.method.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import javax.print.attribute.standard.Media;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -61,7 +60,7 @@ public class UserControllerJersey {
             return status(Status.UNAUTHORIZED).build();
         }
         String token = jwtUtil.generateToken(user.get());
-        return accepted().header("Authorization","Bearer " + token).entity(new UserDTO(user.get())).build();
+        return ok().header("Authorization","Bearer " + token).entity(new UserDTO(user.get())).build();
     }
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -79,17 +78,15 @@ public class UserControllerJersey {
             return accepted().entity(new UserDTO(u.getValue())).build();
         }
         else{
-            StringBuilder conflictMsg = new StringBuilder();
+            ErrorDTO[] errors = new ErrorDTO[u.getAlternative().size()];
             if(u.getAlternative().contains(Errors.MAIL_ALREADY_IN_USE)){
-                conflictMsg.append("Mail Conflict");
+                errors[0] = new ErrorDTO("mail","mailExists");
             }
             if(u.getAlternative().contains(Errors.USERNAME_ALREADY_IN_USE)){
-                if(conflictMsg.length() > 0) {
-                    conflictMsg.append("/");
-                }
-                conflictMsg.append("Username Conflict");
+                int index = errors[0] == null ? 0 : 1;
+                errors[index] = new ErrorDTO("username","usernameExists");
             }
-            return status(Status.CONFLICT).entity(new ErrorDTO(conflictMsg.toString())).build();
+            return status(Status.CONFLICT).entity(errors.length > 1 ? errors : errors[0]).build();
         }
     }
 
@@ -186,6 +183,86 @@ public class UserControllerJersey {
         return ok(new SeriesListsDTO(user.getLists().stream().collect(Collectors.toList()))).build();
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/lists")
+    public Response createList(@PathParam("userId")@NotNull Long userId,@NotNull SeriesListDTO listDto){
+        if(userId < 0 || listDto.getName() == null || listDto.getName().isEmpty() || listDto.getSeriesList() == null){
+            return status(Status.BAD_REQUEST).build();
+        }
+        Optional<User> loggedInUser = userService.getLoggedUser();
+        if(!loggedInUser.isPresent() || loggedInUser.get().getId() != userId){
+            return status(Status.UNAUTHORIZED).build();
+        }
+        Optional<SeriesList> list;
+        long[] seriesIds = new long[listDto.getSeriesList().size()];
+        for(int i = 0; i < listDto.getSeriesList().size(); i++){
+            seriesIds[i] = listDto.getSeriesList().get(i).getId();
+        }
+        try {
+            list = seriesService.addList(listDto.getName(),seriesIds);
+        } catch (UnauthorizedException e) {
+            return status(Status.UNAUTHORIZED).build();
+        }
+        if(!list.isPresent()){
+            return status(Status.NOT_FOUND).build();
+        }
+        else{
+            return ok(new SeriesListDTO(list.get())).build();
+        }
+    }
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/lists/{listId}")
+    public Response modifyList(@PathParam("userId")@NotNull Long userId, @PathParam("listId")@NotNull Long listId,@NotNull SeriesListDTO listDto){
+        if(userId < 0 || listId < 0){
+            return status(Status.BAD_REQUEST).build();
+        }
+        Optional<User> loggedInUser = userService.getLoggedUser();
+        if(!loggedInUser.isPresent() || loggedInUser.get().getId() != userId){
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+        Optional<SeriesList> list;
+        long[] seriesIds = null;
+        if(listDto.getSeriesList() != null){
+            seriesIds = new long[listDto.getSeriesList().size()];
+            for(int i = 0; i < listDto.getSeriesList().size(); i++){
+                seriesIds[i] = listDto.getSeriesList().get(i).getId();
+            }
+        }
+        try {
+            list = seriesService.modifyList(listId,listDto.getName(),seriesIds);
+        } catch (UnauthorizedException e) {
+            return status(Status.UNAUTHORIZED).build();
+        }
+        if(!list.isPresent()){
+            return status(Status.NOT_FOUND).build();
+        }
+        else{
+            return ok(new SeriesListDTO(list.get())).build();
+        }
+    }
+    @DELETE
+    @Path("/{userId}/lists/{listId}")
+    public Response deleteList(@PathParam("userId")@NotNull Long userId, @PathParam("listId")@NotNull Long listId){
+        if(userId < 0 || listId < 0){
+            return status(Status.BAD_REQUEST).build();
+        }
+        Optional<User> loggedInUser = userService.getLoggedUser();
+        if(!loggedInUser.isPresent() || loggedInUser.get().getId() != userId){
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+        try {
+            seriesService.removeList(listId);
+        } catch (UnauthorizedException e) {
+            return status(Status.UNAUTHORIZED).build();
+        } catch (NotFoundException e) {
+            return status(Status.NOT_FOUND).build();
+        }
+        return status(Status.NO_CONTENT).build();
+    }
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

@@ -501,8 +501,8 @@ public class SeriesHibernateDaoTest {
         insertUser();
         insertSeriesList();
         String newName = "new list name";
-        int updated = seriesDao.modifyList(seriesList.getId(),user.getId(),newName,new HashSet<>());
-        Assert.assertEquals(1,updated);
+        Optional<SeriesList> list = seriesDao.modifyList(seriesList.getId(),user.getId(),newName,new HashSet<>());
+        Assert.assertTrue(list.isPresent());
         Assert.assertEquals(newName,seriesList.getName());
         Assert.assertEquals(0,seriesList.getSeries().size());
     }

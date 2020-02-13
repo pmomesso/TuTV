@@ -64,11 +64,11 @@ public interface SeriesService {
 
     List<Episode> getUpcomingEpisodes() throws UnauthorizedException, NotFoundException;
 
-    void addList(String name, long[] seriesId) throws UnauthorizedException;
+    Optional<SeriesList> addList(String name, long[] seriesId) throws UnauthorizedException;
 
     Optional<Boolean> getLoggedInUserLikesSeriesReview(long seriesReviewId);
 
-    void modifyList(long id, String name, long[] seriesId) throws UnauthorizedException, NotFoundException;
+    Optional<SeriesList> modifyList(long id, String name, long[] seriesId) throws UnauthorizedException;
 
     void removeList(long id) throws UnauthorizedException, NotFoundException;
 

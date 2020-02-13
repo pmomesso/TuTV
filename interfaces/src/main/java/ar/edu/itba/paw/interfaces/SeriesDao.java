@@ -78,9 +78,9 @@ public interface SeriesDao {
 
     long getCommentAuthorId(long commentId);
 
-    void addList(long userId, String name, Set<Series> series);
+    Optional<SeriesList> addList(long userId, String name, Set<Series> series);
 
-    int modifyList(long id, long userId, String name, Set<Series> series);
+    Optional<SeriesList> modifyList(long id, long userId, String name, Set<Series> series);
 
     int removeList(long id);
 

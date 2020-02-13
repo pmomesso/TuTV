@@ -362,13 +362,13 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     @Transactional
-    public void addList(String name, long[] seriesId) throws UnauthorizedException{
+    public Optional<SeriesList> addList(String name, long[] seriesId) throws UnauthorizedException{
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         Set<Series> series = new HashSet<>();
         for (long id : seriesId) {
             series.add(seriesDao.getSeriesById(id).orElseThrow(UnauthorizedException::new));
         }
-        seriesDao.addList(user.getId(), name, series);
+        return seriesDao.addList(user.getId(), name, series);
     }
 
     @Override
@@ -383,16 +383,17 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     @Transactional
-    public void modifyList(long id, String name, long[] seriesIdList) throws UnauthorizedException, NotFoundException {
+    public Optional<SeriesList> modifyList(long id, String name, long[] seriesIdList) throws UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        Set<Series> series = new HashSet<>();
-        for (long seriesId : seriesIdList) {
-            series.add(seriesDao.getSeriesById(seriesId).orElseThrow(UnauthorizedException::new));
+        Set<Series> series = null;
+        if(seriesIdList != null){
+            series = new HashSet<>();
+            for (long seriesId : seriesIdList) {
+                series.add(seriesDao.getSeriesById(seriesId).orElseThrow(UnauthorizedException::new));
+            }
+
         }
-        int result = seriesDao.modifyList(id, user.getId(), name, series);
-        if(result == 0) {
-            throw new NotFoundException();
-        }
+        return seriesDao.modifyList(id, user.getId(), name, series);
     }
 
     @Override

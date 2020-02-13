@@ -503,7 +503,7 @@ public class SeriesHibernateDao implements SeriesDao {
     }
 
     @Override
-    public void addList(long userId, String name, Set<Series> series) {
+    public Optional<SeriesList> addList(long userId, String name, Set<Series> series) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         if (user.isPresent()) {
             SeriesList list = new SeriesList(user.get(), name, series);
@@ -512,19 +512,25 @@ public class SeriesHibernateDao implements SeriesDao {
             for (Series currSeries : series) {
                 currSeries.getSeriesList().add(list);
             }
+            return Optional.of(list);
         }
+        return Optional.empty();
     }
 
     @Override
-    public int modifyList(long id, long userId, String name, Set<Series> series) {
+    public Optional<SeriesList> modifyList(long id, long userId, String name, Set<Series> series) {
         Optional<SeriesList> list = Optional.ofNullable(em.find(SeriesList.class, id));
         if (list.isPresent()) {
-            list.get().setName(name);
-            list.get().setSeries(series);
+            if(name != null && !name.isEmpty()){
+                list.get().setName(name);
+            }
+            if(series != null){
+                list.get().setSeries(series);
+            }
             em.persist(list.get());
-            return 1;
+            return list;
         }
-        return 0;
+        return Optional.empty();
     }
 
     @Override
