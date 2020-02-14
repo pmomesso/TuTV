@@ -272,6 +272,13 @@ public class UserControllerJersey {
     @Path("/{userId}")
     public Response editUser(@PathParam("userId") Long userId, UserDTO userDTO) {
         try {
+            if((userDTO.getBanned() != null && userDTO.getUserName() != null)
+                    || (userDTO.getBanned() == null && userDTO.getUserName() == null)) {
+                return status(Status.BAD_REQUEST).build();
+            }
+            if(userDTO.getUserName() != null) {
+                // cambiar el nombre del usuario
+            }
             if(userDTO.getBanned()) {
                 userService.banUser(userId);
             }
