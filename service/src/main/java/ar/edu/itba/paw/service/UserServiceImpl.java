@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 @Service
@@ -154,16 +155,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void setUserAvatar(long userId, MultipartFile avatar) throws BadRequestException{
-        String extension = FilenameUtils.getExtension(avatar.getOriginalFilename());
-        if(!supportedExtensions.contains(extension)){
-            throw new BadRequestException();
-        }
-        try {
-            userDao.setUserAvatar(userId, avatar.getBytes());
-        } catch (IOException e) {
-            throw new BadRequestException();
-        }
+    public void setUserAvatar(long userId, String base64Image) throws BadRequestException{
+        //String extension = FilenameUtils.getExtension(fileName);
+        //if(!supportedExtensions.contains(extension)){
+        //    throw new BadRequestException();
+        //}
+        byte[] image = Base64.getDecoder().decode(base64Image);
+        userDao.setUserAvatar(userId, image);
     }
 
     @Override

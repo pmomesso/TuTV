@@ -11,6 +11,7 @@ import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.text.html.Option;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +34,7 @@ public interface UserService {
 	void unbanUser(long userId) throws UnauthorizedException, NotFoundException;
 
     boolean updateLoggedUserName(String newUsername) throws NotFoundException;
-	void setUserAvatar(long userId, MultipartFile avatar) throws BadRequestException;
+	void setUserAvatar(long userId, String base64Image) throws BadRequestException;
 	Optional<byte[]> getUserAvatar(long userId);
 
     void setNotificationViewed(long notificationId) throws NotFoundException, UnauthorizedException;

@@ -7,6 +7,7 @@ import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.UsersList;
 import ar.edu.itba.paw.model.either.Either;
 import ar.edu.itba.paw.model.errors.Errors;
+import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.auth.jwt.JwtUtil;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
@@ -290,6 +292,40 @@ public class UserControllerJersey {
             return ok(new GenresStatsDTO(userService.getGenresStats())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
+        }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/avatar")
+    public Response getUserAvatar(@PathParam("userId") Long userId) {
+        Optional<User> user = userService.findById(userId);
+        if(!user.isPresent()) {
+            return status(Status.NOT_FOUND).build();
+        }
+        if(user.get().getUserAvatar() != null) {
+            return ok(new UserAvatarDTO(user.get())).build();
+        } else {
+            return status(Status.NO_CONTENT).build();
+        }
+    }
+
+    @PUT
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/avatar")
+    public Response setUserAvatar(@PathParam("userId") Long userId, String base64Image) {
+        if(base64Image == null) {
+            return status(Status.BAD_REQUEST).build();
+        }
+        if(!userService.getLoggedUser().isPresent() || userService.getLoggedUser().get().getId() != userId) {
+            return status(Status.UNAUTHORIZED).build();
+        }
+        try {
+            userService.setUserAvatar(userId, base64Image);
+            return ok(new UserAvatarDTO(userService.findById(userId).get())).build();
+        } catch (BadRequestException e) {
+            return status(Status.BAD_REQUEST).build();
         }
     }
 
