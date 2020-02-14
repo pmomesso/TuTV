@@ -362,8 +362,10 @@ public class SeriesServiceImpl implements SeriesService {
     public Optional<SeriesList> addList(String name, long[] seriesId) throws UnauthorizedException{
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         Set<Series> series = new HashSet<>();
-        for (long id : seriesId) {
-            series.add(seriesDao.getSeriesById(id).orElseThrow(UnauthorizedException::new));
+        if(seriesId != null) {
+            for (long id : seriesId) {
+                series.add(seriesDao.getSeriesById(id).orElseThrow(UnauthorizedException::new));
+            }
         }
         return seriesDao.addList(user.getId(), name, series);
     }

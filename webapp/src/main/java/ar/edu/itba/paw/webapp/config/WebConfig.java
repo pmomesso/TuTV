@@ -25,6 +25,7 @@ import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -35,6 +36,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import javax.validation.Validator;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
@@ -81,8 +83,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		final SimpleDriverDataSource ds = new SimpleDriverDataSource();
 		ds.setDriverClass(org.postgresql.Driver.class);
 		ds.setUrl("jdbc:postgresql://localhost/paw");
-		ds.setUsername("postgres");
-		ds.setPassword("scogar");
+		ds.setUsername("root");
+		ds.setPassword("root");
 		return ds;
 	}
 
@@ -142,4 +144,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 		return mailSender;
 	}
+
+	@Bean
+	public Validator validator() {
+    	Validator ret = new LocalValidatorFactoryBean();
+    	return ret;
+	}
+
 }

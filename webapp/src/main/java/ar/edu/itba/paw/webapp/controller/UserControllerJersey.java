@@ -16,17 +16,21 @@ import ar.edu.itba.paw.webapp.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import sun.jvm.hotspot.asm.Register;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Valid;
+import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.Response.*;
@@ -47,13 +51,20 @@ public class UserControllerJersey {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtUtil jwtUtil;
-
+    @Autowired
+    private Validator validator;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/login")
-    public Response login(LoginDTO loginDto) {
+    public Response login(@Valid LoginDTO loginDto) {
+
+        Set<ConstraintViolation<LoginDTO>> violations = validator.validate(loginDto);
+        if(!violations.isEmpty()) {
+            return status(Status.BAD_REQUEST).build();
+        }
+
         Optional<User> user = userService.findByMail(loginDto.getUsername());
         if(!user.isPresent() || !passwordEncoder.matches(loginDto.getPassword(),user.get().getPassword())){
             return status(Status.BAD_REQUEST).build();
@@ -68,7 +79,13 @@ public class UserControllerJersey {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/register")
-    public Response register(RegisterDTO register) {
+    public Response register(@Valid RegisterDTO register) {
+
+        Set<ConstraintViolation<RegisterDTO>> violations = validator.validate(register);
+        if(!violations.isEmpty()) {
+            return status(Status.BAD_REQUEST).build();
+        }
+
         final URI baseUri = uriInfo.getBaseUri();
         Either<User, Collection<Errors>> u;
         try{
@@ -96,7 +113,13 @@ public class UserControllerJersey {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/mailconfirm")
-    public Response confirmMail(ConfirmationDTO confirmation){
+    public Response confirmMail(@Valid ConfirmationDTO confirmation){
+
+        Set<ConstraintViolation<ConfirmationDTO>> violations = validator.validate(confirmation);
+        if(!violations.isEmpty()) {
+            return status(Status.BAD_REQUEST).build();
+        }
+
         Optional<User> user = userService.activateUser(confirmation.getConfirmationKey());
         if(!user.isPresent()){
             return status(Status.NOT_FOUND).build();
@@ -133,19 +156,19 @@ public class UserControllerJersey {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/notifications")
-    public Response editUserNotifications(@PathParam("userId") Long userId, NotificationsListDTO notificationsListDTO) {
+    public Response editUserNotifications(@PathParam("userId") Long userId,
+                                          @Valid NotificationStateListDTO notificationStateListDTO) {
+        Set<ConstraintViolation<NotificationStateListDTO>> constraintViolationSet = validator.validate(notificationStateListDTO);
+        if(!constraintViolationSet.isEmpty()) {
+            return status(Status.BAD_REQUEST).build();
+        }
         if(!userService.getLoggedUser().isPresent() || userService.getLoggedUser().get().getId() != userId) {
             return status(Status.UNAUTHORIZED).build();
         }
         try {
             User loggedUser = userService.getLoggedUser().get();
-            for(NotificationDTO notificationDTO : notificationsListDTO.getNotifications()) {
-                if(notificationDTO.getId() == null ||notificationDTO.getViewedByUser() == null) {
-                    return status(Status.BAD_REQUEST).build();
-                }
-                if(notificationDTO.getViewedByUser()) {
-                    userService.setNotificationViewed(notificationDTO.getId());
-                }
+            for(Long notificationId : notificationStateListDTO.getNotificationIds()) {
+                userService.setNotificationViewed(notificationId);
             }
             return accepted(new NotificationsListDTO(loggedUser)).build();
         } catch (UnauthorizedException e) {
@@ -189,8 +212,9 @@ public class UserControllerJersey {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/lists")
-    public Response createList(@PathParam("userId")@NotNull Long userId,@NotNull SeriesListDTO listDto){
-        if(userId < 0 || listDto.getName() == null || listDto.getName().isEmpty() || listDto.getSeriesList() == null){
+    public Response createList(@PathParam("userId") @NotNull Long userId, @Valid SeriesListsNewDTO listDto){
+        Set<ConstraintViolation<SeriesListsNewDTO>> violations = validator.validate(listDto);
+        if(!violations.isEmpty()) {
             return status(Status.BAD_REQUEST).build();
         }
         Optional<User> loggedInUser = userService.getLoggedUser();
@@ -198,9 +222,12 @@ public class UserControllerJersey {
             return status(Status.UNAUTHORIZED).build();
         }
         Optional<SeriesList> list;
-        long[] seriesIds = new long[listDto.getSeriesList().size()];
-        for(int i = 0; i < listDto.getSeriesList().size(); i++){
-            seriesIds[i] = listDto.getSeriesList().get(i).getId();
+        long[] seriesIds = null;
+        if(listDto.getSeries() != null) {
+            seriesIds = new long[listDto.getSeries().size()];
+            for(int i = 0; i < listDto.getSeries().size(); i++){
+                seriesIds[i] = listDto.getSeries().get(i);
+            }
         }
         try {
             list = seriesService.addList(listDto.getName(),seriesIds);
@@ -209,8 +236,7 @@ public class UserControllerJersey {
         }
         if(!list.isPresent()){
             return status(Status.NOT_FOUND).build();
-        }
-        else{
+        } else {
             return ok(new SeriesListDTO(list.get())).build();
         }
     }
@@ -219,34 +245,40 @@ public class UserControllerJersey {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/lists/{listId}")
-    public Response modifyList(@PathParam("userId")@NotNull Long userId, @PathParam("listId")@NotNull Long listId,@NotNull SeriesListDTO listDto){
-        if(userId < 0 || listId < 0){
+    public Response modifyList(@PathParam("userId") @NotNull Long userId, @PathParam("listId")@NotNull Long listId,
+                               @Valid @NotNull SeriesListStateDTO listDto){
+
+        Set<ConstraintViolation<SeriesListStateDTO>> violations = validator.validate(listDto);
+        if(!violations.isEmpty()) {
             return status(Status.BAD_REQUEST).build();
         }
+
         Optional<User> loggedInUser = userService.getLoggedUser();
         if(!loggedInUser.isPresent() || loggedInUser.get().getId() != userId){
             return Response.status(Status.UNAUTHORIZED).build();
         }
-        Optional<SeriesList> list;
+
         long[] seriesIds = null;
-        if(listDto.getSeriesList() != null){
-            seriesIds = new long[listDto.getSeriesList().size()];
-            for(int i = 0; i < listDto.getSeriesList().size(); i++){
-                seriesIds[i] = listDto.getSeriesList().get(i).getId();
+        if(listDto.getSeries() != null){
+            seriesIds = new long[listDto.getSeries().size()];
+            for(int i = 0; i < listDto.getSeries().size(); i++){
+                seriesIds[i] = listDto.getSeries().get(i);
             }
         }
+
+        Optional<SeriesList> list;
         try {
-            list = seriesService.modifyList(listId,listDto.getName(),seriesIds);
+            list = seriesService.modifyList(listId, listDto.getName(), seriesIds);
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         }
         if(!list.isPresent()){
             return status(Status.NOT_FOUND).build();
-        }
-        else{
+        } else {
             return ok(new SeriesListDTO(list.get())).build();
         }
     }
+
     @DELETE
     @Path("/{userId}/lists/{listId}")
     public Response deleteList(@PathParam("userId")@NotNull Long userId, @PathParam("listId")@NotNull Long listId){
@@ -266,20 +298,28 @@ public class UserControllerJersey {
         }
         return status(Status.NO_CONTENT).build();
     }
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}")
-    public Response editUser(@PathParam("userId") Long userId, UserDTO userDTO) {
+    public Response editUser(@PathParam("userId") Long userId,
+                             @Valid UserEditDTO userEditDTO) {
+
+        Set<ConstraintViolation<UserEditDTO>> violations = validator.validate(userEditDTO);
+        if(!violations.isEmpty()) {
+            return status(Status.BAD_REQUEST).build();
+        }
+
         try {
-            if((userDTO.getBanned() != null && userDTO.getUserName() != null)
-                    || (userDTO.getBanned() == null && userDTO.getUserName() == null)) {
+            if((userEditDTO.getBanned() != null && userEditDTO.getUserName() != null)
+                    || (userEditDTO.getBanned() == null && userEditDTO.getUserName() == null)) {
                 return status(Status.BAD_REQUEST).build();
             }
-            if(userDTO.getUserName() != null) {
+            if(userEditDTO.getUserName() != null) {
                 // cambiar el nombre del usuario
             }
-            if(userDTO.getBanned()) {
+            if(userEditDTO.getBanned() != null && userEditDTO.getBanned()) {
                 userService.banUser(userId);
             }
             return accepted().entity(new UserDTO(userService.findById(userId).get())).build();

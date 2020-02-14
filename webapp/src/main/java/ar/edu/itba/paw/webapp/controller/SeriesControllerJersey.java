@@ -9,13 +9,17 @@ import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static javax.ws.rs.core.Response.*;
 
@@ -29,6 +33,8 @@ public class SeriesControllerJersey {
     private SeriesService seriesService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private Validator validator;
 
     @GET
     @Path("/featured")
@@ -75,9 +81,16 @@ public class SeriesControllerJersey {
     @Path("/{seriesId}/reviews")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createReview(@PathParam("seriesId") Long seriesId, @Valid SeriesReviewDTO seriesReviewDTO) {
+    public Response createReview(@PathParam("seriesId") Long seriesId,
+                                 @Valid SeriesReviewNewDTO seriesReviewNewDTO) {
+
+        Set<ConstraintViolation<SeriesReviewNewDTO>> violations = validator.validate(seriesReviewNewDTO);
+        if(!violations.isEmpty()) {
+            return status(Status.BAD_REQUEST).build();
+        }
         try {
-            Optional<SeriesReview> optSeriesReview = seriesService.addSeriesReview(seriesReviewDTO.getBody(), seriesId, seriesReviewDTO.getSpam());
+            Optional<SeriesReview> optSeriesReview = seriesService.addSeriesReview(seriesReviewNewDTO.getBody(), seriesId,
+                    seriesReviewNewDTO.getIsSpam());
             if(!optSeriesReview.isPresent()) {
                 return status(Status.NOT_FOUND).build();
             }
@@ -85,20 +98,29 @@ public class SeriesControllerJersey {
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         }
+
     }
 
     @POST
     @Path("/{seriesId}/reviews/{seriesReviewId}/comments")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createComment(@PathParam("seriesId") Long seriesId, @PathParam("seriesReviewId") Long seriesReviewId, SeriesReviewCommentDTO seriesReviewCommentDTO) {
+    public Response createComment(@PathParam("seriesId") Long seriesId, @PathParam("seriesReviewId") Long seriesReviewId,
+                                  @Valid SeriesReviewCommentNewDTO seriesReviewCommentNewDTO) {
+
+        Set<ConstraintViolation<SeriesReviewCommentNewDTO>> violations = validator.validate(seriesReviewCommentNewDTO);
+        if(!violations.isEmpty()) {
+            return status(Status.BAD_REQUEST).build();
+        }
+
         Optional<Series> series = seriesService.serieWithReview(seriesReviewId);
         if(!series.isPresent() || series.get().getId() != seriesId) {
             return status(Status.BAD_REQUEST).build();
         }
+
         //Todo: fix baseUrl
         try {
-            SeriesReviewComment seriesReviewComment = seriesService.addCommentToPost(seriesReviewId, seriesReviewCommentDTO.getBody(), null);
+            SeriesReviewComment seriesReviewComment = seriesService.addCommentToPost(seriesReviewId, seriesReviewCommentNewDTO.getBody(), null);
             return ok(new SeriesReviewCommentDTO(seriesReviewComment, userService.getLoggedUser())).build();
         } catch (NotFoundException e) {
             return status(Status.NOT_FOUND).build();
@@ -111,14 +133,18 @@ public class SeriesControllerJersey {
     @Path("/{seriesId}/reviews/{seriesReviewId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateSeriesReview(@PathParam("seriesId") Long seriesId, @PathParam("seriesReviewId") Long seriesReviewId, SeriesReviewDTO seriesReviewDTO) {
-        Optional<Series> series = seriesService.getSerieById(seriesId);
-        if(seriesReviewDTO.getLoggedInUserLikes() == null || !series.isPresent()
-            || !seriesService.serieWithReview(seriesReviewId).isPresent()) {
+    public Response updateSeriesReview(@PathParam("seriesId") Long seriesId, @PathParam("seriesReviewId") Long seriesReviewId,
+                                       @Valid SeriesReviewStateDTO seriesReviewStateDTO) {
+        Set<ConstraintViolation<SeriesReviewStateDTO>> violations = validator.validate(seriesReviewStateDTO);
+        if(!violations.isEmpty()) {
             return status(Status.BAD_REQUEST).build();
         }
+        Optional<Series> series = seriesService.getSerieById(seriesId);
+        if(!series.isPresent() || !seriesService.serieWithReview(seriesReviewId).isPresent()) {
+            return status(Status.NOT_FOUND).build();
+        }
         try {
-            if(seriesReviewDTO.getLoggedInUserLikes()) {
+            if(seriesReviewStateDTO.getLoggedInUserLikes()) {
                 seriesService.likePost(seriesReviewId);
             } else {
                 seriesService.unlikePost(seriesReviewId);
@@ -137,12 +163,18 @@ public class SeriesControllerJersey {
     @Path("/{seriesId}/reviews/{seriesReviewId}/comments/{commentId}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateSeriesReviewComment(@PathParam("seriesId") Long seriesId, @PathParam("seriesReviewId") Long seriesReviewId,
-            @PathParam("commentId") Long commentId, SeriesReviewCommentDTO seriesReviewCommentDTO) {
-        if(seriesReviewCommentDTO.getLoggedInUserLikes() == null || !seriesService.reviewWithComment(commentId).isPresent()) {
-            return status(Status.BAD_REQUEST).build();
+            @PathParam("commentId") Long commentId, @Valid SeriesReviewCommentStateDTO seriesReviewCommentStateDTO) {
+
+        Set<ConstraintViolation<SeriesReviewCommentStateDTO>> violations = validator.validate(seriesReviewCommentStateDTO);
+        if(!violations.isEmpty()) {
+            return status(Status.NOT_FOUND).build();
+        }
+
+        if(!seriesService.reviewWithComment(commentId).isPresent()) {
+            return status(Status.NOT_FOUND).build();
         }
         try {
-            if (seriesReviewCommentDTO.getLoggedInUserLikes()) {
+            if (seriesReviewCommentStateDTO.getLoggedInUserLikes()) {
                 seriesService.likeComment(commentId);
             } else {
                 seriesService.unlikeComment(commentId);
@@ -158,21 +190,21 @@ public class SeriesControllerJersey {
     @PUT
     @Path("/{seriesId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateSeries(SeriesDTO seriesDTO, @PathParam("seriesId") Long seriesId) {
-        if(seriesDTO.getLoggedInUserRating() == null && seriesDTO.isLoggedInUserFollows() == null) {
+    public Response updateSeries(@PathParam("seriesId") Long seriesId, @Valid SerieStateDTO serieStateDTO) {
+
+        Set<ConstraintViolation<SerieStateDTO>> violations = validator.validate(serieStateDTO);
+        if(!violations.isEmpty()) {
             return status(Status.BAD_REQUEST).build();
         }
-        try {
-            if(seriesDTO.isLoggedInUserFollows() != null) {
-                if(seriesDTO.isLoggedInUserFollows()) {
-                    seriesService.followSeries(seriesId);
-                } else {
-                    seriesService.unfollowSeries(seriesId);
-                }
-            }
 
-            if(seriesDTO.getLoggedInUserRating() != null) {
-                seriesService.rateSeries(seriesId, seriesDTO.getLoggedInUserRating());
+        try {
+            if(serieStateDTO.getLoggedInUserFollows()) {
+                seriesService.followSeries(seriesId);
+            } else {
+                seriesService.unfollowSeries(seriesId);
+            }
+            if(serieStateDTO.getLoggedInUserRating() != null) {
+                seriesService.rateSeries(seriesId, serieStateDTO.getLoggedInUserRating());
             }
             return accepted().entity(new SeriesDTO(seriesService.getSerieById(seriesId).get(), userService.getLoggedUser())).build();
         } catch (UnauthorizedException e) {
@@ -220,12 +252,20 @@ public class SeriesControllerJersey {
     @PUT
     @Path("/{seriesId}/seasons/{seasonId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response viewSeason(@PathParam("seriesId") Long seriesId, @PathParam("seasonId") Long seasonId, ViewedResourceDTO viewedResourceDTO){
+    public Response viewSeason(@PathParam("seriesId") Long seriesId, @PathParam("seasonId") Long seasonId,
+                               @Valid ViewedResourceDTO viewedResourceDTO){
+
+        Set<ConstraintViolation<ViewedResourceDTO>> violations = validator.validate(viewedResourceDTO);
+        if(!violations.isEmpty()) {
+            return status(Status.BAD_REQUEST).build();
+        }
+
         if(seriesId < 0 || seasonId < 0){
             return status(Status.BAD_REQUEST).build();
         }
+
         try {
-            if(viewedResourceDTO.getViewed()){
+            if(viewedResourceDTO.getViewedByUser()){
                 seriesService.setViewedSeason(seriesId,seasonId);
             }
             else{
@@ -236,20 +276,28 @@ public class SeriesControllerJersey {
         } catch (NotFoundException e) {
             return status(Status.NOT_FOUND).build();
         }
+
         return status(Status.NO_CONTENT).build();
     }
+
     @PUT
     @Path("/{seriesId}/seasons/{seasonId}/episodes/{episodeId}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response viewEpisode(@PathParam("seriesId") Long seriesId, @PathParam("seasonId") Long seasonId, @PathParam("episodeId") Long episodeId, ViewedResourceDTO viewedResourceDTO){
-        if(seriesId < 0 || seasonId < 0 || episodeId < 0){
+    public Response viewEpisode(@PathParam("seriesId") Long seriesId, @PathParam("seasonId") Long seasonId, @PathParam("episodeId") Long episodeId,
+                                @Valid ViewedResourceDTO viewedResourceDTO){
+
+        Set<ConstraintViolation<ViewedResourceDTO>> violations = validator.validate(viewedResourceDTO);
+        if(!violations.isEmpty()) {
+            return status(Status.BAD_REQUEST).build();
+        }
+
+        if(seriesId < 0 || seasonId < 0 || episodeId < 0) {
             return status(Status.BAD_REQUEST).build();
         }
         try {
-            if(viewedResourceDTO.getViewed()){
+            if(viewedResourceDTO.getViewedByUser()) {
                 seriesService.setViewedEpisode(seriesId,episodeId);
-            }
-            else{
+            } else {
                 seriesService.unviewEpisode(episodeId);
             }
         } catch (UnauthorizedException e) {

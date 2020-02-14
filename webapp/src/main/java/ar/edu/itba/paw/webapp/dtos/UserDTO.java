@@ -2,17 +2,13 @@ package ar.edu.itba.paw.webapp.dtos;
 
 import ar.edu.itba.paw.model.User;
 
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-
+import javax.validation.constraints.NotNull;
 
 public class UserDTO {
 
     private Long id;
     private String userName;
     private String mail;
-    private String avatarBase64;
     private Boolean isAdmin = Boolean.FALSE;
     private Boolean isBanned = Boolean.FALSE;
 

@@ -1,17 +1,22 @@
 package ar.edu.itba.paw.webapp.dtos;
 
+import javax.validation.constraints.NotNull;
+
 public class ViewedResourceDTO {
 
-    private Boolean viewed;
+    @NotNull
+    private Boolean viewedByUser;
 
-    public ViewedResourceDTO(){
+    public ViewedResourceDTO() {
+        //Empty constructor for JAX-RS
     }
 
-    public Boolean getViewed() {
-        return viewed;
+    public Boolean getViewedByUser() {
+        return viewedByUser;
     }
 
-    public void setViewed(Boolean viewed) {
-        this.viewed = viewed;
+    public void setViewedByUser(Boolean viewedByUser) {
+        this.viewedByUser = viewedByUser;
     }
+
 }

@@ -3,7 +3,6 @@ package ar.edu.itba.paw.webapp.dtos;
 import ar.edu.itba.paw.model.User;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class NotificationsListDTO {
