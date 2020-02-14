@@ -163,12 +163,15 @@ public class SeriesControllerJersey {
             return status(Status.BAD_REQUEST).build();
         }
         try {
-            if(seriesDTO.isLoggedInUserFollows()) {
-                seriesService.followSeries(seriesId);
-            } else {
-                seriesService.unfollowSeries(seriesId);
+            if(seriesDTO.isLoggedInUserFollows() != null) {
+                if(seriesDTO.isLoggedInUserFollows()) {
+                    seriesService.followSeries(seriesId);
+                } else {
+                    seriesService.unfollowSeries(seriesId);
+                }
             }
-            if((seriesDTO.isLoggedInUserFollows() == null || seriesDTO.isLoggedInUserFollows() == true) && seriesDTO.getLoggedInUserRating() != null) {
+
+            if(seriesDTO.getLoggedInUserRating() != null) {
                 seriesService.rateSeries(seriesId, seriesDTO.getLoggedInUserRating());
             }
             return accepted().entity(new SeriesDTO(seriesService.getSerieById(seriesId).get(), userService.getLoggedUser())).build();
@@ -259,6 +262,7 @@ public class SeriesControllerJersey {
 
     @GET
     @Path("/watchlist")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getWatchlist() {
         try {
             List<Episode> episodeList = seriesService.getWatchList();

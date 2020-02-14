@@ -18,7 +18,24 @@ const store = createStore(rootReducer);
 const APIURL = "http://localhost:8080/webapp_war_exploded"
 
 Axios.defaults.baseURL = APIURL;
-Axios.defaults.headers.post['Content-Type'] = 'application/json';
+Axios.defaults.headers['Content-Type'] = 'application/json';
+
+let token = localStorage.getItem("authToken");
+let userJson = localStorage.getItem("authUserJson");
+
+let user;
+
+try {
+    user = JSON.parse(userJson);
+
+    if(token !== null && userJson != null) {
+        store.dispatch({ type: "LOGIN", payload: { "token": token, "user": user, "updateLocalStorage": false } })
+    }
+} catch (e) {
+    
+}
+
+
 
 ReactDOM.render(
     <Provider store={store}>

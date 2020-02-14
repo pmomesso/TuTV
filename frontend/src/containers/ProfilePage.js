@@ -144,9 +144,9 @@ class ProfilePage extends Component {
                     <div>
                         <div className="overflow-hidden">
                             <h2 className="small float-left">{list.name}</h2>
-                            <a type="button" className="show-link float-left icon-margin" data-toggle="modal" data-target="#modifyList${list.id}">
+                            <button className="show-link float-left icon-margin" data-toggle="modal" data-target={"#modifyList" + list.id}>
                                 <span>MODIFY</span>
-                            </a>
+                            </button>
                             {/* <form action="/removeList?id=${list.id}&userId=${userProfile.id}"
                                                                         method="post" class="icon-margin float-left" onsubmit="confirmAction(event,'<spring:message code="profile.sureRemove" arguments="${list.name}"/>')">
                                  <button type="submit" class="heart no-padding" style="font-family: FontAwesome,serif; font-style: normal">&#xf1f8</button>
