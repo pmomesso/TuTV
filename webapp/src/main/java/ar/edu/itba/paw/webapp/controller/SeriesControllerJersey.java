@@ -44,6 +44,41 @@ public class SeriesControllerJersey {
     }
 
     @GET
+    @Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchSeries(@QueryParam("name") String name, @QueryParam("genre") String genre, @QueryParam("network") String network, @QueryParam("page") Integer page) {
+
+        page = page == null || page < 1 ? 1 : page;
+        List<Series> results = seriesService.searchSeries(name,genre,network,page - 1);
+        SeriesDTO[] seriesDTOList = new SeriesDTO[results.size()];
+        for(int i = 0; i < results.size(); i++){
+            seriesDTOList[i] = new SeriesDTO(results.get(i));
+        }
+        ResponseBuilder rb = ok(seriesDTOList);
+        boolean next = seriesService.searchSeries(name,genre,network, page + 1).size() > 0;
+        if(next || page > 1) {
+            UriBuilder nextUri = uriInfo.getAbsolutePathBuilder();
+            UriBuilder prevUri = uriInfo.getAbsolutePathBuilder();
+            if(name != null && name.length() > 0){
+                nextUri.queryParam("name", name);
+                prevUri.queryParam("name", name);
+            }
+            if(genre != null && genre.length() > 0){
+                nextUri.queryParam("genre", genre);
+                prevUri.queryParam("genre", genre);
+            }
+            if(network != null && network.length() > 0){
+                nextUri.queryParam("network", network);
+                prevUri.queryParam("network", network);
+            }
+            String previousPath = prevUri.queryParam("page", page - 1).build().toString() + " , rel = prev";
+            String nextPath = nextUri.queryParam("page", page + 1).build().toString() + " , rel = next";
+            rb.header("Link", (next ? nextPath : "") + ((next && page > 1) ? " ; " : "") + (page > 1 ? previousPath : ""));
+        }
+        return rb.build();
+    }
+
+    @GET
     @Path("/{seriesId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEpisode(@PathParam("seriesId") Long seriesId) {
