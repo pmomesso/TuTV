@@ -7,6 +7,7 @@ import SeriesPage from './SeriesPage';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ProfilePage from './ProfilePage';
+import Watchlist from './Watchlist';
 
 const DefaultContainer = () => {
 
@@ -20,6 +21,7 @@ const DefaultContainer = () => {
                 <Route exact path='/' component={Explore}/>
                 <Route path='/series/:series_id' component={SeriesPage}/>
                 <Route path='/profiles/:profile_id' component={ProfilePage}/>
+                <Route path='/watchlist' component={Watchlist}/>
               </div>
             </div>  
 

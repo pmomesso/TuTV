@@ -20,7 +20,7 @@ class Register extends Component {
         return (
             <div className="h-100">
 
-                <LoadingModal visible={this.state.loading} />
+                <LoadingModal backdrop="static" visible={this.state.loading} />
 
                 <Modal backdrop="static" centered show={this.state.showingConfirmationModal}>
                     <Modal.Header>
@@ -74,7 +74,6 @@ class Register extends Component {
                                             });
                                         })
                                         .catch((err) => {
-                                            console.log(err.response.data);
                                             if(err.response.status === 409) {
                                                 if(Array.isArray(err.response.data))
                                                     err.response.data.forEach(error => actions.setFieldError(error.field, this.props.t("register." + error.i18Key)));

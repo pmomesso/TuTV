@@ -42,6 +42,8 @@ class SeriesPage extends Component {
             return;
         }
 
+        let series = this.state.series;
+
         let newValue = !this.state.series.seasons[season_index].episodes[episode_index].viewedByUser;
 
         let newEpisode = {
@@ -65,7 +67,19 @@ class SeriesPage extends Component {
             "seasons": newSeasonList
         }
 
-        this.setState({ "series": newSeries });
+        let data = { "viewed": newValue };
+
+        Axios.put("/series/" + this.state.series.id + "/seasons/" + series.seasons[season_index].id + "/episodes/" + series.seasons[season_index].episodes[episode_index].id, JSON.stringify(data))
+            .then((res) => {
+        
+                this.setState({ "series": newSeries });
+            })
+            .catch((err) => {
+                /* TODO SI CADUCO LA SESION? */
+                //alert("Error: " + err.response.status);
+            });
+
+        
 
     }
 
@@ -106,6 +120,18 @@ class SeriesPage extends Component {
             "seasons": newSeasonList
         };
 
+        let data = { "viewed": newValue };
+
+        Axios.put("/series/" + this.state.series.id + "/seasons/" + this.state.series.seasons[season_index].id, JSON.stringify(data))
+            .then((res) => {
+        
+                this.setState({ "series": newSeries });
+            })
+            .catch((err) => {
+                /* TODO SI CADUCO LA SESION? */
+                //alert("Error: " + err.response.status);
+            });
+
         this.setState({ "series": newSeries });
     }
 
@@ -115,27 +141,24 @@ class SeriesPage extends Component {
             return;
         }
 
-        let data = { "loggedInUserRatings": newValue };
+        let data = { "loggedInUserRating": newValue };
 
         Axios.put("/series/" + this.state.series.id, JSON.stringify(data))
             .then((res) => {
-
+                let newSeries = {
+                    ...this.state.series,
+                    userRating: res.data.userRating,
+                    loggedInUserRating: newValue
+                }
+        
+                this.setState({
+                    series: newSeries
+                });
             })
             .catch((err) => {
                 /* TODO SI CADUCO LA SESION? */
                 //alert("Error: " + err.response.status);
             });
-
-        let newSeries = {
-            ...this.state.series,
-            loggedInUserRatings: newValue
-        }
-
-        this.setState({
-            series: newSeries
-        });
-
-        //alert("Puntaje: " + newValue);
     }
 
     onSeriesFollowClicked = () => {
@@ -149,48 +172,22 @@ class SeriesPage extends Component {
 
         let data = { "loggedInUserFollows": newValue };
 
-        Axios.put("/series/" + this.state.series.id, JSON.stringify(data), {headers: {
-            'Content-Type': 'application/json',
-        }})
+        Axios.put("/series/" + this.state.series.id, JSON.stringify(data))
             .then((res) => {
-
+                let newSeries = {
+                    ...this.state.series,
+                    followers: res.data.followers,
+                    loggedInUserFollows: newValue
+                }
+        
+                this.setState({
+                    series: newSeries
+                });
             })
             .catch((err) => {
                 /* TODO SI CADUCO LA SESION? */
                 //alert("Error: " + err.response.status);
             });
-
-        /*if(newValue) {
-            let data = { "id": this.state.series.id };
-            console.log("/users/" + this.props.logged_user.id + "/follows");
-            console.log(JSON.stringify(data));
-            Axios.post("/users/" + this.props.logged_user.id + "/follows", JSON.stringify(data))
-                .then((res) => {
-    
-                })
-                .catch((err) => {
-                    /* TODO SI CADUCO LA SESION? */
-                    //alert("Error: " + err.response.status);
-                /*});
-        } else {
-            Axios.delete("/users/" + this.props.logged_user.id + "/follows/" + this.state.series.id)
-                .then((res) => {
-        
-                })
-                .catch((err) => {
-                    /* TODO SI CADUCO LA SESION? */
-                    //alert("Error: " + err.response.status);
-                /*});
-        }*/
-
-        let newSeries = {
-            ...this.state.series,
-            loggedInUserFollows: newValue
-        }
-
-        this.setState({
-            series: newSeries
-        });
     }
 
     render() {
@@ -214,6 +211,8 @@ class SeriesPage extends Component {
                 <SeasonAccordion number={i} key={i} season={series.seasons[i]} onSeasonWatchedClicked={this.onSeasonWatchedClicked} onEpisodeWatchedClickedHandler={this.onEpisodeWatchedClickedHandler}/>
             );
         }
+
+        //let reviewList = [];
 
         return (
             <div className="main-block">
@@ -249,7 +248,7 @@ class SeriesPage extends Component {
                                         <span>{ series.network }</span>
                                         <span className="separator">•</span>
                                         <span>
-                                            <Trans i18nKey="series.seasons" count={ 3 }/>
+                                            <Trans i18nKey="series.seasons" count={ seasonCount }/>
                                         </span>
                                     </div>
                                     <div className="overview">
@@ -266,7 +265,7 @@ class SeriesPage extends Component {
                                                 initialRating={ series.loggedInUserRating }
                                                 emptySymbol={<span className="star-unchecked"/>}
                                                 fullSymbol={<span className="star"/>}
-                                                fractions="2"
+                                                //fractions="2"
                                                 onChange={this.onRatingChanged}/>
                                         </div>
                                     </div>
@@ -284,6 +283,13 @@ class SeriesPage extends Component {
                                 </div>
                             </div>
                         </div>
+
+
+
+
+                        
+
+
                     </div>
                 </div>
             </div>
