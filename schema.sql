@@ -175,7 +175,8 @@ CREATE SEQUENCE public.genre_id_seq
 
 CREATE TABLE public.genres (
     id bigint NOT NULL,
-    name character varying(255) NOT NULL
+    name character varying(255) NOT NULL,
+    i18key character varying(255)
 );
 
 
