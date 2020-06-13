@@ -9,6 +9,7 @@ import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.Response.*;
 
@@ -94,7 +96,6 @@ public class SeriesControllerJersey {
         }
         Series series = optSeries.get();
         SeriesDTO seriesDTO = new SeriesDTO(series, userService.getLoggedUser(), uriInfo);
-        seriesDTO.setSeasonsList(series, userService.getLoggedUser());
         return ok(seriesDTO).build();
     }
 
@@ -281,6 +282,15 @@ public class SeriesControllerJersey {
                     + ((g.isAreNext() && g.isArePrevious()) ? " ; " : "") + (g.isArePrevious() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() - 1).build().toString() + " , rel = prev") : ""));
         }
         return rb.build();
+    }
+
+    @GET
+    @Path("/{seriesId}/seasons")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSeriesSeasons(@PathParam("seriesId") Long seriesId) {
+        List<SeasonDTO> seasons = seriesService.getSeasonsBySeriesId(seriesId)
+                                    .stream().map(SeasonDTO::new).collect(Collectors.toList());
+        return ok(new GenericEntity<List<SeasonDTO>>(seasons) {}).build();
     }
 
     @PUT

@@ -22,7 +22,8 @@ public class SeriesDTO {
     private Integer followers;
     private List<SeasonDTO> seasons = null;
 
-    private URI reviews;
+    private URI seasonsUri;
+    private URI reviewsUri;
 
     public SeriesDTO() {
         //Empty constructor for JAX-RS
@@ -31,12 +32,22 @@ public class SeriesDTO {
     public SeriesDTO(Series series, Optional<User> loggedUser, UriInfo uriInfo) {
         this(series);
         setUserFields(series, loggedUser);
+        setUris(uriInfo);
+    }
+
+    private void setUris(UriInfo uriInfo) {
         setReviewsUri(uriInfo);
+        setSeasonsUri(uriInfo);
+    }
+
+    private void setSeasonsUri(UriInfo uriInfo) {
+        seasonsUri = uriInfo.getAbsolutePathBuilder()
+                .path("seasons")
+                .build();
     }
 
     private void setReviewsUri(UriInfo uriInfo) {
-        reviews = uriInfo.getAbsolutePathBuilder()
-                .path(String.valueOf(id))
+        reviewsUri = uriInfo.getAbsolutePathBuilder()
                 .path("reviews").build();
     }
 
@@ -139,27 +150,24 @@ public class SeriesDTO {
         this.posterUrl = posterUrl;
     }
 
-    public void setSeasonsList(Series series, Optional<User> loggedUser) {
-        seasons = new ArrayList<>();
-        series.getSeasons().stream().forEach(season -> {
-            SeasonDTO seasonDTO = new SeasonDTO(season);
-            seasonDTO.setEpisodesList(season, loggedUser);
-            seasonDTO.setUserFields(season, loggedUser);
-            seasons.add(seasonDTO);
-        });
-        seasons.sort(Comparator.comparingInt(SeasonDTO::getNumber));
+    public URI getSeasonsUri() {
+        return seasonsUri;
     }
 
-    public void setReviews(URI reviews) {
-        this.reviews = reviews;
+    public void setSeasonsUri(URI seasonsUri) {
+        this.seasonsUri = seasonsUri;
+    }
+
+    public void setReviewsUri(URI reviewsUri) {
+        this.reviewsUri = reviewsUri;
     }
 
     public Boolean getLoggedInUserFollows() {
         return loggedInUserFollows;
     }
 
-    public URI getReviews() {
-        return reviews;
+    public URI getReviewsUri() {
+        return reviewsUri;
     }
 
     private void setUserFields(Series series, Optional<User> loggedUser) {
