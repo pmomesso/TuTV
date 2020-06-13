@@ -16,7 +16,6 @@ import ar.edu.itba.paw.webapp.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import sun.jvm.hotspot.asm.Register;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;

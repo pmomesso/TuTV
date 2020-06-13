@@ -93,9 +93,8 @@ public class SeriesControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
         Series series = optSeries.get();
-        SeriesDTO seriesDTO = new SeriesDTO(series, userService.getLoggedUser());
+        SeriesDTO seriesDTO = new SeriesDTO(series, userService.getLoggedUser(), uriInfo);
         seriesDTO.setSeasonsList(series, userService.getLoggedUser());
-        //seriesDTO.setUserFields(userService.getLoggedUser(), series);
         return ok(seriesDTO).build();
     }
 
@@ -241,7 +240,7 @@ public class SeriesControllerJersey {
             if(serieStateDTO.getLoggedInUserRating() != null) {
                 seriesService.rateSeries(seriesId, serieStateDTO.getLoggedInUserRating());
             }
-            return accepted().entity(new SeriesDTO(seriesService.getSerieById(seriesId).get(), userService.getLoggedUser())).build();
+            return accepted().entity(new SeriesDTO(seriesService.getSerieById(seriesId).get(), userService.getLoggedUser(), uriInfo)).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {

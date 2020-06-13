@@ -4,6 +4,8 @@ import ar.edu.itba.paw.model.Rating;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
 
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.util.*;
 
 public class SeriesDTO {
@@ -20,13 +22,22 @@ public class SeriesDTO {
     private Integer followers;
     private List<SeasonDTO> seasons = null;
 
+    private URI reviews;
+
     public SeriesDTO() {
         //Empty constructor for JAX-RS
     }
 
-    public SeriesDTO(Series series, Optional<User> loggedUser) {
+    public SeriesDTO(Series series, Optional<User> loggedUser, UriInfo uriInfo) {
         this(series);
         setUserFields(series, loggedUser);
+        setReviewsUri(uriInfo);
+    }
+
+    private void setReviewsUri(UriInfo uriInfo) {
+        reviews = uriInfo.getAbsolutePathBuilder()
+                .path(String.valueOf(id))
+                .path("reviews").build();
     }
 
     public SeriesDTO(Series series) {
@@ -137,6 +148,18 @@ public class SeriesDTO {
             seasons.add(seasonDTO);
         });
         seasons.sort(Comparator.comparingInt(SeasonDTO::getNumber));
+    }
+
+    public void setReviews(URI reviews) {
+        this.reviews = reviews;
+    }
+
+    public Boolean getLoggedInUserFollows() {
+        return loggedInUserFollows;
+    }
+
+    public URI getReviews() {
+        return reviews;
     }
 
     private void setUserFields(Series series, Optional<User> loggedUser) {
