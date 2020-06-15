@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.dtos;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.SeriesList;
 
+import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,11 +18,11 @@ public class SeriesListDTO {
         //Empty constructor for JAX-RS
     }
 
-    public SeriesListDTO(SeriesList list) {
+    public SeriesListDTO(SeriesList list, UriInfo uriInfo) {
         id = list.getId();
         name = list.getName();
         seriesList = new ArrayList<>(list.getSeries().size());
-        list.getSeries().stream().forEach(series -> seriesList.add(new SeriesDTO(series)));
+        list.getSeries().stream().forEach(series -> seriesList.add(new SeriesDTO(series, uriInfo)));
     }
 
     public String getName() {

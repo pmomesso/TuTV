@@ -46,7 +46,7 @@ public class SeriesControllerJersey {
         CacheControl cc = new CacheControl();
         cc.setMaxAge(86400);
         cc.setPrivate(true);
-        ResponseBuilder builder = Response.ok(new MainPageDTO(seriesService.getNewestSeries(0, 4)));
+        ResponseBuilder builder = Response.ok(new MainPageDTO(seriesService.getNewestSeries(0, 4), uriInfo));
         builder.cacheControl(cc);
         return builder.build();
     }
@@ -60,7 +60,7 @@ public class SeriesControllerJersey {
         List<Series> results = seriesService.searchSeries(name,genre,network,page - 1);
         SeriesDTO[] seriesDTOList = new SeriesDTO[results.size()];
         for(int i = 0; i < results.size(); i++){
-            seriesDTOList[i] = new SeriesDTO(results.get(i));
+            seriesDTOList[i] = new SeriesDTO(results.get(i), uriInfo);
         }
         ResponseBuilder rb = ok(seriesDTOList);
         boolean next = seriesService.searchSeries(name,genre,network, page + 1).size() > 0;
@@ -276,7 +276,7 @@ public class SeriesControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
         Genre g = optGenre.get();
-        ResponseBuilder rb = ok(new GenreDTO(g, map.get(g)));
+        ResponseBuilder rb = ok(new GenreDTO(g, map.get(g), uriInfo));
         if(g.isAreNext() || g.isArePrevious()) {
             rb.header("Link", (g.isAreNext() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() + 1).build().toString() + " , rel = next") : "")
                     + ((g.isAreNext() && g.isArePrevious()) ? " ; " : "") + (g.isArePrevious() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() - 1).build().toString() + " , rel = prev") : ""));
@@ -288,8 +288,9 @@ public class SeriesControllerJersey {
     @Path("/{seriesId}/seasons")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSeriesSeasons(@PathParam("seriesId") Long seriesId) {
+        Optional<User> loggedUser = userService.getLoggedUser();
         List<SeasonDTO> seasons = seriesService.getSeasonsBySeriesId(seriesId)
-                                    .stream().map(SeasonDTO::new).collect(Collectors.toList());
+                                    .stream().map(season -> new SeasonDTO(season, loggedUser)).collect(Collectors.toList());
         return ok(new GenericEntity<List<SeasonDTO>>(seasons) {}).build();
     }
 
@@ -360,7 +361,7 @@ public class SeriesControllerJersey {
             List<Episode> episodeList = seriesService.getWatchList();
             WatchlistDTO[] watchlist = new WatchlistDTO[episodeList.size()];
             for(int i = 0; i < episodeList.size(); i++){
-                watchlist[i] = new WatchlistDTO(episodeList.get(i));
+                watchlist[i] = new WatchlistDTO(episodeList.get(i), uriInfo);
             }
             return ok(watchlist).build();
         } catch (UnauthorizedException e) {

@@ -16,10 +16,11 @@ public class SeasonDTO {
         //Empty constructor for JAX-RS
     }
 
-    public SeasonDTO(Season season) {
+    public SeasonDTO(Season season, Optional<User> loggedUser) {
         this.id = season.getId();
         this.number = season.getSeasonNumber();
         this.viewedByUser = false;
+        setEpisodesList(season, loggedUser);
     }
 
     public Long getId() {

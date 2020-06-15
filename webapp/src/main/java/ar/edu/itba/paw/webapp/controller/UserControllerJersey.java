@@ -204,7 +204,7 @@ public class UserControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
         User user = optUser.get();
-        return ok(new SeriesListsDTO(user.getLists().stream().collect(Collectors.toList()))).build();
+        return ok(new SeriesListsDTO(user.getLists().stream().collect(Collectors.toList()), uriInfo)).build();
     }
 
     @POST
@@ -236,7 +236,7 @@ public class UserControllerJersey {
         if(!list.isPresent()){
             return status(Status.NOT_FOUND).build();
         } else {
-            return ok(new SeriesListDTO(list.get())).build();
+            return ok(new SeriesListDTO(list.get(), uriInfo)).build();
         }
     }
 
@@ -274,7 +274,7 @@ public class UserControllerJersey {
         if(!list.isPresent()){
             return status(Status.NOT_FOUND).build();
         } else {
-            return ok(new SeriesListDTO(list.get())).build();
+            return ok(new SeriesListDTO(list.get(), uriInfo)).build();
         }
     }
 

@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.dtos;
 import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Series;
 
+import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,10 +19,10 @@ public class GenreDTO {
         //Empty constructor for JAX-RS
     }
 
-    public GenreDTO(Genre genre, List<Series> seriesList) {
+    public GenreDTO(Genre genre, List<Series> seriesList, UriInfo uriInfo) {
         this(genre);
         this.series = new ArrayList<>();
-        seriesList.stream().forEach(series -> this.series.add(new SeriesDTO(series)));
+        seriesList.stream().forEach(series -> this.series.add(new SeriesDTO(series, uriInfo)));
     }
 
     public GenreDTO(Genre genre) {

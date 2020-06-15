@@ -29,29 +29,7 @@ public class SeriesDTO {
         //Empty constructor for JAX-RS
     }
 
-    public SeriesDTO(Series series, Optional<User> loggedUser, UriInfo uriInfo) {
-        this(series);
-        setUserFields(series, loggedUser);
-        setUris(uriInfo);
-    }
-
-    private void setUris(UriInfo uriInfo) {
-        setReviewsUri(uriInfo);
-        setSeasonsUri(uriInfo);
-    }
-
-    private void setSeasonsUri(UriInfo uriInfo) {
-        seasonsUri = uriInfo.getAbsolutePathBuilder()
-                .path("seasons")
-                .build();
-    }
-
-    private void setReviewsUri(UriInfo uriInfo) {
-        reviewsUri = uriInfo.getAbsolutePathBuilder()
-                .path("reviews").build();
-    }
-
-    public SeriesDTO(Series series) {
+    public SeriesDTO(Series series, UriInfo uriInfo) {
         this.id = series.getId();
         this.name = series.getName();
         this.network = series.getNetwork().getName();
@@ -60,6 +38,32 @@ public class SeriesDTO {
         this.posterUrl = series.getPosterUrl();
         this.userRating = series.getUserRating();
         this.followers = series.getFollowers();
+        setUris(uriInfo);
+    }
+
+    public SeriesDTO(Series series, Optional<User> loggedUser, UriInfo uriInfo) {
+        this(series, uriInfo);
+        setUserFields(series, loggedUser);
+    }
+
+    private void setUris(UriInfo uriInfo) {
+        setReviewsUri(uriInfo);
+        setSeasonsUri(uriInfo);
+    }
+
+    private void setSeasonsUri(UriInfo uriInfo) {
+        seasonsUri = uriInfo.getBaseUriBuilder()
+                .path("series")
+                .path(String.valueOf(id))
+                .path("seasons")
+                .build();
+    }
+
+    private void setReviewsUri(UriInfo uriInfo) {
+        reviewsUri = uriInfo.getBaseUriBuilder()
+                .path("series")
+                .path(String.valueOf(id))
+                .path("reviews").build();
     }
 
     public String getName() {
