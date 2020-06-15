@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -117,6 +118,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		registry.addResourceHandler("/resources/**")
 				.addResourceLocations("/resources/");
 	}
+
+	/*@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**")
+				.allowedMethods("*")
+				.allowedOrigins("http://localhost:5000");
+	}*/
 
 	@Bean
 	public MessageSource messageSource() {
