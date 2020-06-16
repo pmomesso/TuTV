@@ -97,4 +97,5 @@ public interface SeriesDao {
     SeriesReviewComment getCommentById(Long commentId);
 
     Series serieWithReview(Long seriesReviewId);
+
 }

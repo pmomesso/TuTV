@@ -21,6 +21,7 @@ public class SeasonDTO {
         this.number = season.getSeasonNumber();
         this.viewedByUser = false;
         setEpisodesList(season, loggedUser);
+        setUserFields(season, loggedUser);
     }
 
     public Long getId() {

@@ -192,8 +192,6 @@ public class SeriesControllerJersey {
         }
     }
 
-
-
     @PUT
     @Path("/{seriesId}/reviews/{seriesReviewId}/comments/{commentId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -294,6 +292,20 @@ public class SeriesControllerJersey {
         return ok(new GenericEntity<List<SeasonDTO>>(seasons) {}).build();
     }
 
+    @GET
+    @Path("/{seriesId}/seasons/{seasonId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSeriesSeason(@PathParam("seriesId") Long seriesId, @PathParam("seasonId") Long seasonId) {
+        Optional<User> loggedUser = userService.getLoggedUser();
+        List<Season> seasons = seriesService.getSeasonsBySeriesId(seriesId);
+        Optional<Season> season = seasons.stream().filter(s -> seasonId.equals(s.getId())).findFirst();
+        if(!season.isPresent()) {
+            return status(Status.NOT_FOUND).build();
+        }
+        SeasonDTO seasonDTO = new SeasonDTO(season.get(), loggedUser);
+        return ok(seasonDTO).build();
+    }
+
     @PUT
     @Path("/{seriesId}/seasons/{seasonId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -323,6 +335,25 @@ public class SeriesControllerJersey {
         }
 
         return status(Status.NO_CONTENT).build();
+    }
+
+    @GET
+    @Path("/{seriesId}/seasons/{seasonId}/episodes/{episodeId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getEpisode(@PathParam("seriesId") Long seriesId, @PathParam("seasonId") Long seasonId, @PathParam("episodeId") Long episodeId) {
+        Optional<Series> series = seriesService.getSerieById(seriesId);
+        if(!series.isPresent()) return status(Status.NOT_FOUND).build();
+
+        Optional<Season> season = series.get().getSeasons().stream().filter(s -> seasonId.equals(s.getId())).findFirst();
+        if(!season.isPresent()) return status(Status.NOT_FOUND).build();
+
+        Optional<Episode> episode = season.get().getEpisodes().stream().filter(e -> episodeId.equals(e.getId())).findFirst();
+        if(!episode.isPresent()) return status(Status.NOT_FOUND).build();
+
+        //Todo: prettify
+        EpisodeDTO episodeDTO = new EpisodeDTO(episode.get());
+        episodeDTO.setUserFields(episode.get(), userService.getLoggedUser());
+        return ok(episodeDTO).build();
     }
 
     @PUT

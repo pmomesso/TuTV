@@ -81,4 +81,5 @@ public interface SeriesService {
     Optional<SeriesReviewComment> getSeriesReviewCommentById(Long commentId);
 
     Optional<Series> serieWithReview(Long seriesReviewId);
+
 }

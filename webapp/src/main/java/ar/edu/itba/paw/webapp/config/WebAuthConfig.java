@@ -67,6 +67,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
+                /*
                     .antMatchers("/users").hasRole("ADMIN")
                     .antMatchers(HttpMethod.GET,"/series/watchlist").hasRole("USER")
                     .antMatchers(HttpMethod.POST,"/series/{\\d+}/reviews").hasRole("USER")
@@ -82,6 +83,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.DELETE,"/users/{\\d+}/lists/{\\d+}").hasRole("USER")
                     .antMatchers("/users/login").anonymous()
                     .antMatchers("/users/register").anonymous()
+                    */
                     .antMatchers("/**").permitAll()
                 .and().exceptionHandling()
                     .authenticationEntryPoint(new RestAuthenticationEntryPoint())
