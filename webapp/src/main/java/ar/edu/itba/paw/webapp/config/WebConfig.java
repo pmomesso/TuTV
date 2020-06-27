@@ -75,8 +75,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	public ViewResolver viewResolver() {
 		final InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();        
 		viewResolver.setViewClass(JstlView.class);        
-		viewResolver.setPrefix("/WEB-INF/jsp/");        
-		viewResolver.setSuffix(".jsp");
+//		viewResolver.setPrefix("/WEB-INF/jsp/");
+//		viewResolver.setSuffix(".jsp");
 		return viewResolver;
 	}
 	@Bean
@@ -115,8 +115,18 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/resources/**")
-				.addResourceLocations("/resources/");
+//		registry.addResourceHandler("/resources/**")
+//				.addResourceLocations("/resources/");
+		registry.addResourceHandler("/static/**")
+				.addResourceLocations("/WEB-INF/view/react-app/build/static/");
+		registry.addResourceHandler("/*.js")
+				.addResourceLocations("/WEB-INF/view/react-app/build/");
+		registry.addResourceHandler("/*.json")
+				.addResourceLocations("/WEB-INF/view/react-app/build/");
+		registry.addResourceHandler("/*.ico")
+				.addResourceLocations("/WEB-INF/view/react-app/build/");
+		registry.addResourceHandler("/index.html")
+				.addResourceLocations("/WEB-INF/view/react-app/build/index.html");
 	}
 
 	/*@Override
