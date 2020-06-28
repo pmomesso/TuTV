@@ -8,7 +8,7 @@ class Explore extends Component {
         bannerSeries: [ ],
         seriesLists: [ ],
         genreList: []
-    }
+    };
 
     componentDidMount = () => {
         Axios.get("/series/genres")
@@ -17,7 +17,7 @@ class Explore extends Component {
                 genreList: res.data.genres,
             })
         });
-    }
+    };
 
     render() {
         const seriesLists = this.state.genreList.map(genre => {

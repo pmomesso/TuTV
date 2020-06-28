@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import static javax.ws.rs.core.Response.*;
+
 @Path("/")
 @Produces(MediaType.TEXT_HTML)
 public class TuTVController {
@@ -24,7 +26,10 @@ public class TuTVController {
     @Produces(MediaType.TEXT_HTML)
     @Path("/")
     public Response getTuTV(@QueryParam("page") Integer page) throws FileNotFoundException {
-        File index = new File( servletContext.getRealPath("WEB-INF/view/react-app/build/index.html"));
-        return Response.ok(new FileInputStream(index)).build();
+        File index = new File(servletContext.getRealPath("WEB-INF/view/react-app/build/index.html"));
+        if(!index.exists()) {
+            return status(Status.NOT_FOUND).build();
+        }
+        return ok(new FileInputStream(index)).build();
     }
 }

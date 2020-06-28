@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import static javax.ws.rs.core.Response.*;
+
 @Path("static")
 @Component
 public class ResourcesController {
@@ -21,26 +23,35 @@ public class ResourcesController {
     private ServletContext servletContext;
 
     @GET
+    @Produces(value = {"text/javascript"})
     @Path("/js/{filename}")
-    @Produces(value = { "text/javascript" })
-    public Response getJS(@PathParam("filename") final String filename) throws FileNotFoundException {
-        File resource = new File(servletContext.getRealPath("WEB-INF/view/react-app/build/static/js/"+filename));
-        return Response.ok(new FileInputStream(resource)).build();
+    public Response getJs(@PathParam("filename") String filename) throws FileNotFoundException {
+        File resource = new File(servletContext.getRealPath("WEB-INF/view/react-app/build/static/js/" + filename));
+        if(!resource.exists()) {
+            return status(Status.NOT_FOUND).build();
+        }
+        return ok(new FileInputStream(resource)).build();
     }
 
     @GET
+    @Produces(value = {"text/css"})
     @Path("/css/{filename}")
-    @Produces(value = { "text/css" })
-    public Response getCSS(@PathParam("filename") final String filename) throws FileNotFoundException {
-        File resource = new File(servletContext.getRealPath("WEB-INF/view/react-app/build/static/css/"+filename));
-        return Response.ok(new FileInputStream(resource)).build();
+    public Response getCss(@PathParam("filename") String filename) throws FileNotFoundException {
+        File resource = new File(servletContext.getRealPath("WEB-INF/view/react-app/build/static/css/" + filename));
+        if(!resource.exists()) {
+            return status(Status.NOT_FOUND).build();
+        }
+        return ok(new FileInputStream(resource)).build();
     }
 
     @GET
+    @Produces(value = {"image/base64"})
     @Path("/media/{filename}")
-    @Produces(value = { "image/base64" })
-    public Response getImage(@PathParam("filename") final String filename) throws FileNotFoundException {
-        File resource = new File(servletContext.getRealPath("WEB-INF/view/react-app/build/static/media/"+filename));
-        return Response.ok(new FileInputStream(resource)).build();
+    public Response getMedia(@PathParam("filename") String filename) throws FileNotFoundException {
+        File resource = new File(servletContext.getRealPath("WEB-INF/view/react-app/build/static/media/" + filename));
+        if(!resource.exists()) {
+            return status(Status.NOT_FOUND).build();
+        }
+        return ok(new FileInputStream(resource)).build();
     }
 }

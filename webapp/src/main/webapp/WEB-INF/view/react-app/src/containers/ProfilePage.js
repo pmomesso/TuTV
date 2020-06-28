@@ -15,7 +15,7 @@ class ProfilePage extends Component {
     state = {
         user: null,
         loading: true
-    }
+    };
 
     componentDidMount = () => {
         let user_id = this.props.match.params.profile_id;
@@ -27,7 +27,7 @@ class ProfilePage extends Component {
                         loading: false
                     })
                 });
-    }
+    };
 
     render() {
 

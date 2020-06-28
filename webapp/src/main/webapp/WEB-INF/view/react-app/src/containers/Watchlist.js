@@ -12,7 +12,7 @@ class Watchlist extends Component {
     state = {
         shows: null,
         loading: true
-    }
+    };
 
     componentDidMount = () => {
         if(this.props.logged_user === null) {
@@ -20,13 +20,14 @@ class Watchlist extends Component {
             return;
         }
 
-        Axios.get("/series/genres")
+        Axios.get("/series/watchlist")
         .then(res => {
             this.setState({
+                shows: res.data,
                 loading: false
             })
         });
-    }
+    };
 
     render() {        
         if(this.state.loading)
@@ -89,6 +90,6 @@ const mapStateToProps = (state) => {
     return {
         logged_user: state.auth.user
     }
-}
+};
 
 export default connect(mapStateToProps)(Watchlist);
