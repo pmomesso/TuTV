@@ -15,6 +15,10 @@ import Axios from 'axios';
 
 const store = createStore(rootReducer);
 
+//TODO remove this 2 lines
+const APIURL = "http://localhost:8080";
+Axios.defaults.baseURL = APIURL;
+
 Axios.defaults.headers['Content-Type'] = 'application/json';
 
 let token = localStorage.getItem("authToken");
