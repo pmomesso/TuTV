@@ -2,9 +2,12 @@ package ar.edu.itba.paw.webapp.auth.jwt;
 
 import ar.edu.itba.paw.model.User;
 import io.jsonwebtoken.*;
+import org.apache.commons.io.IOUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -12,10 +15,18 @@ public class JwtUtil {
 
     private static final String KEY_FILE = "jwt.key";
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
-    private static final String ISSUER = "paw-api";
-    private static final String AUDIENCE = "paw-app";
-    private static final String ROLE = "role";
+    private static final String ISSUER = "tutv-api";
+    private static final String AUDIENCE = "tutv-app";
 
+    private String getJWTKey() {
+        InputStream inputStream = getClass()
+                .getClassLoader().getResourceAsStream(KEY_FILE);
+        try {
+            return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
     public JwtUtil() {}
 
     /**
@@ -28,7 +39,7 @@ public class JwtUtil {
     public User parseToken(String token) {
         try {
             Claims body = Jwts.parser()
-                    .setSigningKey("secret_key")
+                    .setSigningKey(getJWTKey())
                     .parseClaimsJws(token)
                     .getBody();
 
@@ -55,8 +66,10 @@ public class JwtUtil {
         claims.put("isAdmin", u.getIsAdmin());
 
         return Jwts.builder()
+                .setIssuer(ISSUER)
+                .setAudience(AUDIENCE)
                 .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS512, "secret_key")
+                .signWith(SignatureAlgorithm.HS512, getJWTKey())
                 .compact();
     }
 }

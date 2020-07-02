@@ -36,7 +36,7 @@ public interface SeriesDao {
 
     List<Episode> getEpisodesBySeasonId(long seasonId);
 
-    List<Episode> getNextToBeSeen(long userId);
+    List<Episode> getNextToBeSeen(long userId, int page);
 
     Optional<List<Series>> getRecentlyWatched(long userId, int number);
 
@@ -49,10 +49,10 @@ public interface SeriesDao {
     boolean userFollows(long seriesId, long userId);
     Optional<Series> followSeries(long seriesId, long userId);
     int unfollowSeries(long seriesId, long userId);
-    int setViewedEpisode(long episodeId, long userId);
-    int setViewedSeason(long seasonId, long userId);
-    int unviewSeason(long seasonId, long userId);
-    int unviewEpisode(long userId, long episodeId);
+    int setViewedEpisode(long seriesId,int seasonNumber, int episodeNumber, long userId);
+    int setViewedSeason(long seriesId, int seasonNumber, long userId);
+    int unviewSeason(long seriesId, int seasonNumber, long userId);
+    int unviewEpisode(long userId, long seriesId,int seasonNumber, int episodeNumber);
 
     Optional<SeriesReview> createSeriesReview(String body, long seriesId, long userId, boolean isSpam);
 

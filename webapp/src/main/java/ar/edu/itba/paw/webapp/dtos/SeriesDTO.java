@@ -28,7 +28,20 @@ public class SeriesDTO {
     public SeriesDTO() {
         //Empty constructor for JAX-RS
     }
-
+    public SeriesDTO(Series series, Optional<User> loggedInUser, UriInfo uriInfo) {
+        this.id = series.getId();
+        this.name = series.getName();
+        this.network = series.getNetwork().getName();
+        this.seriesDescription = series.getSeriesDescription();
+        this.bannerUrl = series.getBannerUrl();
+        this.posterUrl = series.getPosterUrl();
+        this.userRating = series.getUserRating();
+        this.followers = series.getFollowers();
+        this.seasons = new ArrayList<>();
+        series.getSeasons().forEach(s -> seasons.add(new SeasonDTO(s,loggedInUser)));
+        this.setReviewsUri(uriInfo);
+        setUserFields(series, loggedInUser);
+    }
     public SeriesDTO(Series series, UriInfo uriInfo) {
         this.id = series.getId();
         this.name = series.getName();
@@ -41,10 +54,6 @@ public class SeriesDTO {
         setUris(uriInfo);
     }
 
-    public SeriesDTO(Series series, Optional<User> loggedUser, UriInfo uriInfo) {
-        this(series, uriInfo);
-        setUserFields(series, loggedUser);
-    }
 
     private void setUris(UriInfo uriInfo) {
         setReviewsUri(uriInfo);

@@ -77,7 +77,7 @@ public class UserControllerJersey {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/register")
+    @Path("/")
     public Response register(@Valid RegisterDTO register) {
 
         Set<ConstraintViolation<RegisterDTO>> violations = validator.validate(register);

@@ -66,7 +66,6 @@ public class SeriesServiceImpl implements SeriesService {
         this.userService = userService;
         this.messageSource = messageSource;
     }
-
     @Override
     public List<Series> searchSeries(String seriesName, String genreName, String networkName, int page) {
         String name = seriesName == null ? "" : seriesName;
@@ -186,23 +185,23 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public void setViewedEpisode(long seriesId, long episodeId) throws NotFoundException, UnauthorizedException {
+    public void setViewedEpisode(long seriesId, int seasonNumber, int episodeNumber) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         if(!this.follows(seriesId)){
             this.followSeries(seriesId);
         }
-        int result = seriesDao.setViewedEpisode(episodeId, user.getId());
+        int result = seriesDao.setViewedEpisode(seriesId, seasonNumber, episodeNumber, user.getId());
         if(result == 0) {
             throw new NotFoundException();
         }
     }
     @Override
-    public void setViewedSeason(long seriesId, long seasonId) throws UnauthorizedException, NotFoundException {
+    public void setViewedSeason(long seriesId, int seasonNumber) throws UnauthorizedException, NotFoundException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         if(!this.follows(seriesId)){
             this.followSeries(seriesId);
         }
-        seriesDao.setViewedSeason(seasonId,user.getId());
+        seriesDao.setViewedSeason(seriesId,seasonNumber,user.getId());
     }
 
     @Override
@@ -218,17 +217,17 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public void unviewEpisode(long episodeId) throws NotFoundException, UnauthorizedException {
+    public void unviewEpisode(long seriesId, int seasonNumber, int episodeNumber) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        int result = seriesDao.unviewEpisode(user.getId(), episodeId);
+        int result = seriesDao.unviewEpisode(user.getId(), seriesId,seasonNumber,episodeNumber);
         if(result == 0) {
             throw new NotFoundException();
         }
     }
     @Override
-    public void unviewSeason(long seasonId) throws UnauthorizedException {
+    public void unviewSeason(long seriesId, int seasonNumber) throws UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        seriesDao.unviewSeason(seasonId,user.getId());
+        seriesDao.unviewSeason(seriesId,seasonNumber,user.getId());
     }
     @Override
     public Optional<SeriesReview> addSeriesReview(String body, long seriesId, boolean isSpam) throws UnauthorizedException {
@@ -324,9 +323,9 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Episode> getWatchList() throws UnauthorizedException {
+    public List<Episode> getWatchList(int page) throws UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        return seriesDao.getNextToBeSeen(user.getId());
+        return seriesDao.getNextToBeSeen(user.getId(), page);
     }
 
     @Override

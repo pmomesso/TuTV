@@ -32,11 +32,11 @@ public interface SeriesService {
     boolean follows(long seriesId) throws UnauthorizedException;
     Optional<Series> followSeries(long seriesId) throws UnauthorizedException;
     void unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException;
-    void setViewedEpisode(long seriesId, long episodeId) throws NotFoundException, UnauthorizedException;
-    void setViewedSeason(long seriesId, long seasonId) throws UnauthorizedException, NotFoundException;
+    void setViewedEpisode(long seriesId, int seasonNumber, int episodeNumber) throws NotFoundException, UnauthorizedException;
+    void setViewedSeason(long seriesId, int seasonNumber) throws UnauthorizedException, NotFoundException;
     void rateSeries(long seriesId, int rating) throws NotFoundException, UnauthorizedException, BadRequestException;
-    void unviewEpisode(long episodeId) throws NotFoundException, UnauthorizedException;
-    void unviewSeason(long seasonId) throws UnauthorizedException, NotFoundException;
+    void unviewEpisode(long seriesId, int seasonNumber, int episodeNumber) throws NotFoundException, UnauthorizedException;
+    void unviewSeason(long seriesId,int seasonNumber) throws UnauthorizedException, NotFoundException;
     Optional<SeriesReview> addSeriesReview(String body, long seriesId, boolean isSpam) throws UnauthorizedException;
 
     void likePost(long postId) throws NotFoundException, UnauthorizedException;
@@ -55,7 +55,7 @@ public interface SeriesService {
     
     void removePost(long postId) throws UnauthorizedException, NotFoundException;
 
-    List<Episode> getWatchList() throws UnauthorizedException, NotFoundException;
+    List<Episode> getWatchList(int page) throws UnauthorizedException, NotFoundException;
 
     List<Series> getRecentlyWatchedList(int number) throws UnauthorizedException, BadRequestException, NotFoundException;
 

@@ -9,8 +9,6 @@ import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.print.attribute.standard.Media;
-import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -42,7 +40,6 @@ public class SeriesControllerJersey {
     @Path("/featured")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMainPageJson() {
-        //Todo: fix paging
         CacheControl cc = new CacheControl();
         cc.setMaxAge(86400);
         cc.setPrivate(true);
@@ -52,18 +49,18 @@ public class SeriesControllerJersey {
     }
 
     @GET
-    @Path("/search")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchSeries(@QueryParam("name") String name, @QueryParam("genre") String genre, @QueryParam("network") String network, @QueryParam("page") Integer page) {
 
         page = page == null || page < 1 ? 1 : page;
-        List<Series> results = seriesService.searchSeries(name,genre,network,page - 1);
+        List<Series> results = seriesService.searchSeries(name,genre,network,page);
         SeriesDTO[] seriesDTOList = new SeriesDTO[results.size()];
         for(int i = 0; i < results.size(); i++){
             seriesDTOList[i] = new SeriesDTO(results.get(i), uriInfo);
         }
         ResponseBuilder rb = ok(seriesDTOList);
-        boolean next = seriesService.searchSeries(name,genre,network, page + 1).size() > 0;
+        boolean next = seriesService.searchSeries(name,genre,network,page + 1).size() > 0;
         if(next || page > 1) {
             UriBuilder nextUri = uriInfo.getAbsolutePathBuilder();
             UriBuilder prevUri = uriInfo.getAbsolutePathBuilder();
@@ -293,12 +290,12 @@ public class SeriesControllerJersey {
     }
 
     @GET
-    @Path("/{seriesId}/seasons/{seasonId}")
+    @Path("/{seriesId}/seasons/{seasonNumber}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSeriesSeason(@PathParam("seriesId") Long seriesId, @PathParam("seasonId") Long seasonId) {
+    public Response getSeriesSeason(@PathParam("seriesId") Long seriesId, @PathParam("seasonNumber") Integer seasonNumber) {
         Optional<User> loggedUser = userService.getLoggedUser();
         List<Season> seasons = seriesService.getSeasonsBySeriesId(seriesId);
-        Optional<Season> season = seasons.stream().filter(s -> seasonId.equals(s.getId())).findFirst();
+        Optional<Season> season = seasons.stream().filter(s -> seasonNumber == s.getSeasonNumber()).findFirst();
         if(!season.isPresent()) {
             return status(Status.NOT_FOUND).build();
         }
@@ -307,9 +304,9 @@ public class SeriesControllerJersey {
     }
 
     @PUT
-    @Path("/{seriesId}/seasons/{seasonId}")
+    @Path("/{seriesId}/seasons/{seasonNumber}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response viewSeason(@PathParam("seriesId") Long seriesId, @PathParam("seasonId") Long seasonId,
+    public Response viewSeason(@PathParam("seriesId") Long seriesId, @PathParam("seasonNumber") Integer seasonNumber,
                                @Valid ViewedResourceDTO viewedResourceDTO){
 
         Set<ConstraintViolation<ViewedResourceDTO>> violations = validator.validate(viewedResourceDTO);
@@ -317,16 +314,16 @@ public class SeriesControllerJersey {
             return status(Status.BAD_REQUEST).build();
         }
 
-        if(seriesId < 0 || seasonId < 0){
+        if(seriesId < 0 || seasonNumber < 0){
             return status(Status.BAD_REQUEST).build();
         }
 
         try {
             if(viewedResourceDTO.getViewedByUser()){
-                seriesService.setViewedSeason(seriesId,seasonId);
+                seriesService.setViewedSeason(seriesId,seasonNumber);
             }
             else{
-                seriesService.unviewSeason(seasonId);
+                seriesService.unviewSeason(seriesId,seasonNumber);
             }
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
@@ -338,28 +335,38 @@ public class SeriesControllerJersey {
     }
 
     @GET
-    @Path("/{seriesId}/seasons/{seasonId}/episodes/{episodeId}")
+    @Path("/{seriesId}/seasons/{seasonNumber}/episodes")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEpisode(@PathParam("seriesId") Long seriesId, @PathParam("seasonId") Long seasonId, @PathParam("episodeId") Long episodeId) {
+    public Response getSeasonEpisodes(@PathParam("seriesId") Long seriesId, @PathParam("seasonNumber") Integer seasonNumber) {
         Optional<Series> series = seriesService.getSerieById(seriesId);
         if(!series.isPresent()) return status(Status.NOT_FOUND).build();
 
-        Optional<Season> season = series.get().getSeasons().stream().filter(s -> seasonId.equals(s.getId())).findFirst();
+        Optional<Season> season = series.get().getSeasons().stream().filter(s -> seasonNumber == s.getSeasonNumber()).findFirst();
         if(!season.isPresent()) return status(Status.NOT_FOUND).build();
 
-        Optional<Episode> episode = season.get().getEpisodes().stream().filter(e -> episodeId.equals(e.getId())).findFirst();
+        return ok(new EpisodeListDTO(season.get().getEpisodes(),userService.getLoggedUser())).build();
+    }
+
+    @GET
+    @Path("/{seriesId}/seasons/{seasonNumber}/episodes/{episodeNumber}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getEpisode(@PathParam("seriesId") Long seriesId, @PathParam("seasonNumber") Integer seasonNumber, @PathParam("episodeNumber") Integer episodeNumber) {
+        Optional<Series> series = seriesService.getSerieById(seriesId);
+        if(!series.isPresent()) return status(Status.NOT_FOUND).build();
+
+        Optional<Season> season = series.get().getSeasons().stream().filter(s -> seasonNumber == s.getSeasonNumber()).findFirst();
+        if(!season.isPresent()) return status(Status.NOT_FOUND).build();
+
+        Optional<Episode> episode = season.get().getEpisodes().stream().filter(e -> episodeNumber == e.getNumEpisode()).findFirst();
         if(!episode.isPresent()) return status(Status.NOT_FOUND).build();
 
-        //Todo: prettify
-        EpisodeDTO episodeDTO = new EpisodeDTO(episode.get());
-        episodeDTO.setUserFields(episode.get(), userService.getLoggedUser());
-        return ok(episodeDTO).build();
+        return ok(new EpisodeDTO(episode.get(),userService.getLoggedUser())).build();
     }
 
     @PUT
-    @Path("/{seriesId}/seasons/{seasonId}/episodes/{episodeId}")
+    @Path("/{seriesId}/seasons/{seasonNumber}/episodes/{episodeNumber}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response viewEpisode(@PathParam("seriesId") Long seriesId, @PathParam("seasonId") Long seasonId, @PathParam("episodeId") Long episodeId,
+    public Response viewEpisode(@PathParam("seriesId") Long seriesId, @PathParam("seasonNumber") Integer seasonNumber, @PathParam("episodeNumber") Integer episodeNumber,
                                 @Valid ViewedResourceDTO viewedResourceDTO){
 
         Set<ConstraintViolation<ViewedResourceDTO>> violations = validator.validate(viewedResourceDTO);
@@ -367,14 +374,14 @@ public class SeriesControllerJersey {
             return status(Status.BAD_REQUEST).build();
         }
 
-        if(seriesId < 0 || seasonId < 0 || episodeId < 0) {
+        if(seriesId < 0 || seasonNumber < 0 || episodeNumber < 0) {
             return status(Status.BAD_REQUEST).build();
         }
         try {
             if(viewedResourceDTO.getViewedByUser()) {
-                seriesService.setViewedEpisode(seriesId,episodeId);
+                seriesService.setViewedEpisode(seriesId,seasonNumber,episodeNumber);
             } else {
-                seriesService.unviewEpisode(episodeId);
+                seriesService.unviewEpisode(seriesId,seasonNumber,episodeNumber);
             }
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
@@ -387,14 +394,21 @@ public class SeriesControllerJersey {
     @GET
     @Path("/watchlist")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getWatchlist() {
+    public Response getWatchlist(@QueryParam("page") Integer page) {
         try {
-            List<Episode> episodeList = seriesService.getWatchList();
+            page = page == null || page < 1 ? 1 : page;
+            List<Episode> episodeList = seriesService.getWatchList(page);
             WatchlistDTO[] watchlist = new WatchlistDTO[episodeList.size()];
             for(int i = 0; i < episodeList.size(); i++){
                 watchlist[i] = new WatchlistDTO(episodeList.get(i), uriInfo);
             }
-            return ok(watchlist).build();
+            ResponseBuilder rb = ok(watchlist);
+            boolean next = seriesService.getWatchList(page + 1).size() > 0;
+            if(page > 1 || next) {
+                rb.header("Link", (next ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build().toString() + " , rel = next") : "")
+                        + ((next && page > 1) ? " ; " : "") + (page > 1 ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build().toString() + " , rel = prev") : ""));
+            }
+            return rb.build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {

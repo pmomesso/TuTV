@@ -42,7 +42,9 @@ public class SeriesServiceImplTest {
     private static final long NETWORK_ID = 8;
     private static final long SERIES_ID = 9;
     private static final long SEASON_ID = 10;
+    private static final int SEASON_NUMBER = 1;
     private static final long EPISODE_ID = 11;
+    private static final int EPISODE_NUMBER = 1;
     private static final long USER_ID = 12;
 
     @Mock
@@ -132,11 +134,11 @@ public class SeriesServiceImplTest {
     public void setViewedEpisodeTest(){
         //Setup
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.setViewedEpisode(Mockito.eq(EPISODE_ID),Mockito.eq(USER_ID))).thenReturn(1);
+        Mockito.when(mockDao.setViewedEpisode(Mockito.eq(SERIES_ID),Mockito.eq(SEASON_NUMBER),Mockito.eq(EPISODE_NUMBER),Mockito.eq(USER_ID))).thenReturn(1);
         Mockito.when(mockDao.followSeries(Mockito.eq(SERIES_ID),Mockito.eq(USER_ID))).thenReturn(Optional.of(getMockSeries()));
         //Ejercitar
         try {
-            seriesService.setViewedEpisode(SERIES_ID, EPISODE_ID);
+            seriesService.setViewedEpisode(SERIES_ID, SEASON_NUMBER, EPISODE_NUMBER);
         } catch (ApiException e) {
             Assert.fail();
         }
@@ -145,11 +147,11 @@ public class SeriesServiceImplTest {
     public void setViewedSeasonTest(){
         //Setup
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.setViewedSeason(Mockito.eq(SEASON_ID),Mockito.eq(USER_ID))).thenReturn(1);
+        Mockito.when(mockDao.setViewedSeason(Mockito.eq(SERIES_ID),Mockito.eq(SEASON_NUMBER),Mockito.eq(USER_ID))).thenReturn(1);
         Mockito.when(mockDao.followSeries(Mockito.eq(SERIES_ID),Mockito.eq(USER_ID))).thenReturn(Optional.of(getMockSeries()));
         //Ejercitar
         try {
-            seriesService.setViewedSeason(SERIES_ID, SEASON_ID);
+            seriesService.setViewedSeason(SERIES_ID, SEASON_NUMBER);
         } catch (ApiException e) {
             Assert.fail();
         }
@@ -171,10 +173,10 @@ public class SeriesServiceImplTest {
     public void unviewEpisodeTest(){
         //Setup
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.unviewEpisode(Mockito.eq(USER_ID),Mockito.eq(EPISODE_ID))).thenReturn(1);
+        Mockito.when(mockDao.unviewEpisode(Mockito.eq(USER_ID),Mockito.eq(SERIES_ID),Mockito.eq(SEASON_NUMBER),Mockito.eq(EPISODE_NUMBER))).thenReturn(1);
         //Ejercitar
         try {
-            seriesService.unviewEpisode(EPISODE_ID);
+            seriesService.unviewEpisode(SERIES_ID, SEASON_NUMBER, EPISODE_NUMBER);
         } catch (ApiException e) {
             Assert.fail();
         }
@@ -183,10 +185,10 @@ public class SeriesServiceImplTest {
     public void unviewSeasonTest(){
         //Setup
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.unviewSeason(Mockito.eq(SEASON_ID),Mockito.eq(USER_ID))).thenReturn(1);
+        Mockito.when(mockDao.unviewSeason(Mockito.eq(SERIES_ID),Mockito.eq(SEASON_NUMBER),Mockito.eq(USER_ID))).thenReturn(1);
         //Ejercitar
         try {
-            seriesService.unviewSeason(SEASON_ID);
+            seriesService.unviewSeason(SERIES_ID,SEASON_NUMBER);
         } catch (ApiException e) {
             Assert.fail();
         }
@@ -308,7 +310,7 @@ public class SeriesServiceImplTest {
         //Setup
         final Series mockSeries = getMockSeries();
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.getNextToBeSeen(Mockito.eq(USER_ID))).thenAnswer(invocation -> {
+        Mockito.when(mockDao.getNextToBeSeen(Mockito.eq(USER_ID),Mockito.eq(1))).thenAnswer(invocation -> {
             List<Episode> episodes = new ArrayList<>();
             episodes.add(new Episode());
             return episodes;
@@ -316,7 +318,7 @@ public class SeriesServiceImplTest {
         //Ejercitar
         List<Episode> series;
         try {
-            series = seriesService.getWatchList();
+            series = seriesService.getWatchList(1);
         } catch (ApiException e) {
             Assert.fail();
             return;

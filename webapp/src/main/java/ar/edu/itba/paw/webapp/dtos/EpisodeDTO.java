@@ -27,7 +27,16 @@ public class EpisodeDTO {
         this.numEpisode = episode.getNumEpisode();
         this.seasonNumber = episode.getSeason().getSeasonNumber();
     }
-
+    public EpisodeDTO(Episode episode, Optional<User> loggedInUser) {
+        this.id = episode.getId();
+        this.name = episode.getName();
+        if(episode.getAiring() != null) {
+            this.air_date = episode.getAiring().toString();
+        }
+        this.numEpisode = episode.getNumEpisode();
+        this.seasonNumber = episode.getSeason().getSeasonNumber();
+        this.setUserFields(episode,loggedInUser);
+    }
     public Long getId() {
         return id;
     }
