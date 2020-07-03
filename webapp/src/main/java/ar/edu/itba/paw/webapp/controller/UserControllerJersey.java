@@ -22,12 +22,10 @@ import javax.validation.Valid;
 import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -74,6 +72,7 @@ public class UserControllerJersey {
         String token = jwtUtil.generateToken(user.get());
         return ok().header("Authorization","Bearer " + token).entity(new UserDTO(user.get())).build();
     }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -106,6 +105,49 @@ public class UserControllerJersey {
             }
             return status(Status.CONFLICT).entity(errors.length > 1 ? errors : errors[0]).build();
         }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/following")
+    public Response getFollowedSeries(@PathParam("userId") Long userId) throws NotFoundException {
+        Optional<User> optUser = userService.getLoggedUser();
+        if(!optUser.isPresent() || optUser.get().getId() != userId) return status(Status.UNAUTHORIZED).build();
+        List<SeriesDTO> seriesList = seriesService.getAddedSeries(userId).stream().
+                map(series -> new SeriesDTO(series, optUser, uriInfo)).collect(Collectors.toList());
+        return ok(new GenericEntity<List<SeriesDTO>>(seriesList) {}).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/following")
+    public Response followSeries(@PathParam("userId") Long userId, @Valid FollowSeriesDTO followSeriesDTO) {
+        Set<ConstraintViolation<FollowSeriesDTO>> violations = validator.validate(followSeriesDTO);
+        if(!violations.isEmpty()) return Response.status(Status.BAD_REQUEST).build();
+        try {
+            seriesService.followSeries(followSeriesDTO.getSeriesId());
+        } catch (NotFoundException e ) {
+            return Response.status(Status.NOT_FOUND).build();
+        } catch (UnauthorizedException e) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+        return ok().build();
+    }
+
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/following")
+    public Response unfollowSeries(@PathParam("userId") Long userId, @Valid FollowSeriesDTO followSeriesDTO) {
+        Set<ConstraintViolation<FollowSeriesDTO>> violations = validator.validate(followSeriesDTO);
+        if(!violations.isEmpty()) return Response.status(Status.BAD_REQUEST).build();
+        try {
+            seriesService.unfollowSeries(followSeriesDTO.getSeriesId());
+        } catch (NotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        } catch (UnauthorizedException e) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
+        return ok().build();
     }
 
     @POST
