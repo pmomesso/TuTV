@@ -8,7 +8,6 @@ import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -386,7 +385,6 @@ public class SeriesServiceImpl implements SeriesService {
     @Transactional
     public int addSeriesToList(long id, long seriesId) throws UnauthorizedException, NotFoundException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        Series series = seriesDao.getSeriesById(seriesId).orElseThrow(NotFoundException::new);
         int result = seriesDao.addSeriesToList(id, seriesId);
         if(result == -1) throw new NotFoundException();
         return result;
