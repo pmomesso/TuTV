@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import java.util.*;
+import java.util.stream.Collectors;
 
 //Todo: https://www.baeldung.com/cron-expressions
 
@@ -86,11 +87,16 @@ public class SeriesHibernateDao implements SeriesDao {
     public List<Series> getNewSeries(int lowerLimit, int upperLimit) {
         final TypedQuery<Series> query = em.createQuery("select s from Series as s inner join s.seasons as season inner join season.episodes as e " +
                 "order by e.aired desc",Series.class);
+        query.setFirstResult(lowerLimit);
+        query.setMaxResults(upperLimit - lowerLimit + 1);
+        List<Series> result = query.getResultList();
+        /*
         Object[] distinctSeries = new HashSet<>(query.getResultList()).toArray();
         List<Series> result = new ArrayList<>();
         for(int i = lowerLimit; i < upperLimit && i < distinctSeries.length; i++){
             result.add((Series)distinctSeries[i]);
         }
+        */
         return result;
     }
 
@@ -632,6 +638,19 @@ public class SeriesHibernateDao implements SeriesDao {
     public Series serieWithReview(Long seriesReviewId) {
         return em.createQuery("select s from Series s inner join s.seriesReviewList sr " +
                 "where sr.id = :seriesReviewId", Series.class).setParameter("seriesReviewId", seriesReviewId).getSingleResult();
+    }
+
+    @Override
+    public int addSeriesToList(long id, long seriesId) {
+        Optional<SeriesList> list = Optional.ofNullable(em.find(SeriesList.class, id));
+        if(!list.isPresent()) return -1;
+        Optional<Series> series = Optional.ofNullable(em.find(Series.class, seriesId));
+        if(!series.isPresent()) return -1;
+        int prevSize = list.get().getSeries().size();
+        list.get().getSeries().add(series.get());
+        int newSize = list.get().getSeries().size();
+        em.persist(list.get());
+        return newSize - prevSize;
     }
 
 }

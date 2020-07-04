@@ -46,9 +46,6 @@ public class SeriesControllerJersey {
         List<SeriesDTO> featured = seriesService.getNewestSeries(0, 4).stream()
                 .map(e -> new SeriesDTO(e, userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
         return ok(new GenericEntity<List<SeriesDTO>>(featured) {}).cacheControl(cc).build();
-        /*ResponseBuilder builder = Response.ok(new MainPageDTO(seriesService.getNewestSeries(0, 4), uriInfo));
-        builder.cacheControl(cc);
-        return builder.build();*/
     }
 
     @GET

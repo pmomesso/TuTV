@@ -98,4 +98,5 @@ public interface SeriesDao {
 
     Series serieWithReview(Long seriesReviewId);
 
+    int addSeriesToList(long id, long seriesId);
 }

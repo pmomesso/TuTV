@@ -384,6 +384,16 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     @Transactional
+    public int addSeriesToList(long id, long seriesId) throws UnauthorizedException, NotFoundException {
+        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        Series series = seriesDao.getSeriesById(seriesId).orElseThrow(NotFoundException::new);
+        int result = seriesDao.addSeriesToList(id, seriesId);
+        if(result == -1) throw new NotFoundException();
+        return result;
+    }
+
+    @Override
+    @Transactional
     public Optional<SeriesList> modifyList(long id, String name, long[] seriesIdList) throws UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         Set<Series> series = null;

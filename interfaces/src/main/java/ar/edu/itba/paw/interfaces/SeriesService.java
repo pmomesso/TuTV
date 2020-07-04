@@ -68,6 +68,9 @@ public interface SeriesService {
 
     Optional<Boolean> getLoggedInUserLikesSeriesReview(long seriesReviewId);
 
+    @Transactional
+    int addSeriesToList(long id, long seriesId) throws UnauthorizedException, NotFoundException;
+
     Optional<SeriesList> modifyList(long id, String name, long[] seriesId) throws UnauthorizedException;
 
     void removeList(long id) throws UnauthorizedException, NotFoundException;

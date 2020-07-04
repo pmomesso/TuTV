@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import javax.print.attribute.standard.Media;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -386,6 +385,25 @@ public class UserControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
         return status(Status.NO_CONTENT).build();
+    }
+
+    @POST
+    @Path("/{userId}/lists/{listId}/series")
+    public Response addSeriesToList(@PathParam("userId") Long userId, @PathParam("listId") Long listId, @Valid SeriesToAddDTO seriesToAddDTO) {
+        Optional<User> optUser = userService.getLoggedUser();
+        if(optUser.isPresent() && optUser.get().getId() != userId) return Response.status(Status.UNAUTHORIZED).build();
+        int result;
+        try {
+            result = seriesService.addSeriesToList(listId, seriesToAddDTO.getSeriesId());
+        } catch (UnauthorizedException e) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        } catch (NotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        if(result == 0) {
+            return Response.status(Status.NOT_MODIFIED).build();
+        }
+        return ok().build();
     }
 
     @PUT
