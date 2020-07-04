@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.MailService;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.model.Genre;
+import ar.edu.itba.paw.model.Notification;
 import ar.edu.itba.paw.model.UsersList;
 import ar.edu.itba.paw.model.either.Either;
 import ar.edu.itba.paw.model.User;

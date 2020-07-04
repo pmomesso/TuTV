@@ -8,10 +8,7 @@ import ar.edu.itba.paw.model.errors.Errors;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;

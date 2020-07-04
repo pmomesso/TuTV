@@ -250,10 +250,15 @@ public class SeriesControllerJersey {
     @Path("/genres")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getGenreList() {
+        List<GenreDTO> genres = seriesService.getAllGenres().stream()
+                .map(g -> new GenreDTO(g, uriInfo)).collect(Collectors.toList());
+        return ok(new GenericEntity<List<GenreDTO>>(genres) {}).build();
+        /*
         GenreListDTO genreListDTO = new GenreListDTO(seriesService.getAllGenres());
         genreListDTO.getGenres().stream().forEach(genreDTO -> genreDTO.setSeries(null));
         ResponseBuilder rb = ok(genreListDTO);
         return rb.build();
+         */
     }
 
     @GET
@@ -344,7 +349,10 @@ public class SeriesControllerJersey {
         Optional<Season> season = series.get().getSeasons().stream().filter(s -> seasonNumber == s.getSeasonNumber()).findFirst();
         if(!season.isPresent()) return status(Status.NOT_FOUND).build();
 
-        return ok(new EpisodeListDTO(season.get().getEpisodes(),userService.getLoggedUser())).build();
+        List<EpisodeDTO> episodes = season.get().getEpisodes().stream()
+                .map(e -> new EpisodeDTO(e, userService.getLoggedUser())).collect(Collectors.toList());
+
+        return ok(new GenericEntity<List<EpisodeDTO>>(episodes) {}).build();
     }
 
     @GET
@@ -373,10 +381,12 @@ public class SeriesControllerJersey {
         if(!violations.isEmpty()) {
             return status(Status.BAD_REQUEST).build();
         }
-
+        //Commented it because it's a condition already checked by the service
+        /*
         if(seriesId < 0 || seasonNumber < 0 || episodeNumber < 0) {
             return status(Status.BAD_REQUEST).build();
         }
+        */
         try {
             if(viewedResourceDTO.getViewedByUser()) {
                 seriesService.setViewedEpisode(seriesId,seasonNumber,episodeNumber);

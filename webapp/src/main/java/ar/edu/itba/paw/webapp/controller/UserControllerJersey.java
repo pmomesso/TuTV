@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -24,10 +25,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.net.URI;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.Response.*;
@@ -110,11 +108,18 @@ public class UserControllerJersey {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/following")
-    public Response getFollowedSeries(@PathParam("userId") Long userId) throws NotFoundException {
+    public Response getFollowedSeries(@PathParam("userId") Long userId) {
         Optional<User> optUser = userService.getLoggedUser();
-        if(!optUser.isPresent() || optUser.get().getId() != userId) return status(Status.UNAUTHORIZED).build();
-        List<SeriesDTO> seriesList = seriesService.getAddedSeries(userId).stream().
-                map(series -> new SeriesDTO(series, optUser, uriInfo)).collect(Collectors.toList());
+        if(optUser.isPresent() && optUser.get().getId() != userId) return Response.status(Status.UNAUTHORIZED).build();
+        List<SeriesDTO> seriesList = Collections.EMPTY_LIST;
+        try {
+            seriesList = seriesService.getAddedSeries().stream().
+                    map(series -> new SeriesDTO(series, userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
+        } catch (NotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        } catch (UnauthorizedException e) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
         return ok(new GenericEntity<List<SeriesDTO>>(seriesList) {}).build();
     }
 
@@ -190,8 +195,9 @@ public class UserControllerJersey {
         if(userService.getLoggedUser().get().getId() != userId) {
             return status(Status.UNAUTHORIZED).build();
         }
-        NotificationsListDTO notificationsListDTO = new NotificationsListDTO(userService.getLoggedUser().get());
-        return ok(notificationsListDTO).build();
+        List<NotificationDTO> notifications = userService.getLoggedUser().get().getNotifications().stream()
+                .map(NotificationDTO::new).collect(Collectors.toList());
+        return ok(new GenericEntity<List<NotificationDTO>>(notifications) {}).build();
     }
 
     @PUT
@@ -239,6 +245,46 @@ public class UserControllerJersey {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/watchlist")
+    public Response getUserWatchList(@PathParam("userId") Long userId, @QueryParam("page") Integer page) {
+        Optional<User> optUser = userService.getLoggedUser();
+        if(optUser.isPresent() && optUser.get().getId() != userId) return Response.status(Status.UNAUTHORIZED).build();
+        Integer auxPage = page;
+        if(page == null) {
+            auxPage = 1;
+        }
+        List<EpisodeDTO> episodes = Collections.EMPTY_LIST;
+        try {
+            episodes = seriesService.getWatchList(auxPage).stream()
+                    .map(e -> new EpisodeDTO(e, userService.getLoggedUser())).collect(Collectors.toList());
+        } catch (UnauthorizedException e) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        } catch (NotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        return ok(new GenericEntity<List<EpisodeDTO>>(episodes) {}).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/upcoming")
+    public Response getUserUpcomingList(@PathParam("userId") Long userId) {
+        Optional<User> optUser = userService.getLoggedUser();
+        if(optUser.isPresent() && optUser.get().getId() != userId) return Response.status(Status.UNAUTHORIZED).build();
+        List<EpisodeDTO> episodes = Collections.EMPTY_LIST;
+        try {
+            episodes = seriesService.getUpcomingEpisodes().stream()
+                    .map(e -> new EpisodeDTO(e, optUser)).collect(Collectors.toList());
+        } catch (UnauthorizedException e) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        } catch (NotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        return ok(new GenericEntity<List<EpisodeDTO>>(episodes) {}).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/lists")
     public Response getUserFavourites(@PathParam("userId") Long userId) {
         Optional<User> optUser = userService.findById(userId);
@@ -246,7 +292,9 @@ public class UserControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
         User user = optUser.get();
-        return ok(new SeriesListsDTO(user.getLists().stream().collect(Collectors.toList()), uriInfo)).build();
+        List<SeriesListDTO> seriesLists = user.getLists().stream()
+                .map(list -> new SeriesListDTO(list, uriInfo)).collect(Collectors.toList());
+        return ok(new GenericEntity<List<SeriesListDTO>>(seriesLists) {}).build();
     }
 
     @POST
