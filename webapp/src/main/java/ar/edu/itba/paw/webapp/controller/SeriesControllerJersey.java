@@ -44,7 +44,7 @@ public class SeriesControllerJersey {
         cc.setMaxAge(86400);
         cc.setPrivate(true);
         List<SeriesDTO> featured = seriesService.getNewestSeries(0, 4).stream()
-                .map(e -> new SeriesDTO(e, userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
+                .map(e -> new SeriesDTO(e, uriInfo)).collect(Collectors.toList());
         return ok(new GenericEntity<List<SeriesDTO>>(featured) {}).cacheControl(cc).build();
     }
 

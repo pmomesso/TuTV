@@ -113,7 +113,7 @@ public class UserControllerJersey {
         List<SeriesDTO> seriesList = Collections.EMPTY_LIST;
         try {
             seriesList = seriesService.getAddedSeries().stream().
-                    map(series -> new SeriesDTO(series, userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
+                    map(series -> new SeriesDTO(series, uriInfo)).collect(Collectors.toList());
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
         } catch (UnauthorizedException e) {
