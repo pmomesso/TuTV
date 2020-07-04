@@ -6,7 +6,6 @@ const TvSeriesPosterUpcoming = (props) => {
     const { series, episode } = props;
     return (
         <li>
-            // TODO format date
             <h4>{ episode.air_date }</h4>
             <Link to={ "/series/" + series.id }>
                 <div className="image-crop">
