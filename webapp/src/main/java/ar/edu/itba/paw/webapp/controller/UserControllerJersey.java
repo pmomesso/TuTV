@@ -106,6 +106,24 @@ public class UserControllerJersey {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/recentlyWatched")
+    public Response getRecentlyWatched(@PathParam("userId") Long userId) {
+        List<SeriesDTO> series = Collections.EMPTY_LIST;
+        try {
+            series = seriesService.getRecentlyWatchedList(5).stream()
+                    .map(e -> new SeriesDTO(e, uriInfo)).collect(Collectors.toList());
+        } catch (UnauthorizedException e) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        } catch (BadRequestException e) {
+            return Response.status(Status.BAD_REQUEST).build();
+        } catch (NotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        return ok(new GenericEntity<List<SeriesDTO>>(series) {}).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/following")
     public Response getFollowedSeries(@PathParam("userId") Long userId) {
         Optional<User> optUser = userService.getLoggedUser();
