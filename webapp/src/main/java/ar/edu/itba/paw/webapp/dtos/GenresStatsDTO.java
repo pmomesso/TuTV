@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class GenresStatsDTO {
 
-    private List<GenreStats> stats;
+    private List<GenreStatsDTO> stats;
 
     public GenresStatsDTO() {
         //Empty constructor for JAX-RS
@@ -17,15 +17,15 @@ public class GenresStatsDTO {
     public GenresStatsDTO(Map<Genre, Long> genresStats) {
         stats = new ArrayList<>();
         genresStats.keySet().stream().forEach(genre -> {
-            stats.add(new GenreStats(genre, genresStats.get(genre)));
+            stats.add(new GenreStatsDTO(genre, genresStats.get(genre)));
         });
     }
 
-    public List<GenreStats> getStats() {
+    public List<GenreStatsDTO> getStats() {
         return stats;
     }
 
-    public void setStats(List<GenreStats> stats) {
+    public void setStats(List<GenreStatsDTO> stats) {
         this.stats = stats;
     }
 }

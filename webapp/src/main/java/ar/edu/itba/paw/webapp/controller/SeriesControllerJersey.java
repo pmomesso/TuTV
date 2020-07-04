@@ -43,9 +43,12 @@ public class SeriesControllerJersey {
         CacheControl cc = new CacheControl();
         cc.setMaxAge(86400);
         cc.setPrivate(true);
-        ResponseBuilder builder = Response.ok(new MainPageDTO(seriesService.getNewestSeries(0, 4), uriInfo));
+        List<SeriesDTO> featured = seriesService.getNewestSeries(0, 4).stream()
+                .map(e -> new SeriesDTO(e, userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
+        return ok(new GenericEntity<List<SeriesDTO>>(featured) {}).cacheControl(cc).build();
+        /*ResponseBuilder builder = Response.ok(new MainPageDTO(seriesService.getNewestSeries(0, 4), uriInfo));
         builder.cacheControl(cc);
-        return builder.build();
+        return builder.build();*/
     }
 
     @GET
