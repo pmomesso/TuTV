@@ -21,7 +21,7 @@ class Upcoming extends Component {
             return;
         }
         // TODO change to upcoming when endpoint is ready
-        Axios.get("/series/watchlist")
+        Axios.get("/users/" + this.props.logged_user.id + "/upcoming")
             .then(res => {
                 this.setState({
                     shows: res.data,
