@@ -116,8 +116,6 @@ public class UserControllerJersey {
             return Response.status(Status.UNAUTHORIZED).build();
         } catch (BadRequestException e) {
             return Response.status(Status.BAD_REQUEST).build();
-        } catch (NotFoundException e) {
-            return Response.status(Status.NOT_FOUND).build();
         }
         return ok(new GenericEntity<List<SeriesDTO>>(series) {}).build();
     }

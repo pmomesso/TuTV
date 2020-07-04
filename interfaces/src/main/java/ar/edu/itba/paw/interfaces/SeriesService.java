@@ -57,7 +57,7 @@ public interface SeriesService {
 
     List<Episode> getWatchList(int page) throws UnauthorizedException, NotFoundException;
 
-    List<Series> getRecentlyWatchedList(int number) throws UnauthorizedException, BadRequestException, NotFoundException;
+    List<Series> getRecentlyWatchedList(int number) throws UnauthorizedException, BadRequestException;
 
     List<Series> getAddedSeries() throws NotFoundException, UnauthorizedException;
     List<Series> getAddedSeries(long userId) throws NotFoundException;
