@@ -3,17 +3,18 @@ import { Trans } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
-
 import SeriesList from '../components/SeriesList';
 import { connect } from 'react-redux';
 import Axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import $ from "jquery";
 
 class ProfilePage extends Component {
 
     state = {
         user: null,
+        avatar: null,
         recentlyWatched: null,
         following: null,
         lists: null,
@@ -25,18 +26,120 @@ class ProfilePage extends Component {
         var that = this;
         Axios.all([
             Axios.get("/users/" + user_id),
+            Axios.get("/users/" + user_id + "/avatar"),
             Axios.get("/users/" + user_id + "/recentlyWatched"),
             Axios.get("/users/" + user_id + "/following"),
             Axios.get("/users/" + user_id + "/lists")
-        ]).then(Axios.spread(function(userData, recentlyWatchedData, followingData, listsData) {
+        ]).then(Axios.spread(function(userData, avatarData, recentlyWatchedData, followingData, listsData) {
             that.setState({
                 user: userData.data,
+                avatar: avatarData.data,
                 recentlyWatched: recentlyWatchedData.data,
                 following: followingData.data,
                 lists: listsData.data,
                 loading: false
             })
         }));
+    };
+
+    toggleUploadAvatar = () => {
+        $("#uploadAvatarPopup").toggle();
+    };
+
+    setActiveFollowedLink = () => {
+        $('#followedTab').addClass('active');
+        $('#tab-shows').addClass('active');
+        $('#listsTab').removeClass('active');
+        $('#tab-lists').removeClass('active');
+        $('#informationTab').removeClass('active');
+        $('#tab-information').removeClass('active');
+        $('#statsTab').removeClass('active');
+        $('#tab-stats').removeClass('active');
+    };
+
+    setActiveListsLink = () => {
+        $('#listsTab').addClass('active');
+        $('#tab-lists').addClass('active');
+        $('#followedTab').removeClass('active');
+        $('#tab-shows').removeClass('active');
+        $('#statsTab').removeClass('active');
+        $('#tab-stats').removeClass('active');
+        $('#informationTab').removeClass('active');
+        $('#tab-information').removeClass('active');
+    };
+
+    setActiveStatsLink = () => {
+        $('#statsTab').addClass('active');
+        $('#tab-stats').addClass('active');
+        $('#followedTab').removeClass('active');
+        $('#tab-shows').removeClass('active');
+        $('#listsTab').removeClass('active');
+        $('#tab-lists').removeClass('active');
+        $('#informationTab').removeClass('active');
+        $('#tab-information').removeClass('active');
+    };
+
+    setActiveInformationLink = () => {
+        $('#informationTab').addClass('active');
+        $('#tab-information').addClass('active');
+        $('#followedTab').removeClass('active');
+        $('#tab-shows').removeClass('active');
+        $('#listsTab').removeClass('active');
+        $('#tab-lists').removeClass('active');
+        $('#statsTab').removeClass('active');
+        $('#tab-stats').removeClass('active');
+    };
+
+    readAvatar = () => {
+
+        var wrongTypeDiv = $("#wrongFileTypeError");
+        $(wrongTypeDiv).hide();
+
+        var maxSizeErrorDiv = $("#avatarMaxSizeError");
+        $(maxSizeErrorDiv).hide();
+
+        var fileInput = $("#avatarFileInput");
+        var value = $(fileInput).val();
+        var file = value.toLowerCase();
+        var supportedExtensions = ["jpg","jpeg","png"];
+        var extension = file.substring(file.lastIndexOf('.') + 1);
+        if (supportedExtensions.indexOf(extension) === -1){
+            $(wrongTypeDiv).show();
+            return;
+        }
+
+        var maxSize = fileInput.data("max-size");
+        if (fileInput.get(0).files.length) {
+            var fileSize = fileInput.get(0).files[0].size; // in bytes
+            if (fileSize > maxSize) {
+                $(maxSizeErrorDiv).show();
+                return;
+            }
+        } else {
+            return;
+        }
+
+        var that = this;
+        var FR = new FileReader();
+        FR.addEventListener("load", function(e) {
+            console.log(e.target.result);
+            console.log(e.target.result.split("base64,")[1]);
+            const options = {
+                headers: {'Content-Type': 'text/plain'}
+            };
+            // let data = { "avatarBase64": e.target.result.split("base64,")[1] };
+            // let data = { "avatarBase64": e.target.result };
+            Axios.put("/users/" + that.props.logged_user.id + "/avatar", e.target.result, options)
+                .then((res) => {
+                    console.log(res);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    /* TODO SI CADUCO LA SESION? */
+                    //alert("Error: " + err.response.status);
+                });
+        });
+        FR.readAsDataURL( $(fileInput)[0].files[0] );
     };
 
     render() {
@@ -52,6 +155,7 @@ class ProfilePage extends Component {
 
         const user = this.state.user;
         const currUser = this.props.logged_user && this.props.logged_user.id === user.id;
+        const avatar = this.state.avatar;
         const recentlyWatched = this.state.recentlyWatched;
         const lists = this.state.lists;
         const followedSeries = this.state.following;
@@ -86,10 +190,19 @@ class ProfilePage extends Component {
                         <div className="profile-nav">
                             <div className="row wrapper">
                                 <div className="avatar">
-                                    {/* TODO: UPLOAD AVATAR */}
-                                    <button href="#" className="avatar-upload-link" id="showUploadAvatarPopup">
-                                        <img src={"/api/user/" + user.id + "/avatar"} alt="avatar" />
-                                    </button>
+                                    <a href="#" className="avatar-upload-link" id="showUploadAvatarPopup" onClick={this.toggleUploadAvatar}>
+                                        {
+                                            (avatar) ?
+                                                (<img src={`data:image/jpeg;base64,${this.state.avatar}`} alt="avatar"/>)
+                                                :
+                                                (<img src={"https://d36rlb2fgh8cjd.cloudfront.net/default-images/default-user-q80.png"} alt="avatar"/>)
+                                        }{
+                                            currUser &&
+                                            <span className="avatar-upload-label">
+                                                <Trans i18nKey="profile.edit"/>
+                                            </span>
+                                        }
+                                    </a>
                                 </div>
                                 <div className="profile-infos">
                                     <h1 className="name">
@@ -100,8 +213,7 @@ class ProfilePage extends Component {
                                 {/* TAB TITLES */}
                                 <ul className="nav nav-tabs align-self-center">
                                     <li id="followedTab" role="presentation" className="tab-shows active">
-                                        <a id="followedLink" href="#tab-shows" data-toggle="tab" aria-controls="tab-shows"
-                                            aria-expanded="true">
+                                        <a id="followedLink" href="#tab-shows" data-toggle="tab" aria-controls="tab-shows" aria-expanded="true" onClick={this.setActiveFollowedLink}>
                                             <div className="label">
                                                 <Trans i18nKey="profile.followed"/>
                                             </div>
@@ -110,7 +222,7 @@ class ProfilePage extends Component {
                                     {
                                         currUser && 
                                         <li id="listsTab" role="presentation" className="tab-information">
-                                            <a id="listsLink" href="#tab-lists" data-toggle="tab" aria-controls="tab-lists" aria-expanded="true" >
+                                            <a id="listsLink" href="#tab-lists" data-toggle="tab" aria-controls="tab-lists" aria-expanded="true" onClick={this.setActiveListsLink}>
                                                 <div className="label">
                                                     <Trans i18nKey="profile.lists"/>
                                                 </div>
@@ -120,7 +232,7 @@ class ProfilePage extends Component {
                                     {
                                         currUser && 
                                         <li id="statsTab" role="presentation" className="tab-information">
-                                            <a id="statsLink" href="#tab-stats" data-toggle="tab" aria-controls="tab-stats" aria-expanded="true" >
+                                            <a id="statsLink" href="#tab-stats" data-toggle="tab" aria-controls="tab-stats" aria-expanded="true" onClick={this.setActiveStatsLink}>
                                                 <div className="label">
                                                     <Trans i18nKey="profile.stats"/>
                                                 </div>
@@ -130,8 +242,7 @@ class ProfilePage extends Component {
                                     {
                                         currUser && 
                                         <li id="informationTab" role="presentation" className="tab-information">
-                                            <a id="informationLink" href="#tab-information" data-toggle="tab" aria-controls="tab-information"
-                                                aria-expanded="true">
+                                            <a id="informationLink" href="#tab-information" data-toggle="tab" aria-controls="tab-information" aria-expanded="true" onClick={this.setActiveInformationLink}>
                                                 <div className="label">
                                                     <Trans i18nKey="profile.information"/>
                                                 </div>
@@ -139,6 +250,21 @@ class ProfilePage extends Component {
                                         </li>
                                     }
                                 </ul>
+                            </div>
+                        </div>
+                        <div className="popover fade bottom in" role="tooltip" id="uploadAvatarPopup" style={{top: '250px', left: '-41px', display: 'none'}}>
+                            <div className="arrow" style={{left: '50%'}}></div>
+                            <h3 className="popover-title">
+                                <Trans i18nKey="profile.upload"/>
+                            </h3>
+                            <div className="popover-content">
+                                <h3 className="popover-title" id="avatarMaxSizeError" style={{display: 'none'}}>
+                                    <span style={{color: 'red'}}><Trans i18nKey="profile.avatarMaxSize"/> 2MB</span>
+                                </h3>
+                                <h3 className="popover-title" id="wrongFileTypeError" style={{display: 'none'}}>
+                                    <span style={{color: 'red'}}><Trans i18nKey="profile.wrongFileType"/></span>
+                                </h3>
+                                <input id="avatarFileInput" type="file" name="avatar" accept=".jpg,.jpeg,.png" data-max-size={2097152} onChange={this.readAvatar}/>
                             </div>
                         </div>
                         <div className="profile-content">
@@ -255,9 +381,8 @@ class ProfilePage extends Component {
                                                                             user: newUser
                                                                         });
 
-                                                                        let token = res.headers.authorization;
                                                                         let user = res.data;
-                                                                        this.props.loginUser(token, user);
+                                                                        this.props.updateUserName(user);
                                                                     })
                                                                     .catch((err) => {
                                                                         /* TODO SI CADUCO LA SESION? */
@@ -304,13 +429,11 @@ class ProfilePage extends Component {
                                                                 </form>
                                                             )}
                                                         </Formik>
-
                                                     </div>
                                                 </div>
                                             </div>
                                         </section>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -329,8 +452,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        // TODO el token no es valido, hay que crear una funcion que solo actualice la data del usuario
-        loginUser: (token, user) => { dispatch({ type: "LOGIN", payload: { "token": token, "user": user, "updateLocalStorage": true } }) }
+        updateUserName: (user) => { dispatch({ type: "UPDATE_USERNAME", payload: { "user": user, "updateLocalStorage": true } }) }
     }
 };
 

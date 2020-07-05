@@ -56,13 +56,13 @@ class Register extends Component {
                                         .email('Invalid email address')
                                         .required('Required'),
                                     password: Yup.string()
-                                        .max(20, 'Must be 20 characters or less')
+                                        .max(20, <Trans i18nKey="register.passwordTooLong" /> )
                                         .required('Required'),
                                     repeatPassword: Yup.string()
                                         .required('Required')
-                                        .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+                                        .oneOf([Yup.ref('password'), null], <Trans i18nKey="register.unmatchedPassword" />),
                                     username: Yup.string()
-                                        .max(20, 'Must be 20 characters or less')
+                                        .max(20, <Trans i18nKey="register.passwordTooLong" />)
                                         .required('Required'),
                                 })}
                                 onSubmit={(values, actions) => {

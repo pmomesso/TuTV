@@ -30,10 +30,17 @@ const authReducer = (state = initState, action) => {
             token: null,
             user: null
         };
+    } else if(action.type === "UPDATE_USERNAME") {
+        if(action.payload.updateLocalStorage) {
+            localStorage.setItem("authUserJson", JSON.stringify(action.payload.user));
+        }
+        return {
+            ...state,
+            user: action.payload.user
+        }
     }
 
-
     return state;
-}
+};
 
 export default authReducer;
