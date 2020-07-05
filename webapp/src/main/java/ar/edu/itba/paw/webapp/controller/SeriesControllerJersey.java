@@ -8,6 +8,8 @@ import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 import static javax.ws.rs.core.Response.*;
 
 @Path("series")
+@Component
 public class SeriesControllerJersey {
 
     @Context
