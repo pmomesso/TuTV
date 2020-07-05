@@ -9,6 +9,7 @@ import Axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import $ from "jquery";
+import Chart from "chart.js";
 
 class ProfilePage extends Component {
 
@@ -17,6 +18,7 @@ class ProfilePage extends Component {
         avatar: null,
         recentlyWatched: null,
         following: null,
+        stats: null,
         lists: null,
         loading: true
     };
@@ -29,16 +31,50 @@ class ProfilePage extends Component {
             Axios.get("/users/" + user_id + "/avatar"),
             Axios.get("/users/" + user_id + "/recentlyWatched"),
             Axios.get("/users/" + user_id + "/following"),
+            Axios.get("/users/" + user_id + "/stats"),
             Axios.get("/users/" + user_id + "/lists")
-        ]).then(Axios.spread(function(userData, avatarData, recentlyWatchedData, followingData, listsData) {
+        ]).then(Axios.spread(function(userData, avatarData, recentlyWatchedData, followingData, statsData, listsData) {
             that.setState({
                 user: userData.data,
                 avatar: avatarData.data,
                 recentlyWatched: recentlyWatchedData.data,
                 following: followingData.data,
+                stats: statsData.data,
                 lists: listsData.data,
                 loading: false
-            })
+            });
+
+            var labels = [];
+            var values = [];
+            $.each(statsData.data.stats, function (index, stat) {
+                labels.push(stat.genre.name);
+                values.push(stat.stat);
+            });
+            var ctx = document.getElementById('genresChart');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: [
+                            '#3cb44b', '#469990', '#aaffc3', '#42d4f4', '#4363d8',
+                            '#000075', '#911eb4', '#f032e6', '#e6beff', '#800000',
+                            '#e6194b', '#f58231', '#ffd8b1', '#ffe119', '#bfef45'
+                        ]
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            padding: 20
+                        }
+                    }
+                }
+            });
         }));
     };
 
@@ -157,6 +193,7 @@ class ProfilePage extends Component {
         const currUser = this.props.logged_user && this.props.logged_user.id === user.id;
         const avatar = this.state.avatar;
         const recentlyWatched = this.state.recentlyWatched;
+        const stats = this.state.stats;
         const lists = this.state.lists;
         const followedSeries = this.state.following;
 
@@ -349,6 +386,33 @@ class ProfilePage extends Component {
                                                 </section>
                                             </div>)
                                         }
+                                    </div>
+                                    <div id="tab-stats" className="tab-pane" role="tabpanel">
+                                        <div className="profile-shows">
+                                            <div>
+                                                <h2 className="small"><Trans i18nKey="profile.favoriteGenres"/></h2>
+                                                <div className="row justify-content-center">
+                                                    {
+                                                        (stats) ?
+                                                            (<div className="mt-lg-5 mt-sm-0"><canvas id="genresChart"></canvas></div>)
+                                                            :
+                                                            (<div className="container h-100">
+                                                                <div className="row justify-content-center h-100">
+                                                                    <div className="col-lg-8 col-sm-12 align-self-center">
+                                                                        <div className="text-center m-4">
+                                                                            <h4><Trans i18nKey="profile.noStats"/></h4>
+                                                                            <h4><Trans i18nKey="watchlist.discover"/></h4>
+                                                                        </div>
+                                                                        <div class="text-center m-4">
+                                                                            <button class="tutv-button m-4" onclick="window.location.href='/'"><Trans i18nKey="watchlist.explore"/></button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>)
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div id="tab-information" className="tab-pane" role="tabpanel">
                                         <section id="basic-settings" className="container">
