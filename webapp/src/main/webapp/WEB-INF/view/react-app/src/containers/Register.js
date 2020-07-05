@@ -53,7 +53,7 @@ class Register extends Component {
                                 initialValues={{ username: '', mail: '', password: '', repeatPassword: '' }}
                                 validationSchema={Yup.object({
                                     mail: Yup.string()
-                                        .email('Invalid email address')
+                                        .email(<Trans i18nKey="register.invalidEmail" />)
                                         .required('Required'),
                                     password: Yup.string()
                                         .max(20, <Trans i18nKey="register.passwordTooLong" /> )
