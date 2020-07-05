@@ -67,7 +67,7 @@ class SeriesPage extends Component {
             "seasons": newSeasonList
         }
 
-        let data = { "viewed": newValue };
+        let data = { "viewedByUser": newValue };
 
         Axios.put("/series/" + this.state.series.id + "/seasons/" + series.seasons[season_index].id + "/episodes/" + series.seasons[season_index].episodes[episode_index].id, JSON.stringify(data))
             .then((res) => {
@@ -120,7 +120,7 @@ class SeriesPage extends Component {
             "seasons": newSeasonList
         };
 
-        let data = { "viewed": newValue };
+        let data = { "viewedByUser": newValue };
 
         Axios.put("/series/" + this.state.series.id + "/seasons/" + this.state.series.seasons[season_index].id, JSON.stringify(data))
             .then((res) => {
@@ -142,6 +142,8 @@ class SeriesPage extends Component {
         }
 
         let data = { "loggedInUserRating": newValue };
+
+        console.log(JSON.stringify(data));
 
         Axios.put("/series/" + this.state.series.id, JSON.stringify(data))
             .then((res) => {

@@ -20,6 +20,7 @@ class SeriesList extends Component {
     if(typeof source === "string") {
       Axios.get(source)
         .then(res => {
+          console.log(res.headers);
             this.setState({
               showList: res.data.series,
               areMore: res.data.areNext,

@@ -22,7 +22,7 @@ class SeriesCarousel extends Component {
             Axios.get(source)
                 .then(res => {
                     this.setState({
-                        showList: res.data.banner_series,
+                        showList: res.data,
                         loading: false
                     })
                 });

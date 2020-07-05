@@ -14,7 +14,7 @@ class Explore extends Component {
         Axios.get("/series/genres")
         .then(res => {
             this.setState({
-                genreList: res.data.genres,
+                genreList: res.data,
             })
         });
     };
