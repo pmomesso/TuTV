@@ -51,9 +51,7 @@ class ProfilePage extends Component {
             );
 
         const user = this.state.user;
-
         const currUser = this.props.logged_user && this.props.logged_user.id === user.id;
-
         const recentlyWatched = this.state.recentlyWatched;
         const lists = this.state.lists;
         const followedSeries = this.state.following;
@@ -77,7 +75,6 @@ class ProfilePage extends Component {
                 </div>
             );
         });
-
         return (
             <div>
                 <div className="main-block-container">
@@ -144,18 +141,13 @@ class ProfilePage extends Component {
                                 </ul>
                             </div>
                         </div>
-
-
                         <div className="profile-content">
                             <div className="wrapper">
                                 <div className="tab-content">
-
-
                                     <div id="tab-shows" className="tab-pane active" role="tabpanel">
                                         <div className="profile-shows">
 
                                             {(currUser && recentlyWatched.length) &&
-
                                                 <div id="recently-watched-shows">
                                                     <h2 className="small">
                                                         <Trans i18nKey="profile.recently" />
@@ -164,15 +156,12 @@ class ProfilePage extends Component {
                                                         <SeriesList source={recentlyWatched} />
                                                     </section>
                                                 </div>
-
                                             }
-
                                             <div id="all-shows">
                                                 <h2 className="small">
                                                     <Trans i18nKey="profile.all" />
                                                 </h2>
                                                 <section>
-
                                                     {
                                                         (followedSeries.length) ?
                                                             (<section>
@@ -209,12 +198,10 @@ class ProfilePage extends Component {
                                                                     </div>
                                                                 </div>)
                                                     }
-
                                                 </section>
                                             </div>
                                         </div>
                                     </div>
-
                                     <div id="tab-lists" className="tab-pane" role="tabpanel">
                                         {(listsElement.length) ?
                                             listsElement
@@ -237,14 +224,11 @@ class ProfilePage extends Component {
                                             </div>)
                                         }
                                     </div>
-
-
                                     <div id="tab-information" className="tab-pane" role="tabpanel">
                                         <section id="basic-settings" className="container">
                                             <div className="row text-center">
                                                 <div className="col my-auto self-align-center">
                                                     <div className="other-infos infos-zone">
-
                                                         <Formik
                                                             initialValues={{ username: user.userName, mail: user.mail }}
                                                             validationSchema={Yup.object({
@@ -262,14 +246,9 @@ class ProfilePage extends Component {
                                                                 let data = { "userName": values.username };
                                                                 Axios.put("/users/" + this.props.logged_user.id, JSON.stringify(data), options)
                                                                     .then((res) => {
-                                                                        let newUser = {
-                                                                            ...this.state.user,
-                                                                            userName: values.username
-                                                                        };
-
-                                                                        this.setState({
-                                                                            user: newUser
-                                                                        });
+                                                                        let token = res.headers.authorization;
+                                                                        let user = res.data;
+                                                                        this.props.loginUser(token, user);
                                                                     })
                                                                     .catch((err) => {
                                                                         /* TODO SI CADUCO LA SESION? */
@@ -326,21 +305,23 @@ class ProfilePage extends Component {
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
-
             </div>
         )
     }
-
 }
 
 const mapStateToProps = (state) => {
     return {
         logged_user: state.auth.user
     }
-}
+};
 
-export default connect(mapStateToProps)(ProfilePage);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        loginUser: (token, user) => { dispatch({ type: "LOGIN", payload: { "token": token, "user": user, "updateLocalStorage": true } }) }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);

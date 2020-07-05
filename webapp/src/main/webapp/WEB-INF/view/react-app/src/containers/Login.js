@@ -144,12 +144,12 @@ const mapStateToProps = (state) => {
     return {
         logged_user: state.auth.user
     }
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {
         loginUser: (token, user) => { dispatch({ type: "LOGIN", payload: { "token": token, "user": user, "updateLocalStorage": true } }) }
     }
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
