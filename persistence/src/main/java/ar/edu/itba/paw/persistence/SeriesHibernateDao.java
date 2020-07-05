@@ -88,16 +88,11 @@ public class SeriesHibernateDao implements SeriesDao {
     public List<Series> getNewSeries(int lowerLimit, int upperLimit) {
         final TypedQuery<Series> query = em.createQuery("select s from Series as s inner join s.seasons as season inner join season.episodes as e " +
                 "order by e.aired desc",Series.class);
-        query.setFirstResult(lowerLimit);
-        query.setMaxResults(upperLimit - lowerLimit + 1);
-        List<Series> result = query.getResultList();
-        /*
         Object[] distinctSeries = new HashSet<>(query.getResultList()).toArray();
         List<Series> result = new ArrayList<>();
         for(int i = lowerLimit; i < upperLimit && i < distinctSeries.length; i++){
             result.add((Series)distinctSeries[i]);
         }
-        */
         return result;
     }
 
