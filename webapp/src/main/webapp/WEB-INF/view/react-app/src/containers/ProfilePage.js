@@ -246,6 +246,15 @@ class ProfilePage extends Component {
                                                                 let data = { "userName": values.username };
                                                                 Axios.put("/users/" + this.props.logged_user.id, JSON.stringify(data), options)
                                                                     .then((res) => {
+                                                                        let newUser = {
+                                                                            ...this.state.user,
+                                                                            userName: values.username
+                                                                        };
+
+                                                                        this.setState({
+                                                                            user: newUser
+                                                                        });
+
                                                                         let token = res.headers.authorization;
                                                                         let user = res.data;
                                                                         this.props.loginUser(token, user);
@@ -320,6 +329,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        // TODO el token no es valido, hay que crear una funcion que solo actualice la data del usuario
         loginUser: (token, user) => { dispatch({ type: "LOGIN", payload: { "token": token, "user": user, "updateLocalStorage": true } }) }
     }
 };
