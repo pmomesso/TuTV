@@ -484,8 +484,7 @@ public class UserControllerJersey {
     }
 
     @PUT
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes({"images/jpeg", "images/png", "images/jpg"})
     @Path("/{userId}/avatar")
     public Response setUserAvatar(@PathParam("userId") Long userId, String base64Image) {
         if(base64Image == null) {
@@ -496,7 +495,7 @@ public class UserControllerJersey {
         }
         try {
             userService.setUserAvatar(userId, base64Image);
-            return ok(new UserAvatarDTO(userService.findById(userId).get())).build();
+            return ok().build();
         } catch (BadRequestException e) {
             return status(Status.BAD_REQUEST).build();
         }
