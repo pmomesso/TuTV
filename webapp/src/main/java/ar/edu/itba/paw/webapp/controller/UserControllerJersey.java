@@ -245,17 +245,24 @@ public class UserControllerJersey {
     @Path("/")
     public Response getUsersList(@QueryParam("page") Integer page) {
         UsersList usersList = null;
+        Integer auxPage = page == null ? 1 : page;
         try {
-            usersList = userService.getAllUsersExceptLoggedOne(page);
+            usersList = userService.getAllUsersExceptLoggedOne(auxPage);
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         }
         ResponseBuilder rb = Response.ok(new UsersListDTO(usersList));
-        if(usersList.isAreNext() || usersList.isArePrevious()) {
+        /*if(usersList.isAreNext() || usersList.isArePrevious()) {
             rb.header("Link", (usersList.isAreNext() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build().toString() + " , rel = next") : "")
                     + ((usersList.isAreNext() && usersList.isArePrevious()) ? " ; " : "") + (usersList.isArePrevious() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build().toString()) : ""));
+        }*/
+        if(usersList.isAreNext()) {
+            rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page",auxPage + 1).build(), "next");
         }
-        return ok(new UsersListDTO(usersList)).build();
+        if(usersList.isArePrevious()) {
+            rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", auxPage - 1).build(), "prev");
+        }
+        return rb.build();
     }
 
     @GET
@@ -275,11 +282,11 @@ public class UserControllerJersey {
                     .map(e -> new EpisodeDTO(e, userService.getLoggedUser())).collect(Collectors.toList());
             rb = rb.entity(new GenericEntity<List<EpisodeDTO>>(episodes) {});
             if(auxPage > 1 && episodes.size() > 0) {
-                rb.header("Link", uriInfo.getAbsolutePathBuilder().queryParam("page", auxPage - 1).build().toString() + ", rel = prev");
+                rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", auxPage - 1).build(), "prev");
             }
             int size = seriesService.getWatchList(auxPage + 1).size();
             if(size > 0) {
-                rb.header("Link" , uriInfo.getAbsolutePathBuilder().queryParam("page", auxPage + 1).build().toString() + ", rel = next");
+                rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", auxPage + 1).build(), "next");
             }
         } catch (UnauthorizedException e) {
             return Response.status(Status.UNAUTHORIZED).build();

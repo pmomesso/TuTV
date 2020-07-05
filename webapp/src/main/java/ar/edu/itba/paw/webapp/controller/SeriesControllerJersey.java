@@ -79,9 +79,18 @@ public class SeriesControllerJersey {
                 nextUri.queryParam("network", network);
                 prevUri.queryParam("network", network);
             }
-            String previousPath = prevUri.queryParam("page", page - 1).build().toString() + " , rel = prev";
-            String nextPath = nextUri.queryParam("page", page + 1).build().toString() + " , rel = next";
-            rb.header("Link", (next ? nextPath : "") + ((next && page > 1) ? " ; " : "") + (page > 1 ? previousPath : ""));
+            /*String previousPath = prevUri.queryParam("page", page - 1).build().toString() + " , rel = prev";
+            String nextPath = nextUri.queryParam("page", page + 1).build().toString() + " , rel = next";*/
+            if(next) {
+                rb.link(prevUri.queryParam("page", page + 1).build(), "next");
+            }
+            if(page > 1) {
+                int size = seriesService.searchSeries(name,genre,network,page - 1).size();
+                if(size > 0) {
+                    rb.link(nextUri.queryParam("page", page - 1).build(), "prev");
+                }
+            }
+            //rb.header("Link", (next ? nextPath : "") + ((next && page > 1) ? " ; " : "") + (page > 1 ? previousPath : ""));
         }
         return rb.build();
     }
@@ -280,9 +289,15 @@ public class SeriesControllerJersey {
         }
         Genre g = optGenre.get();
         ResponseBuilder rb = ok(new GenreDTO(g, map.get(g), uriInfo));
-        if(g.isAreNext() || g.isArePrevious()) {
+        /*if(g.isAreNext() || g.isArePrevious()) {
             rb.header("Link", (g.isAreNext() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() + 1).build().toString() + " , rel = next") : "")
                     + ((g.isAreNext() && g.isArePrevious()) ? " ; " : "") + (g.isArePrevious() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() - 1).build().toString() + " , rel = prev") : ""));
+        }*/
+        if(g.isAreNext()) {
+            rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() + 1).build(), "next");
+        }
+        if(g.isArePrevious()) {
+            rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() - 1).build(), "prev");
         }
         return rb.build();
     }
@@ -417,9 +432,15 @@ public class SeriesControllerJersey {
             }
             ResponseBuilder rb = ok(watchlist);
             boolean next = seriesService.getWatchList(page + 1).size() > 0;
-            if(page > 1 || next) {
+            /*if(page > 1 || next) {
                 rb.header("Link", (next ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build().toString() + " , rel = next") : "")
                         + ((next && page > 1) ? " ; " : "") + (page > 1 ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build().toString() + " , rel = prev") : ""));
+            }*/
+            if(page > 1) {
+                rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
+            }
+            if(next) {
+                rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
             }
             return rb.build();
         } catch (UnauthorizedException e) {
