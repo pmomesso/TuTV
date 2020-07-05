@@ -5,7 +5,6 @@ import './css/resize_images.css';
 import './css/bootstrap.min.css';
 import './index.css';
 import './i18n';
-import './js/navigator.js';
 import * as serviceWorker from './serviceWorker';
 import { createStore } from 'redux'
 import rootReducer from './store/reducers/rootReducer'

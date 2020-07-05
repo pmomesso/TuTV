@@ -484,7 +484,7 @@ public class UserControllerJersey {
     }
 
     @PUT
-    @Consumes({"images/jpeg", "images/png", "images/jpg"})
+    @Consumes({"image/jpeg", "image/png", "image/jpg"})
     @Path("/{userId}/avatar")
     public Response setUserAvatar(@PathParam("userId") Long userId, String base64Image) {
         if(base64Image == null) {

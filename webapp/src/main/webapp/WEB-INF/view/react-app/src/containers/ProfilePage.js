@@ -36,7 +36,7 @@ class ProfilePage extends Component {
         ]).then(Axios.spread(function(userData, avatarData, recentlyWatchedData, followingData, statsData, listsData) {
             that.setState({
                 user: userData.data,
-                avatar: avatarData.data,
+                avatar: avatarData.data.avatarBase64,
                 recentlyWatched: recentlyWatchedData.data,
                 following: followingData.data,
                 stats: statsData.data,
@@ -158,19 +158,17 @@ class ProfilePage extends Component {
         var that = this;
         var FR = new FileReader();
         FR.addEventListener("load", function(e) {
-            console.log(e.target.result);
-            console.log(e.target.result.split("base64,")[1]);
             const options = {
-                headers: {'Content-Type': 'text/plain'}
+                headers: {'Content-Type': e.target.result.split("base64,")[0].replace("data:", "").replace(";", "")}
             };
-            // let data = { "avatarBase64": e.target.result.split("base64,")[1] };
-            // let data = { "avatarBase64": e.target.result };
-            Axios.put("/users/" + that.props.logged_user.id + "/avatar", e.target.result, options)
+            Axios.put("/users/" + that.props.logged_user.id + "/avatar", e.target.result.split("base64,")[1], options)
                 .then((res) => {
-                    console.log(res);
+                    that.setState({
+                        avatar: e.target.result.split("base64,")[1]
+                    });
+                    $("#uploadAvatarPopup").toggle();
                 })
                 .catch((err) => {
-                    console.log(err);
                     /* TODO SI CADUCO LA SESION? */
                     //alert("Error: " + err.response.status);
                 });
