@@ -3053,7 +3053,8 @@ body.right-column .page-center {
     z-index:10
 }
 #profile .avatar a {
-    display:block
+    display:block;
+    height: 100%;
 }
 #profile .avatar a .avatar-upload-label {
     display:none;
@@ -3074,8 +3075,12 @@ body.right-column .page-center {
     background:rgba(0,0,0,.4)
 }
 #profile .avatar img {
+    height: 100%;
     width:100%;
     border-radius:4px
+}
+#profile #avatarFileInput {
+    width: 100%;
 }
 #profile .user-infos {
     display:inline-block;
