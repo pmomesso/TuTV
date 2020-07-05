@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
 
-/*import $ from 'jquery';
-import Popper from 'popper.js';*/
+import $ from "jquery";
+// import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -44,6 +44,14 @@ const Navbar = (props) => {
     function closeModal(){
         setIsOpen(false);
     }
+    function extend(){
+        var navigation = $(".page-left");
+        if ($(navigation).hasClass("extended")) {
+            $(navigation).removeClass("extended");
+        } else {
+            $(navigation).addClass("extended");
+        }
+    }
 
     return (
         <div className="page-left page-sidebar page-column">
@@ -60,8 +68,8 @@ const Navbar = (props) => {
                 </div>
             </Modal>
 
-            <a href="/#" className="extend-left-link">
-                <span className="fa-normal" /*onclick="extend()"*/>
+            <a href="#" className="extend-left-link">
+                <span className="fa-normal" onClick={extend}>
                     <FontAwesomeIcon icon={ faBars } />
                 </span>
             </a>
