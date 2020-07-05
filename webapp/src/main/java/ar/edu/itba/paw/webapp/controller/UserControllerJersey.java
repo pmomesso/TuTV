@@ -269,15 +269,25 @@ public class UserControllerJersey {
             auxPage = 1;
         }
         List<EpisodeDTO> episodes = Collections.EMPTY_LIST;
+        ResponseBuilder rb = ok();
         try {
             episodes = seriesService.getWatchList(auxPage).stream()
                     .map(e -> new EpisodeDTO(e, userService.getLoggedUser())).collect(Collectors.toList());
+            rb = rb.entity(new GenericEntity<List<EpisodeDTO>>(episodes) {});
+            if(auxPage > 1 && episodes.size() > 0) {
+                rb.header("Link", uriInfo.getAbsolutePathBuilder().queryParam("page", auxPage - 1).build().toString() + ", rel = prev");
+            }
+            int size = seriesService.getWatchList(auxPage + 1).size();
+            if(size > 0) {
+                rb.header("Link" , uriInfo.getAbsolutePathBuilder().queryParam("page", auxPage + 1).build().toString() + ", rel = next");
+            }
         } catch (UnauthorizedException e) {
             return Response.status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
         }
-        return ok(new GenericEntity<List<EpisodeDTO>>(episodes) {}).build();
+
+        return rb.build();
     }
 
     @GET
