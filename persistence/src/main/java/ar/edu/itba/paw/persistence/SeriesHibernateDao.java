@@ -24,6 +24,7 @@ public class SeriesHibernateDao implements SeriesDao {
     @Override
     public List<Series> searchSeries(String seriesName, String genreName, String networkName, int page) {
         //Valores por defecto
+        page = page > 0 ? page : 1;
         seriesName = seriesName != null ? seriesName : "";
         genreName = genreName != null ? genreName : "";
         networkName = networkName != null ? networkName : "";
@@ -40,7 +41,7 @@ public class SeriesHibernateDao implements SeriesDao {
 
     @Override
     public List<Series> getSeriesByName(String seriesName) {
-        final TypedQuery<Series> query = em.createQuery("select s from Series as s  s.genres as g " +
+        final TypedQuery<Series> query = em.createQuery("select s from Series as s " +
                 "where s.name like :seriesName",Series.class);
         query.setParameter("seriesName",seriesName);
         return query.getResultList();
@@ -307,7 +308,7 @@ public class SeriesHibernateDao implements SeriesDao {
     @Override
     public int setViewedEpisode(long seriesId,int seasonNumber,int episodeNumber, long userId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
-        TypedQuery<Episode> query = em.createQuery("from Episode as e where e.seriesId = :seriesId and e.season.seasonNumber = :seasonNumber and e.numEpisode = :numEpisode",Episode.class);
+        TypedQuery<Episode> query = em.createQuery("from Episode as e where e.season.series.id = :seriesId and e.season.seasonNumber = :seasonNumber and e.numEpisode = :numEpisode",Episode.class);
         query.setParameter("seriesId",seriesId);
         query.setParameter("seasonNumber",seasonNumber);
         query.setParameter("numEpisode",episodeNumber);
@@ -359,11 +360,12 @@ public class SeriesHibernateDao implements SeriesDao {
     @Override
     public int unviewEpisode(long userId, long seriesId, int seasonNumber, int episodeNumber) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
-        TypedQuery<Episode> query = em.createQuery("from Episode as e where e.seriesId = :seriesId and e.season.seasonNumber = :seasonNumber and e.numEpisode = :numEpisode",Episode.class);
+        TypedQuery<Episode> query = em.createQuery("from Episode as e where e.season.series.id = :seriesId and e.season.seasonNumber = :seasonNumber and e.numEpisode = :numEpisode",Episode.class);
         query.setParameter("seriesId",seriesId);
         query.setParameter("seasonNumber",seasonNumber);
         query.setParameter("numEpisode",episodeNumber);
-        Optional<Episode> episode = Optional.ofNullable(query.getSingleResult());
+        List<Episode> resultList = query.getResultList();
+        Optional<Episode> episode = resultList.stream().findFirst();
         int updated = 0;
         if(user.isPresent() && episode.isPresent()){
             episode.get().removeViewer(user.get());
