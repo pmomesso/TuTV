@@ -1,13 +1,3 @@
-import $ from 'jquery';
-
-// function extend() {
-//     if ($(".page-left").hasClass("extended")) {
-//         $(".page-left").removeClass("extended");
-//     } else {
-//         $(".page-left").addClass("extended");
-//     }
-// }
-//
 // function confirmAction(event, message) {
 //     event.preventDefault();
 //
@@ -17,14 +7,6 @@ import $ from 'jquery';
 //     if (accept)
 //         form.submit();
 // }
-
-$( document ).ready(function() {
-
-    var sectionId = $('#sectionId').val();
-    if (typeof sectionId != "undefined") {
-        window.location.hash = "#" + sectionId;
-    }
-});
 
 
 // function functionConfirm(msg, myYes, myNo) {

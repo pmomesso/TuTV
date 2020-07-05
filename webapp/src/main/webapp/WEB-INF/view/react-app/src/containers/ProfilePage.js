@@ -394,7 +394,7 @@ class ProfilePage extends Component {
                                                 <div className="row justify-content-center">
                                                     {
                                                         (stats) ?
-                                                            (<div className="mt-lg-5 mt-sm-0"><canvas id="genresChart"></canvas></div>)
+                                                            (<div className="mt-lg-5 mt-sm-0"><canvas id="genresChart"/></div>)
                                                             :
                                                             (<div className="container h-100">
                                                                 <div className="row justify-content-center h-100">
@@ -403,8 +403,8 @@ class ProfilePage extends Component {
                                                                             <h4><Trans i18nKey="profile.noStats"/></h4>
                                                                             <h4><Trans i18nKey="watchlist.discover"/></h4>
                                                                         </div>
-                                                                        <div class="text-center m-4">
-                                                                            <button class="tutv-button m-4" onclick="window.location.href='/'"><Trans i18nKey="watchlist.explore"/></button>
+                                                                        <div className="text-center m-4">
+                                                                            <button className="tutv-button m-4" onClick="window.location.href='/'"><Trans i18nKey="watchlist.explore"/></button>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -423,10 +423,10 @@ class ProfilePage extends Component {
                                                             initialValues={{ username: user.userName, mail: user.mail }}
                                                             validationSchema={Yup.object({
                                                                 mail: Yup.string()
-                                                                    .email('Invalid email address')
+                                                                    .email(<Trans i18nKey="register.invalidEmail" />)
                                                                     .required('Required'),
                                                                 username: Yup.string()
-                                                                    .max(20, 'Must be 20 characters or less')
+                                                                    .max(20, <Trans i18nKey="register.passwordTooLong" />)
                                                                     .required('Required'),
                                                             })}
                                                             onSubmit={(values, actions) => {
