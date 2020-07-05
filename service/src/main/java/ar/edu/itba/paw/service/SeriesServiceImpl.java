@@ -203,7 +203,10 @@ public class SeriesServiceImpl implements SeriesService {
         if(!this.follows(seriesId)){
             this.followSeries(seriesId);
         }
-        seriesDao.setViewedSeason(seriesId,seasonNumber,user.getId());
+        int result = seriesDao.setViewedSeason(seriesId,seasonNumber,user.getId());
+        if(result == 0) {
+            throw new NotFoundException();
+        }
     }
 
     @Override

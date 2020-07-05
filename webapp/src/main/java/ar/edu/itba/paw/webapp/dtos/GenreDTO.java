@@ -23,7 +23,7 @@ public class GenreDTO {
     }
 
     public GenreDTO(Genre genre, List<Series> seriesList, UriInfo uriInfo) {
-        this(genre, uriInfo);
+        this(genre);
         this.series = new ArrayList<>();
         seriesList.stream().forEach(series -> this.series.add(new SeriesDTO(series, uriInfo)));
     }

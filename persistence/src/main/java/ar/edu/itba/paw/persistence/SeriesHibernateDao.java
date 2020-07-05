@@ -311,7 +311,8 @@ public class SeriesHibernateDao implements SeriesDao {
         query.setParameter("seriesId",seriesId);
         query.setParameter("seasonNumber",seasonNumber);
         query.setParameter("numEpisode",episodeNumber);
-        Optional<Episode> episode = Optional.ofNullable(query.getSingleResult());
+        List<Episode> resultList = query.getResultList();
+        Optional<Episode> episode = resultList.stream().findFirst();
         int updated = 0;
         if(user.isPresent() && episode.isPresent()){
             episode.get().addViewer(user.get());
@@ -326,7 +327,8 @@ public class SeriesHibernateDao implements SeriesDao {
         TypedQuery<Season> query = em.createQuery("from Season as s where s.series.id = :seriesId and s.seasonNumber = :seasonNumber",Season.class);
         query.setParameter("seriesId",seriesId);
         query.setParameter("seasonNumber",seasonNumber);
-        Optional<Season> season = Optional.ofNullable(query.getSingleResult());
+        List<Season> resultList = query.getResultList();
+        Optional<Season> season = resultList.stream().findFirst();
         int updated = 0;
         if(user.isPresent() && season.isPresent()){
             for(Episode episode : season.get().getEpisodes()){
