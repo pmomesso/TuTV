@@ -30,7 +30,7 @@ public interface UserService {
     void banUser(long userId) throws UnauthorizedException, NotFoundException;
 	void unbanUser(long userId) throws UnauthorizedException, NotFoundException;
 
-    boolean updateLoggedUserName(String newUsername) throws NotFoundException;
+    boolean updateLoggedUserName(String newUsername) throws UnauthorizedException;
 	void setUserAvatar(long userId, String base64Image) throws BadRequestException;
 	Optional<byte[]> getUserAvatar(long userId);
 

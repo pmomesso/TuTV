@@ -20,7 +20,6 @@ class Upcoming extends Component {
             this.props.history.push("/login" + this.props.location.pathname);
             return;
         }
-        // TODO change to upcoming when endpoint is ready
         Axios.get("/users/" + this.props.logged_user.id + "/upcoming")
             .then(res => {
                 this.setState({

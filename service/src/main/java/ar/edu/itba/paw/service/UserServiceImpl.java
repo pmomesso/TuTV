@@ -132,8 +132,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean updateLoggedUserName(String newUsername) throws NotFoundException {
-        User user = getLoggedUser().orElseThrow(NotFoundException::new);
+    public boolean updateLoggedUserName(String newUsername) throws UnauthorizedException {
+        User user = getLoggedUser().orElseThrow(UnauthorizedException::new);
         int result = userDao.updateUserName(user.getId(),newUsername);
         return result == 1;
     }

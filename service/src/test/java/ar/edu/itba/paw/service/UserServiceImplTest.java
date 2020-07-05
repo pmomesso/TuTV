@@ -142,7 +142,7 @@ public class UserServiceImplTest {
         boolean result = false;
         try {
             result = userService.updateLoggedUserName(newUsername);
-        } catch (NotFoundException e) {
+        } catch (UnauthorizedException e) {
             Assert.fail();
             return;
         }
@@ -301,7 +301,7 @@ public class UserServiceImplTest {
         boolean result = false;
         try {
             result = userService.updateLoggedUserName(newUsername);
-        } catch (NotFoundException e) {
+        } catch (UnauthorizedException e) {
             Assert.assertFalse(result);
             return;
         }

@@ -14,19 +14,29 @@ class ProfilePage extends Component {
 
     state = {
         user: null,
+        recentlyWatched: null,
+        following: null,
+        lists: null,
         loading: true
     };
 
     componentDidMount = () => {
         let user_id = this.props.match.params.profile_id;
-
-        Axios.get("/users/" + user_id)
-                .then(res => {
-                    this.setState({
-                        user: res.data,
-                        loading: false
-                    })
-                });
+        var that = this;
+        Axios.all([
+            Axios.get("/users/" + user_id),
+            Axios.get("/users/" + user_id + "/recentlyWatched"),
+            Axios.get("/users/" + user_id + "/following"),
+            Axios.get("/users/" + user_id + "/lists")
+        ]).then(Axios.spread(function(userData, recentlyWatchedData, followingData, listsData) {
+            that.setState({
+                user: userData.data,
+                recentlyWatched: recentlyWatchedData.data,
+                following: followingData.data,
+                lists: listsData.data,
+                loading: false
+            })
+        }));
     };
 
     render() {
@@ -44,99 +54,9 @@ class ProfilePage extends Component {
 
         const currUser = this.props.logged_user && this.props.logged_user.id === user.id;
 
-        const recentlyWatched = [
-            {
-                "id": 1,
-                "name": "Once Upon A Time",
-                "posterUrl": "/49qD372jeHUTmdNMGJkjCFZdv9y.jpg",
-                "followers": 13,
-                "bannerUrl": "/49qD372jeHUTmdNMGJkjCFZdv9y.jpg"
-              },
-              {
-                "id": 2,
-                "name": "Cleverman",
-                "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
-                "followers": 0,
-                "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
-              },
-              {
-                "id": 3,
-                "name": "Cleverman",
-                "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
-                "followers": 0,
-                "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
-              },
-              {
-                "id": 4,
-                "name": "Cleverman",
-                "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
-                "followers": 0,
-                "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
-              }
-        ];
-        const lists = [
-            {
-                "id": 1,
-                "name": "All Time Favourites",
-                "series": [
-                    {
-                        "id": 4,
-                        "name": "Cleverman",
-                        "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
-                        "followers": 0,
-                        "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
-                    },
-                    {
-                        "id": 2,
-                        "name": "Cleverman",
-                        "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
-                        "followers": 0,
-                        "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
-                    }
-                ]
-            },
-            {
-                "id": 2,
-                "name": "Addictive",
-                "series": [
-                    {
-                        "id": 4,
-                        "name": "Cleverman",
-                        "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
-                        "followers": 0,
-                        "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
-                    },
-                    {
-                        "id": 2,
-                        "name": "Cleverman",
-                        "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
-                        "followers": 0,
-                        "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
-                    }
-                ]
-            },
-            {
-                "id": 3,
-                "name": "Abandoned",
-                "series": [
-                    {
-                        "id": 4,
-                        "name": "Cleverman",
-                        "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
-                        "followers": 0,
-                        "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
-                    },
-                    {
-                        "id": 2,
-                        "name": "Cleverman",
-                        "posterUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg",
-                        "followers": 0,
-                        "bannerUrl": "/ndwQn6o3qTpkN8pHmOeVoToDS6J.jpg"
-                    }
-                ]
-            }
-        ];
-        const followedSeries = [];
+        const recentlyWatched = this.state.recentlyWatched;
+        const lists = this.state.lists;
+        const followedSeries = this.state.following;
 
         const listsElement = lists.map(list => {
             return(
@@ -256,7 +176,7 @@ class ProfilePage extends Component {
                                                     {
                                                         (followedSeries.length) ?
                                                             (<section>
-                                                                <SeriesList source={recentlyWatched} />
+                                                                <SeriesList source={followedSeries} />
                                                             </section>)
                                                             :
                                                             (currUser) ?
@@ -336,25 +256,26 @@ class ProfilePage extends Component {
                                                                     .required('Required'),
                                                             })}
                                                             onSubmit={(values, actions) => {
-                                                                /*const options = {
+                                                                const options = {
                                                                     headers: {'Content-Type': 'application/json'}
                                                                 };
-
-                                                                Axios.post(CONSTANTS.APIURL + "/users/login", JSON.stringify(values), options)
+                                                                let data = { "userName": values.username };
+                                                                Axios.put("/users/" + this.props.logged_user.id, JSON.stringify(data), options)
                                                                     .then((res) => {
-                                                                        let token = res.headers.authorization;
-                                                                        let user = res.data;
+                                                                        let newUser = {
+                                                                            ...this.state.user,
+                                                                            userName: values.username
+                                                                        };
 
-                                                                        this.props.loginUser(token, user);
-                                                                        this.props.history.push("/");
+                                                                        this.setState({
+                                                                            user: newUser
+                                                                        });
                                                                     })
                                                                     .catch((err) => {
-                                                                        if(err.response.status === 401)
-                                                                            actions.setFieldError("general", "MENSAJE USER O PASS INCORRECTA!");
-                                                                        else
-                                                                            alert("Error: " + err.response.status);
+                                                                        /* TODO SI CADUCO LA SESION? */
+                                                                        //alert("Error: " + err.response.status);
                                                                     })
-                                                                    .finally(() => actions.setSubmitting(false));*/
+                                                                    .finally(() => actions.setSubmitting(false));
                                                             }}
                                                             >
                                                             {formik => (

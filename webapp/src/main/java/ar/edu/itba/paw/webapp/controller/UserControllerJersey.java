@@ -439,8 +439,11 @@ public class UserControllerJersey {
                     || (userEditDTO.getBanned() == null && userEditDTO.getUserName() == null)) {
                 return status(Status.BAD_REQUEST).build();
             }
+            User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+            if (loggedUser.getId() != userId) return status(Status.UNAUTHORIZED).build();
+
             if(userEditDTO.getUserName() != null) {
-                // cambiar el nombre del usuario
+                userService.updateLoggedUserName(userEditDTO.getUserName());
             }
             if(userEditDTO.getBanned() != null && userEditDTO.getBanned()) {
                 userService.banUser(userId);
