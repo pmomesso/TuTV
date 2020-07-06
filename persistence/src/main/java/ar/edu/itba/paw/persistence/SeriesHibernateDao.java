@@ -282,11 +282,9 @@ public class SeriesHibernateDao implements SeriesDao {
     public Optional<Series> followSeries(long seriesId, long userId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<Series> series = Optional.ofNullable(em.find(Series.class,seriesId));
-        int updated = 0;
         if(user.isPresent() && series.isPresent()){
             series.get().addUserFollower(user.get());
             series.get().setFollowers(series.get().getUserFollowers().size());
-            updated++;
         }
         return series;
     }

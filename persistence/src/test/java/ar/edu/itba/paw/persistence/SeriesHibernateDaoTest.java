@@ -33,7 +33,6 @@ public class SeriesHibernateDaoTest {
     private static final String UPDATED = "2000-01-01";
     private static final String POSTER_URL = "url/poster";
     private static final String BANNER_URL = "url/banner";
-    private static final int FOLLOWERS = 6;
 
     /* Valores test genero */
    private static final String GENRE_NAME = "genre";
@@ -95,7 +94,6 @@ public class SeriesHibernateDaoTest {
         Assert.assertEquals(UPDATED,format.format(series.getUpdated()));
         Assert.assertEquals(POSTER_URL,series.getPosterUrl());
         Assert.assertEquals(BANNER_URL,series.getBannerUrl());
-        Assert.assertEquals(FOLLOWERS,series.getFollowers());
         Assert.assertEquals(this.network.getId(),series.getNetwork().getId());
         Assert.assertEquals(NETWORK_NAME,series.getNetwork().getName());
         Assert.assertEquals(1,series.getGenres().size());
@@ -151,7 +149,7 @@ public class SeriesHibernateDaoTest {
         episode = new Episode(EPISODE_NAME,EPISODE_OVERVIEW,EPISODE_NUM,EPISODE_AIRED);
         season = new Season(SEASON_NAME,SEASON_NUM);
         season.addEpisode(episode);
-        series =  new Series(TVDB_ID, SERIES_NAME,DESCRIPTION, network,POSTER_URL,BANNER_URL,TOTAL_RATING,STATUS,RUNTIME,FOLLOWERS,ID_IMDB,FIRST_AIRED,ADDED,UPDATED);
+        series =  new Series(TVDB_ID, SERIES_NAME,DESCRIPTION, network,POSTER_URL,BANNER_URL,TOTAL_RATING,STATUS,RUNTIME,0,ID_IMDB,FIRST_AIRED,ADDED,UPDATED);
         series.addGenre(genre);
         series.addSeason(season);
         em.persist(series);
@@ -161,7 +159,7 @@ public class SeriesHibernateDaoTest {
         network = new Network(NETWORK_NAME);
         em.persist(network);
         em.flush();
-        Optional<Series> s = seriesDao.createSeries(TVDB_ID,SERIES_NAME,DESCRIPTION,TOTAL_RATING,STATUS,RUNTIME,network.getId(),FIRST_AIRED,ID_IMDB,ADDED,UPDATED,POSTER_URL,BANNER_URL,FOLLOWERS);
+        Optional<Series> s = seriesDao.createSeries(TVDB_ID,SERIES_NAME,DESCRIPTION,TOTAL_RATING,STATUS,RUNTIME,network.getId(),FIRST_AIRED,ID_IMDB,ADDED,UPDATED,POSTER_URL,BANNER_URL,0);
         Assert.assertTrue(s.isPresent());
         series = s.get();
         Assert.assertEquals(this.series.getId(),series.getId());
@@ -177,7 +175,7 @@ public class SeriesHibernateDaoTest {
         Assert.assertEquals(UPDATED,format.format(series.getUpdated()));
         Assert.assertEquals(POSTER_URL,series.getPosterUrl());
         Assert.assertEquals(BANNER_URL,series.getBannerUrl());
-        Assert.assertEquals(FOLLOWERS,series.getFollowers());
+        Assert.assertEquals(0,series.getFollowers());
         Assert.assertEquals(this.network.getId(),series.getNetwork().getId());
         Assert.assertEquals(NETWORK_NAME,series.getNetwork().getName());
     }
@@ -288,7 +286,7 @@ public class SeriesHibernateDaoTest {
         insertUser();
         Optional<Series> s =  seriesDao.followSeries(series.getId(),user.getId());
         Assert.assertTrue(s.isPresent());
-        Assert.assertEquals(FOLLOWERS + 1,series.getFollowers());
+        Assert.assertEquals(1,series.getFollowers());
         Assert.assertEquals(1,series.getUserFollowers().size());
         Assert.assertEquals(1,user.getFollows().size());
     }
@@ -298,7 +296,7 @@ public class SeriesHibernateDaoTest {
         series.addUserFollower(user);
         int updated = seriesDao.unfollowSeries(series.getId(),user.getId());
         Assert.assertEquals(1,updated);
-        Assert.assertEquals(FOLLOWERS - 1,series.getFollowers());
+        Assert.assertEquals(0,series.getFollowers());
         Assert.assertEquals(0,series.getUserFollowers().size());
         Assert.assertEquals(0,user.getFollows().size());
     }
