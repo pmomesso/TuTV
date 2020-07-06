@@ -7,6 +7,7 @@ import Axios from 'axios';
 
 import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
+import Carousel from 'react-bootstrap/Carousel'
 
 class SeriesCarousel extends Component {
 
@@ -47,23 +48,19 @@ class SeriesCarousel extends Component {
                 </section>
             );
 
-        const indicators = this.state.showList.map((series, index) => {
-            return (<li key={index} data-target="#myCarousel" data-slide-to={index} className={(index === 0 ? "active": "")}></li>);
-        });
-
         const elements = this.state.showList.map((series, index) => {
             return (
-                <div key={index} className={"carousel-item " + (index === 0 && "active")}>
+                <Carousel.Item>
                     <Link to={"/series/" + series.id}>
                         <img src={"https://image.tmdb.org/t/p/original" + series.bannerUrl} itemProp="image" alt="" />
-                        <div className="carousel-caption">
+                        <Carousel.Caption>
                             <h2>{series.name}</h2>
                             <h3>
                                 <Trans i18nKey="index.followers" count={series.followers} />
                             </h3>
-                        </div>
+                        </Carousel.Caption>
                     </Link>
-                </div>
+                </Carousel.Item>
             );
         });
 
@@ -72,22 +69,9 @@ class SeriesCarousel extends Component {
                 <h1>
                     <Trans i18nKey="index.newShows" />
                 </h1>
-                <div id="myCarousel" className="carousel slide" data-ride="carousel">
-                    <ol className="carousel-indicators">
-                        {indicators}
-                    </ol>
-
-                    <div className="carousel-inner">
-                        {elements}
-                    </div>
-
-                    <a className="carousel-control-prev" href="#myCarousel" data-slide="prev">
-                        <span className="carousel-control-prev-icon"></span>
-                    </a>
-                    <a className="carousel-control-next" href="#myCarousel" data-slide="next">
-                        <span className="carousel-control-next-icon"></span>
-                    </a>
-                </div>
+                <Carousel>
+                    {elements}
+                </Carousel>
             </section>
         );
     }

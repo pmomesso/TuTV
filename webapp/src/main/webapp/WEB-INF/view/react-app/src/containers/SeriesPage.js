@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import { Trans } from 'react-i18next';
 
-//import $ from 'jquery';
-//import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import Rating from 'react-rating';
 
