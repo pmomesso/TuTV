@@ -8,20 +8,21 @@ import javax.validation.constraints.NotNull;
 public class SerieStateDTO {
 
     @NotNull
-    private Boolean loggedInUserFollows;
     private Integer loggedInUserRating;
+
+    //private Boolean loggedInUserFollows;
 
     public SerieStateDTO() {
         //Empty constructor for JAX-RS
     }
 
-    public Boolean getLoggedInUserFollows() {
+    /*public Boolean getLoggedInUserFollows() {
         return loggedInUserFollows;
     }
 
     public void setLoggedInUserFollows(Boolean loggedInUserFollows) {
         this.loggedInUserFollows = loggedInUserFollows;
-    }
+    }*/
 
     public Integer getLoggedInUserRating() {
         return loggedInUserRating;

@@ -156,12 +156,12 @@ public class UserControllerJersey {
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{userId}/following")
-    public Response unfollowSeries(@PathParam("userId") Long userId, @Valid FollowSeriesDTO followSeriesDTO) {
-        Set<ConstraintViolation<FollowSeriesDTO>> violations = validator.validate(followSeriesDTO);
-        if(!violations.isEmpty()) return Response.status(Status.BAD_REQUEST).build();
+    @Path("/{userId}/following/{seriesId}")
+    public Response unfollowSeries(@PathParam("userId") Long userId, @PathParam("seriesId") Long seriesId) {
+        //Set<ConstraintViolation<FollowSeriesDTO>> violations = validator.validate(followSeriesDTO);
+        //if(!violations.isEmpty()) return Response.status(Status.BAD_REQUEST).build();
         try {
-            seriesService.unfollowSeries(followSeriesDTO.getSeriesId());
+            seriesService.unfollowSeries(seriesId);
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
         } catch (UnauthorizedException e) {

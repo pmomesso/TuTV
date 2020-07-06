@@ -240,11 +240,11 @@ public class SeriesControllerJersey {
         }
 
         try {
-            if(serieStateDTO.getLoggedInUserFollows()) {
+            /*if(serieStateDTO.getLoggedInUserFollows()) {
                 seriesService.followSeries(seriesId);
             } else {
                 seriesService.unfollowSeries(seriesId);
-            }
+            }*/
             if(serieStateDTO.getLoggedInUserRating() != null) {
                 seriesService.rateSeries(seriesId, serieStateDTO.getLoggedInUserRating());
             }

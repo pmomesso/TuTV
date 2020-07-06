@@ -13,7 +13,7 @@ public class SeriesStateDTOConstraintValidator implements ConstraintValidator<Se
 
     @Override
     public boolean isValid(SerieStateDTO serieStateDTO, ConstraintValidatorContext context) {
-        if(serieStateDTO.getLoggedInUserFollows() == null && serieStateDTO.getLoggedInUserRating() == null) {
+        if(/*serieStateDTO.getLoggedInUserFollows() == null && */serieStateDTO.getLoggedInUserRating() == null) {
             return false;
         }
         return true;

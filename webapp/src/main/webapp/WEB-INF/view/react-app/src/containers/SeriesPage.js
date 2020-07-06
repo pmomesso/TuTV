@@ -140,8 +140,6 @@ class SeriesPage extends Component {
 
         let data = { "loggedInUserRating": newValue };
 
-        console.log(JSON.stringify(data));
-
         Axios.put("/series/" + this.state.series.id, JSON.stringify(data))
             .then((res) => {
                 let newSeries = {
@@ -169,9 +167,15 @@ class SeriesPage extends Component {
 
         let newValue = !this.state.series.loggedInUserFollows;
 
-        let data = { "loggedInUserFollows": newValue };
+        let promise;
+        if(newValue) {
+            promise = Axios.post("/users/" + this.props.logged_user.id + "/following", 
+                { "seriesId": this.state.series.id });
+        } else {
+            promise = Axios.delete("/users/" + this.props.logged_user.id + "/following/" + this.state.series.id);
+        }
 
-        Axios.put("/series/" + this.state.series.id, JSON.stringify(data))
+        promise
             .then((res) => {
                 let newSeries = {
                     ...this.state.series,
