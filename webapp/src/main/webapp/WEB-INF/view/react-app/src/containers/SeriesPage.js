@@ -69,7 +69,7 @@ class SeriesPage extends Component {
 
         let data = { "viewedByUser": newValue };
 
-        Axios.put("/series/" + this.state.series.id + "/seasons/" + series.seasons[season_index].id + "/episodes/" + series.seasons[season_index].episodes[episode_index].id, JSON.stringify(data))
+        Axios.put("/series/" + this.state.series.id + "/seasons/" + series.seasons[season_index].number + "/episodes/" + series.seasons[season_index].episodes[episode_index].numEpisode, JSON.stringify(data))
             .then((res) => {
         
                 this.setState({ "series": newSeries });
@@ -122,17 +122,14 @@ class SeriesPage extends Component {
 
         let data = { "viewedByUser": newValue };
 
-        Axios.put("/series/" + this.state.series.id + "/seasons/" + this.state.series.seasons[season_index].id, JSON.stringify(data))
+        Axios.put("/series/" + this.state.series.id + "/seasons/" + this.state.series.seasons[season_index].number, JSON.stringify(data))
             .then((res) => {
-        
                 this.setState({ "series": newSeries });
             })
             .catch((err) => {
                 /* TODO SI CADUCO LA SESION? */
                 //alert("Error: " + err.response.status);
             });
-
-        this.setState({ "series": newSeries });
     }
 
     onRatingChanged = (newValue) => {
