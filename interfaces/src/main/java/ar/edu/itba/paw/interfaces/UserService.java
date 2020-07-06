@@ -23,7 +23,7 @@ public interface UserService {
 
 	Optional<User> getLoggedUser();
 
-	UsersList getAllUsersExceptLoggedOne(int page) throws UnauthorizedException ;
+	UsersList getAllUsersExceptLoggedOne(int page, int pageSize) throws UnauthorizedException ;
 
 	Map<Genre, Long> getGenresStats() throws UnauthorizedException;
 

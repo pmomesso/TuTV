@@ -222,19 +222,19 @@ public class SeriesHibernateDaoTest {
     }
     @Test
     public void searchSeriesByNameTest(){
-        List<Series> series = seriesDao.searchSeries(SERIES_NAME,null,null,1);
+        List<Series> series = seriesDao.searchSeries(SERIES_NAME,null,null,1, 1);
         Assert.assertEquals(1,series.size());
         assertSeries(series.get(0));
     }
     @Test
     public void searchSeriesByGenreTest(){
-        List<Series> series = seriesDao.searchSeries(null,GENRE_NAME,null,1);
+        List<Series> series = seriesDao.searchSeries(null,GENRE_NAME,null,1, 1);
         Assert.assertEquals(1,series.size());
         assertSeries(series.get(0));
     }
     @Test
     public void searchSeriesByNetworkTest(){
-        List<Series> series = seriesDao.searchSeries(null,null,NETWORK_NAME,1);
+        List<Series> series = seriesDao.searchSeries(null,null,NETWORK_NAME,1, 1);
         Assert.assertEquals(1,series.size());
         assertSeries(series.get(0));
     }
@@ -306,7 +306,7 @@ public class SeriesHibernateDaoTest {
     public void getNextToBeSeenTest(){
         insertUser();
         series.addUserFollower(user);
-        List<Episode> episodes = seriesDao.getNextToBeSeen(user.getId(),1);
+        List<Episode> episodes = seriesDao.getNextToBeSeen(user.getId(),1, 1);
         Assert.assertEquals(1,episodes.size());
         assertEpisode(episodes.get(0));
     }

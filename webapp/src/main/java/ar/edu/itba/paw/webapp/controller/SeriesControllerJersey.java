@@ -54,16 +54,18 @@ public class SeriesControllerJersey {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response searchSeries(@QueryParam("name") String name, @QueryParam("genre") String genre, @QueryParam("network") String network, @QueryParam("page") Integer page) {
+    public Response searchSeries(@QueryParam("name") String name, @QueryParam("genre") String genre, @QueryParam("network") String network,
+                                 @QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) {
 
         page = page == null || page < 1 ? 1 : page;
-        List<Series> results = seriesService.searchSeries(name,genre,network,page);
+        pageSize = pageSize == null || pageSize <= 0 || pageSize >= 21 ? 21 : pageSize;
+        List<Series> results = seriesService.searchSeries(name,genre,network,page, pageSize);
         SeriesDTO[] seriesDTOList = new SeriesDTO[results.size()];
         for(int i = 0; i < results.size(); i++){
             seriesDTOList[i] = new SeriesDTO(results.get(i), userService.getLoggedUser(), uriInfo);
         }
         ResponseBuilder rb = ok(seriesDTOList);
-        boolean next = seriesService.searchSeries(name,genre,network,page + 1).size() > 0;
+        boolean next = seriesService.searchSeries(name,genre,network,page + 1, pageSize).size() > 0;
         if(next || page > 1) {
             UriBuilder nextUri = uriInfo.getAbsolutePathBuilder();
             UriBuilder prevUri = uriInfo.getAbsolutePathBuilder();
@@ -82,12 +84,18 @@ public class SeriesControllerJersey {
             /*String previousPath = prevUri.queryParam("page", page - 1).build().toString() + " , rel = prev";
             String nextPath = nextUri.queryParam("page", page + 1).build().toString() + " , rel = next";*/
             if(next) {
-                rb = rb.link(prevUri.queryParam("page", page + 1).build(), "next");
+                rb = rb.link(prevUri
+                        .queryParam("page", page + 1)
+                        .queryParam("pagesize", pageSize)
+                        .build(), "next");
             }
             if(page > 1) {
-                int size = seriesService.searchSeries(name,genre,network,page - 1).size();
+                int size = seriesService.searchSeries(name,genre,network,page - 1, pageSize).size();
                 if(size > 0) {
-                    rb = rb.link(nextUri.queryParam("page", page - 1).build(), "prev");
+                    rb = rb.link(nextUri
+                            .queryParam("page", page - 1)
+                            .queryParam("pagesize", pageSize)
+                            .build(), "prev");
                 }
             }
             //rb.header("Link", (next ? nextPath : "") + ((next && page > 1) ? " ; " : "") + (page > 1 ? previousPath : ""));
@@ -277,13 +285,11 @@ public class SeriesControllerJersey {
     @GET
     @Path("/genres/{genreId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSeriesInGenre(@PathParam("genreId") Long genreId, @QueryParam("page") Integer page) {
+    public Response getSeriesInGenre(@PathParam("genreId") Long genreId, @QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) {
         Map<Genre, List<Series>> map;
-        if(page == null) {
-            map = seriesService.getSeriesByGenre(genreId, 1L);
-        } else {
-            map = seriesService.getSeriesByGenre(genreId, Long.valueOf(page));
-        }
+        Integer auxPage = page == null || page <= 0 ? 1 : page;
+        Integer auxPageSize = pageSize == null || pageSize <= 0 || pageSize > 21 ? 21 : pageSize;
+        map = seriesService.getSeriesByGenre(genreId, Long.valueOf(auxPage), auxPageSize);
         Optional<Genre> optGenre = map.keySet().stream().findFirst();
         if(!optGenre.isPresent()) {
             return status(Status.NOT_FOUND).build();
@@ -295,10 +301,16 @@ public class SeriesControllerJersey {
                     + ((g.isAreNext() && g.isArePrevious()) ? " ; " : "") + (g.isArePrevious() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() - 1).build().toString() + " , rel = prev") : ""));
         }*/
         if(g.isAreNext()) {
-            rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() + 1).build(), "next");
+            rb = rb.link(uriInfo.getAbsolutePathBuilder()
+                    .queryParam("page", g.getPage() + 1)
+                    .queryParam("pagesize", auxPageSize)
+                    .build(), "next");
         }
         if(g.isArePrevious()) {
-            rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() - 1).build(), "prev");
+            rb = rb.link(uriInfo.getAbsolutePathBuilder()
+                    .queryParam("page", g.getPage() - 1)
+                    .queryParam("pagesize", auxPageSize)
+                    .build(), "prev");
         }
         return rb.build();
     }
@@ -420,24 +432,24 @@ public class SeriesControllerJersey {
         return accepted().build();
     }
 
-
+    /*
     @GET
     @Path("/watchlist")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getWatchlist(@QueryParam("page") Integer page) {
         try {
             page = page == null || page < 1 ? 1 : page;
-            List<Episode> episodeList = seriesService.getWatchList(page);
+            List<Episode> episodeList = seriesService.getWatchList(page, 1);
             WatchlistDTO[] watchlist = new WatchlistDTO[episodeList.size()];
             for(int i = 0; i < episodeList.size(); i++){
                 watchlist[i] = new WatchlistDTO(episodeList.get(i), uriInfo);
             }
             ResponseBuilder rb = ok(watchlist);
-            boolean next = seriesService.getWatchList(page + 1).size() > 0;
+            boolean next = seriesService.getWatchList(page + 1, 1).size() > 0;
             /*if(page > 1 || next) {
                 rb.header("Link", (next ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build().toString() + " , rel = next") : "")
                         + ((next && page > 1) ? " ; " : "") + (page > 1 ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build().toString() + " , rel = prev") : ""));
-            }*/
+            }
             if(page > 1) {
                 rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
             }
@@ -451,4 +463,5 @@ public class SeriesControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
     }
+   */
 }

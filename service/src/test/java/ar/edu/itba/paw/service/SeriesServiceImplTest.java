@@ -95,13 +95,13 @@ public class SeriesServiceImplTest {
     public void searchSeriesByNameTest(){
         //Setup
         Series s = getMockSeries();
-        Mockito.when(mockDao.searchSeries(Mockito.eq(NAME),Mockito.eq(GENRE),Mockito.eq(NETWORK_NAME),Mockito.eq(0))).thenAnswer(invocation -> {
+        Mockito.when(mockDao.searchSeries(Mockito.eq(NAME),Mockito.eq(GENRE),Mockito.eq(NETWORK_NAME),Mockito.eq(0), Mockito.eq(1))).thenAnswer(invocation -> {
             List<Series> seriesList = new ArrayList<>();
             seriesList.add(s);
             return seriesList;
         });
         //Ejercitar
-        List<Series> seriesList = seriesService.searchSeries(NAME,GENRE,NETWORK_NAME,0);
+        List<Series> seriesList = seriesService.searchSeries(NAME,GENRE,NETWORK_NAME,0, 1);
         //Asserts
         Assert.assertEquals(1,seriesList.size());
         assertMockSeries(seriesList.get(0));
@@ -310,7 +310,7 @@ public class SeriesServiceImplTest {
         //Setup
         final Series mockSeries = getMockSeries();
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.getNextToBeSeen(Mockito.eq(USER_ID),Mockito.eq(1))).thenAnswer(invocation -> {
+        Mockito.when(mockDao.getNextToBeSeen(Mockito.eq(USER_ID),Mockito.eq(1), Mockito.eq(1))).thenAnswer(invocation -> {
             List<Episode> episodes = new ArrayList<>();
             episodes.add(new Episode());
             return episodes;
@@ -318,7 +318,7 @@ public class SeriesServiceImplTest {
         //Ejercitar
         List<Episode> series;
         try {
-            series = seriesService.getWatchList(1);
+            series = seriesService.getWatchList(1, 1);
         } catch (ApiException e) {
             Assert.fail();
             return;

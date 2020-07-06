@@ -246,11 +246,12 @@ public class UserControllerJersey {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/")
-    public Response getUsersList(@QueryParam("page") Integer page) {
+    public Response getUsersList(@QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) {
         UsersList usersList = null;
         Integer auxPage = page == null ? 1 : page;
+        Integer auxPageSize = pageSize == null ? 8 : pageSize;
         try {
-            usersList = userService.getAllUsersExceptLoggedOne(auxPage);
+            usersList = userService.getAllUsersExceptLoggedOne(auxPage, auxPageSize);
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         }
@@ -260,10 +261,16 @@ public class UserControllerJersey {
                     + ((usersList.isAreNext() && usersList.isArePrevious()) ? " ; " : "") + (usersList.isArePrevious() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build().toString()) : ""));
         }*/
         if(usersList.isAreNext()) {
-            rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page",auxPage + 1).build(), "next");
+            rb = rb.link(uriInfo.getAbsolutePathBuilder()
+                    .queryParam("page",auxPage + 1)
+                    .queryParam("pagesize", auxPageSize)
+                    .build(), "next");
         }
         if(usersList.isArePrevious()) {
-            rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", auxPage - 1).build(), "prev");
+            rb = rb.link(uriInfo.getAbsolutePathBuilder()
+                    .queryParam("page", auxPage - 1)
+                    .queryParam("pagesize", auxPageSize)
+                    .build(), "prev");
         }
         return rb.build();
     }
@@ -271,25 +278,35 @@ public class UserControllerJersey {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/watchlist")
-    public Response getUserWatchList(@PathParam("userId") Long userId, @QueryParam("page") Integer page) {
+    public Response getUserWatchList(@PathParam("userId") Long userId, @QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) {
         Optional<User> optUser = userService.getLoggedUser();
         if(optUser.isPresent() && optUser.get().getId() != userId) return Response.status(Status.UNAUTHORIZED).build();
         Integer auxPage = page;
         if(page == null) {
             auxPage = 1;
         }
+        Integer auxPageSize = pageSize;
+        if(pageSize == null) {
+            auxPageSize = 20;
+        }
         List<EpisodeDTO> episodes = Collections.EMPTY_LIST;
         ResponseBuilder rb = ok();
         try {
-            episodes = seriesService.getWatchList(auxPage).stream()
+            episodes = seriesService.getWatchList(auxPage, auxPageSize).stream()
                     .map(e -> new EpisodeDTO(e, userService.getLoggedUser())).collect(Collectors.toList());
             rb = rb.entity(new GenericEntity<List<EpisodeDTO>>(episodes) {});
             if(auxPage > 1 && episodes.size() > 0) {
-                rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", auxPage - 1).build(), "prev");
+                rb = rb.link(uriInfo.getAbsolutePathBuilder()
+                        .queryParam("page", auxPage - 1)
+                        .queryParam("pagesize", auxPageSize)
+                        .build(), "prev");
             }
-            int size = seriesService.getWatchList(auxPage + 1).size();
+            int size = seriesService.getWatchList(auxPage + 1, auxPageSize).size();
             if(size > 0) {
-                rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", auxPage + 1).build(), "next");
+                rb = rb.link(uriInfo.getAbsolutePathBuilder()
+                        .queryParam("page", auxPage + 1)
+                        .queryParam("pagesize", auxPageSize)
+                        .build(), "next");
             }
         } catch (UnauthorizedException e) {
             return Response.status(Status.UNAUTHORIZED).build();

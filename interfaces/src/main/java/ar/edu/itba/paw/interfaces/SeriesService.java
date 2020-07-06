@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface SeriesService {
 
-    List<Series> searchSeries(String seriesName, String genreName, String networkName, int page);
+    List<Series> searchSeries(String seriesName, String genreName, String networkName, int page, int pageSize);
     List<Series> getSeriesByName(String name);
 
     Optional<Series> getSerieById(long id);
@@ -20,7 +20,7 @@ public interface SeriesService {
     List<Series> getAllSeriesByGenre(String genreName);
     List<Series> getAllSeriesByGenre(long id);
     Map<Genre,List<Series>> getSeriesByGenre();
-    Map<Genre,List<Series>> getSeriesByGenre(Long id, Long page);
+    Map<Genre,List<Series>> getSeriesByGenre(Long id, Long page, Integer pageSize);
     List<Series> getNewestSeries(int lowerNumber, int upperNumber);
     List<Season> getSeasonsBySeriesId(long seriesId);
     List<Genre> getAllGenres();
@@ -55,7 +55,7 @@ public interface SeriesService {
     
     void removePost(long postId) throws UnauthorizedException, NotFoundException;
 
-    List<Episode> getWatchList(int page) throws UnauthorizedException, NotFoundException;
+    List<Episode> getWatchList(int page, int pageSize) throws UnauthorizedException, NotFoundException;
 
     List<Series> getRecentlyWatchedList(int number) throws UnauthorizedException, BadRequestException;
 

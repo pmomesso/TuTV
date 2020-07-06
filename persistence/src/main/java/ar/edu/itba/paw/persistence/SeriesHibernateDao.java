@@ -22,9 +22,10 @@ public class SeriesHibernateDao implements SeriesDao {
     private EntityManager em;
 
     @Override
-    public List<Series> searchSeries(String seriesName, String genreName, String networkName, int page) {
+    public List<Series> searchSeries(String seriesName, String genreName, String networkName, int page, int pageSize) {
         //Valores por defecto
         page = page > 0 ? page : 1;
+        pageSize = pageSize <= 0 || pageSize > PAGE_SIZE ? 24 : pageSize;
         seriesName = seriesName != null ? seriesName : "";
         genreName = genreName != null ? genreName : "";
         networkName = networkName != null ? networkName : "";
@@ -34,8 +35,8 @@ public class SeriesHibernateDao implements SeriesDao {
                 .setParameter(1, "%" + seriesName.toLowerCase() + "%")
                 .setParameter(2, "%" + networkName.toLowerCase() + "%")
                 .setParameter(3, "%" + genreName.toLowerCase() + "%")
-                .setParameter(4, PAGE_SIZE)
-                .setParameter(5, (page - 1)* PAGE_SIZE)
+                .setParameter(4, pageSize)
+                .setParameter(5, (page - 1)* pageSize)
                 .getResultList();
     }
 
@@ -96,15 +97,15 @@ public class SeriesHibernateDao implements SeriesDao {
         return result;
     }
 
-    private List<Series> getBestSeriesByGenre(Genre genre, Long page) {
-        int bestSize = PAGE_SIZE / 3;
+    private List<Series> getBestSeriesByGenre(Genre genre, Long page, Integer pageSize) {
+        //int bestSize = PAGE_SIZE / 3;
         List<Series> seriesList = em.createNativeQuery("SELECT * " +
                 "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.id = series.network_id) " +
                 "WHERE genreid = ?" +
                 "ORDER BY genres.name DESC LIMIT ? OFFSET ?",Series.class)
                 .setParameter(1, genre.getId())
-                .setParameter(2, bestSize)
-                .setParameter(3, (page - 1) * bestSize)
+                .setParameter(2, pageSize)
+                .setParameter(3, (page - 1) * pageSize)
                 .getResultList();
 
         TypedQuery<Long> countQuery = em.createQuery("select count(*) from Series as s inner join s.genres as genres " +
@@ -113,8 +114,8 @@ public class SeriesHibernateDao implements SeriesDao {
         Long count = countQuery.getSingleResult();
 
         genre.setPage(page);
-        genre.setArePrevious((page - 1) * bestSize > bestSize - 1);
-        genre.setAreNext(page * bestSize - 1 < count - count % bestSize);
+        genre.setArePrevious((page - 1) * pageSize > pageSize - 1);
+        genre.setAreNext(page * pageSize - 1 < count - count % pageSize);
 
         return seriesList;
     }
@@ -123,17 +124,17 @@ public class SeriesHibernateDao implements SeriesDao {
     public Map<Genre,List<Series>> getBestSeriesByGenres() {
         Map<Genre,List<Series>> genreMap = new TreeMap<>(Comparator.comparing(Genre::getName));
         for(Genre g : getAllGenres()){
-            genreMap.put(g, getBestSeriesByGenre(g, 1L));
+            genreMap.put(g, getBestSeriesByGenre(g, 1L, PAGE_SIZE));
         }
         return genreMap;
     }
 
     @Override
-    public Map<Genre,List<Series>> getBestSeriesByGenres(Long id, Long page) {
+    public Map<Genre,List<Series>> getBestSeriesByGenres(Long id, Long page, Integer pageSize) {
         Map<Genre,List<Series>> genreMap = new TreeMap<>(Comparator.comparing(Genre::getName));
         for(Genre g : getAllGenres()){
             if(g.getId().equals(id)) {
-                genreMap.put(g, getBestSeriesByGenre(g, page));
+                genreMap.put(g, getBestSeriesByGenre(g, page, pageSize));
                 break;
             }
         }
@@ -188,7 +189,10 @@ public class SeriesHibernateDao implements SeriesDao {
     }
 
     @Override
-    public List<Episode> getNextToBeSeen(long userId, int page) {
+    public List<Episode> getNextToBeSeen(long userId, int page, int pageSize) {
+        if(pageSize <= 0 && pageSize >= 20) {
+            pageSize = 20;
+        }
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         List<Episode> nextToBeSeen = new ArrayList<>();
         if(user.isPresent()){
@@ -217,7 +221,7 @@ public class SeriesHibernateDao implements SeriesDao {
             }
         }
         List<Episode> episodePage = new ArrayList<>();
-        for(int i = (page - 1) * PAGE_SIZE; i < page * PAGE_SIZE && i < nextToBeSeen.size(); i++){
+        for(int i = (page - 1) * pageSize; i < page * pageSize && i < nextToBeSeen.size(); i++){
             episodePage.add(nextToBeSeen.get(i));
         }
         return episodePage;

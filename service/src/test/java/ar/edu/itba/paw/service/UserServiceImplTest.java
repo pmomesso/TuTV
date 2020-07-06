@@ -155,7 +155,7 @@ public class UserServiceImplTest {
     public void loggedInGetAllUsersButLoggedOneTest(){
         //Setup
         User mockUser = getMockUser();
-        Mockito.when(mockDao.getAllUsers(1, 1)).thenAnswer(invocation -> {
+        Mockito.when(mockDao.getAllUsers(1, 1, 1)).thenAnswer(invocation -> {
             UsersList list = new UsersList();
             list.setUsersList(Collections.EMPTY_LIST);
             return list;
@@ -165,7 +165,7 @@ public class UserServiceImplTest {
         //Ejercitar
         UsersList users;
         try {
-            users = userService.getAllUsersExceptLoggedOne(1);
+            users = userService.getAllUsersExceptLoggedOne(1, 1);
         } catch (UnauthorizedException e) {
             Assert.fail();
             return;
@@ -178,7 +178,7 @@ public class UserServiceImplTest {
     public void loggedOutGetAllUsersButLoggedOneTest(){
         //Setup
         User mockUser = getMockUser();
-        Mockito.when(mockDao.getAllUsers(1, 1)).thenAnswer(invocation -> {
+        Mockito.when(mockDao.getAllUsers(1, 1, 1)).thenAnswer(invocation -> {
             UsersList list = new UsersList();
             User[] users = new User[1];
             users[0] = mockUser;
@@ -189,7 +189,7 @@ public class UserServiceImplTest {
         //Ejercitar
         UsersList users;
         try {
-            users = userService.getAllUsersExceptLoggedOne(1);
+            users = userService.getAllUsersExceptLoggedOne(1, 1);
         } catch (UnauthorizedException e) {
             // Should throw exception if there is no logged user
             return;

@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface SeriesDao {
 
-    List<Series> searchSeries(String seriesName, String genreName, String networkName, int page);
+    List<Series> searchSeries(String seriesName, String genreName, String networkName, int page, int pageSize);
     List<Series> getSeriesByName(String seriesName);
 
     List<Series> getSeriesByGenre(String genreName);
@@ -23,7 +23,7 @@ public interface SeriesDao {
     List<Series> getNewSeries(int lowerLimit, int upperLimit);
 
     Map<Genre,List<Series>> getBestSeriesByGenres();
-    Map<Genre,List<Series>> getBestSeriesByGenres(Long id, Long page);
+    Map<Genre,List<Series>> getBestSeriesByGenres(Long id, Long page, Integer pageSize);
 
     Optional<Series> getSeriesById(long id);
 
@@ -36,7 +36,7 @@ public interface SeriesDao {
 
     List<Episode> getEpisodesBySeasonId(long seasonId);
 
-    List<Episode> getNextToBeSeen(long userId, int page);
+    List<Episode> getNextToBeSeen(long userId, int page, int pageSize);
 
     Optional<List<Series>> getRecentlyWatched(long userId, int number);
 

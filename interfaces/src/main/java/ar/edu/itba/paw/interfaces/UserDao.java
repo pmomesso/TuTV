@@ -35,7 +35,7 @@ public interface UserDao {
 
     boolean userExists(long userId);
 
-    UsersList getAllUsers(int page, long userId);
+    UsersList getAllUsers(int page, int pageSize, long userId);
 
     Map<Genre, Long> getGenreStats(long userId);
 

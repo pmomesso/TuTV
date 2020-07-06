@@ -67,11 +67,11 @@ public class SeriesServiceImpl implements SeriesService {
         this.messageSource = messageSource;
     }
     @Override
-    public List<Series> searchSeries(String seriesName, String genreName, String networkName, int page) {
+    public List<Series> searchSeries(String seriesName, String genreName, String networkName, int page, int pageSize) {
         String name = seriesName == null ? "" : seriesName;
         String genre = genreName == null ? "" : genreName;
         String network = networkName == null ? "" : networkName;
-        return seriesDao.searchSeries(name,genre,network,page);
+        return seriesDao.searchSeries(name,genre,network,page, pageSize);
     }
 
     @Override
@@ -133,8 +133,8 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public Map<Genre,List<Series>> getSeriesByGenre(Long id, Long page) {
-        Map<Genre, List<Series>> ret = seriesDao.getBestSeriesByGenres(id, page);
+    public Map<Genre,List<Series>> getSeriesByGenre(Long id, Long page, Integer pageSize) {
+        Map<Genre, List<Series>> ret = seriesDao.getBestSeriesByGenres(id, page, pageSize);
         return ret;
     }
 
@@ -328,9 +328,9 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Episode> getWatchList(int page) throws UnauthorizedException {
+    public List<Episode> getWatchList(int page, int pageSize) throws UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        return seriesDao.getNextToBeSeen(user.getId(), page);
+        return seriesDao.getNextToBeSeen(user.getId(), page, pageSize);
     }
 
     @Override

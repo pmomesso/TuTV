@@ -128,9 +128,12 @@ public class UserHibernateDao implements UserDao {
     }
 
     @Override
-    public UsersList getAllUsers(int page, long userId) {
+    public UsersList getAllUsers(int page, int pageSize, long userId) {
         if(page <=0 ){
             page = 1;
+        }
+        if(pageSize <= 0) {
+            pageSize = OFFSET;
         }
         UsersList usersList = new UsersList();
 
@@ -138,21 +141,21 @@ public class UserHibernateDao implements UserDao {
                 "FROM users WHERE users.id != ? " +
                 "LIMIT ? OFFSET ?", User.class)
                 .setParameter(1, userId)
-                .setParameter(2, OFFSET)
-                .setParameter(3, (page-1)*OFFSET)
+                .setParameter(2, pageSize)
+                .setParameter(3, (page-1)*pageSize)
                 .getResultList();
 
         TypedQuery<Long> countQuery = em.createQuery("select count(*) from User", Long.class);
 
         usersList.setTotal(countQuery.getSingleResult() - 1);
-        usersList.setFrom((page - 1) * OFFSET + 1);
-        if (usersList.getTotal() < (page - 1) * OFFSET + 1 + OFFSET) {
-            usersList.setTo((usersList.getTotal()) % OFFSET + (page - 1) * OFFSET);
+        usersList.setFrom((page - 1) * pageSize + 1);
+        if (usersList.getTotal() < (page - 1) * pageSize + 1 + pageSize) {
+            usersList.setTo((usersList.getTotal()) % pageSize + (page - 1) * pageSize);
         } else {
-            usersList.setTo(new Long((page - 1) * OFFSET +  OFFSET));
+            usersList.setTo(new Long((page - 1) * pageSize +  pageSize));
         }
-        usersList.setArePrevious((page - 1) * OFFSET > OFFSET - 1);
-        usersList.setAreNext(page * OFFSET - 1 < usersList.getTotal() - usersList.getTotal() % OFFSET);
+        usersList.setArePrevious((page - 1) * pageSize > pageSize - 1);
+        usersList.setAreNext(page * pageSize - 1 < usersList.getTotal() - usersList.getTotal() % pageSize);
         usersList.setUsersList(list);
 
         return usersList;
