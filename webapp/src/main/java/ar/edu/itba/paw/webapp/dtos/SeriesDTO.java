@@ -37,11 +37,15 @@ public class SeriesDTO {
         this.posterUrl = series.getPosterUrl();
         this.userRating = series.getUserRating();
         this.followers = series.getFollowers();
-        this.seasons = new ArrayList<>();
-        series.getSeasons().forEach(s -> seasons.add(new SeasonDTO(s,loggedInUser)));
         this.setReviewsUri(uriInfo);
         setUserFields(series, loggedInUser);
     }
+
+    public void setSeasonFields(Series series, Optional<User> loggedInUser) {
+        this.seasons = new ArrayList<>();
+        series.getSeasons().forEach(s -> seasons.add(new SeasonDTO(s,loggedInUser)));
+    }
+
     public SeriesDTO(Series series, UriInfo uriInfo) {
         this.id = series.getId();
         this.name = series.getName();
