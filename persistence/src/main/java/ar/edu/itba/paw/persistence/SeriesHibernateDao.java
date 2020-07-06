@@ -285,7 +285,7 @@ public class SeriesHibernateDao implements SeriesDao {
         int updated = 0;
         if(user.isPresent() && series.isPresent()){
             series.get().addUserFollower(user.get());
-            series.get().setFollowers(series.get().getFollowers() + 1);
+            series.get().setFollowers(series.get().getUserFollowers().size());
             updated++;
         }
         return series;
@@ -298,7 +298,7 @@ public class SeriesHibernateDao implements SeriesDao {
         int updated = 0;
         if(user.isPresent() && series.isPresent()){
             series.get().removeUserFollower(user.get());
-            series.get().setFollowers(series.get().getFollowers() - 1);
+            series.get().setFollowers(series.get().getUserFollowers().size());
             updated++;
         }
         return updated;
