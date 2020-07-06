@@ -221,7 +221,7 @@ body {
     font-size: 2rem;
 }
 .full-overlay {
-    background: url("./img/background.jpg");
+    background: url("../img/background.jpg");
     -webkit-filter: blur(6px);
     -moz-filter: blur(6px);
     -o-filter: blur(6px);
@@ -5444,7 +5444,7 @@ ol, ul {
     display: block;
     width: 16px;
     height: 16px;
-    background-image: url("./img/cd-icons.png");
+    background-image: url("../img/cd-icons.png");
     background-repeat: no-repeat;
     margin-right: 0.25em;
 }

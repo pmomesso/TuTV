@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import './css/resize_images.css';
-import './css/bootstrap.min.css';
-import './index.css';
+import './css/tutv.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './i18n';
 import * as serviceWorker from './serviceWorker';
 import { createStore } from 'redux'
