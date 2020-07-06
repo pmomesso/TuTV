@@ -95,28 +95,18 @@ class SeriesList extends Component {
           <Trans i18nKey={ "genres." + this.props.name }/>
         </h2>
         <ul className="posters-list shows-list explore-list list-unstyled list-inline overflow-hidden">
-        {(typeof this.state.prevUrl === "string") && 
-            <li className="float-left">
-                  <div className="pagination-control" onClick={this.prevPage}>
-                      <FontAwesomeIcon icon={ faChevronCircleLeft } style={{color: "white"}} />
-                      <div className="overlay">
-                          <span className="zoom-btn overlay-btn"></span>
-                      </div>
-                  </div>
-            </li>
+        {(typeof this.state.prevUrl === "string") &&
+            <a class="carousel-genre-left float-left" data-slide="prev" onClick={this.prevPage}>
+              <span class="carousel-control-prev-icon my-prev-icon"></span>
+            </a>
           }
 
           { showList }
 
-          {(typeof this.state.nextUrl === "string") && 
-            <li className="float-left">
-                  <div className="pagination-control" onClick={this.nextPage}>
-                      <FontAwesomeIcon icon={ faChevronCircleRight } style={{color: "white"}} />
-                      <div className="overlay">
-                          <span className="zoom-btn overlay-btn"></span>
-                      </div>
-                  </div>
-            </li>
+          {(typeof this.state.nextUrl === "string") &&
+            <a class="carousel-genre-right float-left" data-slide="next" onClick={this.nextPage}>
+              <span class="carousel-control-next-icon my-next-icon"></span>
+            </a>
           }
         </ul>
       </section>
