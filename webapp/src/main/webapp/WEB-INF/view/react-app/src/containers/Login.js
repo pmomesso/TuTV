@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 
 import Axios from 'axios';
 import { connect } from 'react-redux';
+import { store } from 'react-notifications-component';
 
 class Login extends Component {
     render() {
@@ -43,10 +44,38 @@ class Login extends Component {
                                             this.props.history.push("/");
                                         })
                                         .catch((err) => {
-                                            if(err.response.status === 400)
-                                                actions.setFieldError("general", "err");
-                                            else
-                                                alert("Error: " + err.response.status);
+                                            if(err.response.status === 400) {
+                                                store.addNotification({
+                                                    title: "Error al iniciar sesión",
+                                                    message: "Usuario o contraseña incorrectos",
+                                                    type: "danger",
+                                                    insert: "top",
+                                                    container: "top-right",
+                                                    animationIn: ["animated", "fadeIn"],
+                                                    animationOut: ["animated", "fadeOut"],
+                                                    dismiss: {
+                                                      duration: 8000,
+                                                      pauseOnHover: true,
+                                                      showIcon: true,
+                                                      onScreen: true
+                                                    }
+                                                });
+                                            } else {
+                                                store.addNotification({
+                                                    title: "Error deconocido: " + err.response.status,
+                                                    type: "danger",
+                                                    insert: "top",
+                                                    container: "top-right",
+                                                    animationIn: ["animated", "fadeIn"],
+                                                    animationOut: ["animated", "fadeOut"],
+                                                    dismiss: {
+                                                      duration: 8000,
+                                                      pauseOnHover: true,
+                                                      showIcon: true,
+                                                      onScreen: true
+                                                    }
+                                                });
+                                            }
                                         })
                                         .finally(() => actions.setSubmitting(false));
                                 }}

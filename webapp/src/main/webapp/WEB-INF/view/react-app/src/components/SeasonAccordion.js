@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { Trans } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
@@ -10,6 +10,8 @@ class SeasonAccordion extends PureComponent {
     onSeasonWatchedClicked = (event) => this.props.onSeasonWatchedClicked(event, this.props.number);
 
     render() {
+        const { t } = this.props;
+
         const season = this.props.season;
         let season_index = this.props.number;
 
@@ -37,7 +39,7 @@ class SeasonAccordion extends PureComponent {
                         htmlFor={"group-" + season_index}>
 
                         <span className="big-size">
-                            <Trans i18nKey="series.season_number" count={season.number} />
+                            { t("series.season_number", { count: season.number }) }
                         </span>
                         <span className="ml-3 viewed-episodes">
                             {viewedEpisodes} / {episodeCount }
@@ -57,4 +59,4 @@ class SeasonAccordion extends PureComponent {
     }
 }
 
-export default SeasonAccordion;
+export default withTranslation()(SeasonAccordion);

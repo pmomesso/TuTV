@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Trans } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import Rating from 'react-rating';
@@ -11,6 +11,7 @@ import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
 
 import { connect } from 'react-redux';
+import { compose } from 'recompose';
 
 class SeriesPage extends Component {
     state = {
@@ -193,6 +194,8 @@ class SeriesPage extends Component {
 
     render() {
 
+        const { t } = this.props;
+
         if(this.state.loading)
             return (
                 <section>
@@ -229,12 +232,12 @@ class SeriesPage extends Component {
                                             <span className={series.loggedInUserFollows ? "star" : "star-unchecked"} />
                                             <h2>
                                                 {(series.userRating == null) ? 
-                                                <Trans i18nKey="series.no_rating"/>
+                                                t("series.no_rating")
                                                 : series.userRating + " / 5"}
                                                 </h2>
                                         </div>
                                         <button className="add-button" onClick={this.onSeriesFollowClicked}>
-                                            <Trans i18nKey={series.loggedInUserFollows ? "series.unfollow" : "series.follow"} />
+                                            { t(series.loggedInUserFollows ? "series.unfollow" : "series.follow") }
                                         </button>
                                     </div>
                                 </div>
@@ -249,14 +252,14 @@ class SeriesPage extends Component {
                                         <span>{ series.network }</span>
                                         <span className="separator">•</span>
                                         <span>
-                                            <Trans i18nKey="series.seasons" count={ seasonCount }/>
+                                            { t("series.seasons", { count: seasonCount }) }
                                         </span>
                                     </div>
                                     <div className="overview">
                                         { series.seriesDescription }
                                     </div>
                                     <div className="followers">
-                                        <Trans i18nKey="index.followers" count={ series.followers }/>
+                                        { t("index.followers", { count: series.followers }) }
                                     </div>
                                 </div>
                                 <div className="col-lg-4">
@@ -304,4 +307,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(SeriesPage);
+export default compose(
+    connect(mapStateToProps),
+    withTranslation()
+)(SeriesPage);

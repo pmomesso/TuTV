@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import { Trans } from 'react-i18next';
+import React, {Component, PureComponent} from 'react';
+import { withTranslation } from 'react-i18next';
 
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { Link } from 'react-router-dom';
@@ -36,11 +36,14 @@ class SeriesCarousel extends Component {
     }
 
     render() {
+
+        const { t } = this.props;
+
         if(this.state.loading)
             return (
                 <section>
                     <h1>
-                        <Trans i18nKey="index.newShows" />
+                        { t("index.newShows") }
                     </h1>
                     <div style={{width: "100%",height: "100", display: "flex", justifyContent: "center", alignItems: "center"}}>
                         <Digital color="#727981" size={32} speed={1} animating={true} />
@@ -50,13 +53,13 @@ class SeriesCarousel extends Component {
 
         const elements = this.state.showList.map((series, index) => {
             return (
-                <Carousel.Item>
+                <Carousel.Item key={series.id}>
                     <Link to={"/series/" + series.id}>
                         <img src={"https://image.tmdb.org/t/p/original" + series.bannerUrl} itemProp="image" alt="" />
                         <Carousel.Caption>
                             <h2>{series.name}</h2>
                             <h3>
-                                <Trans i18nKey="index.followers" count={series.followers} />
+                                { t("index.followers", { count: series.followers }) }
                             </h3>
                         </Carousel.Caption>
                     </Link>
@@ -67,7 +70,7 @@ class SeriesCarousel extends Component {
         return (
             <section id="new-shows">
                 <h1>
-                    <Trans i18nKey="index.newShows" />
+                    { t("index.newShows") }
                 </h1>
                 <Carousel>
                     {elements}
@@ -78,4 +81,4 @@ class SeriesCarousel extends Component {
 
 }
 
-export default SeriesCarousel;
+export default withTranslation()(SeriesCarousel);

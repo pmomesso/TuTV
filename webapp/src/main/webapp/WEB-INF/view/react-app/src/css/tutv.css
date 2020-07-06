@@ -4381,7 +4381,8 @@ header #global-search-results ul strong {
     padding:12px 17px;
     width:187px;
     overflow:hidden;
-    vertical-align:top
+    vertical-align:top;
+    position: relative;
 }
 .posters-list>li:not(.new) .new-label {
     display:none
@@ -4417,6 +4418,22 @@ header #global-search-results ul strong {
     border-radius:2px;
     box-shadow:0 0 2px #777;
     position:relative
+}
+.posters-list>li .pagination-control {
+    width:50px;
+    height:222px;
+    overflow:hidden;
+    position:relative;
+    background-color: rgba(0,0,0,0.4);
+}
+.posters-list>li .image-crop .icon {
+    display: block;
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    color: white;
 }
 .posters-list>li .image-crop img {
     width:100%
