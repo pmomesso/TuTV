@@ -193,7 +193,7 @@ public class SeriesControllerJersey {
             } else {
                 seriesService.unlikePost(seriesReviewId);
             }
-            return accepted(new SeriesReviewDTO(seriesService.getSeriesReviewById(seriesReviewId).get(), userService.getLoggedUser())).build();
+            return accepted().build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
@@ -354,7 +354,7 @@ public class SeriesControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
 
-        return status(Status.NO_CONTENT).build();
+        return accepted().build();
     }
 
     @GET
@@ -416,8 +416,9 @@ public class SeriesControllerJersey {
         } catch (NotFoundException e) {
             return status(Status.NOT_FOUND).build();
         }
-        return status(Status.NO_CONTENT).build();
+        return accepted().build();
     }
+
 
     @GET
     @Path("/watchlist")
@@ -437,10 +438,10 @@ public class SeriesControllerJersey {
                         + ((next && page > 1) ? " ; " : "") + (page > 1 ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build().toString() + " , rel = prev") : ""));
             }*/
             if(page > 1) {
-                rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
+                rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build(), "prev");
             }
             if(next) {
-                rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
+                rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build(), "next");
             }
             return rb.build();
         } catch (UnauthorizedException e) {

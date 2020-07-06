@@ -108,6 +108,9 @@ public class UserControllerJersey {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/recentlyWatched")
     public Response getRecentlyWatched(@PathParam("userId") Long userId) {
+        if(!userService.getLoggedUser().isPresent() || userService.getLoggedUser().get().getId() != userId) {
+            return Response.status(Status.UNAUTHORIZED).build();
+        }
         List<SeriesDTO> series = Collections.EMPTY_LIST;
         try {
             series = seriesService.getRecentlyWatchedList(5).stream()
@@ -125,7 +128,7 @@ public class UserControllerJersey {
     @Path("/{userId}/following")
     public Response getFollowedSeries(@PathParam("userId") Long userId) {
         Optional<User> optUser = userService.getLoggedUser();
-        if(optUser.isPresent() && optUser.get().getId() != userId) return Response.status(Status.UNAUTHORIZED).build();
+        if(!optUser.isPresent() || optUser.get().getId() != userId) return Response.status(Status.UNAUTHORIZED).build();
         List<SeriesDTO> seriesList = Collections.EMPTY_LIST;
         try {
             seriesList = seriesService.getAddedSeries().stream().
