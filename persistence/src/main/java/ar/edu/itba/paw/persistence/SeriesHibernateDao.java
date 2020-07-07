@@ -102,7 +102,7 @@ public class SeriesHibernateDao implements SeriesDao {
         List<Series> seriesList = em.createNativeQuery("SELECT * " +
                 "FROM (series JOIN hasGenre ON hasgenre.seriesid = series.id JOIN genres ON hasgenre.genreid = genres.id LEFT JOIN network ON network.id = series.network_id) " +
                 "WHERE genreid = ?" +
-                "ORDER BY genres.name DESC LIMIT ? OFFSET ?",Series.class)
+                "ORDER BY series.followers,series.id DESC LIMIT ? OFFSET ?",Series.class)
                 .setParameter(1, genre.getId())
                 .setParameter(2, pageSize)
                 .setParameter(3, (page - 1) * pageSize)
