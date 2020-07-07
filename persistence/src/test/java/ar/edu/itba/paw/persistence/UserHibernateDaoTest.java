@@ -195,8 +195,8 @@ public class UserHibernateDaoTest {
 
     @Test
     public void setNotificationViewedTest() {
-        assertTrue(userHibernateDao.setNotificationViewed(notification.getId()));
-        notification.setViewed(false);
+        userHibernateDao.setNotificationViewed(notification.getId(),true);
+        assertTrue(notification.getViewed());
     }
 
 }

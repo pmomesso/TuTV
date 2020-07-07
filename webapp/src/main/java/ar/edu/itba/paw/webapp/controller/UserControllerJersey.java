@@ -11,11 +11,9 @@ import ar.edu.itba.paw.model.errors.Errors;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
 import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
-import ar.edu.itba.paw.webapp.auth.jwt.JwtUtil;
 import ar.edu.itba.paw.webapp.dtos.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintViolation;
@@ -164,20 +162,21 @@ public class UserControllerJersey {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/notifications")
     public Response getUserNotifications(@PathParam("userId") Long userId) {
-        if(userService.getLoggedUser().get().getId() != userId) {
+        Optional<User> loggedInUser = userService.getLoggedUser();
+        if(!loggedInUser.isPresent() || loggedInUser.get().getId() != userId) {
             return status(Status.UNAUTHORIZED).build();
         }
-        List<NotificationDTO> notifications = userService.getLoggedUser().get().getNotifications().stream()
+        List<NotificationDTO> notifications = loggedInUser.get().getNotifications().stream()
                 .map(NotificationDTO::new).collect(Collectors.toList());
         return ok(new GenericEntity<List<NotificationDTO>>(notifications) {}).build();
     }
 
     @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{userId}/notifications")
-    public Response editUserNotifications(@PathParam("userId") Long userId,
-                                          @Valid NotificationStateListDTO notificationStateListDTO) {
-        Set<ConstraintViolation<NotificationStateListDTO>> constraintViolationSet = validator.validate(notificationStateListDTO);
+    @Path("/{userId}/notifications/{notificationId}")
+    public Response editUserNotifications(@PathParam("userId") Long userId,@PathParam("notificationId") Long notificationId, @Valid NotificationStateDTO notificationState)  {
+        Set<ConstraintViolation<NotificationStateDTO>> constraintViolationSet = validator.validate(notificationState);
         if(!constraintViolationSet.isEmpty()) {
             return status(Status.BAD_REQUEST).build();
         }
@@ -186,9 +185,7 @@ public class UserControllerJersey {
         }
         try {
             User loggedUser = userService.getLoggedUser().get();
-            for(Long notificationId : notificationStateListDTO.getNotificationIds()) {
-                userService.setNotificationViewed(notificationId);
-            }
+            userService.setNotificationViewed(notificationId,notificationState.getViewedByUser());
             return accepted(new NotificationsListDTO(loggedUser)).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
@@ -196,6 +193,21 @@ public class UserControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
     }
+
+    @DELETE
+    @Path("/{userId}/notifications/{notificationId}")
+    public Response deleteNotification(@PathParam("userId") Long userId,@PathParam("notificationId") Long notificationId)  {
+        if(!userService.getLoggedUser().isPresent() || userService.getLoggedUser().get().getId() != userId) {
+            return status(Status.UNAUTHORIZED).build();
+        }
+        try {
+            userService.deleteNotification(userId,notificationId);
+            return status(Status.NO_CONTENT).build();
+        } catch (NotFoundException e) {
+            return status(Status.NOT_FOUND).build();
+        }
+    }
+
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

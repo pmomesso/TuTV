@@ -39,5 +39,7 @@ public interface UserDao {
 
     Map<Genre, Long> getGenreStats(long userId);
 
-    boolean setNotificationViewed(long notificationId);
+    boolean setNotificationViewed(long notificationId, boolean viewed);
+
+    boolean deleteNotification(long userId, long notificationId);
 }

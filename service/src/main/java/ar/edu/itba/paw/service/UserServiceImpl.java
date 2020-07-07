@@ -184,10 +184,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void setNotificationViewed(long notificationId) throws NotFoundException, UnauthorizedException {
+    public void setNotificationViewed(long notificationId, boolean viewed) throws NotFoundException, UnauthorizedException {
         User user = getLoggedUser().get();
         if(!user.getNotifications().stream().filter(notification -> notification.getId() == notificationId).findAny().isPresent())
             throw new UnauthorizedException();
-        if(!userDao.setNotificationViewed(notificationId)) throw new NotFoundException();
+        if(!userDao.setNotificationViewed(notificationId,viewed)) throw new NotFoundException();
+    }
+
+    @Override
+    @Transactional
+    public void deleteNotification(long userId, long notificationId) throws NotFoundException {
+        if(!userDao.deleteNotification(userId,notificationId)){
+            throw new NotFoundException();
+        }
     }
 }

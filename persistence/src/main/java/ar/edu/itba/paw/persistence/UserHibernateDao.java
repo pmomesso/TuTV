@@ -187,10 +187,19 @@ public class UserHibernateDao implements UserDao {
     }
 
     @Override
-    public boolean setNotificationViewed(long notificationId) {
+    public boolean setNotificationViewed(long notificationId,boolean viewed) {
         Optional<Notification> n = Optional.ofNullable(em.find(Notification.class, notificationId));
-        n.ifPresent(notification -> notification.setViewed(true));
+        n.ifPresent(notification -> notification.setViewed(viewed));
         return n.isPresent();
+    }
+
+    @Override
+    public boolean deleteNotification(long userId, long notificationId){
+        int isSuccessful = em.createQuery("delete from Notification n where n.id = :notificationId and n.user.id = :userId")
+                .setParameter("notificationId", notificationId)
+                .setParameter("userId", userId)
+                .executeUpdate();
+        return isSuccessful > 0;
     }
 
 }

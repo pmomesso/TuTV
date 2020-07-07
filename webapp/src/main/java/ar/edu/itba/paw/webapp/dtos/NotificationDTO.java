@@ -17,7 +17,7 @@ public class NotificationDTO {
         this.series = new SeriesDTO();
         this.series.setId(notification.getResource().getId());
         this.series.setName(notification.getResource().getName());
-        this.viewedByUser = Boolean.valueOf(notification.getViewed());
+        this.viewedByUser = notification.getViewed();
     }
 
     public Long getId() {

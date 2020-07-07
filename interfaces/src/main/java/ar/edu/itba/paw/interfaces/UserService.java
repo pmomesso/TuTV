@@ -34,5 +34,7 @@ public interface UserService {
 	void setUserAvatar(long userId, String base64Image) throws BadRequestException;
 	Optional<byte[]> getUserAvatar(long userId);
 
-    void setNotificationViewed(long notificationId) throws NotFoundException, UnauthorizedException;
+    void setNotificationViewed(long notificationId, boolean viewed) throws NotFoundException, UnauthorizedException;
+
+    void deleteNotification(long userId, long notificationId) throws NotFoundException;
 }
