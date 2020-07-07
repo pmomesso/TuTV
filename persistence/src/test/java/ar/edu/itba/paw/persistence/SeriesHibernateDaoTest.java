@@ -294,10 +294,10 @@ public class SeriesHibernateDaoTest {
     public void unfollowSeriesTest(){
         insertUser();
         series.addUserFollower(user);
-        int updated = seriesDao.unfollowSeries(series.getId(),user.getId());
-        Assert.assertEquals(1,updated);
-        Assert.assertEquals(0,series.getFollowers());
-        Assert.assertEquals(0,series.getUserFollowers().size());
+        Optional<Series> optSeries = seriesDao.unfollowSeries(series.getId(),user.getId());
+        Assert.assertTrue(optSeries.isPresent());
+        Assert.assertEquals(0,optSeries.get().getFollowers());
+        Assert.assertEquals(0,optSeries.get().getUserFollowers().size());
         Assert.assertEquals(0,user.getFollows().size());
     }
     @Test

@@ -178,12 +178,13 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public void unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException {
+    public Optional<Series> unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        int result = seriesDao.unfollowSeries(seriesId, user.getId());
-        if(result == 0) {
+        Optional<Series> series = seriesDao.unfollowSeries(seriesId, user.getId());
+        if(!series.isPresent()) {
             throw new NotFoundException();
         }
+        return series;
     }
 
     @Override

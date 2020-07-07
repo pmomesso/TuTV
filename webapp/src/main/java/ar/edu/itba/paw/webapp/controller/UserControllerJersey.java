@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.SeriesList;
 import ar.edu.itba.paw.model.User;
 import ar.edu.itba.paw.model.UsersList;
@@ -148,13 +149,13 @@ public class UserControllerJersey {
         Set<ConstraintViolation<FollowSeriesDTO>> violations = validator.validate(followSeriesDTO);
         if(!violations.isEmpty()) return Response.status(Status.BAD_REQUEST).build();
         try {
-            seriesService.followSeries(followSeriesDTO.getSeriesId());
+            Optional<Series> series = seriesService.followSeries(followSeriesDTO.getSeriesId());
+            return ok(new SeriesDTO(series.get(), userService.getLoggedUser(), uriInfo)).build();
         } catch (NotFoundException e ) {
             return Response.status(Status.NOT_FOUND).build();
         } catch (UnauthorizedException e) {
             return Response.status(Status.UNAUTHORIZED).build();
         }
-        return ok().build();
     }
 
     @DELETE
@@ -164,13 +165,13 @@ public class UserControllerJersey {
         //Set<ConstraintViolation<FollowSeriesDTO>> violations = validator.validate(followSeriesDTO);
         //if(!violations.isEmpty()) return Response.status(Status.BAD_REQUEST).build();
         try {
-            seriesService.unfollowSeries(seriesId);
+            Optional<Series> series = seriesService.unfollowSeries(seriesId);
+            return ok(new SeriesDTO(series.get(), userService.getLoggedUser(), uriInfo)).build();
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
         } catch (UnauthorizedException e) {
             return Response.status(Status.UNAUTHORIZED).build();
         }
-        return ok().build();
     }
 
     @POST

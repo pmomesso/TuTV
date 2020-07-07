@@ -31,7 +31,7 @@ public interface SeriesService {
 
     boolean follows(long seriesId) throws UnauthorizedException;
     Optional<Series> followSeries(long seriesId) throws UnauthorizedException, NotFoundException;
-    void unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException;
+    Optional<Series> unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException;
     void setViewedEpisode(long seriesId, int seasonNumber, int episodeNumber) throws NotFoundException, UnauthorizedException;
     void setViewedSeason(long seriesId, int seasonNumber) throws UnauthorizedException, NotFoundException;
     void rateSeries(long seriesId, int rating) throws NotFoundException, UnauthorizedException, BadRequestException;

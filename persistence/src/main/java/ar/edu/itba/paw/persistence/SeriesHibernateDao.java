@@ -290,7 +290,7 @@ public class SeriesHibernateDao implements SeriesDao {
     }
 
     @Override
-    public int unfollowSeries(long seriesId, long userId) {
+    public Optional<Series> unfollowSeries(long seriesId, long userId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<Series> series = Optional.ofNullable(em.find(Series.class,seriesId));
         int updated = 0;
@@ -299,7 +299,7 @@ public class SeriesHibernateDao implements SeriesDao {
             series.get().setFollowers(series.get().getUserFollowers().size());
             updated++;
         }
-        return updated;
+        return series;
     }
 
     @Override
