@@ -149,8 +149,8 @@ public class UserControllerJersey {
         Set<ConstraintViolation<FollowSeriesDTO>> violations = validator.validate(followSeriesDTO);
         if(!violations.isEmpty()) return Response.status(Status.BAD_REQUEST).build();
         try {
-            Optional<Series> series = seriesService.followSeries(followSeriesDTO.getSeriesId());
-            return ok(new SeriesDTO(series.get(), userService.getLoggedUser(), uriInfo)).build();
+            Series series = seriesService.followSeries(followSeriesDTO.getSeriesId());
+            return ok(new SeriesDTO(series, userService.getLoggedUser(), uriInfo)).build();
         } catch (NotFoundException e ) {
             return Response.status(Status.NOT_FOUND).build();
         } catch (UnauthorizedException e) {
@@ -165,8 +165,8 @@ public class UserControllerJersey {
         //Set<ConstraintViolation<FollowSeriesDTO>> violations = validator.validate(followSeriesDTO);
         //if(!violations.isEmpty()) return Response.status(Status.BAD_REQUEST).build();
         try {
-            Optional<Series> series = seriesService.unfollowSeries(seriesId);
-            return ok(new SeriesDTO(series.get(), userService.getLoggedUser(), uriInfo)).build();
+            Series series = seriesService.unfollowSeries(seriesId);
+            return ok(new SeriesDTO(series, userService.getLoggedUser(), uriInfo)).build();
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
         } catch (UnauthorizedException e) {

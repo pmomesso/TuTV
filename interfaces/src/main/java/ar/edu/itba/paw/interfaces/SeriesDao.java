@@ -72,7 +72,7 @@ public interface SeriesDao {
 
     int removePost(long postId);
 
-    int rateSeries(long seriesId, long userId, int rating);
+    Optional<Series> rateSeries(long seriesId, long userId, int rating);
 
     long getPostAuthorId(long postId);
 

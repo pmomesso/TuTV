@@ -254,10 +254,8 @@ public class SeriesControllerJersey {
             } else {
                 seriesService.unfollowSeries(seriesId);
             }*/
-            if(serieStateDTO.getLoggedInUserRating() != null) {
-                seriesService.rateSeries(seriesId, serieStateDTO.getLoggedInUserRating());
-            }
-            return accepted().build();
+            Series series = seriesService.rateSeries(seriesId, serieStateDTO.getLoggedInUserRating());
+            return accepted(new SeriesDTO(series, userService.getLoggedUser(), uriInfo)).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {

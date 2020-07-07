@@ -483,11 +483,12 @@ public class SeriesHibernateDao implements SeriesDao {
     }
 
     @Override
-    public int rateSeries(long seriesId, long userId, int rating) {
+    public Optional<Series> rateSeries(long seriesId, long userId, int rating) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         boolean done = false;
+        Optional<Series> series = Optional.empty();
         if(user.isPresent()){
-            Optional<Series> series = Optional.ofNullable(em.find(Series.class,seriesId));
+            series = Optional.ofNullable(em.find(Series.class,seriesId));
             if(series.isPresent()){
                 Rating r = null;
                 for(Rating userRate : user.get().getRatings()){
@@ -512,7 +513,7 @@ public class SeriesHibernateDao implements SeriesDao {
                 em.flush();
             }
         }
-        return done ? 1 : 0;
+        return series;
     }
 
     @Override

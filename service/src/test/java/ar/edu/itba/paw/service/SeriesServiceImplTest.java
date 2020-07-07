@@ -161,7 +161,7 @@ public class SeriesServiceImplTest {
         //Setup
         final int rating = 3;
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.rateSeries(Mockito.eq(ID),Mockito.eq(USER_ID),Mockito.eq(rating))).thenReturn(1);
+        Mockito.when(mockDao.rateSeries(Mockito.eq(ID),Mockito.eq(USER_ID),Mockito.eq(rating))).thenReturn(Optional.of(getMockSeries()));
         //Ejercitar
         try {
             seriesService.rateSeries(ID,rating);

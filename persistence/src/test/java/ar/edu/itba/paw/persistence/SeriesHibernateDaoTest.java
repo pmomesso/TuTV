@@ -275,8 +275,8 @@ public class SeriesHibernateDaoTest {
         insertUser();
         series.setUserRating(0.0);
         int rating = 2;
-        int updated = seriesDao.rateSeries(series.getId(),user.getId(),rating);
-        Assert.assertEquals(1,updated);
+        Optional<Series> optSeries = seriesDao.rateSeries(series.getId(),user.getId(),rating);
+        Assert.assertTrue(optSeries.isPresent());
         Assert.assertEquals(1,series.getRatings().size());
         Assert.assertEquals(1,user.getRatings().size());
         Assert.assertEquals(rating, series.getUserRating(),0.1);

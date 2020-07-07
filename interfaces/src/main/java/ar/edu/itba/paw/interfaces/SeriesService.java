@@ -30,11 +30,11 @@ public interface SeriesService {
     List<Network> getAllNetworks();
 
     boolean follows(long seriesId) throws UnauthorizedException;
-    Optional<Series> followSeries(long seriesId) throws UnauthorizedException, NotFoundException;
-    Optional<Series> unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException;
+    Series followSeries(long seriesId) throws UnauthorizedException, NotFoundException;
+    Series unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException;
     void setViewedEpisode(long seriesId, int seasonNumber, int episodeNumber) throws NotFoundException, UnauthorizedException;
     void setViewedSeason(long seriesId, int seasonNumber) throws UnauthorizedException, NotFoundException;
-    void rateSeries(long seriesId, int rating) throws NotFoundException, UnauthorizedException, BadRequestException;
+    Series rateSeries(long seriesId, int rating) throws NotFoundException, UnauthorizedException, BadRequestException;
     void unviewEpisode(long seriesId, int seasonNumber, int episodeNumber) throws NotFoundException, UnauthorizedException;
     void unviewSeason(long seriesId,int seasonNumber) throws UnauthorizedException, NotFoundException;
     Optional<SeriesReview> addSeriesReview(String body, long seriesId, boolean isSpam) throws UnauthorizedException;

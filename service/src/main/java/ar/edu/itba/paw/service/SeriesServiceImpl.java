@@ -170,20 +170,16 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public Optional<Series> followSeries(long seriesId) throws UnauthorizedException, NotFoundException {
+    public Series followSeries(long seriesId) throws UnauthorizedException, NotFoundException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        Optional<Series> optSeries = seriesDao.followSeries(seriesId, user.getId());
-        if(!optSeries.isPresent()) throw new NotFoundException();
-        return optSeries;
+        Series series = seriesDao.followSeries(seriesId, user.getId()).orElseThrow(NotFoundException::new);
+        return series;
     }
 
     @Override
-    public Optional<Series> unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException {
+    public Series unfollowSeries(long seriesId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        Optional<Series> series = seriesDao.unfollowSeries(seriesId, user.getId());
-        if(!series.isPresent()) {
-            throw new NotFoundException();
-        }
+        Series series = seriesDao.unfollowSeries(seriesId, user.getId()).orElseThrow(NotFoundException::new);
         return series;
     }
 
@@ -211,15 +207,13 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public void rateSeries(long seriesId, int rating) throws NotFoundException, UnauthorizedException, BadRequestException {
+    public Series rateSeries(long seriesId, int rating) throws NotFoundException, UnauthorizedException, BadRequestException {
         if(rating > MAX_RATING || rating < MIN_RATING){
             throw new BadRequestException();
         }
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        int result = seriesDao.rateSeries(seriesId, user.getId(), rating);
-        if(result == 0) {
-            throw new NotFoundException();
-        }
+        Series series = seriesDao.rateSeries(seriesId, user.getId(), rating).orElseThrow(NotFoundException::new);
+        return series;
     }
 
     @Override
