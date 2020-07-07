@@ -9,7 +9,7 @@ import $ from "jquery";
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faBell, faTasks } from '@fortawesome/free-solid-svg-icons'
+import { faUsers, faBars, faBell, faTasks } from '@fortawesome/free-solid-svg-icons'
 import { faCompass, faCalendarCheck, faUser } from '@fortawesome/free-regular-svg-icons'
 import NotificationItem from "./NotificationItem";
 
@@ -42,6 +42,7 @@ const Navbar = (props) => {
         setIsOpen(true);
     }
     function closeModal(){
+        console.log(props.logged_user);
         setIsOpen(false);
     }
     function extend(){
@@ -96,6 +97,21 @@ const Navbar = (props) => {
                     <div className="all-left-navs">
                         <section id="menu">
                             <ul className="menu list-unstyled">
+                                {props.logged_user !== null && props.logged_user.admin &&
+                                <li className="upcoming ">
+                                    <NavLink id="menu_users" to="/users" activeClassName="active">
+                                        <FontAwesomeIcon icon={faUsers} style={{
+                                            marginRight: "15px",
+                                            verticalAlign: "middle",
+                                            fontSize: "30px",
+                                            fontWeight: "300",
+                                            color: "#999"
+                                        }}/>
+                                        <span>
+                                             {t("index.users")}
+                                        </span>
+                                    </NavLink>
+                                </li>}
                                 {props.logged_user !== null &&
                                 <li className="upcoming">
                                     <NavLink id="menu_upcoming" to="/upcoming" activeClassName="active">
@@ -107,8 +123,8 @@ const Navbar = (props) => {
                                             color: "#999"
                                         }}/>
                                         <span>
-                                                {t("index.upcoming")}
-                                            </span>
+                                            {t("index.upcoming")}
+                                        </span>
                                     </NavLink>
                                 </li>
                                 }
@@ -123,8 +139,8 @@ const Navbar = (props) => {
                                             color: "#999"
                                         }}/>
                                         <span>
-                                                {t("index.watchlist")}
-                                            </span>
+                                            {t("index.watchlist")}
+                                        </span>
                                     </NavLink>
                                 </li>
                                 }

@@ -65,9 +65,12 @@ body {
     height: 50px;
     margin: 10px;
 }
+.users-icon {
+    width: 30px !important;
+}
 .logo_icon {
     width: 25px;
-    margin-right: 15px;
+    margin-right: 12px;
 }
 .show_spoiler {
     border: none;

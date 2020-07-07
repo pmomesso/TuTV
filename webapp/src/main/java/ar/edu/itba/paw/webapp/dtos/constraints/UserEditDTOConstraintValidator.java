@@ -12,7 +12,7 @@ public class UserEditDTOConstraintValidator implements ConstraintValidator<UserE
 
     @Override
     public boolean isValid(UserEditDTO userEditDTO, ConstraintValidatorContext context) {
-        return !(userEditDTO.getBanned() != null && userEditDTO.getUserName() != null)
-                && !(userEditDTO.getBanned() == null && userEditDTO.getUserName() == null);
+        return !(userEditDTO.getIsBanned() != null && userEditDTO.getUserName() != null)
+                && !(userEditDTO.getIsBanned() == null && userEditDTO.getUserName() == null);
     }
 }

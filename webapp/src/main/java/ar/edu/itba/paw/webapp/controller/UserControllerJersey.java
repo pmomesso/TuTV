@@ -473,18 +473,24 @@ public class UserControllerJersey {
         }
 
         try {
-            if((userEditDTO.getBanned() != null && userEditDTO.getUserName() != null)
-                    || (userEditDTO.getBanned() == null && userEditDTO.getUserName() == null)) {
+            if((userEditDTO.getIsBanned() != null && userEditDTO.getUserName() != null)
+                    || (userEditDTO.getIsBanned() == null && userEditDTO.getUserName() == null)) {
                 return status(Status.BAD_REQUEST).build();
             }
-            User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-            if (loggedUser.getId() != userId) return status(Status.UNAUTHORIZED).build();
 
             if(userEditDTO.getUserName() != null) {
+                User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+                if (loggedUser.getId() != userId) return status(Status.UNAUTHORIZED).build();
                 userService.updateLoggedUserName(userEditDTO.getUserName());
             }
-            if(userEditDTO.getBanned() != null && userEditDTO.getBanned()) {
-                userService.banUser(userId);
+            if(userEditDTO.getIsBanned() != null) {
+                User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+                if (!loggedUser.getIsAdmin()) return status(Status.UNAUTHORIZED).build();
+                if (userEditDTO.getIsBanned()) {
+                    userService.banUser(userId);
+                } else {
+                    userService.unbanUser(userId);
+                }
             }
             return accepted().entity(new UserDTO(userService.findById(userId).get())).build();
         } catch (UnauthorizedException e) {
