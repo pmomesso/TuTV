@@ -392,7 +392,7 @@ public class SeriesHibernateDao implements SeriesDao {
         int updated = 0;
         if(user.isPresent() && review.isPresent()){
             review.get().addLike(user.get());
-            review.get().setNumLikes(review.get().getNumLikes() + 1);
+            review.get().setNumLikes(review.get().getLikes().size());
             updated++;
         }
         return updated;
@@ -405,7 +405,7 @@ public class SeriesHibernateDao implements SeriesDao {
         int updated = 0;
         if(user.isPresent() && review.isPresent()){
             review.get().removeLike(user.get());
-            review.get().setNumLikes(review.get().getNumLikes() - 1);
+            review.get().setNumLikes(review.get().getLikes().size());
             updated++;
         }
         return updated;
@@ -441,7 +441,7 @@ public class SeriesHibernateDao implements SeriesDao {
         int updated = 0;
         if(user.isPresent() && comment.isPresent()){
             comment.get().addLike(user.get());
-            comment.get().setNumLikes(comment.get().getNumLikes() + 1);
+            comment.get().setNumLikes(comment.get().getLikes().size());
             updated++;
         }
         return updated;
@@ -454,7 +454,7 @@ public class SeriesHibernateDao implements SeriesDao {
         int updated = 0;
         if(user.isPresent() && comment.isPresent()){
             comment.get().removeLike(user.get());
-            comment.get().setNumLikes(comment.get().getNumLikes() - 1);
+            comment.get().setNumLikes(comment.get().getLikes().size());
             updated++;
         }
         return updated;
