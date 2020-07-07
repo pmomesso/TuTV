@@ -12,6 +12,7 @@ import 'react-activity/dist/react-activity.css';
 
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
+import Discussion from '../components/Discussion';
 
 class SeriesPage extends Component {
     state = {
@@ -286,6 +287,7 @@ class SeriesPage extends Component {
                                     </div>
                                 </div>
                             </div>
+                            <Discussion series={this.state.series} />
                         </div>
 
 

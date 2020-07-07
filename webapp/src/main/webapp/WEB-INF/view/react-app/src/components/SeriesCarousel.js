@@ -10,7 +10,6 @@ import 'react-activity/dist/react-activity.css';
 import Carousel from 'react-bootstrap/Carousel'
 
 class SeriesCarousel extends Component {
-
     state = {
         loading: true,
         showList: []
