@@ -73,11 +73,15 @@ class TvSeriesPoster extends PureComponent {
                     <Link to={ "/series/" + series.id }>
                         <img  src={"https://image.tmdb.org/t/p/original" + series.posterUrl} alt={series.name}/>
                     </Link>
-                    {this.props.logged_user !== null &&
-                    <button className="check-follow">
-                        <FontAwesomeIcon icon={ !this.state.series.loggedInUserFollows ? faPlusCircle : faMinusCircle } onClick={this.onSeriesFollowClicked} className="icon" />
-                    </button>
-                    }
+                    <div className="overlay">
+                        <span className="zoom-btn overlay-btn">
+                            {this.props.logged_user !== null &&
+                            <button className="check-follow">
+                                <FontAwesomeIcon icon={ !this.state.series.loggedInUserFollows ? faPlusCircle : faMinusCircle } onClick={this.onSeriesFollowClicked} className="icon" />
+                            </button>
+                            }
+                        </span>
+                    </div>
                 </div>
                 <div className="show-details poster-details">
                     <h2>{ series.name }</h2>
