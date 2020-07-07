@@ -5,8 +5,7 @@ import Axios from 'axios';
 
 import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronCircleRight, faChevronCircleLeft } from '@fortawesome/free-solid-svg-icons';
+import $ from "jquery";
 
 let linkHeaderParser = require('parse-link-header');
 
@@ -37,7 +36,15 @@ class SeriesList extends Component {
     let source = this.state.source;
 
     if(typeof source === "string") {
-      Axios.get(source)
+      var width = window.screen.width;
+      var section_width = $("#explore section")[0].offsetWidth;
+      var pagesize;
+      if (width > 768) {
+        pagesize = (width - 304 - section_width*0.04)/221;
+      } else {
+        pagesize = (width - 64 - section_width*0.04)/162;
+      }
+      Axios.get(source,  {params: {pagesize: pagesize.toFixed()}})
         .then(res => {
           let linkHeader = res.headers["link"];
           let linkHeaderParsed = linkHeaderParser(linkHeader);
@@ -96,16 +103,16 @@ class SeriesList extends Component {
         </h2>
         <ul className="posters-list shows-list explore-list list-unstyled list-inline overflow-hidden">
         {(typeof this.state.prevUrl === "string") &&
-            <a class="carousel-genre-left float-left" data-slide="prev" onClick={this.prevPage}>
-              <span class="carousel-control-prev-icon my-prev-icon"></span>
+            <a className="carousel-genre-left float-left" data-slide="prev" onClick={this.prevPage}>
+              <span className="carousel-control-prev-icon my-prev-icon"></span>
             </a>
           }
 
           { showList }
 
           {(typeof this.state.nextUrl === "string") &&
-            <a class="carousel-genre-right float-left" data-slide="next" onClick={this.nextPage}>
-              <span class="carousel-control-next-icon my-next-icon"></span>
+            <a className="carousel-genre-right float-left" data-slide="next" onClick={this.nextPage}>
+              <span className="carousel-control-next-icon my-next-icon"></span>
             </a>
           }
         </ul>

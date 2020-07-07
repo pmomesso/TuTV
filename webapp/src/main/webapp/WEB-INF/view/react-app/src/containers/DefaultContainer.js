@@ -13,7 +13,7 @@ import Upcoming from './Upcoming';
 const DefaultContainer = () => {
     return (
         <div className="App home no-touch white reduced-right h-100" id="container">
-          <div className="body-inner">
+          <div className="body-inner h-100">
             <Navbar/>
 
             <div className="page-center page-column ">

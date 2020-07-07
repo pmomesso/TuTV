@@ -10,7 +10,7 @@ import RouterContainer from './RouterContainer';
 
 const App = () => {
   return (
-    <div className="app-container">
+    <div className="app-container h-100">
       <ReactNotification />
       <BrowserRouter>
         <RouterContainer />

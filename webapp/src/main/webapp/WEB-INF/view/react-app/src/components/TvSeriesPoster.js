@@ -12,7 +12,7 @@ import { compose } from "recompose";
 class TvSeriesPoster extends PureComponent {
     state = {
         series: this.props.series
-    }
+    };
 
     onSeriesFollowClicked = () => {
         if(this.props.logged_user === null) {
@@ -36,7 +36,7 @@ class TvSeriesPoster extends PureComponent {
                     ...this.state.series,
                     followers: res.data.followers,
                     loggedInUserFollows: newValue
-                }
+                };
         
                 this.setState({
                     series: newSeries
@@ -60,7 +60,7 @@ class TvSeriesPoster extends PureComponent {
                 /* TODO SI CADUCO LA SESION? */
                 //alert("Error: " + err.response.status);
             });
-    }
+    };
 
     render() {
         const { series } = this.state;
@@ -69,25 +69,22 @@ class TvSeriesPoster extends PureComponent {
         
         return (
             <li className="float-left">
-                <Link to={ "/series/" + series.id }>
-                    <div className="image-crop">
-                        <img 
-                            src={"https://image.tmdb.org/t/p/original" + series.posterUrl} 
-                            alt={series.name}/>
-                        <div className="overlay">
-                            <span className="zoom-btn overlay-btn">
-                                <FontAwesomeIcon icon={ !this.state.series.loggedInUserFollows ? faPlusCircle : faMinusCircle } onClick={this.onSeriesFollowClicked} className="icon" />
-                            </span>
-                        </div>
-
-                    </div>
-                    <div className="show-details poster-details">
-                        <h2>{ series.name }</h2>
-                        <span className="secondary-link">
-                            { t("index.followers", { count: series.followers }) }
-                        </span>
-                    </div>
-                </Link>
+                <div className="image-crop">
+                    <Link to={ "/series/" + series.id }>
+                        <img  src={"https://image.tmdb.org/t/p/original" + series.posterUrl} alt={series.name}/>
+                    </Link>
+                    {this.props.logged_user !== null &&
+                    <button className="check-follow">
+                        <FontAwesomeIcon icon={ !this.state.series.loggedInUserFollows ? faPlusCircle : faMinusCircle } onClick={this.onSeriesFollowClicked} className="icon" />
+                    </button>
+                    }
+                </div>
+                <div className="show-details poster-details">
+                    <h2>{ series.name }</h2>
+                    <span className="secondary-link">
+                        { t("index.followers", { count: series.followers }) }
+                    </span>
+                </div>
             </li>
         )
     }
@@ -97,7 +94,7 @@ const mapStateToProps = (state) => {
     return {
         logged_user: state.auth.user
     }
-}
+};
 
 export default compose(
     connect(mapStateToProps),
