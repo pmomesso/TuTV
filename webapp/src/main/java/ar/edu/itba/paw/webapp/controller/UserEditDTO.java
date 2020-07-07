@@ -15,11 +15,11 @@ public class UserEditDTO {
         //Empty constructor for JAX-RS
     }
 
-    public Boolean getBanned() {
+    public Boolean getIsBanned() {
         return isBanned;
     }
 
-    public void setBanned(Boolean banned) {
+    public void setIsBanned(Boolean banned) {
         isBanned = banned;
     }
 

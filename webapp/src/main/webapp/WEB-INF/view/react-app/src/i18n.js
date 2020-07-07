@@ -10,6 +10,7 @@ i18n
     resources: {
       en: {
         translations: {
+            "index.users":                  "Users",
             "index.upcoming":               "Upcoming",
             "index.watchlist":              "Watchlist",
             "index.explore":                "Explore",
@@ -115,10 +116,23 @@ i18n
             "watchlist.Noshows":            "No shows",
             "watchlist.discover":           "Discover shows to watch",
             "watchlist.explore":            "Explore",
+
+            "users.title":                  "Administrator control page",
+            "users.user":                   "User",
+            "users.status":                 "Status",
+            "users.email":                  "Mail",
+            "users.action":                 "Action",
+            "users.member":                 "Member",
+            "users.banned":                 "Banned",
+            "users.active":                 "Active",
+            "users.results":                "{0} - {1} of {2}",
+            "users.previous":               "Previous",
+            "users.next":                   "Next"
         }
       },
       es: {
         translations: {
+            "index.users":                  "Usuarios",
             "index.upcoming":               "Próximamente",
             "index.watchlist":              "Series Pendientes",
             "index.explore":                "Explorar",
@@ -224,6 +238,18 @@ i18n
             "watchlist.Noshows":            "Sin episodios",
             "watchlist.discover":           "Encuentre series para ver",
             "watchlist.explore":            "Explorar",
+
+            "users.title":                  "Página de control del administrador",
+            "users.user":                   "Usuario",
+            "users.status":                 "Estado",
+            "users.email":                  "Mail",
+            "users.action":                 "Acción",
+            "users.member":                 "Miembro",
+            "users.banned":                 "Bloqueado",
+            "users.active":                 "Activo",
+            "users.results":                "{0} - {1} de {2}",
+            "users.previous":               "Anterior",
+            "users.next":                   "Siguiente"
         }
       }
     },

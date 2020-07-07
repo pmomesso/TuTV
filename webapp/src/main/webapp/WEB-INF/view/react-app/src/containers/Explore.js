@@ -27,7 +27,7 @@ class Explore extends Component {
         });
 
         return (
-            <div className="alt-block">
+            <div className="alt-block" style={{background: 'white'}}>
                 <div className="main-block">
                     <div className="main-block-container">
                         <div id="explore">
