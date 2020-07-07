@@ -16,7 +16,7 @@ public class SeriesReviewDTO {
     private String body;
 
     private Integer likes = 0;
-    private Boolean loggedInUserLikes = null;
+    private Boolean loggedInUserLikes = Boolean.FALSE;
     private Boolean isSpam = Boolean.FALSE;
     private Long id;
 
@@ -97,12 +97,10 @@ public class SeriesReviewDTO {
 
     private void setUserFields(SeriesReview seriesReview, Optional<User> loggedUser) {
         loggedUser.ifPresent(user -> {
-            if(user.getId() != seriesReview.getUser().getId()) {
-                if(seriesReview.getLikes().contains(user)) {
-                    loggedInUserLikes = Boolean.TRUE;
-                } else {
-                    loggedInUserLikes = Boolean.FALSE;
-                }
+            if(seriesReview.getLikes().contains(user)) {
+                loggedInUserLikes = Boolean.TRUE;
+            } else {
+                loggedInUserLikes = Boolean.FALSE;
             }
         });
     }

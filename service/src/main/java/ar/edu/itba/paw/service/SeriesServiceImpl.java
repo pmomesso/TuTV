@@ -449,7 +449,7 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     public Optional<Series> serieWithReview(Long seriesReviewId) {
-        return Optional.ofNullable(seriesDao.serieWithReview(seriesReviewId));
+        return seriesDao.serieWithReview(seriesReviewId);
     }
 
 }

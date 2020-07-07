@@ -3,12 +3,14 @@ package ar.edu.itba.paw.webapp.dtos;
 import ar.edu.itba.paw.model.User;
 
 import javax.validation.constraints.NotNull;
+import java.util.Base64;
 
 public class UserDTO {
 
     private Long id;
     private String userName;
     private String mail;
+    private String avatar;
     private Boolean isAdmin = Boolean.FALSE;
     private Boolean isBanned = Boolean.FALSE;
 
@@ -22,6 +24,11 @@ public class UserDTO {
         this.mail = user.getMailAddress();
         this.isAdmin = user.getIsAdmin();
         this.isBanned = user.getIsBanned();
+        if(user.getUserAvatar() != null) {
+            this.avatar = Base64.getEncoder().encodeToString(user.getUserAvatar());
+        } else {
+            this.avatar = "";
+        }
     }
 
     public Long getId() {

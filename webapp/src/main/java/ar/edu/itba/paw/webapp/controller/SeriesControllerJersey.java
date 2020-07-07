@@ -126,8 +126,9 @@ public class SeriesControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
         Series series = optSeries.get();
-        SeriesReviewsDTO seriesReviewsDTO = new SeriesReviewsDTO(series, userService.getLoggedUser());
-        return ok(seriesReviewsDTO).build();
+        List<SeriesReviewDTO> reviews = series.getSeriesReviewList().stream()
+                .map(sr -> new SeriesReviewDTO(sr, userService.getLoggedUser())).collect(Collectors.toList());
+        return ok(new GenericEntity<List<SeriesReviewDTO>>(reviews) {}).build();
     }
 
     @POST
@@ -193,7 +194,7 @@ public class SeriesControllerJersey {
             return status(Status.BAD_REQUEST).build();
         }
         Optional<Series> series = seriesService.getSerieById(seriesId);
-        if(!series.isPresent() || !seriesService.serieWithReview(seriesReviewId).isPresent()) {
+        if(!series.isPresent() || series.get().getSeriesReviewList().stream().filter(r -> r.getId() == seriesReviewId).count() == 0) {
             return status(Status.NOT_FOUND).build();
         }
         try {
@@ -236,6 +237,50 @@ public class SeriesControllerJersey {
         } catch (NotFoundException e) {
             return status(Status.NOT_FOUND).build();
         }
+    }
+
+    @DELETE
+    @Path("/{seriesId}/reviews/{reviewId}")
+    public Response deletePost(@PathParam("seriesId") Long seriesId, @PathParam("reviewId") Long reviewId) {
+        Optional<Series> optSeries = seriesService.getSerieById(seriesId);
+        if(!optSeries.isPresent() || optSeries.get().getSeriesReviewList().stream().filter(r -> r.getId() == reviewId).count() == 0) {
+            return status(Status.NOT_FOUND).build();
+        }
+        try {
+            seriesService.removePost(reviewId);
+        } catch (UnauthorizedException e) {
+            return status(Status.UNAUTHORIZED).build();
+        } catch (NotFoundException e) {
+            return status(Status.NOT_FOUND).build();
+        }
+        return ok().build();
+    }
+
+    @DELETE
+    @Path("/{seriesId}/review/{reviewId}/comments/{commentId}")
+    public Response deleteComment(@PathParam("seriesId") Long seriesId, @PathParam("reviewId") Long reviewId, @PathParam("commentId") Long commentId) {
+        Optional<Series> optSeries = seriesService.getSerieById(seriesId);
+        if(!optSeries.isPresent()) {
+            return status(Status.NOT_FOUND).build();
+        }
+        Optional<SeriesReview> optReview = optSeries.get().getSeriesReviewList().stream().filter(r -> r.getId() == reviewId).findFirst();
+        if(!optReview.isPresent()) {
+            return status(Status.NOT_FOUND).build();
+        }
+        Optional<SeriesReviewComment> optComment = optReview.get().getComments().stream().filter(c -> c.getId() == commentId).findFirst();
+        if(!optComment.isPresent()) {
+            return status(Status.NOT_FOUND).build();
+        }
+
+        try {
+            seriesService.removeComment(commentId);
+        } catch (UnauthorizedException e) {
+            return status(Status.UNAUTHORIZED).build();
+        } catch (NotFoundException e) {
+            return status(Status.NOT_FOUND).build();
+        }
+
+        return ok().build();
     }
 
     @PUT

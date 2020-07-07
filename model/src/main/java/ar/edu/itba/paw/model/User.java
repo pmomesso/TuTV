@@ -126,12 +126,12 @@ public class User {
         isBanned = banned;
     }
 
-    public void setUserAvatar(byte[] userAvatar) {
-        this.userAvatar = userAvatar;
-    }
-
     public byte[] getUserAvatar() {
         return userAvatar;
+    }
+
+    public void setUserAvatar(byte[] userAvatar) {
+        this.userAvatar = userAvatar;
     }
 
     public Set<Series> getFollows() {

@@ -96,7 +96,7 @@ public interface SeriesDao {
 
     SeriesReviewComment getCommentById(Long commentId);
 
-    Series serieWithReview(Long seriesReviewId);
+    Optional<Series> serieWithReview(Long seriesReviewId);
 
     int addSeriesToList(long id, long seriesId);
 }

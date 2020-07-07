@@ -209,11 +209,9 @@ public class UserControllerJersey {
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         }
-        ResponseBuilder rb = Response.ok(new UsersListDTO(usersList));
-        /*if(usersList.isAreNext() || usersList.isArePrevious()) {
-            rb.header("Link", (usersList.isAreNext() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).build().toString() + " , rel = next") : "")
-                    + ((usersList.isAreNext() && usersList.isArePrevious()) ? " ; " : "") + (usersList.isArePrevious() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).build().toString()) : ""));
-        }*/
+        List<UserDTO> users = usersList.getUsersList().stream()
+                .map(u -> new UserDTO(u)).collect(Collectors.toList());
+        ResponseBuilder rb = Response.ok(new GenericEntity<List<UserDTO>>(users) {});
         if(usersList.isAreNext()) {
             rb = rb.link(uriInfo.getAbsolutePathBuilder()
                     .queryParam("page",auxPage + 1)
