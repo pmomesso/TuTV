@@ -5,11 +5,12 @@ import javax.validation.constraints.Size;
 
 public class LoginDTO {
 
-    @NotNull
     private String username;
-    @NotNull
+
     @Size(min = 8)
     private String password;
+
+    private String confirmationKey;
 
     public LoginDTO(){
 
@@ -29,5 +30,13 @@ public class LoginDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getConfirmationKey() {
+        return confirmationKey;
+    }
+
+    public void setConfirmationKey(String confirmationKey) {
+        this.confirmationKey = confirmationKey;
     }
 }

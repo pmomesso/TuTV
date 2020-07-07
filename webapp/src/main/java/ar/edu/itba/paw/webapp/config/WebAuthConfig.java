@@ -78,7 +78,9 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.POST,"/users/{\\d+}/lists").hasRole("USER")
                     .antMatchers(HttpMethod.PUT,"/users/{\\d+}/lists").hasRole("USER")
                     .antMatchers(HttpMethod.DELETE,"/users/{\\d+}/lists/{\\d+}").hasRole("USER")
-                    .antMatchers("/users/login").anonymous()
+                    .antMatchers(HttpMethod.PUT,"/users/{userId}").authenticated()
+                    .antMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.POST,"/users").permitAll()
                     .antMatchers("/**").permitAll()
                 .and().exceptionHandling()
                     .authenticationEntryPoint(new RestAuthenticationEntryPoint())
@@ -94,7 +96,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     public void configure(final WebSecurity web) {
         web.ignoring()
                 .antMatchers("/resources/**")
-                .antMatchers("/users/mailconfirm");
+                .antMatchers("/");
     }
 
     private String getEncryptationKey() {

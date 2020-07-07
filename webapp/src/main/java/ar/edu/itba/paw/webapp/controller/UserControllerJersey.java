@@ -43,33 +43,7 @@ public class UserControllerJersey {
     @Autowired
     private SeriesService seriesService;
     @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JwtUtil jwtUtil;
-    @Autowired
     private Validator validator;
-
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/login")
-    public Response login(@Valid LoginDTO loginDto) {
-
-        Set<ConstraintViolation<LoginDTO>> violations = validator.validate(loginDto);
-        if(!violations.isEmpty()) {
-            return status(Status.BAD_REQUEST).build();
-        }
-
-        Optional<User> user = userService.findByMail(loginDto.getUsername());
-        if(!user.isPresent() || !passwordEncoder.matches(loginDto.getPassword(),user.get().getPassword())){
-            return status(Status.BAD_REQUEST).build();
-        }
-        if(user.get().getConfirmationKey() != null && !user.get().getConfirmationKey().isEmpty()){
-            return status(Status.UNAUTHORIZED).build();
-        }
-        String token = jwtUtil.generateToken(user.get());
-        return ok().header("Authorization","Bearer " + token).entity(new UserDTO(user.get())).build();
-    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -171,27 +145,6 @@ public class UserControllerJersey {
             return Response.status(Status.NOT_FOUND).build();
         } catch (UnauthorizedException e) {
             return Response.status(Status.UNAUTHORIZED).build();
-        }
-    }
-
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/mailconfirm")
-    public Response confirmMail(@Valid ConfirmationDTO confirmation){
-
-        Set<ConstraintViolation<ConfirmationDTO>> violations = validator.validate(confirmation);
-        if(!violations.isEmpty()) {
-            return status(Status.BAD_REQUEST).build();
-        }
-
-        Optional<User> user = userService.activateUser(confirmation.getConfirmationKey());
-        if(!user.isPresent()){
-            return status(Status.NOT_FOUND).build();
-        }
-        else{
-            String token = jwtUtil.generateToken(user.get());
-            return accepted().header("Authorization","Bearer " + token).entity(new UserDTO(user.get())).build();
         }
     }
 
