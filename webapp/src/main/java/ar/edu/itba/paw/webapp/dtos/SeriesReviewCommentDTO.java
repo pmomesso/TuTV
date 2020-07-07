@@ -10,7 +10,7 @@ public class SeriesReviewCommentDTO {
     private Long id;
     private String body;
     private Integer numLikes;
-    private Boolean loggedInUserLikes = null;
+    private Boolean loggedInUserLikes = Boolean.FALSE;
     private UserDTO user;
 
     public SeriesReviewCommentDTO() {
@@ -68,12 +68,10 @@ public class SeriesReviewCommentDTO {
 
     private void setUserFields(SeriesReviewComment comment, Optional<User> loggedUser) {
         loggedUser.ifPresent(user -> {
-            if(comment.getUser().getId() != user.getId()) {
-                if(comment.getLikes().contains(user)) {
-                    loggedInUserLikes = Boolean.TRUE;
-                } else {
-                    loggedInUserLikes = Boolean.FALSE;
-                }
+            if(comment.getLikes().contains(user)) {
+                loggedInUserLikes = Boolean.TRUE;
+            } else {
+                loggedInUserLikes = Boolean.FALSE;
             }
         });
     }

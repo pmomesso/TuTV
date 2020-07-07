@@ -222,9 +222,15 @@ public class SeriesControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
 
-        if(!seriesService.reviewWithComment(commentId).isPresent()) {
+        Optional<Series> optSeries = seriesService.getSerieById(seriesId);
+        if(!optSeries.isPresent()) {
             return status(Status.NOT_FOUND).build();
         }
+        Optional<SeriesReview> optReview = optSeries.get().getSeriesReviewList().stream().filter(r -> r.getId() == seriesReviewId).findFirst();
+        if(!optReview.isPresent() || optReview.get().getComments().stream().filter(c -> c.getId() == commentId).count() == 0) {
+            return status(Status.NOT_FOUND).build();
+        }
+
         try {
             if (seriesReviewCommentStateDTO.getLoggedInUserLikes()) {
                 seriesService.likeComment(commentId);

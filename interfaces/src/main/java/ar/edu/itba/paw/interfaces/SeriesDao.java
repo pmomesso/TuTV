@@ -92,7 +92,7 @@ public interface SeriesDao {
 
     Optional<Boolean> userLikesSeriesReview(User user, long seriesReviewId);
 
-    SeriesReview reviewWithComment(Long commentId);
+    Optional<SeriesReview> reviewWithComment(Long commentId);
 
     SeriesReviewComment getCommentById(Long commentId);
 

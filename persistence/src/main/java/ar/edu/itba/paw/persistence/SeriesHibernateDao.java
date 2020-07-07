@@ -624,10 +624,10 @@ public class SeriesHibernateDao implements SeriesDao {
     }
 
     @Override
-    public SeriesReview reviewWithComment(Long commentId) {
+    public Optional<SeriesReview> reviewWithComment(Long commentId) {
         TypedQuery<SeriesReview> query = em.createQuery("select sr from SeriesReview sr inner join sr.comments c " +
                 "where c.id = :commentId", SeriesReview.class).setParameter("commentId", commentId);
-        return query.getSingleResult();
+        return query.getResultList().stream().findFirst();
     }
 
     @Override

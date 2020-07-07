@@ -439,7 +439,7 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     @Transactional
     public Optional<SeriesReview> reviewWithComment(Long commentId) {
-        return Optional.ofNullable(seriesDao.reviewWithComment(commentId));
+        return seriesDao.reviewWithComment(commentId);
     }
 
     @Override
