@@ -1,9 +1,8 @@
-package ar.edu.itba.paw.webapp.auth.jwt;
+package ar.edu.itba.paw.webapp.auth;
 
 import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.webapp.auth.jwt.exceptions.JwtTokenMissingException;
+import ar.edu.itba.paw.webapp.auth.jwt.JwtAuthenticationToken;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,9 +17,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+public class OurAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    public JwtAuthenticationFilter() {
+    public OurAuthenticationFilter() {
         super("/**");
     }
 
@@ -32,14 +31,20 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String header = request.getHeader("Authorization");
-
-        if (header == null || !header.startsWith("Bearer ")) {
+        header = header != null ? header : "";
+        if (header.startsWith("Bearer ")) {
+            String authToken = header.substring(7);
+            return getAuthenticationManager().authenticate(new JwtAuthenticationToken(authToken));
+        }
+        else if(header.startsWith("Basic ")){
+            String basicToken = header.substring(6);
+            return getAuthenticationManager().authenticate(new ar.edu.itba.paw.webapp.auth.basic.BasicAuthenticationToken(basicToken));
+        }
+        else {
             List<GrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
             return new AnonymousAuthenticationToken("anon",new User(),authorities);
         }
-        String authToken = header.substring(7);
-        return getAuthenticationManager().authenticate(new JwtAuthenticationToken(authToken));
     }
 
     @Override

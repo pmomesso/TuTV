@@ -1,8 +1,8 @@
 package ar.edu.itba.paw.webapp.config;
 
 import ar.edu.itba.paw.webapp.auth.*;
-import ar.edu.itba.paw.webapp.auth.jwt.*;
-import org.apache.commons.io.IOUtils;
+import ar.edu.itba.paw.webapp.auth.basic.BasicAuthenticationProvider;
+import ar.edu.itba.paw.webapp.auth.jwt.JwtAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,14 +23,15 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.ws.rs.HttpMethod;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 @ComponentScan("ar.edu.itba.paw.webapp.auth")
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private BasicAuthenticationProvider basicAuthenticationProvider;
     @Autowired
     private JwtAuthenticationProvider jwtAuthenticationProvider;
 
@@ -59,7 +60,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(jwtAuthenticationProvider);
+        auth.authenticationProvider(basicAuthenticationProvider).authenticationProvider(jwtAuthenticationProvider);
     }
 
     @Override
@@ -86,7 +87,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .and().exceptionHandling()
                     .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .and()
-                    .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(ourAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                     .addFilterBefore(corsFilter(), SessionManagementFilter.class)
                 .csrf()
                     .disable();
@@ -100,22 +101,12 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/");
     }
 
-    private String getEncryptationKey() {
-        InputStream inputStream = getClass()
-                .getClassLoader().getResourceAsStream("remember.key");
-        try {
-            return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
-    }
-
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
-        jwtAuthenticationFilter.setAuthenticationManager(authenticationManager());
-        jwtAuthenticationFilter.setAuthenticationSuccessHandler(new OurAuthenticationSuccessHandler());
-        return jwtAuthenticationFilter;
+    public OurAuthenticationFilter ourAuthenticationFilter() throws Exception {
+        OurAuthenticationFilter ourAuthenticationFilter = new OurAuthenticationFilter();
+        ourAuthenticationFilter.setAuthenticationManager(authenticationManager());
+        ourAuthenticationFilter.setAuthenticationSuccessHandler(new OurAuthenticationSuccessHandler());
+        return ourAuthenticationFilter;
     }
     @Bean
     @Override

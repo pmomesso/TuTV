@@ -10,11 +10,9 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-@Service
 public class JwtUtil {
 
     private static final String KEY_FILE = "jwt.key";
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
     private static final String ISSUER = "tutv-api";
     private static final String AUDIENCE = "tutv-app";
 
@@ -58,12 +56,13 @@ public class JwtUtil {
      * Generates a JWT token containing username as subject, and userId and role as additional claims. These properties are taken from the specified
      * User object. Tokens validity is infinite.
      *
-     * @param u the user for which the token will be generated
+     * @param username the username for which the token will be generated
+     * @param isAdmin if the user is admin
      * @return the JWT token
      */
-    public String generateToken(User u) {
-        Claims claims = Jwts.claims().setSubject(u.getMailAddress());
-        claims.put("isAdmin", u.getIsAdmin());
+    public String generateToken(String username, boolean isAdmin) {
+        Claims claims = Jwts.claims().setSubject(username);
+        claims.put("isAdmin", isAdmin);
 
         return Jwts.builder()
                 .setIssuer(ISSUER)

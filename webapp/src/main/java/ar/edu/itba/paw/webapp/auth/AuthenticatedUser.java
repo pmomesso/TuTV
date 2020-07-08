@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.auth.jwt;
+package ar.edu.itba.paw.webapp.auth;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,12 +8,10 @@ import java.util.Collection;
 public class AuthenticatedUser implements UserDetails {
 
     private String mail;
-    private String token;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public AuthenticatedUser(String mail, String token, Collection<? extends GrantedAuthority> authorities){
+    public AuthenticatedUser(String mail, Collection<? extends GrantedAuthority> authorities){
         this.mail = mail;
-        this.token = token;
         this.authorities = authorities;
     }
     @Override
@@ -49,9 +47,5 @@ public class AuthenticatedUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public String getToken() {
-        return token;
     }
 }
