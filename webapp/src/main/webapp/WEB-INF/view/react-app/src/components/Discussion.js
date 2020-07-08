@@ -121,7 +121,7 @@ class Discussion extends Component {
                                             </div>
                                             <div className="submit-comment">
                                                 <label htmlFor="isSpam" className="spoiler-span">
-                                                    <input {...formik.getFieldProps('isSpam')} type="checkbox" className="check-spoiler" path="isSpam" id="isSpam" />
+                                                    <input {...formik.getFieldProps('isSpam')} type="checkbox" className="mr-2" path="isSpam" id="isSpam" />
                                                     { t("series.markSpoiler") }
                                                 </label>
                                                 <button type="submit" className="submit-comment-btn">

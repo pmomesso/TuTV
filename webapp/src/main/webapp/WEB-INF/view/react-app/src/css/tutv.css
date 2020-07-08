@@ -37,12 +37,6 @@ body {
     right: 155px;
     color: gray;
 }
-.check-spoiler {
-    position: absolute;
-    top: 2px;
-    right: 105px;
-    margin: 0 !important;
-}
 .tutv-button {
     background-color: #44d9e6;
     border: none;
@@ -357,12 +351,6 @@ body {
         position: absolute;
         top: 10px;
         right: 160px;
-    }
-    .check-spoiler {
-        position: absolute;
-        top: 10px;
-        right: 100px;
-        margin: 0 !important;
     }
 }
 .main-box {
