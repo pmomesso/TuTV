@@ -4422,6 +4422,13 @@ header #global-search-results ul strong {
     padding-top:16px;
     text-align:center
 }
+.image-crop img:hover {
+    opacity: 0.9;
+}
+.check-follow svg{
+    background-color: rgba(0,0,0,0.4);
+    border-radius: 50%;
+}
 .posters-list>li .image-crop {
     width:155px;
     height:222px;

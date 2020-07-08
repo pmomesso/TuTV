@@ -22,7 +22,7 @@ class UsersPage extends Component {
             .then(res => {
                 console.log(res);
                 this.setState({
-                    users: res.data.users,
+                    users: res.data,
                     loading: false
                 })
             });
