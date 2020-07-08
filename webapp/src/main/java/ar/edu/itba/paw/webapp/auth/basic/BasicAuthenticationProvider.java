@@ -55,7 +55,7 @@ public class BasicAuthenticationProvider extends AbstractUserDetailsAuthenticati
                 throw new UnmatchedPasswordException("Invalid username or password");
             }
             if(user.get().getConfirmationKey() != null && !user.get().getConfirmationKey().isEmpty()){
-                throw new UnabledUserException("Username is not enabled yet");
+                throw new UnabledUserException("User is not enabled yet");
             }
         }
         User parsedUser = user.get();

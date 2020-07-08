@@ -34,6 +34,12 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     private BasicAuthenticationProvider basicAuthenticationProvider;
     @Autowired
     private JwtAuthenticationProvider jwtAuthenticationProvider;
+    @Autowired
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    @Autowired
+    private OurAuthenticationSuccessHandler authenticationSuccessHandler;
+    @Autowired
+    private OurAuthenticationFailureHandler authenticationFailureHandler;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
@@ -85,7 +91,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.POST,"/users").permitAll()
                     .antMatchers("/**").permitAll()
                 .and().exceptionHandling()
-                    .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                    .authenticationEntryPoint(restAuthenticationEntryPoint)
                 .and()
                     .addFilterBefore(ourAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                     .addFilterBefore(corsFilter(), SessionManagementFilter.class)
@@ -105,7 +111,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
     public OurAuthenticationFilter ourAuthenticationFilter() throws Exception {
         OurAuthenticationFilter ourAuthenticationFilter = new OurAuthenticationFilter();
         ourAuthenticationFilter.setAuthenticationManager(authenticationManager());
-        ourAuthenticationFilter.setAuthenticationSuccessHandler(new OurAuthenticationSuccessHandler());
+        ourAuthenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        ourAuthenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
         return ourAuthenticationFilter;
     }
     @Bean
