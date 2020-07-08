@@ -283,7 +283,7 @@ public class UserControllerJersey {
         List<EpisodeDTO> episodes = Collections.EMPTY_LIST;
         try {
             episodes = seriesService.getUpcomingEpisodes().stream()
-                    .map(e -> new EpisodeDTO(e, u)).collect(Collectors.toList());
+                    .map(e -> new EpisodeDTO(e, optUser)).collect(Collectors.toList());
         } catch (UnauthorizedException e) {
             return Response.status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
