@@ -437,6 +437,31 @@ public class UserControllerJersey {
         }
     }
 
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/banned")
+    public Response banUser(@PathParam("userId") Long userId,@Valid BanUserDTO banUserDTO) {
+
+        Set<ConstraintViolation<BanUserDTO>> violations = validator.validate(banUserDTO);
+        if(!violations.isEmpty()) {
+            return status(Status.BAD_REQUEST).build();
+        }
+        try {
+            User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+            if (!loggedUser.getIsAdmin()) return status(Status.UNAUTHORIZED).build();
+            if (banUserDTO.getBanned()) {
+                userService.banUser(userId);
+            } else {
+                userService.unbanUser(userId);
+            }
+            return accepted().entity(new UserDTO(userService.findById(userId).get())).build();
+        } catch (UnauthorizedException e) {
+            return status(Status.UNAUTHORIZED).build();
+        } catch (NotFoundException e) {
+            return status(Status.NOT_FOUND).build();
+        }
+    }
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/stats")
