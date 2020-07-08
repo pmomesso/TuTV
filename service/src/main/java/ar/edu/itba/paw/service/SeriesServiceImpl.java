@@ -45,7 +45,7 @@ public class SeriesServiceImpl implements SeriesService {
     private void setAiredSeasons(Series s){
         for(Season season : s.getSeasons()){
             for(Episode e : season.getEpisodes()){
-                if(e.getAiring().before(new Date())){
+                if(e.getAiring() != null && e.getAiring().before(new Date())){
                     season.setSeasonAired(true);
                     break;
                 }
