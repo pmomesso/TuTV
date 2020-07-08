@@ -56,12 +56,14 @@ class SeriesList extends Component {
             prevUrl = linkHeaderParsed.prev ? linkHeaderParsed.prev.url : null;
           }
 
-            this.setState({
-              showList: res.data.series,
-              nextUrl: nextUrl,
-              prevUrl: prevUrl,
-              loading: false
-            })
+          const seriesElement = res.data.series ? res.data.series : res.data;
+
+          this.setState({
+            showList: seriesElement,
+            nextUrl: nextUrl,
+            prevUrl: prevUrl,
+            loading: false
+          })
         });
     } else if(Array.isArray(source)) {
       this.setState({
@@ -80,9 +82,11 @@ class SeriesList extends Component {
     if(this.state.loading)
       return (
         <section>
-          <h2 className="black-font">
-            <Trans i18nKey={ "genres." + this.props.name }/>
-          </h2>
+          { (this.props.name) &&
+            <h2 className="black-font">
+              { this.props.name }
+            </h2>
+          }
           <div style={{width: "100%",height: "100", display: "flex", justifyContent: "center", alignItems: "center"}}>
             <Digital color="#727981" size={32} speed={1} animating={true} />
           </div>
@@ -98,9 +102,11 @@ class SeriesList extends Component {
     
     return (
       <section>
-        <h2 className="black-font">
-          <Trans i18nKey={ "genres." + this.props.name }/>
-        </h2>
+        { (this.props.name) &&
+          <h2 className="black-font">
+            { this.props.name }
+          </h2>
+        }
         <ul className="posters-list shows-list explore-list list-unstyled list-inline overflow-hidden">
         {(typeof this.state.prevUrl === "string") &&
             <a className="carousel-genre-left float-left" data-slide="prev" onClick={this.prevPage}>

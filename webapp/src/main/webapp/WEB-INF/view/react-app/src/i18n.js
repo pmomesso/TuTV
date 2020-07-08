@@ -61,6 +61,8 @@ i18n
             "series.deleteConfirmDialog":   "Are you really sure you wish to delete this post? This action can't be undone.",
             "series.yes":                   "Yes",
             "series.no":                    "No",
+            "series.ban":                   "Ban user",
+            "series.unban":                 "Unban user",
 
             "login.continue":               "Continue without login",
             "login.noaccount":              "Don't have an account?",
@@ -196,6 +198,8 @@ i18n
             "series.deleteConfirmDialog":   "¿Está seguro de que desea eliminar esta publicación? Esta acción no se puede deshacer.",
             "series.yes":                   "Sí",
             "series.no":                    "No",
+            "series.ban":                   "Bloquear usuario",
+            "series.unban":                 "Desbloquear usuario",
 
             "login.continue":               "Continuar sin iniciar sesión",
             "login.noaccount":              "¿No tienes una cuenta?",

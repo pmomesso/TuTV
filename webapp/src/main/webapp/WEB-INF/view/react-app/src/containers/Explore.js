@@ -22,7 +22,7 @@ class Explore extends Component {
     render() {
         const seriesLists = this.state.genreList.map(genre => {
             return(
-                <SeriesList key={ genre.id } name={ genre.i18Key } source={ "/series/genres/" + genre.id }/>
+                <SeriesList key={ genre.id } name={ genre.name } source={ "/series/genres/" + genre.id }/>
             )
         });
 

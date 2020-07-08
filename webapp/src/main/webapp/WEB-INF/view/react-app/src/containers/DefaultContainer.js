@@ -10,6 +10,7 @@ import UsersPage from "./UsersPage";
 import ProfilePage from './ProfilePage';
 import Watchlist from './Watchlist';
 import Upcoming from './Upcoming';
+import Search from './Search';
 
 const DefaultContainer = () => {
     return (
@@ -25,6 +26,7 @@ const DefaultContainer = () => {
                   <Route path='/users' render={() => (<UsersPage source={"/users"}/>)}/>
                   <Route path='/watchlist' component={Watchlist}/>
                   <Route path='/upcoming' component={Upcoming}/>
+                  <Route path='/search' component={Search}/>
               </div>
             </div>  
 

@@ -107,6 +107,9 @@ class ProfilePage extends PureComponent {
     };
 
     toggleUploadAvatar = () => {
+        if(!this.props.logged_user || this.state.user.id !== this.props.logged_user.id)
+            return;
+
         $("#uploadAvatarPopup").toggle();
     };
 

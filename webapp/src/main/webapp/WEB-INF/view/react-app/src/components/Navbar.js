@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
@@ -88,9 +88,9 @@ const Navbar = (props) => {
                             <input type="text" id="global-search-input" name="name" className="show-search" placeholder={ t("search.search") }/>
                         </div>
                         <div className="form-group advanced-search">
-                            <a id="advancedSearchLink" href="/search">
+                            <Link id="advancedSearchLink" to="/search">
                                 { t("search.advancedSearch") }
-                            </a>
+                            </Link>
                         </div>
                         <input type="submit" className="novisible" />
                     </form>
