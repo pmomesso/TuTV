@@ -71,4 +71,11 @@ public class UserDTO {
         this.mail = mail;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 }
