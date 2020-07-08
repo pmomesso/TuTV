@@ -3461,6 +3461,7 @@ body.right-column .page-center {
 .comment.review .post .author .author-picture {
     max-width:30px;
     min-width:30px;
+    max-height: 30px;
     min-height:30px;
     float:right
 }
@@ -3630,6 +3631,7 @@ body.right-column .page-center {
 .comment form.post .author .author-picture {
     max-width:30px;
     min-height:30px;
+    max-height: 30px;
     min-width:30px;
     margin-bottom:3px;
     display:inline
@@ -3640,6 +3642,7 @@ body.right-column .page-center {
 .comment .post .author .author-picture {
     max-width:38px;
     min-height:38px;
+    max-height: 38px;
     min-width:38px;
     display:block;
     margin:0 auto

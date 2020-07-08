@@ -42,7 +42,6 @@ const Navbar = (props) => {
         setIsOpen(true);
     }
     function closeModal(){
-        console.log(props.logged_user);
         setIsOpen(false);
     }
     function extend(){

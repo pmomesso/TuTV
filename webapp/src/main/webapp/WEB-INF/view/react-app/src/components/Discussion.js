@@ -20,9 +20,9 @@ class Discussion extends Component {
                 this.setState({
                     loading: false,
                     seriesReviews: res.data
-                })
+                });
             });
-    }
+    };
 
     deleteComment = (commentToDelete) => {
         this.setState({
@@ -111,8 +111,12 @@ class Discussion extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="author">
-                                                    {/* TODO show avatar if it has*/}
-                                                    <img className="author-picture img-circle" alt="" src={"https://d36rlb2fgh8cjd.cloudfront.net/default-images/default-user-q80.png"}/>
+                                                    {
+                                                        (logged_user.avatar) ?
+                                                            (<img src={`data:image/jpeg;base64,${logged_user.avatar}`} className="author-picture img-circle" alt={logged_user.userName}/>)
+                                                            :
+                                                            (<img src={"https://d36rlb2fgh8cjd.cloudfront.net/default-images/default-user-q80.png"} className="author-picture img-circle" alt={logged_user.userName}/>)
+                                                    }
                                                 </div>
                                             </div>
                                             <div className="submit-comment">
@@ -131,7 +135,7 @@ class Discussion extends Component {
                         }
 
                         <div className="comments-list">
-                            { (logged_user === null && !series.seriesReviewList) &&
+                            { (this.state.seriesReviews.length === 0) &&
                                 t("series.noPosts") 
                             }
 
