@@ -283,7 +283,7 @@ public class UserControllerJersey {
         List<EpisodeDTO> episodes = Collections.EMPTY_LIST;
         try {
             episodes = seriesService.getUpcomingEpisodes().stream()
-                    .map(e -> new EpisodeDTO(e, optUser)).collect(Collectors.toList());
+                    .map(e -> new EpisodeDTO(e, u)).collect(Collectors.toList());
         } catch (UnauthorizedException e) {
             return Response.status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
@@ -296,9 +296,9 @@ public class UserControllerJersey {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/lists")
     public Response getUserFavourites(@PathParam("userId") Long userId) {
-        Optional<User> optUser = userService.findById(userId);
-        if(!optUser.isPresent()) {
-            return status(Status.NOT_FOUND).build();
+        Optional<User> optUser = userService.getLoggedUser();
+        if(!optUser.isPresent() || optUser.get().getId() != userId) {
+            return status(Status.UNAUTHORIZED).build();
         }
         User user = optUser.get();
         List<SeriesListDTO> seriesLists = user.getLists().stream()
@@ -461,7 +461,8 @@ public class UserControllerJersey {
     @Path("/{userId}/stats")
     public Response getUserStats(@PathParam("userId") Long userId) {
         try {
-            if(!userService.findById(userId).isPresent()) return status(Status.NOT_FOUND).build();
+            Optional<User> optUser = userService.getLoggedUser();
+            if(!optUser.isPresent() || optUser.get().getId() != userId) return status(Status.UNAUTHORIZED).build();
             return ok(new GenresStatsDTO(userService.getGenresStats())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
