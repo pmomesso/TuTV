@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {PureComponent} from 'react';
 import { Trans } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { Digital } from 'react-activity';
@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 import $ from "jquery";
 import Chart from "chart.js";
 
-class ProfilePage extends Component {
+class ProfilePage extends PureComponent {
 
     state = {
         user: null,
@@ -24,58 +24,86 @@ class ProfilePage extends Component {
     };
 
     componentDidMount = () => {
+        this.getData();
+    };
+
+    componentDidUpdate = (prevProps) => {
+        if (this.props.match.params.profile_id !== prevProps.match.params.profile_id ) {
+            this.getData();
+        }
+    };
+
+    getData = () => {
         let user_id = this.props.match.params.profile_id;
         var that = this;
-        Axios.all([
-            Axios.get("/users/" + user_id),
-            Axios.get("/users/" + user_id + "/avatar"),
-            Axios.get("/users/" + user_id + "/recentlyWatched"),
-            Axios.get("/users/" + user_id + "/following"),
-            Axios.get("/users/" + user_id + "/stats"),
-            Axios.get("/users/" + user_id + "/lists")
-        ]).then(Axios.spread(function(userData, avatarData, recentlyWatchedData, followingData, statsData, listsData) {
-            that.setState({
-                user: userData.data,
-                avatar: avatarData.data.avatarBase64,
-                recentlyWatched: recentlyWatchedData.data,
-                following: followingData.data,
-                stats: statsData.data,
-                lists: listsData.data,
-                loading: false
-            });
 
-            var labels = [];
-            var values = [];
-            $.each(statsData.data.stats, function (index, stat) {
-                labels.push(stat.genre.name);
-                values.push(stat.stat);
-            });
-            var ctx = document.getElementById('genresChart');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: values,
-                        backgroundColor: [
-                            '#3cb44b', '#469990', '#aaffc3', '#42d4f4', '#4363d8',
-                            '#000075', '#911eb4', '#f032e6', '#e6beff', '#800000',
-                            '#e6194b', '#f58231', '#ffd8b1', '#ffe119', '#bfef45'
-                        ]
-                    }]
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    legend: {
-                        display: true,
-                        position: 'bottom',
-                        labels: {
-                            padding: 20
+        if (this.props.logged_user && this.props.logged_user.id.toString() === user_id) {
+            Axios.all([
+                Axios.get("/users/" + user_id),
+                Axios.get("/users/" + user_id + "/avatar"),
+                Axios.get("/users/" + user_id + "/recentlyWatched"),
+                Axios.get("/users/" + user_id + "/following"),
+                Axios.get("/users/" + user_id + "/stats"),
+                Axios.get("/users/" + user_id + "/lists")
+            ]).then(Axios.spread(function(userData, avatarData, recentlyWatchedData, followingData, statsData, listsData) {
+                that.setState({
+                    user: userData.data,
+                    avatar: avatarData.data.avatarBase64,
+                    recentlyWatched: recentlyWatchedData.data,
+                    following: followingData.data,
+                    stats: statsData.data,
+                    lists: listsData.data,
+                    loading: false
+                });
+
+                var labels = [];
+                var values = [];
+                $.each(statsData.data.stats, function (index, stat) {
+                    labels.push(stat.genre.name);
+                    values.push(stat.stat);
+                });
+                var ctx = document.getElementById('genresChart');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: [
+                                '#3cb44b', '#469990', '#aaffc3', '#42d4f4', '#4363d8',
+                                '#000075', '#911eb4', '#f032e6', '#e6beff', '#800000',
+                                '#e6194b', '#f58231', '#ffd8b1', '#ffe119', '#bfef45'
+                            ]
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                padding: 20
+                            }
                         }
                     }
-                }
-            });
-        }));
+                });
+            }));
+        } else {
+            Axios.all([
+                Axios.get("/users/" + user_id),
+                Axios.get("/users/" + user_id + "/avatar"),
+                Axios.get("/users/" + user_id + "/recentlyWatched"),
+                Axios.get("/users/" + user_id + "/following")
+            ]).then(Axios.spread(function(userData, avatarData, recentlyWatchedData, followingData) {
+                that.setState({
+                    user: userData.data,
+                    avatar: avatarData.data.avatarBase64,
+                    recentlyWatched: recentlyWatchedData.data,
+                    following: followingData.data,
+                    loading: false
+                });
+            }));
+        }
     };
 
     toggleUploadAvatar = () => {
@@ -176,6 +204,17 @@ class ProfilePage extends Component {
         FR.readAsDataURL( $(fileInput)[0].files[0] );
     };
 
+    onSeriesFollowClickedHandler = (event) => {
+        // event.preventDefault();
+
+        Axios.get("/users/" + this.props.match.params.profile_id + "/following")
+            .then(res => {
+                this.setState({
+                    following: res.data,
+                })
+            });
+    };
+
     render() {
 
         if(this.state.loading)
@@ -195,25 +234,29 @@ class ProfilePage extends Component {
         const lists = this.state.lists;
         const followedSeries = this.state.following;
 
-        const listsElement = lists.map(list => {
-            return(
-                <div key={list.id} className="profile-shows">
-                    <div>
-                        <div className="overflow-hidden">
-                            <h2 className="small float-left">{list.name}</h2>
-                            <button className="show-link float-left icon-margin" data-toggle="modal" data-target={"#modifyList" + list.id}>
-                                <span>MODIFY</span>
-                            </button>
-                            {/* <form action="/removeList?id=${list.id}&userId=${userProfile.id}"
+        var listsElement = null;
+        if (currUser) {
+            listsElement = lists.map(list => {
+                return(
+                    <div key={list.id} className="profile-shows">
+                        <div>
+                            <div className="overflow-hidden">
+                                <h2 className="small float-left">{list.name}</h2>
+                                <button className="show-link float-left icon-margin" data-toggle="modal" data-target={"#modifyList" + list.id}>
+                                    <span>MODIFY</span>
+                                </button>
+                                {/* <form action="/removeList?id=${list.id}&userId=${userProfile.id}"
                                                                         method="post" class="icon-margin float-left" onsubmit="confirmAction(event,'<spring:message code="profile.sureRemove" arguments="${list.name}"/>')">
                                  <button type="submit" class="heart no-padding" style="font-family: FontAwesome,serif; font-style: normal">&#xf1f8</button>
                                </form> */}
+                            </div>
+                            <SeriesList source={list.series} />
                         </div>
-                        <SeriesList source={list.series} />
                     </div>
-                </div>
-            );
-        });
+                );
+            });
+        }
+
         return (
             <div>
                 <div className="main-block-container">
@@ -308,15 +351,15 @@ class ProfilePage extends Component {
                                     <div id="tab-shows" className="tab-pane active" role="tabpanel">
                                         <div className="profile-shows">
 
-                                            {(currUser && recentlyWatched.length) &&
-                                                <div id="recently-watched-shows">
+                                            {(recentlyWatched.length) ?
+                                                (<div id="recently-watched-shows">
                                                     <h2 className="small">
                                                         <Trans i18nKey="profile.recently" />
                                                     </h2>
                                                     <section>
-                                                        <SeriesList source={recentlyWatched} />
+                                                        <SeriesList key={recentlyWatched} source={recentlyWatched} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
                                                     </section>
-                                                </div>
+                                                </div>):(<div></div>)
                                             }
                                             <div id="all-shows">
                                                 <h2 className="small">
@@ -326,7 +369,7 @@ class ProfilePage extends Component {
                                                     {
                                                         (followedSeries.length) ?
                                                             (<section>
-                                                                <SeriesList source={followedSeries} />
+                                                                <SeriesList key={followedSeries} source={followedSeries} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
                                                             </section>)
                                                             :
                                                             (currUser) ?
@@ -364,7 +407,7 @@ class ProfilePage extends Component {
                                         </div>
                                     </div>
                                     <div id="tab-lists" className="tab-pane" role="tabpanel">
-                                        {(listsElement.length) ?
+                                        {(currUser && listsElement.length) ?
                                             listsElement
                                             :
                                             (<div id="all-shows">
@@ -391,7 +434,7 @@ class ProfilePage extends Component {
                                                 <h2 className="small"><Trans i18nKey="profile.favoriteGenres"/></h2>
                                                 <div className="row justify-content-center">
                                                     {
-                                                        (stats) ?
+                                                        (currUser && stats) ?
                                                             (<div className="mt-lg-5 mt-sm-0"><canvas id="genresChart"/></div>)
                                                             :
                                                             (<div className="container h-100">
@@ -402,7 +445,7 @@ class ProfilePage extends Component {
                                                                             <h4><Trans i18nKey="watchlist.discover"/></h4>
                                                                         </div>
                                                                         <div className="text-center m-4">
-                                                                            <button className="tutv-button m-4" onClick="window.location.href='/'"><Trans i18nKey="watchlist.explore"/></button>
+                                                                            <button className="tutv-button m-4" onClick={event =>  window.location.href='/'}><Trans i18nKey="watchlist.explore"/></button>
                                                                         </div>
                                                                     </div>
                                                                 </div>

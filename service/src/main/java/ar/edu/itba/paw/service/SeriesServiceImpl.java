@@ -329,8 +329,8 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Series> getRecentlyWatchedList(int number) throws UnauthorizedException, BadRequestException {
-        User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+    public List<Series> getRecentlyWatchedList(Long userId, int number) throws NotFoundException, BadRequestException {
+        User user = userService.findById(userId).orElseThrow(NotFoundException::new);
         if(number <= 0) {
             throw new BadRequestException();
         }

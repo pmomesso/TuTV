@@ -339,7 +339,7 @@ public class SeriesServiceImplTest {
         //Ejercitar
         List<Series> series;
         try {
-            series = seriesService.getRecentlyWatchedList(number);
+            series = seriesService.getRecentlyWatchedList(mockUserService.getLoggedUser().get().getId(), number);
         } catch (ApiException e) {
             Assert.fail();
             return;

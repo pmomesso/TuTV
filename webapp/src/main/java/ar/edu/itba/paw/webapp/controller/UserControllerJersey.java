@@ -81,15 +81,12 @@ public class UserControllerJersey {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/recentlyWatched")
     public Response getRecentlyWatched(@PathParam("userId") Long userId) {
-        if(!userService.getLoggedUser().isPresent() || userService.getLoggedUser().get().getId() != userId) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
-        List<SeriesDTO> series = Collections.EMPTY_LIST;
+        List series;
         try {
-            series = seriesService.getRecentlyWatchedList(5).stream()
+            series = seriesService.getRecentlyWatchedList(userId,5).stream()
                     .map(e -> new SeriesDTO(e,userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
-        } catch (UnauthorizedException e) {
-            return Response.status(Status.UNAUTHORIZED).build();
+        } catch (NotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
         } catch (BadRequestException e) {
             return Response.status(Status.BAD_REQUEST).build();
         }
@@ -100,16 +97,12 @@ public class UserControllerJersey {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/following")
     public Response getFollowedSeries(@PathParam("userId") Long userId) {
-        Optional<User> optUser = userService.getLoggedUser();
-        if(!optUser.isPresent() || optUser.get().getId() != userId) return Response.status(Status.UNAUTHORIZED).build();
-        List<SeriesDTO> seriesList = Collections.EMPTY_LIST;
+        List seriesList;
         try {
-            seriesList = seriesService.getAddedSeries().stream().
+            seriesList = seriesService.getAddedSeries(userId).stream().
                     map(series -> new SeriesDTO(series, userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
-        } catch (UnauthorizedException e) {
-            return Response.status(Status.UNAUTHORIZED).build();
         }
         return ok(new GenericEntity<List<SeriesDTO>>(seriesList) {}).build();
     }
@@ -213,7 +206,7 @@ public class UserControllerJersey {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/")
     public Response getUsersList(@QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) {
-        UsersList usersList = null;
+        UsersList usersList;
         Integer auxPage = page == null ? 1 : page;
         Integer auxPageSize = pageSize == null ? 8 : pageSize;
         try {

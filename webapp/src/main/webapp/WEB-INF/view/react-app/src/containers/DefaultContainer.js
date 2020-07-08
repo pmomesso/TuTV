@@ -22,7 +22,7 @@ const DefaultContainer = () => {
                   <Route exact path='/' component={Explore}/>
                   <Route path='/series/:series_id' component={SeriesPage}/>
                   <Route path='/profiles/:profile_id' component={ProfilePage}/>
-                  <Route path='/users' component={UsersPage}/>
+                  <Route path='/users' render={() => (<UsersPage source={"/users"}/>)}/>
                   <Route path='/watchlist' component={Watchlist}/>
                   <Route path='/upcoming' component={Upcoming}/>
               </div>

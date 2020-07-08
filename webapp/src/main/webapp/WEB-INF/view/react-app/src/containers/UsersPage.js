@@ -10,22 +10,58 @@ import Axios from 'axios';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faBan } from '@fortawesome/free-solid-svg-icons'
 
+let linkHeaderParser = require('parse-link-header');
+
 class UsersPage extends Component {
 
     state = {
+        source: null,
         users: null,
+        prevUrl: null,
+        nextUrl: null,
         loading: true
     };
 
-    componentDidMount = () => {
-        Axios.get("/users/")
+    nextPage = () => {
+        this.setState({
+            source: this.state.nextUrl,
+            loading: true
+        }, this.fetchData);
+    };
+
+    prevPage = () => {
+        this.setState({
+            source: this.state.prevUrl,
+            loading: true
+        }, this.fetchData);
+    };
+
+    fetchData = () => {
+        Axios.get(this.state.source)
             .then(res => {
                 console.log(res);
+                console.log(res.headers["link"]);
+                let linkHeader = res.headers["link"];
+                let linkHeaderParsed = linkHeaderParser(linkHeader);
+
+                let nextUrl = null;
+                let prevUrl = null;
+                if(linkHeaderParsed) {
+                    nextUrl = linkHeaderParsed.next ? linkHeaderParsed.next.url : null;
+                    prevUrl = linkHeaderParsed.prev ? linkHeaderParsed.prev.url : null;
+                }
+
                 this.setState({
                     users: res.data,
+                    nextUrl: nextUrl,
+                    prevUrl: prevUrl,
                     loading: false
-                })
+                });
             });
+    };
+
+    componentDidMount = () => {
+        this.setState( {source: this.props.source }, this.fetchData)
     };
 
     toggleBan = (user_id, banned, index) => {
@@ -66,7 +102,7 @@ class UsersPage extends Component {
 
         const usersTable = users.map((user, index) => {
             return(
-                <tr>
+                <tr key={index}>
                     <td>
                         {
                             (user.avatar) ?
@@ -139,6 +175,34 @@ class UsersPage extends Component {
                                                 </div>
                                             </div>
                                         </div>
+                                        <nav class="text-center" aria-label="...">
+                                            <ul class="pagination">
+                                                <li className={`page-item ${(typeof this.state.prevUrl !== "string") ? "disabled" : ""}`}>
+                                                    {
+                                                        (typeof this.state.prevUrl === "string") ?
+                                                            (<a className="page-link" onClick={this.prevPage}>
+                                                                <Trans i18nKey="users.previous"/>
+                                                            </a>)
+                                                            :
+                                                            (<span className="page-link">
+                                                                <Trans i18nKey="users.previous"/>
+                                                            </span>)
+                                                    }
+                                                </li>
+                                                <li className={`page-item ${(typeof this.state.nextUrl !== "string") ? "disabled" : ""}`}>
+                                                    {
+                                                        (typeof this.state.nextUrl === "string") ?
+                                                            (<a className="page-link" onClick={this.nextPage}>
+                                                                <Trans i18nKey="users.next"/>
+                                                            </a>)
+                                                            :
+                                                            (<span className="page-link">
+                                                                <Trans i18nKey="users.next"/>
+                                                            </span>)
+                                                    }
+                                                </li>
+                                            </ul>
+                                        </nav>
                                     </div>
                                 </div>
                             </div>

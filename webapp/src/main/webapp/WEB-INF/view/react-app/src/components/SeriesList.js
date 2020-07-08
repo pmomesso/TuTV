@@ -92,7 +92,7 @@ class SeriesList extends Component {
 
     const showList = this.state.showList.map(series => {
       return(
-        <TvSeriesPoster key={ series.id } series={ series }/>
+        <TvSeriesPoster key={ series.id } series={ series } onSeriesFollowClickedHandler={this.props.onSeriesFollowClickedHandler}/>
       )
     });
     

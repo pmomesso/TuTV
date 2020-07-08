@@ -114,8 +114,9 @@ public class SeriesHibernateDao implements SeriesDao {
         Long count = countQuery.getSingleResult();
 
         genre.setPage(page);
-        genre.setArePrevious((page - 1) * pageSize > pageSize - 1 && (page - 1) * pageSize < count);
-        genre.setAreNext(page * pageSize - 1 < count - count % pageSize);
+        genre.setArePrevious(((page - 1) * pageSize) > (pageSize - 1));
+        int added = ((count % pageSize) == 0) ? 0 : 1;
+        genre.setAreNext(page < (count/pageSize + added));
 
         return seriesList;
     }

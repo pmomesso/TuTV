@@ -154,8 +154,9 @@ public class UserHibernateDao implements UserDao {
         } else {
             usersList.setTo(new Long((page - 1) * pageSize +  pageSize));
         }
-        usersList.setArePrevious((page - 1) * pageSize > pageSize - 1);
-        usersList.setAreNext(page * pageSize - 1 < usersList.getTotal() - usersList.getTotal() % pageSize);
+        usersList.setArePrevious(((page - 1) * pageSize) > (pageSize - 1));
+        int added = ((usersList.getTotal() % pageSize) == 0) ? 0 : 1;
+        usersList.setAreNext(page < (usersList.getTotal()/pageSize + added));
         usersList.setUsersList(list);
 
         return usersList;

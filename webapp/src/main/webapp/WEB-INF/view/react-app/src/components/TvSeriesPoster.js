@@ -14,7 +14,7 @@ class TvSeriesPoster extends PureComponent {
         series: this.props.series
     };
 
-    onSeriesFollowClicked = () => {
+    onSeriesFollowClicked = (event) => {
         if(this.props.logged_user === null) {
             this.props.history.push("/login" + this.props.location.pathname);
             return;
@@ -41,6 +41,10 @@ class TvSeriesPoster extends PureComponent {
                 this.setState({
                     series: newSeries
                 });
+
+                if (this.props.onSeriesFollowClickedHandler !== undefined) {
+                    this.props.onSeriesFollowClickedHandler(event, this.state.series.id);
+                }
 
                 store.addNotification({
                     title: "Cambio estado de seguimiento",
