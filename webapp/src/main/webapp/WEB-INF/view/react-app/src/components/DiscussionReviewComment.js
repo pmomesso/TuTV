@@ -79,13 +79,20 @@ class DiscussionReviewComment extends Component {
                                 </button>
                             }
 
-                            { ( logged_user && comment.loggedInUserLikes ) ?
-                                (<button className="heart post-liked" onClick={this.toggleLike}>
-                                    <FontAwesomeIcon icon={faHeart} />
-                                </button>)
+                            { (logged_user) ?
+                                (
+                                    (comment.loggedInUserLikes) ?
+                                        (<button className="heart post-liked" onClick={this.toggleLike}>
+                                            <FontAwesomeIcon icon={faHeart} />
+                                        </button>)
+                                        :
+                                        (<button className="heart" onClick={this.toggleLike}>
+                                            <FontAwesomeIcon icon={faHeart} />
+                                        </button>)
+                                )
                                 :
-                                (<button className="heart" onClick={this.toggleLike}>
-                                    <FontAwesomeIcon icon={faHeart} />
+                                (<button style={{pointerEvents: "none"}} className="heart no-padding">
+                                    <FontAwesomeIcon className="mr-2" icon={faHeart} />
                                 </button>)
                             }
                             <span>{ comment.numLikes }</span>

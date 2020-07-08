@@ -151,12 +151,19 @@ class DiscussionReview extends Component {
                                         </button>
                                     }
 
-                                    { ( logged_user && seriesReview.loggedInUserLikes ) ?
-                                        (<button className="heart post-liked no-padding" onClick={this.toggleLike}>
-                                            <FontAwesomeIcon icon={faHeart} />
-                                        </button>)
+                                    { (logged_user) ?
+                                        (
+                                            (seriesReview.loggedInUserLikes) ?
+                                                (<button className="heart post-liked no-padding" onClick={this.toggleLike}>
+                                                    <FontAwesomeIcon icon={faHeart} />
+                                                </button>)
+                                                :
+                                                (<button className="heart no-padding" onClick={this.toggleLike}>
+                                                    <FontAwesomeIcon className="mr-2" icon={faHeart} />
+                                                </button>)
+                                        )
                                         :
-                                        (<button className="heart no-padding" onClick={this.toggleLike}>
+                                        (<button style={{pointerEvents: "none"}} className="heart no-padding">
                                             <FontAwesomeIcon className="mr-2" icon={faHeart} />
                                         </button>)
                                     }
