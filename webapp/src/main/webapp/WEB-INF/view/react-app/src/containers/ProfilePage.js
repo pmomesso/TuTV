@@ -51,42 +51,44 @@ class ProfilePage extends PureComponent {
                     avatar: avatarData.data.avatarBase64,
                     recentlyWatched: recentlyWatchedData.data,
                     following: followingData.data,
-                    stats: statsData.data,
+                    stats: statsData.data.stats,
                     lists: listsData.data,
                     loading: false
                 });
-
-                var labels = [];
-                var values = [];
-                $.each(statsData.data.stats, function (index, stat) {
-                    labels.push(stat.genre.name);
-                    values.push(stat.stat);
-                });
-                var ctx = document.getElementById('genresChart');
-                new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: values,
-                            backgroundColor: [
-                                '#3cb44b', '#469990', '#aaffc3', '#42d4f4', '#4363d8',
-                                '#000075', '#911eb4', '#f032e6', '#e6beff', '#800000',
-                                '#e6194b', '#f58231', '#ffd8b1', '#ffe119', '#bfef45'
-                            ]
-                        }]
-                    },
-                    options: {
-                        maintainAspectRatio: false,
-                        legend: {
-                            display: true,
-                            position: 'bottom',
-                            labels: {
-                                padding: 20
+                
+                if (that.state.stats.length !== 0) {
+                    var labels = [];
+                    var values = [];
+                    $.each(statsData.data.stats, function (index, stat) {
+                        labels.push(stat.genre.name);
+                        values.push(stat.stat);
+                    });
+                    var ctx = document.getElementById('genresChart');
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: values,
+                                backgroundColor: [
+                                    '#3cb44b', '#469990', '#aaffc3', '#42d4f4', '#4363d8',
+                                    '#000075', '#911eb4', '#f032e6', '#e6beff', '#800000',
+                                    '#e6194b', '#f58231', '#ffd8b1', '#ffe119', '#bfef45'
+                                ]
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }));
         } else {
             Axios.all([
@@ -437,7 +439,7 @@ class ProfilePage extends PureComponent {
                                                 <h2 className="small"><Trans i18nKey="profile.favoriteGenres"/></h2>
                                                 <div className="row justify-content-center">
                                                     {
-                                                        (currUser && stats) ?
+                                                        (currUser && stats.length !== 0) ?
                                                             (<div className="mt-lg-5 mt-sm-0"><canvas id="genresChart"/></div>)
                                                             :
                                                             (<div className="container h-100">
