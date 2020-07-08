@@ -39,8 +39,6 @@ class UsersPage extends Component {
     fetchData = () => {
         Axios.get(this.state.source)
             .then(res => {
-                console.log(res);
-                console.log(res.headers["link"]);
                 let linkHeader = res.headers["link"];
                 let linkHeaderParsed = linkHeaderParser(linkHeader);
 
@@ -175,8 +173,8 @@ class UsersPage extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                        <nav class="text-center" aria-label="...">
-                                            <ul class="pagination">
+                                        <nav className="text-center" aria-label="...">
+                                            <ul className="pagination">
                                                 <li className={`page-item ${(typeof this.state.prevUrl !== "string") ? "disabled" : ""}`}>
                                                     {
                                                         (typeof this.state.prevUrl === "string") ?
