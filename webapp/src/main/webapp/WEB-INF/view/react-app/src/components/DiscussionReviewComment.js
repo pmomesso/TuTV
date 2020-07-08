@@ -37,7 +37,7 @@ class DiscussionReviewComment extends Component {
     }
 
     render() {
-        const { t, logged_user } = this.props;
+        const { t, logged_user, deleteComment } = this.props;
 
         const { comment } = this.state;
 
@@ -68,7 +68,7 @@ class DiscussionReviewComment extends Component {
 
                         <div className="float-right mr-5">
                             { ( logged_user && (logged_user.isAdmin || logged_user.id === comment.user.id) ) &&
-                                <button className="remove" onClick={this.delete}>
+                                <button className="remove" onClick={() => deleteComment(comment)}>
                                     <FontAwesomeIcon icon={faTrash} />
                                 </button>
                             }

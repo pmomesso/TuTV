@@ -24,6 +24,13 @@ class Discussion extends Component {
             });
     }
 
+    deleteComment = (commentToDelete) => {
+        this.setState({
+            ...this.state,
+            seriesReviews: this.state.seriesReviews.filter(comment => comment.id !== commentToDelete.id)
+        });
+    }
+
     publishNewComment = (values, actions) => {
         const { series } = this.props;
         const { seriesReviews } = this.state;
@@ -60,7 +67,7 @@ class Discussion extends Component {
         const { t, logged_user, series } = this.props;
 
         const reviews = this.state.seriesReviews.map(seriesReview => {
-            return <DiscussionReview key={seriesReview.id} seriesReview={seriesReview} series={series} />
+            return <DiscussionReview key={seriesReview.id} deleteReview={this.deleteComment} seriesReview={seriesReview} series={series} />
         });
 
         return (
@@ -97,6 +104,9 @@ class Discussion extends Component {
                                                                 <textarea maxLength="255" placeholder={ t("series.enterComment") } path="body"
                                                                     style={{overflow: "hidden", height: "40px"}}
                                                                     {...formik.getFieldProps('body')}/>
+                                                                {formik.touched.body && formik.errors.body ? (
+                                                                    <span className="error m-3 w-100">{formik.errors.body}</span>
+                                                                ) : null}
                                                             </div>
                                                         </div>
                                                     </div>

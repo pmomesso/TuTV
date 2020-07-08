@@ -263,7 +263,7 @@ public class SeriesControllerJersey {
     }
 
     @DELETE
-    @Path("/{seriesId}/review/{reviewId}/comments/{commentId}")
+    @Path("/{seriesId}/reviews/{reviewId}/comments/{commentId}")
     public Response deleteComment(@PathParam("seriesId") Long seriesId, @PathParam("reviewId") Long reviewId, @PathParam("commentId") Long commentId) {
         Optional<Series> optSeries = seriesService.getSerieById(seriesId);
         if(!optSeries.isPresent()) {

@@ -3,6 +3,8 @@ import { BrowserRouter } from 'react-router-dom'
 
 import 'react-activity/dist/react-activity.css';
 
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
 import ReactNotification from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 

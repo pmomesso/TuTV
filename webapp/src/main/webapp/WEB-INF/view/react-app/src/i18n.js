@@ -57,6 +57,10 @@ i18n
             "series.enterReply":            "Enter your reply here",
             "series.hasSpoiler":            "Contains spoilers",
             "series.show":                  "Show",
+            "series.deleteConfirmTitle":    "Confirmation required",
+            "series.deleteConfirmDialog":   "Are you really sure you wish to delete this post? This action can't be undone.",
+            "series.yes":                   "Yes",
+            "series.no":                    "No",
 
             "login.continue":               "Continue without login",
             "login.noaccount":              "Don't have an account?",
@@ -135,7 +139,8 @@ i18n
             "users.active":                 "Active",
             "users.results":                "{0} - {1} of {2}",
             "users.previous":               "Previous",
-            "users.next":                   "Next"
+            "users.next":                   "Next",
+            "users.banConfirmDialog":       "Are you sure you wish to ban this user?",
         }
       },
       es: {
@@ -187,6 +192,10 @@ i18n
             "series.enterReply":            "Escriba su respuesta aquí",
             "series.hasSpoiler":            "Contiene spoilers",
             "series.show":                  "Mostrar",
+            "series.deleteConfirmTitle":    "Confirmación requerida",
+            "series.deleteConfirmDialog":   "¿Está seguro de que desea eliminar esta publicación? Esta acción no se puede deshacer.",
+            "series.yes":                   "Sí",
+            "series.no":                    "No",
 
             "login.continue":               "Continuar sin iniciar sesión",
             "login.noaccount":              "¿No tienes una cuenta?",
@@ -265,7 +274,8 @@ i18n
             "users.active":                 "Activo",
             "users.results":                "{0} - {1} de {2}",
             "users.previous":               "Anterior",
-            "users.next":                   "Siguiente"
+            "users.next":                   "Siguiente",
+            "users.banConfirmDialog":       "¿Está seguro de que desea bloquear a este usuario?",
         }
       }
     },

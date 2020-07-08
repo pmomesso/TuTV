@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import Axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { confirmAlert } from 'react-confirm-alert';
 
 class DiscussionReview extends Component {
     constructor(props) {
@@ -32,8 +33,35 @@ class DiscussionReview extends Component {
             })
     }
 
-    delete = () => {
+    deleteComment = (commentToDelete) => {
+        const { series, t } = this.props;
 
+        confirmAlert({
+            title: t("series.deleteConfirmTitle"),
+            message: t("series.deleteConfirmDialog"),
+            buttons: [
+              {
+                label: t("series.yes"),
+                onClick: () => {
+                    Axios.delete("/series/" + series.id + "/reviews/" + this.state.seriesReview.id + "/comments/" + commentToDelete.id)
+                        .then(() => {
+                            let newSeriesReview = {
+                                ...this.state.seriesReview,
+                                seriesReviewComments: this.state.seriesReview.seriesReviewComments.filter(comment => comment.id !== commentToDelete.id)
+                            }
+        
+                            this.setState({
+                                ...this.state,
+                                seriesReview: newSeriesReview
+                            });
+                        });
+                }
+              },
+              {
+                label: t("series.no")
+              }
+            ]
+        });
     }
 
     toggleUserBan = () => {
@@ -75,12 +103,12 @@ class DiscussionReview extends Component {
     }
 
     render() {
-        const { t, logged_user, series } = this.props;
+        const { t, logged_user, series, deleteReview } = this.props;
 
         const { seriesReview, revealSpoilers } = this.state;
 
         let replies = seriesReview.seriesReviewComments.map((comment, id) => {
-            return <DiscussionReviewComment key={comment.id} comment={comment} series={series} seriesReview={seriesReview} />
+            return <DiscussionReviewComment key={comment.id} deleteComment={this.deleteComment} comment={comment} series={series} seriesReview={seriesReview} />
         });
 
         return (
@@ -112,7 +140,7 @@ class DiscussionReview extends Component {
 
                                 <div className="float-right mr-5">
                                     { ( logged_user && (logged_user.isAdmin || logged_user.id === seriesReview.user.id) ) &&
-                                        <button className="remove" onClick={this.delete}>
+                                        <button className="remove" onClick={() => deleteReview(seriesReview)}>
                                             <FontAwesomeIcon icon={faTrash} />
                                         </button>
                                     }
