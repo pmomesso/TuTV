@@ -478,7 +478,7 @@ class ProfilePage extends PureComponent {
                                                                     headers: {'Content-Type': 'application/json'}
                                                                 };
                                                                 let data = { "userName": values.username };
-                                                                Axios.put("/users/" + this.props.logged_user.id, JSON.stringify(data), options)
+                                                                Axios.put("/users/" + this.props.logged_user.id + "/username", JSON.stringify(data), options)
                                                                     .then((res) => {
                                                                         let newUser = {
                                                                             ...this.state.user,

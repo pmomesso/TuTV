@@ -63,15 +63,11 @@ class UsersPage extends Component {
     };
 
     toggleBan = (user_id, banned, index) => {
-        Axios.put("/users/" + user_id, {"isBanned": true})
+        Axios.put("/users/" + user_id + "/banned", {"banned": banned})
             .then((res) => {
-                let newUser = {
-                    ...this.state.users[index],
-                    banned: banned
-                };
 
                 let newUsers = [ ...this.state.users];
-                newUsers[index] = newUser;
+                newUsers[index] = res.data;
 
                 this.setState({
                     users: newUsers

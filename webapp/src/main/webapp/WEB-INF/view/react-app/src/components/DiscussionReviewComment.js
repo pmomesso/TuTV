@@ -18,15 +18,21 @@ class DiscussionReviewComment extends Component {
     toggleLike = () => {
         const newVal = !this.state.comment.loggedInUserLikes;
     
-        Axios.put("/series/" + this.props.series.id + "/reviews/" + this.props.seriesReview.id + "/comments/" + this.state.comment.id, 
+        Axios.put("/series/" + this.props.series.id + "/reviews/" + this.props.seriesReview.id + "/comments/" + this.state.comment.id + "/like",
             JSON.stringify( {"loggedInUserLikes": newVal} ))
             .then(res => {
+                let newComment = {
+                    ...this.state.comment,
+                    loggedInUserLikes: res.data.loggedInUserLikes,
+                    numLikes: res.data.numLikes
+                };
+
                 this.setState({
                     ...this.state,
-                    comment: res.data
+                    comment: newComment
                 });
             })
-    }
+    };
 
     delete = () => {
 

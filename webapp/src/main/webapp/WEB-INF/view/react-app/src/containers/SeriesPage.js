@@ -46,31 +46,30 @@ class SeriesPage extends Component {
 
         let newValue = !this.state.series.seasons[season_index].episodes[episode_index].viewedByUser;
 
-        let newEpisode = {
-            ...this.state.series.seasons[season_index].episodes[episode_index],
-            "viewedByUser": newValue
-        }
-
-        let newSeasonEpisodeList = [ ...this.state.series.seasons[season_index].episodes ]
-        newSeasonEpisodeList[episode_index] = newEpisode;
-
-        let newSeason = {
-            ...this.state.series.seasons[season_index],
-            "episodes": newSeasonEpisodeList
-        }
-
-        let newSeasonList = [ ...this.state.series.seasons ]
-        newSeasonList[season_index] = newSeason;
-
-        let newSeries = {
-            ...this.state.series,
-            "seasons": newSeasonList
-        }
-
         let data = { "viewedByUser": newValue };
 
-        Axios.put("/series/" + this.state.series.id + "/seasons/" + series.seasons[season_index].number + "/episodes/" + series.seasons[season_index].episodes[episode_index].numEpisode, JSON.stringify(data))
+        Axios.put("/series/" + series.id + "/seasons/" + series.seasons[season_index].number + "/episodes/" + series.seasons[season_index].episodes[episode_index].numEpisode + "/viewed", JSON.stringify(data))
             .then((res) => {
+                let newEpisode = {
+                    ...this.state.series.seasons[season_index].episodes[episode_index],
+                    "viewedByUser": res.data.viewedByUser
+                };
+
+                let newSeasonEpisodeList = [ ...this.state.series.seasons[season_index].episodes ]
+                newSeasonEpisodeList[episode_index] = newEpisode;
+
+                let newSeason = {
+                    ...this.state.series.seasons[season_index],
+                    "episodes": newSeasonEpisodeList
+                };
+
+                let newSeasonList = [ ...this.state.series.seasons ]
+                newSeasonList[season_index] = newSeason;
+
+                let newSeries = {
+                    ...this.state.series,
+                    "seasons": newSeasonList
+                };
         
                 this.setState({ "series": newSeries });
             })
@@ -81,7 +80,7 @@ class SeriesPage extends Component {
 
         
 
-    }
+    };
 
     onSeasonWatchedClicked = (event, season_index) => {
         event.preventDefault();
@@ -96,34 +95,34 @@ class SeriesPage extends Component {
         if(this.state.series.seasons[season_index].episodes.length > 0)
             newValue = !this.state.series.seasons[season_index].episodes.every((episode) => episode.viewedByUser === true);
 
-        let newSeasonEpisodeList = [];
-
-        this.state.series.seasons[season_index].episodes.forEach((episode) => {
-            let newEpisode = {
-                ...episode,
-                "viewedByUser": newValue
-            }
-
-            newSeasonEpisodeList.push(newEpisode);
-        });
-
-        let newSeason = {
-            ...this.state.series.seasons[season_index],
-            "episodes": newSeasonEpisodeList
-        };
-
-        let newSeasonList = [ ...this.state.series.seasons ];
-        newSeasonList[season_index] = newSeason;
-
-        let newSeries = {
-            ...this.state.series,
-            "seasons": newSeasonList
-        };
-
         let data = { "viewedByUser": newValue };
 
-        Axios.put("/series/" + this.state.series.id + "/seasons/" + this.state.series.seasons[season_index].number, JSON.stringify(data))
+        Axios.put("/series/" + this.state.series.id + "/seasons/" + this.state.series.seasons[season_index].number + "/viewed", JSON.stringify(data))
             .then((res) => {
+
+                let newSeasonEpisodeList = [];
+
+                this.state.series.seasons[season_index].episodes.forEach((episode) => {
+                    let newEpisode = {
+                        ...episode,
+                        "viewedByUser": res.data.viewedByUser
+                    };
+
+                    newSeasonEpisodeList.push(newEpisode);
+                });
+
+                let newSeason = {
+                    ...this.state.series.seasons[season_index],
+                    "episodes": newSeasonEpisodeList
+                };
+
+                let newSeasonList = [ ...this.state.series.seasons ];
+                newSeasonList[season_index] = newSeason;
+
+                let newSeries = {
+                    ...this.state.series,
+                    "seasons": newSeasonList
+                };
                 this.setState({ "series": newSeries });
             })
             .catch((err) => {
@@ -140,13 +139,13 @@ class SeriesPage extends Component {
 
         let data = { "loggedInUserRating": newValue };
 
-        Axios.put("/series/" + this.state.series.id, JSON.stringify(data))
+        Axios.put("/series/" + this.state.series.id + "/rating", JSON.stringify(data))
             .then((res) => {
                 let newSeries = {
                     ...this.state.series,
-                    userRating: res.data.userRating,
+                    userRating: res.data.seriesRating,
                     loggedInUserRating: newValue
-                }
+                };
         
                 this.setState({
                     series: newSeries
@@ -156,7 +155,7 @@ class SeriesPage extends Component {
                 /* TODO SI CADUCO LA SESION? */
                 //alert("Error: " + err.response.status);
             });
-    }
+    };
 
     onSeriesFollowClicked = () => {
 
