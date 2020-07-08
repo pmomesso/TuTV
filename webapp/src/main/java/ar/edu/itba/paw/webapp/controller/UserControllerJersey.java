@@ -419,40 +419,21 @@ public class UserControllerJersey {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{userId}")
-    public Response editUser(@PathParam("userId") Long userId,
-                             @Valid UserEditDTO userEditDTO) {
+    @Path("/{userId}/username")
+    public Response editUser(@PathParam("userId") Long userId,@Valid UsernameEditDTO usernameEditDTO) {
 
-        Set<ConstraintViolation<UserEditDTO>> violations = validator.validate(userEditDTO);
+        Set<ConstraintViolation<UsernameEditDTO>> violations = validator.validate(usernameEditDTO);
         if(!violations.isEmpty()) {
             return status(Status.BAD_REQUEST).build();
         }
 
         try {
-            if((userEditDTO.getIsBanned() != null && userEditDTO.getUserName() != null)
-                    || (userEditDTO.getIsBanned() == null && userEditDTO.getUserName() == null)) {
-                return status(Status.BAD_REQUEST).build();
-            }
-
-            if(userEditDTO.getUserName() != null) {
-                User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-                if (loggedUser.getId() != userId) return status(Status.UNAUTHORIZED).build();
-                userService.updateLoggedUserName(userEditDTO.getUserName());
-            }
-            if(userEditDTO.getIsBanned() != null) {
-                User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-                if (!loggedUser.getIsAdmin()) return status(Status.UNAUTHORIZED).build();
-                if (userEditDTO.getIsBanned()) {
-                    userService.banUser(userId);
-                } else {
-                    userService.unbanUser(userId);
-                }
-            }
+            User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+            if (loggedUser.getId() != userId) return status(Status.UNAUTHORIZED).build();
+            userService.updateLoggedUserName(usernameEditDTO.getUserName());
             return accepted().entity(new UserDTO(userService.findById(userId).get())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
-        } catch (NotFoundException e) {
-            return status(Status.NOT_FOUND).build();
         }
     }
 
