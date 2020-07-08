@@ -211,7 +211,7 @@ public class SeriesServiceImplTest {
         //Setup
         final long postId = 1;
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.likePost(Mockito.eq(USER_ID),Mockito.eq(postId))).thenReturn(1);
+        Mockito.when(mockDao.likePost(Mockito.eq(USER_ID),Mockito.eq(postId))).thenReturn(Optional.of(new SeriesReview()));
         //Ejercitar
         try {
             seriesService.likePost(postId);
@@ -224,7 +224,7 @@ public class SeriesServiceImplTest {
         //Setup
         final long postId = 1;
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.unlikePost(Mockito.eq(USER_ID),Mockito.eq(postId))).thenReturn(1);
+        Mockito.when(mockDao.unlikePost(Mockito.eq(USER_ID),Mockito.eq(postId))).thenReturn(Optional.of(new SeriesReview()));
         //Ejercitar
         try {
             seriesService.unlikePost(postId);
@@ -256,7 +256,7 @@ public class SeriesServiceImplTest {
         //Setup
         final long commentId = 1;
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.likeComment(Mockito.eq(USER_ID),Mockito.eq(commentId))).thenReturn(1);
+        Mockito.when(mockDao.likeComment(Mockito.eq(USER_ID),Mockito.eq(commentId))).thenReturn(Optional.of(new SeriesReviewComment()));
         //Ejercitar
         try {
             seriesService.likeComment(commentId);
@@ -269,7 +269,7 @@ public class SeriesServiceImplTest {
         //Setup
         final long commentId = 1;
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
-        Mockito.when(mockDao.unlikeComment(Mockito.eq(USER_ID),Mockito.eq(commentId))).thenReturn(1);
+        Mockito.when(mockDao.unlikeComment(Mockito.eq(USER_ID),Mockito.eq(commentId))).thenReturn(Optional.of(new SeriesReviewComment()));
         //Ejercitar
         try {
             seriesService.unlikeComment(commentId);
@@ -331,6 +331,7 @@ public class SeriesServiceImplTest {
         final Series mockSeries = getMockSeries();
         final int number = 1;
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
+        Mockito.when(mockUserService.findById(USER_ID)).thenReturn(Optional.of(getMockUser()));
         Mockito.when(mockDao.getRecentlyWatched(Mockito.eq(USER_ID),Mockito.eq(number))).thenAnswer(invocation -> {
             List<Series> series = new ArrayList<>();
             series.add(mockSeries);

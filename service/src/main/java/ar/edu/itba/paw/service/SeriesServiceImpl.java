@@ -237,21 +237,17 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public void likePost(long postId) throws NotFoundException, UnauthorizedException {
+    public SeriesReview likePost(long postId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        int result = seriesDao.likePost(user.getId(), postId);
-        if(result == 0) {
-            throw new NotFoundException();
-        }
+        SeriesReview seriesReview = seriesDao.likePost(user.getId(), postId).orElseThrow(NotFoundException::new);
+        return seriesReview;
     }
 
     @Override
-    public void unlikePost(long postId) throws NotFoundException, UnauthorizedException {
+    public SeriesReview unlikePost(long postId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        int result = seriesDao.unlikePost(user.getId(), postId);
-        if(result == 0) {
-            throw new NotFoundException();
-        }
+        SeriesReview seriesReview = seriesDao.unlikePost(user.getId(), postId).orElseThrow(NotFoundException::new);
+        return seriesReview;
     }
 
     @Override
@@ -281,21 +277,17 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public void likeComment(long commentId) throws NotFoundException, UnauthorizedException {
+    public SeriesReviewComment likeComment(long commentId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        int result = seriesDao.likeComment(user.getId(), commentId);
-        if(result == 0) {
-            throw new NotFoundException();
-        }
+        SeriesReviewComment result = seriesDao.likeComment(user.getId(), commentId).orElseThrow(NotFoundException::new);
+        return result;
     }
 
     @Override
-    public void unlikeComment(long commentId) throws NotFoundException, UnauthorizedException {
+    public SeriesReviewComment unlikeComment(long commentId) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        int result = seriesDao.unlikeComment(user.getId(), commentId);
-        if(result == 0) {
-            throw new NotFoundException();
-        }
+        SeriesReviewComment result = seriesDao.unlikeComment(user.getId(), commentId).orElseThrow(NotFoundException::new);
+        return result;
     }
 
     @Override

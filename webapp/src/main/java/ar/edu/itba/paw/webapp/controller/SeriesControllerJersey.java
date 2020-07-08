@@ -198,12 +198,13 @@ public class SeriesControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
         try {
+            SeriesReview seriesReview;
             if(seriesReviewStateDTO.getLoggedInUserLikes()) {
-                seriesService.likePost(seriesReviewId);
+                seriesReview = seriesService.likePost(seriesReviewId);
             } else {
-                seriesService.unlikePost(seriesReviewId);
+                seriesReview = seriesService.unlikePost(seriesReviewId);
             }
-            return accepted().build();
+            return accepted(new SeriesReviewDTO(seriesReview, userService.getLoggedUser())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
@@ -232,12 +233,13 @@ public class SeriesControllerJersey {
         }
 
         try {
+            SeriesReviewComment seriesReviewComment;
             if (seriesReviewCommentStateDTO.getLoggedInUserLikes()) {
-                seriesService.likeComment(commentId);
+                seriesReviewComment = seriesService.likeComment(commentId);
             } else {
-                seriesService.unlikeComment(commentId);
+                seriesReviewComment = seriesService.unlikeComment(commentId);
             }
-            return accepted(new SeriesReviewCommentDTO(seriesService.getSeriesReviewCommentById(commentId).get(), userService.getLoggedUser())).build();
+            return accepted(new SeriesReviewCommentDTO(seriesReviewComment, userService.getLoggedUser())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {

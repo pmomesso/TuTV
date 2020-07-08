@@ -39,17 +39,17 @@ public interface SeriesService {
     void unviewSeason(long seriesId,int seasonNumber) throws UnauthorizedException, NotFoundException;
     Optional<SeriesReview> addSeriesReview(String body, long seriesId, boolean isSpam) throws UnauthorizedException;
 
-    void likePost(long postId) throws NotFoundException, UnauthorizedException;
+    SeriesReview likePost(long postId) throws NotFoundException, UnauthorizedException;
 
-    void unlikePost(long postId) throws NotFoundException, UnauthorizedException;
+    SeriesReview unlikePost(long postId) throws NotFoundException, UnauthorizedException;
 
     SeriesReviewComment addCommentToPost(long commentPostId, String body, String baseUrl) throws NotFoundException, UnauthorizedException;
 
     void viewUntilEpisode(long seriesId, long episodeId) throws NotFoundException, UnauthorizedException;
 
-    void likeComment(long commentId) throws NotFoundException, UnauthorizedException;
+    SeriesReviewComment likeComment(long commentId) throws NotFoundException, UnauthorizedException;
 
-    void unlikeComment(long commentId) throws NotFoundException, UnauthorizedException;
+    SeriesReviewComment unlikeComment(long commentId) throws NotFoundException, UnauthorizedException;
 
     void removeComment(long commentId) throws UnauthorizedException, NotFoundException;
     

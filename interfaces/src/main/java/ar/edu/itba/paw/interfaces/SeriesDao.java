@@ -56,17 +56,17 @@ public interface SeriesDao {
 
     Optional<SeriesReview> createSeriesReview(String body, long seriesId, long userId, boolean isSpam);
 
-    int likePost(long userId, long postId);
+    Optional<SeriesReview> likePost(long userId, long postId);
 
-    int unlikePost(long userId, long postId);
+    Optional<SeriesReview> unlikePost(long userId, long postId);
 
     Optional<SeriesReviewComment> addCommentToPost(long commentPostId, String commentBody, long commentUserId);
 
     Optional<Notification> createNotification(User user, Series series, String message);
 
-    int likeComment(long userId, long commentId);
+    Optional<SeriesReviewComment> likeComment(long userId, long commentId);
 
-    int unlikeComment(long userId, long commentId);
+    Optional<SeriesReviewComment> unlikeComment(long userId, long commentId);
 
     int removeComment(long commentId);
 

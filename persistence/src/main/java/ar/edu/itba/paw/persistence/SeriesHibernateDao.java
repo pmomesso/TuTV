@@ -387,7 +387,7 @@ public class SeriesHibernateDao implements SeriesDao {
     }
 
     @Override
-    public int likePost(long userId, long postId) {
+    public Optional<SeriesReview> likePost(long userId, long postId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<SeriesReview> review = Optional.ofNullable(em.find(SeriesReview.class,postId));
         int updated = 0;
@@ -396,11 +396,11 @@ public class SeriesHibernateDao implements SeriesDao {
             review.get().setNumLikes(review.get().getLikes().size());
             updated++;
         }
-        return updated;
+        return review;
     }
 
     @Override
-    public int unlikePost(long userId, long postId) {
+    public Optional<SeriesReview> unlikePost(long userId, long postId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<SeriesReview> review = Optional.ofNullable(em.find(SeriesReview.class,postId));
         int updated = 0;
@@ -409,7 +409,7 @@ public class SeriesHibernateDao implements SeriesDao {
             review.get().setNumLikes(review.get().getLikes().size());
             updated++;
         }
-        return updated;
+        return review;
     }
 
     @Override
@@ -436,7 +436,7 @@ public class SeriesHibernateDao implements SeriesDao {
     }
 
     @Override
-    public int likeComment(long userId, long commentId) {
+    public Optional<SeriesReviewComment> likeComment(long userId, long commentId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<SeriesReviewComment> comment = Optional.ofNullable(em.find(SeriesReviewComment.class,commentId));
         int updated = 0;
@@ -445,11 +445,11 @@ public class SeriesHibernateDao implements SeriesDao {
             comment.get().setNumLikes(comment.get().getLikes().size());
             updated++;
         }
-        return updated;
+        return comment;
     }
 
     @Override
-    public int unlikeComment(long userId, long commentId) {
+    public Optional<SeriesReviewComment> unlikeComment(long userId, long commentId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<SeriesReviewComment> comment = Optional.ofNullable(em.find(SeriesReviewComment.class,commentId));
         int updated = 0;
@@ -458,7 +458,7 @@ public class SeriesHibernateDao implements SeriesDao {
             comment.get().setNumLikes(comment.get().getLikes().size());
             updated++;
         }
-        return updated;
+        return comment;
     }
 
     @Override

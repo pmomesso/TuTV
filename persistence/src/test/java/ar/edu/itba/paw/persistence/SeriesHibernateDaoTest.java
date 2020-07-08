@@ -400,8 +400,8 @@ public class SeriesHibernateDaoTest {
     public void likePostTest(){
         insertUser();
         insertReview();
-        int updated = seriesDao.likePost(user.getId(),review.getId());
-        Assert.assertEquals(1,updated);
+        Optional<SeriesReview> updated = seriesDao.likePost(user.getId(),review.getId());
+        Assert.assertTrue(updated.isPresent());
         Assert.assertEquals(1,review.getNumLikes());
         Assert.assertEquals(1,review.getLikes().size());
         Assert.assertEquals(1,user.getSeriesReviewLikes().size());
@@ -412,8 +412,8 @@ public class SeriesHibernateDaoTest {
         insertReview();
         review.addLike(user);
         review.setNumLikes(1);
-        int updated = seriesDao.unlikePost(user.getId(),review.getId());
-        Assert.assertEquals(1,updated);
+        Optional<SeriesReview> updated = seriesDao.unlikePost(user.getId(),review.getId());
+        Assert.assertTrue(updated.isPresent());
         Assert.assertEquals(0,review.getNumLikes());
         Assert.assertEquals(0,review.getLikes().size());
         Assert.assertEquals(0,user.getSeriesReviewLikes().size());
@@ -451,8 +451,8 @@ public class SeriesHibernateDaoTest {
         insertUser();
         insertReview();
         insertComment();
-        int updated = seriesDao.likeComment(user.getId(),comment.getId());
-        Assert.assertEquals(1,updated);
+        Optional<SeriesReviewComment> updated = seriesDao.likeComment(user.getId(),comment.getId());
+        Assert.assertTrue(updated.isPresent());
         Assert.assertEquals(1,comment.getNumLikes());
         Assert.assertEquals(1,comment.getLikes().size());
         Assert.assertEquals(1,user.getSeriesReviewCommentLikes().size());
@@ -464,8 +464,8 @@ public class SeriesHibernateDaoTest {
         insertComment();
         comment.setNumLikes(1);
         comment.addLike(user);
-        int updated = seriesDao.unlikeComment(user.getId(),comment.getId());
-        Assert.assertEquals(1,updated);
+        Optional<SeriesReviewComment> updated = seriesDao.unlikeComment(user.getId(),comment.getId());
+        Assert.assertTrue(updated.isPresent());
         Assert.assertEquals(0,comment.getNumLikes());
         Assert.assertEquals(0,comment.getLikes().size());
         Assert.assertEquals(0,user.getSeriesReviewCommentLikes().size());
