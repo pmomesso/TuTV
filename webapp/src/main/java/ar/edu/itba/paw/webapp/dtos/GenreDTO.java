@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.dtos;
 import ar.edu.itba.paw.model.Genre;
 import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.User;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -15,7 +16,6 @@ public class GenreDTO {
 
     private Long id;
     private String name;
-    private String i18Key;
     private List<SeriesDTO> series = Collections.emptyList();
 
     private URI seriesUri;
@@ -38,7 +38,6 @@ public class GenreDTO {
     public GenreDTO(Genre genre) {
         this.id = genre.getId();
         this.name = genre.getName();
-        this.i18Key = genre.getI18Key();
         this.series = null;
     }
 
@@ -64,14 +63,6 @@ public class GenreDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getI18Key() {
-        return i18Key;
-    }
-
-    public void setI18Key(String i18Key) {
-        this.i18Key = i18Key;
     }
 
     public URI getSeriesUri() {

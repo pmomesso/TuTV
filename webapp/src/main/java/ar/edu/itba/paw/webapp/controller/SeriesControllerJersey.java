@@ -8,6 +8,8 @@ import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
@@ -38,6 +40,8 @@ public class SeriesControllerJersey {
     private UserService userService;
     @Autowired
     private Validator validator;
+    @Autowired
+    private MessageSource messageSource;
 
     @GET
     @Path("/featured")
@@ -318,7 +322,13 @@ public class SeriesControllerJersey {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getGenreList() {
         List<GenreDTO> genres = seriesService.getAllGenres().stream()
-                .map(g -> new GenreDTO(g, uriInfo)).collect(Collectors.toList());
+                .map(g -> {
+                    GenreDTO aux = new GenreDTO(g, uriInfo);
+                    Object[] empty = {};
+                    String name = messageSource.getMessage("genres." + g.getI18Key(), empty, LocaleContextHolder.getLocale());
+                    aux.setName(name);
+                    return aux;
+                }).collect(Collectors.toList());
         return ok(new GenericEntity<List<GenreDTO>>(genres) {}).build();
         /*
         GenreListDTO genreListDTO = new GenreListDTO(seriesService.getAllGenres());
