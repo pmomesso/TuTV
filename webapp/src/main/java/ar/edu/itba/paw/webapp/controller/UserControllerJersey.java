@@ -115,7 +115,7 @@ public class UserControllerJersey {
         if(!violations.isEmpty()) return Response.status(Status.BAD_REQUEST).build();
         try {
             Series series = seriesService.followSeries(followSeriesDTO.getSeriesId());
-            return ok(new SeriesDTO(series, userService.getLoggedUser(), uriInfo)).build();
+            return ok(new FollowersDTO(series.getFollowers(), true)).build();
         } catch (NotFoundException e ) {
             return Response.status(Status.NOT_FOUND).build();
         } catch (UnauthorizedException e) {
@@ -131,7 +131,7 @@ public class UserControllerJersey {
         //if(!violations.isEmpty()) return Response.status(Status.BAD_REQUEST).build();
         try {
             Series series = seriesService.unfollowSeries(seriesId);
-            return ok(new SeriesDTO(series, userService.getLoggedUser(), uriInfo)).build();
+            return ok(new FollowersDTO(series.getFollowers(), false)).build();
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
         } catch (UnauthorizedException e) {
