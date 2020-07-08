@@ -9,6 +9,11 @@ import { connect } from 'react-redux';
 import { store } from 'react-notifications-component';
 
 class Login extends Component {
+
+    state = {
+        "error": 0
+    };
+
     render() {
 
         return (
@@ -35,57 +40,25 @@ class Login extends Component {
                                         .required('Required'),
                                 })}
                                 onSubmit={(values, actions) => {
-                                    Axios.post("/", JSON.stringify(values))
-                                        .then((res) => {
+                                    Axios.get("/user", {
+                                        headers: {
+                                            authorization: 'Basic ' + btoa(values.username + ":" + values.password)
+                                        }
+                                    }).then((res) => {
                                             let token = res.headers.authorization;
                                             let user = res.data;
 
                                             this.props.loginUser(token, user);
                                             this.props.history.push("/");
-                                        })
-                                        .catch((err) => {
-                                            if(err.response.status === 400) {
-                                                store.addNotification({
-                                                    title: "Error al iniciar sesión",
-                                                    message: "Usuario o contraseña incorrectos",
-                                                    type: "danger",
-                                                    insert: "top",
-                                                    container: "top-right",
-                                                    animationIn: ["animated", "fadeIn"],
-                                                    animationOut: ["animated", "fadeOut"],
-                                                    dismiss: {
-                                                      duration: 8000,
-                                                      pauseOnHover: true,
-                                                      showIcon: true,
-                                                      onScreen: true
-                                                    }
-                                                });
-                                            } else {
-                                                store.addNotification({
-                                                    title: "Error deconocido: " + err.response.status,
-                                                    type: "danger",
-                                                    insert: "top",
-                                                    container: "top-right",
-                                                    animationIn: ["animated", "fadeIn"],
-                                                    animationOut: ["animated", "fadeOut"],
-                                                    dismiss: {
-                                                      duration: 8000,
-                                                      pauseOnHover: true,
-                                                      showIcon: true,
-                                                      onScreen: true
-                                                    }
-                                                });
-                                            }
-                                        })
-                                        .finally(() => actions.setSubmitting(false));
+                                    }).catch((err) => {
+                                        this.setState({ error: err.response.status});
+                                    }).finally(() => actions.setSubmitting(false));
                                 }}
                                 >
                                 {formik => (
                                     <form onSubmit={formik.handleSubmit}>
-
                                         <div className="container">
                                             <div className="row w-100">
-
                                                 <div className="col-4 align-self-center">
                                                     <label className="ml-lg-4" htmlFor="username">
                                                         <Trans i18nKey="login.username"/>
@@ -99,7 +72,6 @@ class Login extends Component {
                                                     ) : null}
 
                                                 </div>
-
                                             </div>
                                             <div className="row w-100">
                                                 <div className="col-4 align-self-center">
@@ -116,7 +88,27 @@ class Login extends Component {
 
                                                 </div>
                                             </div>
-
+                                            {
+                                                (this.state.error !== 0) &&
+                                                <div className="row w-100">
+                                                    <div className="col-4 align-self-center"></div>
+                                                    <div className="col-8 align-self-center">
+                                                        {
+                                                            (this.state.error === 403) ?
+                                                                (
+                                                                    <span className="error m-3 w-100"><Trans i18nKey="login.ErrorNotConfirmed"/></span>
+                                                                )
+                                                                :
+                                                                (
+                                                                    (this.state.error === 401) ?
+                                                                        (<span className="error m-3 w-100"><Trans i18nKey="login.ErrorInvalidCredentials"/></span>)
+                                                                        :
+                                                                        (<span className="error m-3 w-100"><Trans i18nKey="login.ErrorOther"/></span>)
+                                                                )
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
                                             <div className="text-center p-3">
                                                 <label htmlFor="rememberme">
                                                     <input {...formik.getFieldProps('rememberme')} id="rememberme" name="rememberme" type="checkbox"/>
