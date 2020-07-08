@@ -50,7 +50,6 @@ public class UserControllerJersey {
         if(!violations.isEmpty()) {
             return status(Status.BAD_REQUEST).build();
         }
-
         final URI baseUri = uriInfo.getBaseUri();
         Either<User, Collection<Errors>> u;
         try{
