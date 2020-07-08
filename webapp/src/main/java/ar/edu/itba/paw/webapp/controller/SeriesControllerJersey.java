@@ -184,7 +184,7 @@ public class SeriesControllerJersey {
     }
 
     @PUT
-    @Path("/{seriesId}/reviews/{seriesReviewId}")
+    @Path("/{seriesId}/reviews/{seriesReviewId}/like")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateSeriesReview(@PathParam("seriesId") Long seriesId, @PathParam("seriesReviewId") Long seriesReviewId,
@@ -204,7 +204,7 @@ public class SeriesControllerJersey {
             } else {
                 seriesReview = seriesService.unlikePost(seriesReviewId);
             }
-            return accepted(new SeriesReviewDTO(seriesReview, userService.getLoggedUser())).build();
+            return accepted(new NumLikesDTO(seriesReview.getNumLikes(), seriesReviewStateDTO.getLoggedInUserLikes())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
@@ -213,7 +213,7 @@ public class SeriesControllerJersey {
     }
 
     @PUT
-    @Path("/{seriesId}/reviews/{seriesReviewId}/comments/{commentId}")
+    @Path("/{seriesId}/reviews/{seriesReviewId}/comments/{commentId}/like")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateSeriesReviewComment(@PathParam("seriesId") Long seriesId, @PathParam("seriesReviewId") Long seriesReviewId,
             @PathParam("commentId") Long commentId, @Valid SeriesReviewCommentStateDTO seriesReviewCommentStateDTO) {
@@ -239,7 +239,7 @@ public class SeriesControllerJersey {
             } else {
                 seriesReviewComment = seriesService.unlikeComment(commentId);
             }
-            return accepted(new SeriesReviewCommentDTO(seriesReviewComment, userService.getLoggedUser())).build();
+            return accepted(new NumLikesDTO(seriesReviewComment.getNumLikes(), seriesReviewCommentStateDTO.getLoggedInUserLikes())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
@@ -292,7 +292,7 @@ public class SeriesControllerJersey {
     }
 
     @PUT
-    @Path("/{seriesId}")
+    @Path("/{seriesId}/rating")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateSeries(@PathParam("seriesId") Long seriesId, @Valid SerieStateDTO serieStateDTO) {
 
@@ -302,13 +302,8 @@ public class SeriesControllerJersey {
         }
 
         try {
-            /*if(serieStateDTO.getLoggedInUserFollows()) {
-                seriesService.followSeries(seriesId);
-            } else {
-                seriesService.unfollowSeries(seriesId);
-            }*/
             Series series = seriesService.rateSeries(seriesId, serieStateDTO.getLoggedInUserRating());
-            return accepted(new SeriesDTO(series, userService.getLoggedUser(), uriInfo)).build();
+            return accepted(new RatingDTO(series.getUserRating(), serieStateDTO.getLoggedInUserRating())).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
@@ -391,7 +386,7 @@ public class SeriesControllerJersey {
     }
 
     @PUT
-    @Path("/{seriesId}/seasons/{seasonNumber}")
+    @Path("/{seriesId}/seasons/{seasonNumber}/viewed")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response viewSeason(@PathParam("seriesId") Long seriesId, @PathParam("seasonNumber") Integer seasonNumber,
                                @Valid ViewedResourceDTO viewedResourceDTO){
@@ -418,7 +413,7 @@ public class SeriesControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
 
-        return accepted().build();
+        return accepted(viewedResourceDTO).build();
     }
 
     @GET
@@ -454,7 +449,7 @@ public class SeriesControllerJersey {
     }
 
     @PUT
-    @Path("/{seriesId}/seasons/{seasonNumber}/episodes/{episodeNumber}")
+    @Path("/{seriesId}/seasons/{seasonNumber}/episodes/{episodeNumber}/viewed")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response viewEpisode(@PathParam("seriesId") Long seriesId, @PathParam("seasonNumber") Integer seasonNumber, @PathParam("episodeNumber") Integer episodeNumber,
                                 @Valid ViewedResourceDTO viewedResourceDTO){
@@ -480,7 +475,7 @@ public class SeriesControllerJersey {
         } catch (NotFoundException e) {
             return status(Status.NOT_FOUND).build();
         }
-        return accepted().build();
+        return accepted(viewedResourceDTO).build();
     }
 
     /*

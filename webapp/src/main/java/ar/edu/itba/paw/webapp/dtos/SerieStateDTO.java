@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 
 @SerieStateDTOConstraint
 public class SerieStateDTO {
-
     @NotNull
     private Integer loggedInUserRating;
 
@@ -14,6 +13,10 @@ public class SerieStateDTO {
 
     public SerieStateDTO() {
         //Empty constructor for JAX-RS
+    }
+
+    public SerieStateDTO(Integer loggedInUserRating) {
+        this.loggedInUserRating = loggedInUserRating;
     }
 
     /*public Boolean getLoggedInUserFollows() {
