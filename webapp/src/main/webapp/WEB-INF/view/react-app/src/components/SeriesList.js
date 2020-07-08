@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import TvSeriesPoster from './TvSeriesPoster'
-import { Trans } from 'react-i18next';
 import Axios from 'axios';
 
 import { Digital } from 'react-activity';

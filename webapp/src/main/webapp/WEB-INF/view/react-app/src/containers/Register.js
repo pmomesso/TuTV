@@ -67,7 +67,7 @@ class Register extends Component {
                                 })}
                                 onSubmit={(values, actions) => {
                                     this.setState({"loading": true});
-                                    Axios.post("/users/register", JSON.stringify(values))
+                                    Axios.post("/users", JSON.stringify(values))
                                         .then((res) => {
                                             this.setState({
                                                 "showingConfirmationModal": true

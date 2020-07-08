@@ -6,7 +6,6 @@ import * as Yup from 'yup';
 
 import Axios from 'axios';
 import { connect } from 'react-redux';
-import { store } from 'react-notifications-component';
 
 class Login extends Component {
 

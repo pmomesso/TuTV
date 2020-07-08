@@ -12,27 +12,28 @@ class MailConfirm extends Component {
     state = {
         "loading": true,
         "error": false
-    }
+    };
 
     componentDidMount = () => {
         let token = this.props.match.params.token;
-    
-        const data = { "confirmationKey": token };
 
-        Axios.post("/users/mailconfirm", JSON.stringify(data))
-            .then((res) => {
-                let token = res.headers.authorization;
-                let user = res.data;
+        Axios.get("/user", {
+            headers: {
+                authorization: 'Basic ' + token
+            }
+        }).then((res) => {
+            let token = res.headers.authorization;
+            let user = res.data;
 
-                this.props.loginUser(token, user);
-                this.setState({ loading: false });
-            })
-            .catch((err) => {
-                this.setState({ error: true })
-            })
-            .finally(() => this.setState({ loading: false }));
+            this.props.loginUser(token, user);
+            this.setState({ loading: false });
+        })
+        .catch((err) => {
+            this.setState({ error: true })
+        })
+        .finally(() => this.setState({ loading: false }));
 
-      }
+      };
 
     render() {
 

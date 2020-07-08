@@ -43,7 +43,7 @@ class Search extends Component {
         if(searchNetwork)
             queryParams += this.encodeQueryParameter("network", searchNetwork);
 
-        return "/series" + "?" + queryParams;
+        return "/series?" + queryParams;
     };
 
     handleInputChange = (event) => {
