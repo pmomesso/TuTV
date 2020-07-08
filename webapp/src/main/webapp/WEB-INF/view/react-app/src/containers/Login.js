@@ -35,7 +35,7 @@ class Login extends Component {
                                         .required('Required'),
                                 })}
                                 onSubmit={(values, actions) => {
-                                    Axios.post("/users/login", JSON.stringify(values))
+                                    Axios.post("/", JSON.stringify(values))
                                         .then((res) => {
                                             let token = res.headers.authorization;
                                             let user = res.data;

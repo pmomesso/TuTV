@@ -19,7 +19,7 @@ class Discussion extends Component {
             .then(res => {
                 this.setState({
                     loading: false,
-                    seriesReviews: res.data.seriesReviews
+                    seriesReviews: res.data
                 })
             });
     }
