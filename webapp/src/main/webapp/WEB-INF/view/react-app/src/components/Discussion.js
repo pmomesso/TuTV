@@ -89,13 +89,13 @@ class Discussion extends Component {
                                 onSubmit={this.publishNewComment}
                                 >
                                 {formik => (
-                                    <form onSubmit={formik.handleSubmit}>
-                                        <div className="new-comment comment">
-                                            <div className="disclaimer">
-                                                <p className="disclaimer-title">
-                                                    { t("series.spoil") }
-                                                </p>
-                                            </div>
+                                    <div className="new-comment comment">
+                                        <div className="disclaimer">
+                                            <p className="disclaimer-title">
+                                                { t("series.spoil") }
+                                            </p>
+                                        </div>
+                                        <form className="post" onSubmit={formik.handleSubmit}>
                                             <div className="top">
                                                 <div className="holder mode-comment mode">
                                                     <div className="comment-mode mode">
@@ -104,15 +104,15 @@ class Discussion extends Component {
                                                                 <textarea maxLength="255" placeholder={ t("series.enterComment") } path="body"
                                                                     style={{overflow: "hidden", height: "40px"}}
                                                                     {...formik.getFieldProps('body')}/>
-                                                                {formik.touched.body && formik.errors.body ? (
-                                                                    <span className="error m-3 w-100">{formik.errors.body}</span>
-                                                                ) : null}
+                                                                {formik.touched.body && formik.errors.body ?
+                                                                    (<span className="error m-3 w-100">{formik.errors.body}</span>) : null}
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div className="author">
-                                                    <img className="author-picture img-circle" alt="" src="/user/1/avatar"/>
+                                                    {/* TODO show avatar if it has*/}
+                                                    <img className="author-picture img-circle" alt="" src={"https://d36rlb2fgh8cjd.cloudfront.net/default-images/default-user-q80.png"}/>
                                                 </div>
                                             </div>
                                             <div className="submit-comment">
@@ -124,8 +124,8 @@ class Discussion extends Component {
                                                     { t("series.post") }
                                                 </button>   
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 )}
                             </Formik>
                         }

@@ -284,18 +284,11 @@ class SeriesPage extends Component {
                                            {seasonList}
 
                                         </div>
+                                        <Discussion series={this.state.series} />
                                     </div>
                                 </div>
                             </div>
-                            <Discussion series={this.state.series} />
                         </div>
-
-
-
-
-                        
-
-
                     </div>
                 </div>
             </div>

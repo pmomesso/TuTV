@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import DiscussionReviewComment from './DiscussionReviewComment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faTrash, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import {faHeart, faTrash, faExclamationTriangle, faBan} from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { compose } from 'recompose';
@@ -125,21 +125,21 @@ class DiscussionReview extends Component {
                                     (<span>{seriesReview.user.userName}</span>)
                                 }
 
-                                { ( logged_user && logged_user.isAdmin && logged_user.id !== seriesReview.user.id ) &&
+                                { ( logged_user && logged_user.admin && logged_user.id !== seriesReview.user.id ) &&
                                     (
                                         ( seriesReview.user.isBanned ) ?
                                             (<button className="remove" onClick={this.toggleUserBan}>
-                                                <img src="/resources/img/unban.png" title={t("series.unban")} alt={t("series.unban")}/>
+                                                <img src={require('../img/unban.png')} title={t("series.unban")} alt={t("series.unban")}/>
                                             </button>)
                                             :
-                                            (<button className="remove" onClick={this.toggleUserBan}>
-                                                <img src="/resources/img/ban.png" title={t("series.ban")} alt={t("series.ban")}/>
+                                            (<button className="heart post-liked" onClick={this.toggleUserBan}>
+                                                <FontAwesomeIcon icon={ faBan }/>
                                             </button>)
                                     )
                                 }
 
                                 <div className="float-right mr-5">
-                                    { ( logged_user && (logged_user.isAdmin || logged_user.id === seriesReview.user.id) ) &&
+                                    { ( logged_user && (logged_user.admin || logged_user.id === seriesReview.user.id) ) &&
                                         <button className="remove" onClick={() => deleteReview(seriesReview)}>
                                             <FontAwesomeIcon icon={faTrash} />
                                         </button>
@@ -151,23 +151,25 @@ class DiscussionReview extends Component {
                                         </button>)
                                         :
                                         (<button className="heart no-padding" onClick={this.toggleLike}>
-                                            <FontAwesomeIcon icon={faHeart} />
+                                            <FontAwesomeIcon className="mr-2" icon={faHeart} />
                                         </button>)
                                     }
-                                    { seriesReview.likes }
+                                    <span>{seriesReview.likes}</span>
                                 </div>
 
                                 { ( seriesReview.spam && !revealSpoilers ) ?
                                     (<blockquote className="original">
-                                        <FontAwesomeIcon icon={faExclamationTriangle} />
-                                        { t("series.hasSpoiler") }
+                                        <FontAwesomeIcon className="mr-2" style={{fontSize: "12px"}} icon={faExclamationTriangle} />
+                                        <span style={{fontSize: "12px"}} className="mr-1">{ t("series.hasSpoiler") }</span>
 
                                         <button className="show_spoiler" onClick={this.toggleSpoilerVisibility}>
                                             { t("series.show") }
                                         </button>
                                     </blockquote>)
                                     :
-                                    (<p>{ seriesReview.body }</p>)
+                                    (<blockquote className="original">
+                                        <p>{ seriesReview.body }</p>
+                                    </blockquote>)
                                 }
                             </div>
                         </div>
@@ -188,7 +190,7 @@ class DiscussionReview extends Component {
                             onSubmit={this.publishNewComment}
                             >
                             {formik => (
-                                <form onSubmit={formik.handleSubmit}>
+                                <form className="reply clearfix" onSubmit={formik.handleSubmit}>
                                     <div className="holder">
                                         <div className="textarea-wrapper">
                                             <div className="mentions-input-box">

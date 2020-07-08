@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faHeart } from '@fortawesome/free-solid-svg-icons';
+import {faTrash, faHeart, faBan} from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { compose } from 'recompose';
@@ -47,42 +47,42 @@ class DiscussionReviewComment extends Component {
                     <div className="author-label">
                         { logged_user ?
                             (<Link to={"/users/" + comment.user.id} title={t("index.profile")}>
-                                <span>{comment.user.userName}</span>
+                                <span style={{fontFamily: "proximaNova", color: "#777"}}>{comment.user.userName}</span>
                             </Link>)
                             :
-                            (<span>{comment.user.userName}</span>)
+                            (<span style={{fontFamily: "proximaNova", color: "#777"}}>{comment.user.userName}</span>)
                         }
 
-                        { ( logged_user && logged_user.isAdmin && logged_user.id !== comment.user.id ) &&
+                        { ( logged_user && logged_user.admin && logged_user.id !== comment.user.id ) &&
                             (
                                 ( comment.user.isBanned ) ?
                                     (<button className="remove" onClick={this.toggleUserBan}>
-                                        <img src="/resources/img/unban.png" title={t("series.unban")} alt={t("series.unban")}/>
+                                        <img src={require('../img/unban.png')} title={t("series.unban")} alt={t("series.unban")}/>
                                     </button>)
                                     :
-                                    (<button className="remove" onClick={this.toggleUserBan}>
-                                        <img src="/resources/img/ban.png" title={t("series.ban")} alt={t("series.ban")}/>
+                                    (<button className="heart post-liked" onClick={this.toggleUserBan}>
+                                            <FontAwesomeIcon icon={ faBan }/>
                                     </button>)
                             )
                         }
 
-                        <div className="float-right mr-5">
-                            { ( logged_user && (logged_user.isAdmin || logged_user.id === comment.user.id) ) &&
-                                <button className="remove" onClick={() => deleteComment(comment)}>
+                        <div className="float-right">
+                            { ( logged_user && (logged_user.admin || logged_user.id === comment.user.id) ) &&
+                                <button className="remove-small p-0" onClick={() => deleteComment(comment)}>
                                     <FontAwesomeIcon icon={faTrash} />
                                 </button>
                             }
 
                             { ( logged_user && comment.loggedInUserLikes ) ?
-                                (<button className="heart post-liked no-padding" onClick={this.toggleLike}>
+                                (<button className="heart post-liked" onClick={this.toggleLike}>
                                     <FontAwesomeIcon icon={faHeart} />
                                 </button>)
                                 :
-                                (<button className="heart no-padding" onClick={this.toggleLike}>
+                                (<button className="heart" onClick={this.toggleLike}>
                                     <FontAwesomeIcon icon={faHeart} />
                                 </button>)
                             }
-                            { comment.numLikes }
+                            <span>{ comment.numLikes }</span>
                         </div>
                     </div>
                     <blockquote>
