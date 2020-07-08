@@ -2,10 +2,7 @@ package ar.edu.itba.paw.webapp.controller;
 
 import ar.edu.itba.paw.interfaces.SeriesService;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.model.Series;
-import ar.edu.itba.paw.model.SeriesList;
-import ar.edu.itba.paw.model.User;
-import ar.edu.itba.paw.model.UsersList;
+import ar.edu.itba.paw.model.*;
 import ar.edu.itba.paw.model.either.Either;
 import ar.edu.itba.paw.model.errors.Errors;
 import ar.edu.itba.paw.model.exceptions.BadRequestException;
@@ -167,7 +164,7 @@ public class UserControllerJersey {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{userId}/notifications/{notificationId}")
+    @Path("/{userId}/notifications/{notificationId}/viewed")
     public Response editUserNotifications(@PathParam("userId") Long userId,@PathParam("notificationId") Long notificationId, @Valid NotificationStateDTO notificationState)  {
         Set<ConstraintViolation<NotificationStateDTO>> constraintViolationSet = validator.validate(notificationState);
         if(!constraintViolationSet.isEmpty()) {
@@ -179,7 +176,14 @@ public class UserControllerJersey {
         try {
             User loggedUser = userService.getLoggedUser().get();
             userService.setNotificationViewed(notificationId,notificationState.getViewedByUser());
-            return accepted(new NotificationsListDTO(loggedUser)).build();
+            Notification notification = new Notification();
+            for(Notification n : loggedUser.getNotifications()){
+                if(n.getId() == notificationId){
+                    notification = n;
+                    break;
+                }
+            }
+            return accepted(new NotificationDTO(notification)).build();
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
