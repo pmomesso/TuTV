@@ -87,126 +87,124 @@ const Navbar = (props) => {
                     <FontAwesomeIcon icon={ faBars } />
                 </span>
             </button>
-            <div className="scrollable scrolling-element">
-                <div className="wrapper">
-                    <a id="home-link" href="/">
-                        <img className="logo tutv" src={require('../img/Tutv.png')} alt="TUTV"/>
-                        <span id="home-text">TUTV</span>
-                    </a>
-                    <div id="global-search" className="navbar-form form-search">
-                        <div className="form-group">
-                            <input type="text" id="global-search-input" value={searchText} onChange={handleSearchChange} name="name" className="show-search" placeholder={ t("search.search") } onKeyPress={searchKeyPress}/>
-                        </div>
-                        <div className="form-group advanced-search">
-                            <Link id="advancedSearchLink" to="/search">
-                                { t("search.advancedSearch") }
-                            </Link>
-                        </div>
+            <div className="wrapper">
+                <a id="home-link" href="/">
+                    <img className="logo tutv" src={require('../img/Tutv.png')} alt="TUTV"/>
+                    <span id="home-text">TUTV</span>
+                </a>
+                <div id="global-search" className="navbar-form form-search">
+                    <div className="form-group">
+                        <input type="text" id="global-search-input" value={searchText} onChange={handleSearchChange} name="name" className="show-search" placeholder={ t("search.search") } onKeyPress={searchKeyPress}/>
                     </div>
-                    <div className="all-left-navs">
-                        <section id="menu">
+                    <div className="form-group advanced-search">
+                        <Link id="advancedSearchLink" to="/search">
+                            { t("search.advancedSearch") }
+                        </Link>
+                    </div>
+                </div>
+                <div className="all-left-navs">
+                    <section id="menu">
+                        <ul className="menu list-unstyled">
+                            {props.logged_user !== null && props.logged_user.admin &&
+                            <li className="upcoming ">
+                                <NavLink id="menu_users" to="/users" activeClassName="active">
+                                    <FontAwesomeIcon icon={faUsers} style={{
+                                        marginRight: "15px",
+                                        verticalAlign: "middle",
+                                        fontSize: "30px",
+                                        fontWeight: "300",
+                                        color: "#999"
+                                    }}/>
+                                    <span>
+                                         {t("index.users")}
+                                    </span>
+                                </NavLink>
+                            </li>}
+                            {props.logged_user !== null &&
+                            <li className="upcoming">
+                                <NavLink id="menu_upcoming" to="/upcoming" activeClassName="active">
+                                    <FontAwesomeIcon icon={faCalendarCheck} style={{
+                                        marginRight: "15px",
+                                        verticalAlign: "middle",
+                                        fontSize: "30px",
+                                        fontWeight: "300",
+                                        color: "#999"
+                                    }}/>
+                                    <span>
+                                        {t("index.upcoming")}
+                                    </span>
+                                </NavLink>
+                            </li>
+                            }
+                            {props.logged_user !== null &&
+                            <li className="home ">
+                                <NavLink id="menu_watchlist" to="/watchlist" activeClassName="active">
+                                    <FontAwesomeIcon icon={faTasks} style={{
+                                        marginRight: "15px",
+                                        verticalAlign: "middle",
+                                        fontSize: "30px",
+                                        fontWeight: "300",
+                                        color: "#999"
+                                    }}/>
+                                    <span>
+                                        {t("index.watchlist")}
+                                    </span>
+                                </NavLink>
+                            </li>
+                            }
+                            <li className="explore">
+                                <NavLink exact id="menu_home" to="/" activeClassName="active">
+                                    <FontAwesomeIcon icon={ faCompass } style={{marginRight: "15px", verticalAlign: "middle", fontSize: "30px", fontWeight: "300", color: "#999"}} />
+                                    <span>
+                                        { t("index.explore") }
+                                    </span>
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </section>
+
+                    {props.logged_user !== null &&
+                        <section id="user-nav">
+                            <h1>
+                                {props.logged_user.userName}
+                            </h1>
+                            <div className="alt-user-nav">
+                                <NavLink to="#" activeClassName="active">
+                                    <span onClick={openModal} className="notifications-btn icon-btn">
+                                        <FontAwesomeIcon icon={ faBell } />
+                                        <div className="badge zero font" style={{color: "#ccc"}}>count</div>
+                                    </span>
+                                </NavLink>
+                            </div>
                             <ul className="menu list-unstyled">
-                                {props.logged_user !== null && props.logged_user.admin &&
-                                <li className="upcoming ">
-                                    <NavLink id="menu_users" to="/users" activeClassName="active">
-                                        <FontAwesomeIcon icon={faUsers} style={{
-                                            marginRight: "15px",
-                                            verticalAlign: "middle",
-                                            fontSize: "30px",
-                                            fontWeight: "300",
-                                            color: "#999"
-                                        }}/>
+                                <li className="profile">
+                                    <NavLink to={"/profiles/" + props.logged_user.id}>
+                                    <FontAwesomeIcon icon={ faUser } style={{marginRight: "15px", verticalAlign: "middle", fontSize: "30px", fontWeight: "300", color: "#999"}} />
                                         <span>
-                                             {t("index.users")}
-                                        </span>
-                                    </NavLink>
-                                </li>}
-                                {props.logged_user !== null &&
-                                <li className="upcoming">
-                                    <NavLink id="menu_upcoming" to="/upcoming" activeClassName="active">
-                                        <FontAwesomeIcon icon={faCalendarCheck} style={{
-                                            marginRight: "15px",
-                                            verticalAlign: "middle",
-                                            fontSize: "30px",
-                                            fontWeight: "300",
-                                            color: "#999"
-                                        }}/>
-                                        <span>
-                                            {t("index.upcoming")}
-                                        </span>
-                                    </NavLink>
-                                </li>
-                                }
-                                {props.logged_user !== null &&
-                                <li className="home ">
-                                    <NavLink id="menu_watchlist" to="/watchlist" activeClassName="active">
-                                        <FontAwesomeIcon icon={faTasks} style={{
-                                            marginRight: "15px",
-                                            verticalAlign: "middle",
-                                            fontSize: "30px",
-                                            fontWeight: "300",
-                                            color: "#999"
-                                        }}/>
-                                        <span>
-                                            {t("index.watchlist")}
-                                        </span>
-                                    </NavLink>
-                                </li>
-                                }
-                                <li className="explore">
-                                    <NavLink exact id="menu_home" to="/" activeClassName="active">
-                                        <FontAwesomeIcon icon={ faCompass } style={{marginRight: "15px", verticalAlign: "middle", fontSize: "30px", fontWeight: "300", color: "#999"}} />
-                                        <span>
-                                            { t("index.explore") }
+                                            { t("index.profile") }
                                         </span>
                                     </NavLink>
                                 </li>
                             </ul>
                         </section>
-
-                        {props.logged_user !== null && 
-                            <section id="user-nav">
-                                <h1>
-                                    {props.logged_user.userName}
-                                </h1>
-                                <div className="alt-user-nav">
-                                    <NavLink to="#" activeClassName="active">
-                                        <span onClick={openModal} className="notifications-btn icon-btn">
-                                            <FontAwesomeIcon icon={ faBell } />
-                                            <div className="badge zero font" style={{color: "#ccc"}}>count</div>
-                                        </span>
-                                    </NavLink>
-                                </div>
-                                <ul className="menu list-unstyled">
-                                    <li className="profile">
-                                        <NavLink to={"/profiles/" + props.logged_user.id}>
-                                        <FontAwesomeIcon icon={ faUser } style={{marginRight: "15px", verticalAlign: "middle", fontSize: "30px", fontWeight: "300", color: "#999"}} />
-                                            <span>
-                                                { t("index.profile") }
-                                            </span>
-                                        </NavLink>
-                                    </li>
-                                </ul>
-                            </section>
+                    }
+                    <section>
+                        {props.logged_user === null ?
+                            <NavLink className="signout-link" to="/login">
+                                <img className="logo logo_icon" src={require('../img/sign_in.png')} alt={ t("index.signin") }/>
+                                <span>
+                                    { t("index.signin") }
+                                </span>
+                            </NavLink>
+                        :
+                            <NavLink className="signout-link" to="/logout">
+                                <img className="logo logo_icon" src={require('../img/sign_out.png')} alt={ t("index.signout")} />
+                                <span>
+                                    { t("index.signout") }
+                                </span>
+                            </NavLink>
                         }
-                        <section>
-                            {props.logged_user === null ? 
-                                <NavLink className="signout-link" to="/login">
-                                    <img className="logo logo_icon" src={require('../img/sign_in.png')} alt={ t("index.signin") }/>
-                                    <span>
-                                        { t("index.signin") }
-                                    </span>
-                                </NavLink>
-                            :
-                                <NavLink className="signout-link" to="/logout">
-                                    <img className="logo logo_icon" src={require('../img/sign_out.png')} alt={ t("index.signout")} />
-                                    <span>
-                                        { t("index.signout") }
-                                    </span>
-                                </NavLink>
-                            }
-                        </section>
-                    </div>
+                    </section>
                 </div>
             </div>
         </div>

@@ -1982,7 +1982,6 @@ a.btn.disabled{
     }
     .navbar-form .control-label,
     .navbar-form .form-group {
-        margin-bottom:0;
         vertical-align:middle
     }
     .navbar-form .form-control {
@@ -4271,24 +4270,6 @@ header #global-search-results ul strong {
     text-transform:uppercase;
     color:#999
 }
-.page-left .all-left-navs {
-    min-height:460px
-}
-@media (max-height:800px) {
-    .page-left .all-left-navs {
-        min-height:375px
-    }
-}
-@media (max-height:900px) {
-    .page-left .all-left-navs {
-        min-height:393px
-    }
-}
-@media (min-height:1000px) {
-    .page-left .all-left-navs {
-        min-height:560px
-    }
-}
 #user-nav {
     margin-bottom:20px;
     position:relative
@@ -5171,8 +5152,8 @@ body.alt h2.title {
     }
     .page-left.extended {
         max-height:100%;
-        height:470px;
-        overflow-y:scroll
+        height:auto;
+        /*overflow-y:scroll*/
     }
     .page-center {
         margin:0!important
