@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { withTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle, faMinusCircle, faEllipsisH, faList } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import { store } from 'react-notifications-component';
 
 import { compose } from "recompose";
 
-import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import { ContextMenu, MenuItem, ContextMenuTrigger, SubMenu } from "react-contextmenu";
 
 class TvSeriesPoster extends PureComponent {
     state = {
@@ -20,8 +20,8 @@ class TvSeriesPoster extends PureComponent {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    onSeriesAddToListClicked = (event) => {
-        alert("agrego a lista");
+    onSeriesAddToListClicked = (event, data) => {
+        this.props.addSeriesToListHandler(data.list, this.state.series);
     };
 
     onContextMenuButtonClicked = (event) => {
@@ -90,9 +90,26 @@ class TvSeriesPoster extends PureComponent {
     render() {
         const { series } = this.state;
 
-        const { t } = this.props;
+        const { t, userLists, addSeriesToListHandler } = this.props;
 
         const contextMenuId = "seriesContext_" + series.id + "_" + this.getRandomInt(0, 99999);
+
+        /*const userLists = [
+            {
+                "id": 1,
+                "name": "Primera lista"
+            },
+            {
+                "id": 2,
+                "name": "Otra cosa"
+            }
+        ];*/
+
+        const userListsMenu = !userLists ? null : userLists.map(userList => {
+            return (
+                <MenuItem key={userList.id} data={{list: userList}} onClick={this.onSeriesAddToListClicked}>{ userList.name }</MenuItem>
+            )
+        });
 
         return (
             <li className="float-left">
@@ -116,19 +133,34 @@ class TvSeriesPoster extends PureComponent {
                     </span>
                 </div>
                 <ContextMenu id={ contextMenuId }>
-                <MenuItem onClick={this.onSeriesFollowClicked}>
-                    <FontAwesomeIcon 
-                        icon={!this.state.series.loggedInUserFollows ? faPlusCircle : faMinusCircle} 
-                        className="icon" />
-                    &nbsp;
-                    { t(!this.state.series.loggedInUserFollows ? "series.follow" : "series.unfollow") }
-                </MenuItem>
-                <MenuItem divider />
-                <MenuItem onClick={this.onSeriesAddToListClicked}>
-                    <FontAwesomeIcon icon={faList} />
-                    &nbsp;
-                    { t("series.addToList") }
-                </MenuItem>
+                    <MenuItem onClick={this.onSeriesFollowClicked}>
+                        <FontAwesomeIcon 
+                            icon={!this.state.series.loggedInUserFollows ? faPlusCircle : faMinusCircle} 
+                            className="icon" />
+                        &nbsp;
+                        { t(!this.state.series.loggedInUserFollows ? "series.follow" : "series.unfollow") }
+                    </MenuItem>
+                    { userListsMenu &&
+                        (<div>
+                            <MenuItem divider />
+                            <SubMenu title={ t("series.addToList") }>
+                                { (userListsMenu.length > 0) &&
+                                    (
+                                        <div>
+                                            { userListsMenu }
+                                            <MenuItem divider />
+                                        </div>
+                                    )
+                                }
+                                
+                                <MenuItem onClick={this.onSeriesAddToListClicked}>
+                                    <FontAwesomeIcon icon={faList} />
+                                    &nbsp;
+                                    { t("series.newList") }
+                                </MenuItem>
+                            </SubMenu>
+                        </div>)
+                    }
                 </ContextMenu>
             </li>
 
@@ -145,4 +177,4 @@ const mapStateToProps = (state) => {
 export default compose(
     connect(mapStateToProps),
     withTranslation()
-)(TvSeriesPoster);
+)(withRouter(TvSeriesPoster));

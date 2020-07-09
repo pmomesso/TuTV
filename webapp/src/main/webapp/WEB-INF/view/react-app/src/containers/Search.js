@@ -1,20 +1,45 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import SeriesList from '../components/SeriesList'
 import Axios from 'axios';
 import { withTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
 
-class Search extends Component {
+class Search extends PureComponent {
     state = {
         pageSize: 60,
         genreList: [],
         networkList: [],
         searchGenre: undefined,
         searchNetwork: undefined,
-        searchName: undefined
+        searchName: undefined,
+        userLists: null
     };
+
+    /*shouldComponentUpdate = (nextProps, nextState) => {
+        if(this.props.location.state || nextProps.location.state) {
+            if(!(this.props.location.state && nextProps.location.state))
+                return true;
+
+            return this.props.location.state.searchText !== nextProps.location.state.searchText;
+        }
+
+        return false;
+    }*/
 
     componentDidMount = () => {
         var that = this;
+
+        /*if(this.props.location.state && this.props.location.state.searchText) {
+            this.setState({
+                ...this.state,
+                seachName: "assdwdqdwqdq"
+            })
+            this.props.history.replace({
+                state: {}
+            })
+        }*/
 
         Axios.all([
             Axios.get("/genres"),
@@ -25,8 +50,45 @@ class Search extends Component {
                 genreList: genres.data,
                 networkList: networks.data
             })
-        }));  
+        }));
+
+        if(this.props.logged_user)
+            Axios.get("/users/" + this.props.logged_user.id + "/lists")
+            .then(res => {
+                this.setState({
+                    userLists: res.data,
+                })
+            });
     };
+
+    createSeriesListAndAddSeriesHandler = (series) => {
+        const { t, logged_user } = this.props;
+        let listName = window.prompt(t("series.newListName"),"");
+
+        if(!listName)
+            return;
+
+        Axios.post("/users/" + logged_user.id + "/lists", JSON.stringify({"name": listName}))
+            .then(res => {
+                this.setState({
+                    ...this.state,
+                    userLists: [res.data].concat(this.state.userLists)
+                });
+                this.addSeriesToListHandler(res.data, series);
+            })
+            .catch(res => {
+
+            });
+    }
+
+    addSeriesToListHandler = (list, series) => {
+        if(!list) { //Crear lista
+            this.createSeriesListAndAddSeriesHandler(series);
+        } else {
+            Axios.post("/users/" + this.props.logged_user.id + "/lists/" + list.id + "/series",
+                JSON.stringify({"seriesId": series.id}));
+        }
+    }
 
     encodeQueryParameter = (key, value) => {
         return encodeURIComponent(key) + "=" + encodeURIComponent(value) + "&";
@@ -86,7 +148,7 @@ class Search extends Component {
                                 { networkSelect }
                             </select>
                             
-                            <SeriesList key={fetchUrl} source={ fetchUrl }/>
+                            <SeriesList key={fetchUrl} source={ fetchUrl } addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
                         </div>
                     </div>
                 </div>
@@ -95,4 +157,13 @@ class Search extends Component {
     }
 }
 
-export default withTranslation()(Search);
+const mapStateToProps = (state) => {
+    return {
+        logged_user: state.auth.user
+    }
+};
+
+export default compose(
+    connect(mapStateToProps),
+    withTranslation()
+)(withRouter(Search));

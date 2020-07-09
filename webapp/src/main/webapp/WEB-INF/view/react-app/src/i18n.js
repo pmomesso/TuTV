@@ -67,6 +67,9 @@ i18n
             "series.ban":                   "Ban user",
             "series.unban":                 "Unban user",
             "series.addToList":             "Add to a list",
+            "series.newList":               "New list",
+            "series.newListName":           "Enter a name for the new list",
+            "series.viewPrevious":          "You have previous unseen episodes. Do you want to mark them all as seen?",
 
             "login.title":                  "Log In",
             "login.username":               "Mail address: ",
@@ -213,6 +216,9 @@ i18n
             "series.ban":                   "Bloquear usuario",
             "series.unban":                 "Desbloquear usuario",
             "series.addToList":             "Añadir a una lista",
+            "series.newList":               "Nueva lista",
+            "series.newListName":           "Ingrese un nombre para la nueva lista",
+            "series.viewPrevious":          "Tiene episodios anteriores no vistos. ¿Desea marcarlos todos como vistos?",
 
             "login.title":                  "Ingresar",
             "login.username":               "Correo electrónico:",

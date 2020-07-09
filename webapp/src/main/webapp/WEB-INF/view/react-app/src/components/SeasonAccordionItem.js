@@ -5,7 +5,7 @@ import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 
 class SeasonAccordionItem extends PureComponent {
 
-    onEpisodeWatchedClicked = (event) => this.props.onEpisodeWatchedClickedHandler(event, this.props.season_index, this.props.number);
+    onEpisodeWatchedClicked = (event) => this.props.onEpisodeWatchedClickedHandler(event, this.props.season_index, this.props.number, false);
 
     render() {
         const episode = this.props.episode;

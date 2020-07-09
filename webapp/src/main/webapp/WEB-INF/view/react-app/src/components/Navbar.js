@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useHistory, withRouter } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUsers, faBars, faBell, faTasks } from '@fortawesome/free-solid-svg-icons'
 import { faCompass, faCalendarCheck, faUser } from '@fortawesome/free-regular-svg-icons'
 import NotificationItem from "./NotificationItem";
+import { compose } from 'recompose';
 
 const customStyles = {
     content : {
@@ -38,6 +39,8 @@ const Navbar = (props) => {
     const { t } = useTranslation();
 
     const [modalIsOpen,setIsOpen] = React.useState(false);
+    const [searchText,setSearchText] = React.useState("");
+
     function openModal() {
         setIsOpen(true);
     }
@@ -51,6 +54,17 @@ const Navbar = (props) => {
         } else {
             $(navigation).addClass("extended");
         }
+    }
+
+    function searchKeyPress(event) {
+        if(event.key === 'Enter'){
+            //props.history.push('/search', { searchText: searchText });
+            //setSearchText("");
+        }
+    }
+
+    function handleSearchChange(event) {
+        setSearchText(event.target.value);
     }
 
     return (
@@ -79,17 +93,16 @@ const Navbar = (props) => {
                         <img className="logo tutv" src={require('../img/Tutv.png')} alt="TUTV"/>
                         <span id="home-text">TUTV</span>
                     </a>
-                    <form id="global-search" method="get" className="navbar-form form-search" action="/searchResults">
+                    <div id="global-search" className="navbar-form form-search">
                         <div className="form-group">
-                            <input type="text" id="global-search-input" name="name" className="show-search" placeholder={ t("search.search") }/>
+                            <input type="text" id="global-search-input" value={searchText} onChange={handleSearchChange} name="name" className="show-search" placeholder={ t("search.search") } onKeyPress={searchKeyPress}/>
                         </div>
-                        <div className="form-group advanced-search">
-                            <Link id="advancedSearchLink" to="/search">
+                        {/*<div className="form-group advanced-search">
+                            <Link id="advancedSearchLink" to="/search" onClick={clearSearchText}>
                                 { t("search.advancedSearch") }
                             </Link>
-                        </div>
-                        <input type="submit" className="novisible" />
-                    </form>
+                        </div>*/}
+                    </div>
                     <div className="all-left-navs">
                         <section id="menu">
                             <ul className="menu list-unstyled">
@@ -206,4 +219,6 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(Navbar);
+export default compose(
+    connect(mapStateToProps),
+)(withRouter(Navbar));

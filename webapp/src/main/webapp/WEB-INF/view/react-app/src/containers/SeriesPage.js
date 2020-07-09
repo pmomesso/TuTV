@@ -13,6 +13,7 @@ import 'react-activity/dist/react-activity.css';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import Discussion from '../components/Discussion';
+import { confirmAlert } from 'react-confirm-alert';
 
 class SeriesPage extends Component {
     state = {
@@ -34,8 +35,9 @@ class SeriesPage extends Component {
                 });
     }
 
-    onEpisodeWatchedClickedHandler = (event, season_index, episode_index) => {
-        event.preventDefault();
+    onEpisodeWatchedClickedHandler = (event, season_index, episode_index, automatic = false) => {
+        if(!automatic)
+            event.preventDefault();
 
         if(this.props.logged_user === null) {
             this.props.history.push("/login" + this.props.location.pathname);
@@ -72,18 +74,47 @@ class SeriesPage extends Component {
                 };
         
                 this.setState({ "series": newSeries });
+
+                if(automatic || !newValue)
+                    return;
+
+                const { t } = this.props;
+                const { series } = this.state;
+
+                let asked = false;
+                for(let i = 0; i < season_index; i++) {
+                    if(!series.seasons[i].viewedByUser) {
+                        if(!asked) {
+                            if(!window.confirm(t("series.viewPrevious")))
+                                return;
+                            asked = true;
+                        }
+
+                        this.onSeasonWatchedClicked(null, i, true);
+                    }
+                }
+
+                for(let j = 0; j < episode_index; j++) {
+                    if(!series.seasons[season_index].episodes[j].viewedByUser) {
+                        if(!asked) {
+                            if(!window.confirm(t("series.viewPrevious")))
+                                return;
+                            asked = true;
+                        }
+
+                        this.onEpisodeWatchedClickedHandler(event, season_index, j, true);
+                    }
+                }
             })
             .catch((err) => {
                 /* TODO SI CADUCO LA SESION? */
                 //alert("Error: " + err.response.status);
             });
-
-        
-
     };
 
-    onSeasonWatchedClicked = (event, season_index) => {
-        event.preventDefault();
+    onSeasonWatchedClicked = (event, season_index, automatic = false) => {
+        if(!automatic)
+            event.preventDefault();
 
         if(this.props.logged_user === null) {
             this.props.history.push("/login" + this.props.location.pathname);
@@ -124,6 +155,25 @@ class SeriesPage extends Component {
                     "seasons": newSeasonList
                 };
                 this.setState({ "series": newSeries });
+
+                if(automatic || !newValue)
+                    return;
+
+                const { t } = this.props;
+                const { series } = this.state;
+
+                let asked = false;
+                for(let i = 0; i < season_index; i++) {
+                    if(!series.seasons[i].viewedByUser) {
+                        if(!asked) {
+                            if(!window.confirm(t("series.viewPrevious")))
+                                return;
+                            asked = true;
+                        }
+
+                        this.onSeasonWatchedClicked(null, i, true);
+                    }
+                }
             })
             .catch((err) => {
                 /* TODO SI CADUCO LA SESION? */

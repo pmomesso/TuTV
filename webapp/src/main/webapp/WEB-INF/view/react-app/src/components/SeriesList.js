@@ -92,10 +92,11 @@ class SeriesList extends Component {
         </section>
       );
 
+    const { userLists, addSeriesToListHandler } = this.props;
 
     const showList = this.state.showList.map(series => {
       return(
-        <TvSeriesPoster key={ series.id } series={ series } onSeriesFollowClickedHandler={this.props.onSeriesFollowClickedHandler}/>
+        <TvSeriesPoster key={ series.id } series={ series } onSeriesFollowClickedHandler={this.props.onSeriesFollowClickedHandler} userLists={userLists} addSeriesToListHandler={addSeriesToListHandler}/>
       )
     });
     

@@ -7,7 +7,6 @@ const initState = {
 
 const authReducer = (state = initState, action) => {
     if(action.type === "LOGIN") {
-
         if(action.payload.updateLocalStorage) {
             localStorage.setItem("authToken", action.payload.token);
             localStorage.setItem("authUserJson", JSON.stringify(action.payload.user));
