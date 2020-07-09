@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface SeriesDao {
 
-    List<Series> searchSeries(String seriesName, String genreName, String networkName, int page, int pageSize);
+    List<Series> searchSeries(String seriesName, Long genreId, Long networkId, int page, int pageSize);
     List<Series> getSeriesByName(String seriesName);
 
     List<Series> getSeriesByGenre(String genreName);

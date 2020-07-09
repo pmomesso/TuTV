@@ -67,11 +67,9 @@ public class SeriesServiceImpl implements SeriesService {
         this.messageSource = messageSource;
     }
     @Override
-    public List<Series> searchSeries(String seriesName, String genreName, String networkName, int page, int pageSize) {
+    public List<Series> searchSeries(String seriesName, Long genreId, Long networkId, int page, int pageSize) {
         String name = seriesName == null ? "" : seriesName;
-        String genre = genreName == null ? "" : genreName;
-        String network = networkName == null ? "" : networkName;
-        return seriesDao.searchSeries(name,genre,network,page, pageSize);
+        return seriesDao.searchSeries(name,genreId,networkId,page, pageSize);
     }
 
     @Override

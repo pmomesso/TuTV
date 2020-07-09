@@ -36,10 +36,12 @@ public class SeriesHibernateDaoTest {
 
     /* Valores test genero */
    private static final String GENRE_NAME = "genre";
+   private static Long genre_id;
    private static final String I18KEY = "genre";
 
     /* Valores test network */
     private static final String NETWORK_NAME = "network";
+    private static Long network_id;
 
     /* Valores test temporada */
     private static final int SEASON_NUM = 1;
@@ -100,6 +102,7 @@ public class SeriesHibernateDaoTest {
         Genre g = (Genre)series.getGenres().toArray()[0];
         Assert.assertEquals(this.genre.getId(),g.getId());
         Assert.assertEquals(GENRE_NAME,g.getName());
+        Assert.assertEquals(genre_id, g.getId());
         Assert.assertEquals(1,series.getSeasons().size());
         Season s = (Season)series.getSeasons().toArray()[0];
         Assert.assertEquals(season.getId(),s.getId());
@@ -153,6 +156,8 @@ public class SeriesHibernateDaoTest {
         series.addGenre(genre);
         series.addSeason(season);
         em.persist(series);
+        SeriesHibernateDaoTest.genre_id = genre.getId();
+        SeriesHibernateDaoTest.network_id = network.getId();
     }
     @Test
     public void createSeriesTest(){
@@ -226,13 +231,13 @@ public class SeriesHibernateDaoTest {
     }
     @Test
     public void searchSeriesByGenreTest(){
-        List<Series> series = seriesDao.searchSeries(null,GENRE_NAME,null,1, 1);
+        List<Series> series = seriesDao.searchSeries(null,genre_id,null,1, 1);
         Assert.assertEquals(1,series.size());
         assertSeries(series.get(0));
     }
     @Test
     public void searchSeriesByNetworkTest(){
-        List<Series> series = seriesDao.searchSeries(null,null,NETWORK_NAME,1, 1);
+        List<Series> series = seriesDao.searchSeries(null,null,network_id,1, 1);
         Assert.assertEquals(1,series.size());
         assertSeries(series.get(0));
     }

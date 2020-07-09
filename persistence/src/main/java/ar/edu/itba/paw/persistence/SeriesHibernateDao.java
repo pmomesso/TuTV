@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.SeriesDao;
 import ar.edu.itba.paw.model.*;
+import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -22,21 +23,24 @@ public class SeriesHibernateDao implements SeriesDao {
     private EntityManager em;
 
     @Override
-    public List<Series> searchSeries(String seriesName, String genreName, String networkName, int page, int pageSize) {
+    public List<Series> searchSeries(String seriesName, Long genreId, Long networkId, int page, int pageSize) {
         //Valores por defecto
         page = page > 0 ? page : 1;
         pageSize = pageSize <= 0 || pageSize > PAGE_SIZE ? 24 : pageSize;
         seriesName = seriesName != null ? seriesName : "";
-        genreName = genreName != null ? genreName : "";
-        networkName = networkName != null ? networkName : "";
+
+        genreId = genreId == null || genreId <= 0 ? -1 : genreId;
+        networkId = networkId == null || networkId <= 0 ? -1 : networkId;
 
         return em.createNativeQuery("SELECT DISTINCT(series.*) FROM series INNER JOIN hasgenre ON series.id = hasgenre.seriesid INNER JOIN genres ON hasgenre.genreid = genres.id INNER JOIN network ON series.network_id = network.id WHERE LOWER(series.name) like ? " +
-                " AND LOWER(network.name) like ? AND LOWER(genres.name) like ? LIMIT ? OFFSET ?", Series.class)
+                " AND (network.id = ? OR ? = -1) AND (genres.id = ? OR ? = -1) LIMIT ? OFFSET ?", Series.class)
                 .setParameter(1, "%" + seriesName.toLowerCase() + "%")
-                .setParameter(2, "%" + networkName.toLowerCase() + "%")
-                .setParameter(3, "%" + genreName.toLowerCase() + "%")
-                .setParameter(4, pageSize)
-                .setParameter(5, (page - 1)* pageSize)
+                .setParameter(2, networkId)
+                .setParameter(3, networkId)
+                .setParameter(4, genreId)
+                .setParameter(5, genreId)
+                .setParameter(6, pageSize)
+                .setParameter(7, (page - 1)* pageSize)
                 .getResultList();
     }
 

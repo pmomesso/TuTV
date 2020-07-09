@@ -54,7 +54,7 @@ public class SeriesControllerJersey {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response searchSeries(@QueryParam("name") String name, @QueryParam("genre") String genre, @QueryParam("network") String network,
+    public Response searchSeries(@QueryParam("name") String name, @QueryParam("genre") Long genre, @QueryParam("network") Long network,
                                  @QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) {
 
         page = page == null || page < 1 ? 1 : page;
@@ -73,11 +73,11 @@ public class SeriesControllerJersey {
                 nextUri.queryParam("name", name);
                 prevUri.queryParam("name", name);
             }
-            if(genre != null && genre.length() > 0){
+            if(genre != null){
                 nextUri.queryParam("genre", genre);
                 prevUri.queryParam("genre", genre);
             }
-            if(network != null && network.length() > 0){
+            if(network != null){
                 nextUri.queryParam("network", network);
                 prevUri.queryParam("network", network);
             }
