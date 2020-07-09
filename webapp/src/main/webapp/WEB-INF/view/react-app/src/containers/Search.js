@@ -159,7 +159,7 @@ class Search extends PureComponent {
                                         </div>
                                     </div>
                                 </div>
-                                <SeriesList key={fetchUrl} source={ fetchUrl } addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
+                                <SeriesList isSearch={true} key={fetchUrl} source={ fetchUrl } addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
                             </section>
                         </div>
                     </div>

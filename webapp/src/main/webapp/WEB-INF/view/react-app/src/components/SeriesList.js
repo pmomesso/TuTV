@@ -101,36 +101,44 @@ class SeriesList extends Component {
     });
     
     return (
-      <section>
-        { (this.props.name) &&
-          <h2 className="black-font">
-            { this.props.name }
-          </h2>
+        <div style={{minHeight: "30px"}}>
+        {
+          (this.state.showList.length) ?
+            (<section>
+              { (this.props.name) &&
+              <h2 className="black-font">
+                { this.props.name }
+              </h2>
+              }
+              <ul className="posters-list shows-list explore-list list-unstyled list-inline overflow-hidden">
+                {(typeof this.state.prevUrl === "string") &&
+                <span className="clickable carousel-genre-left float-left" data-slide="prev" onClick={this.prevPage}>
+                  <span className="carousel-control-prev-icon my-prev-icon"></span>
+                </span>
+                }
+
+                { showList }
+
+                {(typeof this.state.nextUrl === "string") &&
+                <span className="clickable carousel-genre-right float-left" data-slide="next" onClick={this.nextPage}>
+                  <span className="carousel-control-next-icon my-next-icon"></span>
+                </span>
+                }
+              </ul>
+            </section>)
+            :
+            [
+              (this.props.isSearch) ?
+                  (<div style={{marginTop: "10%"}} className="container-center">
+                    <h4><Trans i18nKey="search.noResults"/></h4>
+                  </div>)
+                  :
+                  (<div style={{marginTop: "3%"}} className="container-center">
+                    <h4><Trans i18nKey="profile.lists.noSeries"/></h4>
+                  </div>)
+            ]
         }
-        <ul className="posters-list shows-list explore-list list-unstyled list-inline overflow-hidden">
-        {(typeof this.state.prevUrl === "string") &&
-            <span className="clickable carousel-genre-left float-left" data-slide="prev" onClick={this.prevPage}>
-              <span className="carousel-control-prev-icon my-prev-icon"></span>
-            </span>
-          }
-
-          {
-            (this.state.showList.length) ?
-              ( showList )
-              :
-              (<div style={{marginTop: "5%"}} className="container-center">
-                <h4><Trans i18nKey="search.noResults"/></h4>
-              </div>)
-          }
-
-          {(typeof this.state.nextUrl === "string") &&
-            <span className="clickable carousel-genre-right float-left" data-slide="next" onClick={this.nextPage}>
-              <span className="carousel-control-next-icon my-next-icon"></span>
-            </span>
-          }
-        </ul>
-      </section>
-    );
+        </div>)
   }
 }
 

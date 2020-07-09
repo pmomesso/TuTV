@@ -278,7 +278,7 @@ class ProfilePage extends PureComponent {
                                  <button type="submit" class="heart no-padding" style="font-family: FontAwesome,serif; font-style: normal">&#xf1f8</button>
                                </form> */}
                             </div>
-                            <SeriesList source={list.series} />
+                            <SeriesList isSearch={false} source={list.seriesList} />
                         </div>
                     </div>
                 );
