@@ -2,20 +2,34 @@ import React, { PureComponent } from 'react';
 import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faPlusCircle, faMinusCircle, faEllipsisH, faList } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import Axios from 'axios';
 import { store } from 'react-notifications-component';
 
 import { compose } from "recompose";
 
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+
 class TvSeriesPoster extends PureComponent {
     state = {
         series: this.props.series
     };
 
+    getRandomInt = (min, max) => {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    onSeriesAddToListClicked = (event) => {
+        alert("agrego a lista");
+    };
+
+    onContextMenuButtonClicked = (event) => {
+        alert("context menu");
+    }
+
     onSeriesFollowClicked = (event) => {
-        if(this.props.logged_user === null) {
+        if (this.props.logged_user === null) {
             this.props.history.push("/login" + this.props.location.pathname);
             return;
         }
@@ -23,9 +37,9 @@ class TvSeriesPoster extends PureComponent {
         let newValue = !this.state.series.loggedInUserFollows;
 
         let promise;
-        if(newValue) {
-            promise = Axios.post("/users/" + this.props.logged_user.id + "/following", 
-                { "seriesId": this.state.series.id });
+        if (newValue) {
+            promise = Axios.post("/users/" + this.props.logged_user.id + "/following",
+                JSON.stringify({ "seriesId": this.state.series.id }));
         } else {
             promise = Axios.delete("/users/" + this.props.logged_user.id + "/following/" + this.state.series.id);
         }
@@ -37,7 +51,7 @@ class TvSeriesPoster extends PureComponent {
                     followers: res.data.followers,
                     loggedInUserFollows: newValue
                 };
-        
+
                 this.setState({
                     series: newSeries
                 });
@@ -54,9 +68,9 @@ class TvSeriesPoster extends PureComponent {
                     animationIn: ["animated", "fadeIn"],
                     animationOut: ["animated", "fadeOut"],
                     dismiss: {
-                      duration: 4000,
-                      pauseOnHover: true,
-                      showIcon: true,
+                        duration: 4000,
+                        pauseOnHover: true,
+                        showIcon: true,
                     }
                 });
             })
@@ -66,30 +80,58 @@ class TvSeriesPoster extends PureComponent {
             });
     };
 
+    contextTrigger = null;
+    toggleMenu = e => {
+        if(this.contextTrigger) {
+            this.contextTrigger.handleContextClick(e);
+        }
+    };
+
     render() {
         const { series } = this.state;
 
         const { t } = this.props;
-        
+
+        const contextMenuId = "seriesContext_" + series.id + "_" + this.getRandomInt(0, 99999);
+
         return (
             <li className="float-left">
-                <div className="image-crop">
-                    <Link to={ "/series/" + series.id }>
-                        <img  src={"https://image.tmdb.org/t/p/original" + series.posterUrl} alt={series.name}/>
-                    </Link>
-                    {this.props.logged_user !== null &&
-                    <button className="check-follow">
-                        <FontAwesomeIcon icon={ !this.state.series.loggedInUserFollows ? faPlusCircle : faMinusCircle } onClick={this.onSeriesFollowClicked} className="icon" />
-                    </button>
-                    }
-                </div>
+                <ContextMenuTrigger id={ contextMenuId } ref={c => this.contextTrigger = c}>
+                    <div className="image-crop">
+                        <Link to={"/series/" + series.id}>
+                            <img src={"https://image.tmdb.org/t/p/original" + series.posterUrl} alt={series.name} />
+                        </Link>
+                        {this.props.logged_user !== null &&
+                            <button className="check-follow">
+                                <FontAwesomeIcon icon={faEllipsisH} onClick={this.toggleMenu} className="icon" />
+                            </button>
+                        }
+                    </div>
+                </ContextMenuTrigger>
+
                 <div className="show-details poster-details">
-                    <h2>{ series.name }</h2>
+                    <h2>{series.name}</h2>
                     <span className="secondary-link">
-                        { t("index.followers", { count: series.followers }) }
+                        {t("index.followers", { count: series.followers })}
                     </span>
                 </div>
+                <ContextMenu id={ contextMenuId }>
+                <MenuItem onClick={this.onSeriesFollowClicked}>
+                    <FontAwesomeIcon 
+                        icon={!this.state.series.loggedInUserFollows ? faPlusCircle : faMinusCircle} 
+                        className="icon" />
+                    &nbsp;
+                    { t(!this.state.series.loggedInUserFollows ? "series.follow" : "series.unfollow") }
+                </MenuItem>
+                <MenuItem divider />
+                <MenuItem onClick={this.onSeriesAddToListClicked}>
+                    <FontAwesomeIcon icon={faList} />
+                    &nbsp;
+                    { t("series.addToList") }
+                </MenuItem>
+                </ContextMenu>
             </li>
+
         )
     }
 }

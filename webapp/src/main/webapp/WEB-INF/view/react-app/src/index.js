@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import './css/resize_images.css';
 import './css/tutv.css';
+import './css/react-contextmenu.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './i18n';
 import * as serviceWorker from './serviceWorker';
@@ -28,19 +29,21 @@ let user;
 try {
     user = JSON.parse(userJson);
 
-    if(token !== null && userJson != null) {
+    if (token !== null && userJson != null) {
         store.dispatch({ type: "LOGIN", payload: { "token": token, "user": user, "updateLocalStorage": false } })
     }
 } catch (e) {
-    
+
 }
 
 
 
-ReactDOM.render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
+ReactDOM.render( <
+    Provider store = { store } >
+    <
+    App / >
+    <
+    /Provider>,
     document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

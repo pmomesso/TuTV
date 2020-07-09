@@ -7,6 +7,7 @@ import Axios from 'axios';
 import { Digital } from 'react-activity';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { confirmAlert } from 'react-confirm-alert';
 
 class Discussion extends Component {
     state = {
@@ -25,10 +26,32 @@ class Discussion extends Component {
     };
 
     deleteComment = (commentToDelete) => {
-        this.setState({
-            ...this.state,
-            seriesReviews: this.state.seriesReviews.filter(comment => comment.id !== commentToDelete.id)
+        const { t, series } = this.props;
+
+        confirmAlert({
+            title: t("series.deleteConfirmTitle"),
+            message: t("series.deleteConfirmDialog"),
+            buttons: [
+              {
+                label: t("series.yes"),
+                onClick: () => {
+                    Axios.delete("/series/" + series.id + "/reviews/" + commentToDelete.id)
+                        .then(() => {
+                            this.setState({
+                                ...this.state,
+                                seriesReviews: this.state.seriesReviews.filter(comment => comment.id !== commentToDelete.id)
+                            });
+                        });
+                }
+              },
+              {
+                label: t("series.no")
+              }
+            ]
         });
+
+
+        
     }
 
     publishNewComment = (values, actions) => {

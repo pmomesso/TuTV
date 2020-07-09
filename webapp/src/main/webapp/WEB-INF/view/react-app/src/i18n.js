@@ -66,6 +66,7 @@ i18n
             "series.no":                    "No",
             "series.ban":                   "Ban user",
             "series.unban":                 "Unban user",
+            "series.addToList":             "Add to a list",
 
             "login.title":                  "Log In",
             "login.username":               "Mail address: ",
@@ -211,6 +212,7 @@ i18n
             "series.no":                    "No",
             "series.ban":                   "Bloquear usuario",
             "series.unban":                 "Desbloquear usuario",
+            "series.addToList":             "Añadir a una lista",
 
             "login.title":                  "Ingresar",
             "login.username":               "Correo electrónico:",
