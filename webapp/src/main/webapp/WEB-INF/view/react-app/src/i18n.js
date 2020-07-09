@@ -23,6 +23,7 @@ i18n
 
             "search.search":                "Search",
             "search.searchResults":         "Search Results",
+            "search.noResults":             "No results found for your search",
             "search.advancedSearch":        "Advanced search",
             "search.allNetworks":           "All networks",
             "search.allGenres":             "All genres",
@@ -173,6 +174,7 @@ i18n
 
             "search.search":                "Buscar",
             "search.searchResults":         "Resultados de Búsqueda",
+            "search.noResults":             "No se encontraron resultados para su búsqueda",
             "search.advancedSearch":        "Búsqueda avanzada",
             "search.allNetworks":           "Todas las cadenas",
             "search.allGenres":             "Todos los géneros",

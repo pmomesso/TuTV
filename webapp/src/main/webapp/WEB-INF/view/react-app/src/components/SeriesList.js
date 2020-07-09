@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import TvSeriesPoster from './TvSeriesPoster'
 import Axios from 'axios';
-
+import { Trans } from 'react-i18next';
 import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
 import $ from "jquery";
@@ -114,7 +114,14 @@ class SeriesList extends Component {
             </span>
           }
 
-          { showList }
+          {
+            (this.state.showList.length) ?
+              ( showList )
+              :
+              (<div style={{marginTop: "5%"}} className="container-center">
+                <h4><Trans i18nKey="search.noResults"/></h4>
+              </div>)
+          }
 
           {(typeof this.state.nextUrl === "string") &&
             <span className="clickable carousel-genre-right float-left" data-slide="next" onClick={this.nextPage}>
