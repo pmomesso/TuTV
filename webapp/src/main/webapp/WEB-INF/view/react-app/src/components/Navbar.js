@@ -81,9 +81,6 @@ const Navbar = (props) => {
                     </a>
                     <form id="global-search" method="get" className="navbar-form form-search" action="/searchResults">
                         <div className="form-group">
-                            <img className="logo logo_icon" src={require('../img/search.png')} alt={ t("search.search") }/>
-                        </div>
-                        <div className="form-group">
                             <input type="text" id="global-search-input" name="name" className="show-search" placeholder={ t("search.search") }/>
                         </div>
                         <div className="form-group advanced-search">

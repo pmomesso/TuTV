@@ -55,7 +55,7 @@ class ProfilePage extends PureComponent {
                     lists: listsData.data,
                     loading: false
                 });
-                
+
                 if (that.state.stats.length !== 0) {
                     var labels = [];
                     var values = [];

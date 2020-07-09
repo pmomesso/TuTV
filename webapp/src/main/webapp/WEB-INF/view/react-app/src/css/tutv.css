@@ -2871,13 +2871,11 @@ body.single-column .page-center-inner .main-block-container {
 #global-search input::-moz-placeholder {
     color:#777!important;
 }
-#global-search img {
-    position:absolute;
-    color:#777;
-    left:30px;
-    top:9px;
-    font-size:12px;
-    width: 13px !important;
+#global-search-input {
+    background-image: url("../img/search.png");
+    background-repeat: no-repeat;
+    text-indent: 20px;
+    background-size: 25px 25px;
 }
 .page-column section {
     padding:20px 12px 0
@@ -5203,8 +5201,8 @@ body.alt h2.title {
     .page-left .menu>li a i {
         font-size:21px
     }
-    #global-search {
-        display:none
+    .novisible {
+        display: none;
     }
     .posters-list>li .image-crop {
         width:132px;
