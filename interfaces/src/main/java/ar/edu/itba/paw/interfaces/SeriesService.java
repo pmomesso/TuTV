@@ -85,4 +85,8 @@ public interface SeriesService {
     Optional<Series> serieWithReview(Long seriesReviewId);
 
     List<Series> getSeriesInList(Long listId, int page, int pageSize) throws NotFoundException;
+
+    SeriesList changeListName(Long listId, String name) throws UnauthorizedException, NotFoundException;
+
+    SeriesList removeSeriesFromList(Long listId, Long seriesId) throws UnauthorizedException, NotFoundException;
 }

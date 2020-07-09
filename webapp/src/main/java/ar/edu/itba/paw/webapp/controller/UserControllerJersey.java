@@ -372,12 +372,13 @@ public class UserControllerJersey {
         }
     }
 
+    /*
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{userId}/lists/{listId}")
-    public Response modifyList(@PathParam("userId") @NotNull Long userId, @PathParam("listId")@NotNull Long listId,
-                               @Valid @NotNull SeriesListStateDTO listDto){
+    @Path("/{userId}/lists/{listId}/name")
+    public Response modifyList(@PathParam("userId") Long userId, @PathParam("listId") Long listId,
+                               @Valid SeriesListStateDTO listDto){
 
         Set<ConstraintViolation<SeriesListStateDTO>> violations = validator.validate(listDto);
         if(!violations.isEmpty()) {
@@ -389,24 +390,32 @@ public class UserControllerJersey {
             return Response.status(Status.UNAUTHORIZED).build();
         }
 
-        long[] seriesIds = null;
-        if(listDto.getSeries() != null){
-            seriesIds = new long[listDto.getSeries().size()];
-            for(int i = 0; i < listDto.getSeries().size(); i++){
-                seriesIds[i] = listDto.getSeries().get(i);
-            }
-        }
-
-        Optional<SeriesList> list;
         try {
-            list = seriesService.modifyList(listId, listDto.getName(), seriesIds);
+            SeriesList seriesList = seriesService.changeListName(listId, listDto.getName());
+            if(!seriesList.getName().equals(listDto.getName())) {
+                return accepted().build();
+            } else {
+                return accepted(Status.NOT_MODIFIED).build();
+            }
         } catch (UnauthorizedException e) {
             return status(Status.UNAUTHORIZED).build();
-        }
-        if(!list.isPresent()){
+        } catch (NotFoundException e) {
             return status(Status.NOT_FOUND).build();
-        } else {
-            return ok(new SeriesListDTO(list.get(), uriInfo)).build();
+        }
+    }
+    */
+
+    @DELETE
+    @Path("/{userId}/lists/{listId}/series/{seriesId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeSeriesFromList(@PathParam("userId") Long userId, @PathParam("listId") Long listId, @PathParam("seriesId") Long seriesId) {
+        try {
+            SeriesListDTO updatedList = new SeriesListDTO(seriesService.removeSeriesFromList(listId, seriesId), uriInfo);
+            return ok(updatedList).build();
+        } catch (UnauthorizedException e) {
+            return status(Status.UNAUTHORIZED).build();
+        } catch (NotFoundException e) {
+            return status(Status.NOT_FOUND).build();
         }
     }
 

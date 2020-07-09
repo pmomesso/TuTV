@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -445,6 +446,21 @@ public class SeriesServiceImpl implements SeriesService {
     @Override
     public List<Series> getSeriesInList(Long listId, int page, int pageSize) throws NotFoundException {
         return seriesDao.getSeriesInList(listId, page, pageSize).orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    public SeriesList changeListName(Long listId, String name) throws UnauthorizedException, NotFoundException {
+        User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        SeriesList sl = loggedUser.getLists().stream().filter(l -> l.getId() == listId).findFirst().orElseThrow(NotFoundException::new);
+        return seriesDao.modifyList(listId, loggedUser.getId(), name, sl.getSeries()).orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    public SeriesList removeSeriesFromList(Long listId, Long seriesId) throws UnauthorizedException, NotFoundException {
+        User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        SeriesList sl = loggedUser.getLists().stream().filter(l -> l.getId() == listId).findFirst().orElseThrow(NotFoundException::new);
+        Set<Series> newSet = sl.getSeries().stream().filter(s -> s.getId() != seriesId).collect(Collectors.toSet());
+        return seriesDao.modifyList(listId, loggedUser.getId(), sl.getName(), newSet).orElseThrow(NotFoundException::new);
     }
 
 }
