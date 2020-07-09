@@ -20,7 +20,7 @@ class Watchlist extends Component {
             return;
         }
 
-        Axios.get("/series/watchlist")
+        Axios.get("/users/" + this.props.logged_user.id + "/watchlist")
         .then(res => {
             this.setState({
                 shows: res.data,

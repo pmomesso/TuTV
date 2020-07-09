@@ -11,7 +11,7 @@ class Explore extends Component {
     };
 
     componentDidMount = () => {
-        Axios.get("/series/genres")
+        Axios.get("/genres")
         .then(res => {
             this.setState({
                 genreList: res.data,
@@ -22,7 +22,7 @@ class Explore extends Component {
     render() {
         const seriesLists = this.state.genreList.map(genre => {
             return(
-                <SeriesList key={ genre.id } name={ genre.name } source={ "/series/genres/" + genre.id }/>
+                <SeriesList key={ genre.id } name={ genre.name } source={ "/genres/" + genre.id }/>
             )
         });
 
