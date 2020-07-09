@@ -23,6 +23,8 @@ i18n
 
             "search.search":                "Search",
             "search.advancedSearch":        "Advanced search",
+            "search.allNetworks":           "All networks",
+            "search.allGenres":             "All genres",
 
             "genres.drama":                 "Drama",
             "genres.fantasy":               "Fantasy",
@@ -166,6 +168,8 @@ i18n
 
             "search.search":                "Buscar",
             "search.advancedSearch":        "Búsqueda avanzada",
+            "search.allNetworks":           "Todas las cadenas",
+            "search.allGenres":             "Todos los géneros",
 
             "genres.drama":                 "Drama",
             "genres.fantasy":               "Fantasía",
