@@ -99,4 +99,6 @@ public interface SeriesDao {
     Optional<Series> serieWithReview(Long seriesReviewId);
 
     int addSeriesToList(long id, long seriesId);
+
+    Optional<List<Series>> getSeriesInList(Long listId, int page, int pageSize);
 }

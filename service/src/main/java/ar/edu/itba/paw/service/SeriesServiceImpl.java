@@ -442,4 +442,9 @@ public class SeriesServiceImpl implements SeriesService {
         return seriesDao.serieWithReview(seriesReviewId);
     }
 
+    @Override
+    public List<Series> getSeriesInList(Long listId, int page, int pageSize) throws NotFoundException {
+        return seriesDao.getSeriesInList(listId, page, pageSize).orElseThrow(NotFoundException::new);
+    }
+
 }

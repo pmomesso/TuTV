@@ -5,10 +5,7 @@ import ar.edu.itba.paw.model.*;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TemporalType;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -659,6 +656,21 @@ public class SeriesHibernateDao implements SeriesDao {
         int newSize = list.get().getSeries().size();
         em.persist(list.get());
         return newSize - prevSize;
+    }
+
+    @Override
+    public Optional<List<Series>> getSeriesInList(Long listId, int page, int pageSize) {
+
+        page = page <= 0 ? 1 : page;
+        pageSize = pageSize <= 0 ? PAGE_SIZE : pageSize;
+
+        Query q = em.createNativeQuery("SELECT DISTINCT(series.*)\n" +
+                "FROM series INNER JOIN seriesList ON series.id = seriesList.seriesid\n" +
+                "WHERE seriesList.listid = ?\n" +
+                "ORDER BY series.name\n" +
+                "LIMIT ? OFFSET ?", Series.class);
+        q.setParameter(1, listId).setParameter(2, pageSize).setParameter(3, (page-1)*pageSize);
+        return Optional.of(q.getResultList());
     }
 
 }

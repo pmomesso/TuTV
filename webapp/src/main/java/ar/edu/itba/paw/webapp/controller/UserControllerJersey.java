@@ -311,6 +311,34 @@ public class UserControllerJersey {
         return ok(new GenericEntity<List<SeriesListDTO>>(seriesLists) {}).build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{userId}/lists/{listId}/series")
+    public Response getUserList(@PathParam("userId") Long userId, @PathParam("listId") Long listId,
+            @QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) {
+
+        page = page == null ? 1 : page;
+        pageSize = pageSize == null ? 24 : pageSize;
+
+        List<SeriesDTO> series;
+        ResponseBuilder rb = ok();
+        try {
+            series = seriesService.getSeriesInList(listId, page, pageSize)
+                    .stream().map(s -> new SeriesDTO(s, userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
+            List<Series> aux = seriesService.getSeriesInList(listId, page + 1, pageSize);
+            if(!aux.isEmpty()) {
+                rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).queryParam("pagesize", pageSize).build(), "next");
+            }
+            if(page > 1) {
+                rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).queryParam("pagesize", pageSize).build(), "prev");
+            }
+        } catch (NotFoundException e) {
+            return status(Status.NOT_FOUND).build();
+        }
+
+        return rb.entity(new GenericEntity<List<SeriesDTO>>(series) {}).build();
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

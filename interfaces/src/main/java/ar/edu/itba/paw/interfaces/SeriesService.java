@@ -84,4 +84,5 @@ public interface SeriesService {
 
     Optional<Series> serieWithReview(Long seriesReviewId);
 
+    List<Series> getSeriesInList(Long listId, int page, int pageSize) throws NotFoundException;
 }
