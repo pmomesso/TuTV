@@ -63,31 +63,10 @@ class ProfilePage extends PureComponent {
                         labels.push(stat.genre.name);
                         values.push(stat.stat);
                     });
+                    $("#genresChart").remove();
+                    $("#canvasContainer").append("<canvas id='genresChart'/>");
                     var ctx = document.getElementById('genresChart');
-                    new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                data: values,
-                                backgroundColor: [
-                                    '#3cb44b', '#469990', '#aaffc3', '#42d4f4', '#4363d8',
-                                    '#000075', '#911eb4', '#f032e6', '#e6beff', '#800000',
-                                    '#e6194b', '#f58231', '#ffd8b1', '#ffe119', '#bfef45'
-                                ]
-                            }]
-                        },
-                        options: {
-                            maintainAspectRatio: false,
-                            legend: {
-                                display: true,
-                                position: 'bottom',
-                                labels: {
-                                    padding: 20
-                                }
-                            }
-                        }
-                    });
+                    that.createChart(ctx, labels, values);
                 }
             }));
         } else {
@@ -210,14 +189,58 @@ class ProfilePage extends PureComponent {
     };
 
     onSeriesFollowClickedHandler = (event) => {
-        // event.preventDefault();
+        let user_id = this.props.match.params.profile_id;
+        var that = this;
 
-        Axios.get("/users/" + this.props.match.params.profile_id + "/following")
-            .then(res => {
-                this.setState({
-                    following: res.data,
-                })
+        Axios.all([
+            Axios.get("/users/" + user_id + "/following"),
+            Axios.get("/users/" + user_id + "/stats")
+        ]).then(Axios.spread(function(followingData, statsData) {
+            that.setState({
+                following: followingData.data,
+                stats: statsData.data.stats
             });
+
+            if (that.state.stats.length !== 0) {
+                var labels = [];
+                var values = [];
+                $.each(statsData.data.stats, function (index, stat) {
+                    labels.push(stat.genre.name);
+                    values.push(stat.stat);
+                });
+                $("#genresChart").remove();
+                $("#canvasContainer").append("<canvas id='genresChart'/>");
+                var ctx = document.getElementById('genresChart');
+                that.createChart(ctx, labels, values);
+            }
+        }));
+    };
+
+    createChart = (ctx, labels, values) => {
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: [
+                        '#3cb44b', '#469990', '#aaffc3', '#42d4f4', '#4363d8',
+                        '#000075', '#911eb4', '#f032e6', '#e6beff', '#800000',
+                        '#e6194b', '#f58231', '#ffd8b1', '#ffe119', '#bfef45'
+                    ]
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        padding: 20
+                    }
+                }
+            }
+        });
     };
 
     render() {
@@ -440,7 +463,7 @@ class ProfilePage extends PureComponent {
                                                 <div className="row justify-content-center">
                                                     {
                                                         (currUser && stats.length !== 0) ?
-                                                            (<div className="mt-lg-5 mt-sm-0"><canvas id="genresChart"/></div>)
+                                                            (<div id="canvasContainer" className="mt-lg-5 mt-sm-0"><canvas id="genresChart"/></div>)
                                                             :
                                                             (<div className="container h-100">
                                                                 <div className="row justify-content-center h-100">
