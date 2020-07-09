@@ -10,8 +10,6 @@ public class SeriesListStateDTO {
     @Size(min = 1)
     private String name;
 
-    private List<Long> series;
-
     public SeriesListStateDTO() {
         //Empty constructor for JAX-RS
     }
@@ -22,14 +20,6 @@ public class SeriesListStateDTO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Long> getSeries() {
-        return series;
-    }
-
-    public void setSeries(List<Long> series) {
-        this.series = series;
     }
 
 }
