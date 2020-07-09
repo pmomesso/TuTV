@@ -9,7 +9,6 @@ import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintViolation;
@@ -39,8 +38,6 @@ public class SeriesControllerJersey {
     private UserService userService;
     @Autowired
     private Validator validator;
-    @Autowired
-    private MessageSource messageSource;
 
     @GET
     @Path("/featured")
@@ -314,60 +311,6 @@ public class SeriesControllerJersey {
         } catch (BadRequestException e) {
             return status(Status.BAD_REQUEST).build();
         }
-    }
-
-    @GET
-    @Path("/genres")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getGenreList() {
-        List<GenreDTO> genres = seriesService.getAllGenres().stream()
-                .map(g -> {
-                    GenreDTO aux = new GenreDTO(g, uriInfo);
-                    Object[] empty = {};
-                    String name = messageSource.getMessage("genres." + g.getI18Key(), empty, LocaleContextHolder.getLocale());
-                    aux.setName(name);
-                    return aux;
-                }).collect(Collectors.toList());
-        return ok(new GenericEntity<List<GenreDTO>>(genres) {}).build();
-        /*
-        GenreListDTO genreListDTO = new GenreListDTO(seriesService.getAllGenres());
-        genreListDTO.getGenres().stream().forEach(genreDTO -> genreDTO.setSeries(null));
-        ResponseBuilder rb = ok(genreListDTO);
-        return rb.build();
-         */
-    }
-
-    @GET
-    @Path("/genres/{genreId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getSeriesInGenre(@PathParam("genreId") Long genreId, @QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) {
-        Map<Genre, List<Series>> map;
-        Integer auxPage = page == null || page <= 0 ? 1 : page;
-        Integer auxPageSize = pageSize == null || pageSize <= 0 || pageSize > 21 ? 21 : pageSize;
-        map = seriesService.getSeriesByGenre(genreId, Long.valueOf(auxPage), auxPageSize);
-        Optional<Genre> optGenre = map.keySet().stream().findFirst();
-        if(!optGenre.isPresent()) {
-            return status(Status.NOT_FOUND).build();
-        }
-        Genre g = optGenre.get();
-        ResponseBuilder rb = ok(new GenreDTO(g,map.get(g), userService.getLoggedUser(), uriInfo));
-        /*if(g.isAreNext() || g.isArePrevious()) {
-            rb.header("Link", (g.isAreNext() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() + 1).build().toString() + " , rel = next") : "")
-                    + ((g.isAreNext() && g.isArePrevious()) ? " ; " : "") + (g.isArePrevious() ? (uriInfo.getAbsolutePathBuilder().queryParam("page", g.getPage() - 1).build().toString() + " , rel = prev") : ""));
-        }*/
-        if(g.isAreNext()) {
-            rb = rb.link(uriInfo.getAbsolutePathBuilder()
-                    .queryParam("page", g.getPage() + 1)
-                    .queryParam("pagesize", auxPageSize)
-                    .build(), "next");
-        }
-        if(g.isArePrevious()) {
-            rb = rb.link(uriInfo.getAbsolutePathBuilder()
-                    .queryParam("page", g.getPage() - 1)
-                    .queryParam("pagesize", auxPageSize)
-                    .build(), "prev");
-        }
-        return rb.build();
     }
 
     @GET

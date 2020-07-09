@@ -249,12 +249,13 @@ public class UserControllerJersey {
         if(pageSize == null) {
             auxPageSize = 20;
         }
-        List<EpisodeDTO> episodes = Collections.EMPTY_LIST;
+        List<ToBeSeenEpisodeDTO> episodes = Collections.EMPTY_LIST;
         ResponseBuilder rb = ok();
         try {
             episodes = seriesService.getWatchList(auxPage, auxPageSize).stream()
-                    .map(e -> new EpisodeDTO(e, userService.getLoggedUser())).collect(Collectors.toList());
-            rb = rb.entity(new GenericEntity<List<EpisodeDTO>>(episodes) {});
+                    .map(e -> new ToBeSeenEpisodeDTO(new SeriesDTO(e.getSeason().getSeries(), optUser, uriInfo),
+                            new EpisodeDTO(e, optUser))).collect(Collectors.toList());
+            rb = rb.entity(new GenericEntity<List<ToBeSeenEpisodeDTO>>(episodes) {});
             if(auxPage > 1 && episodes.size() > 0) {
                 rb = rb.link(uriInfo.getAbsolutePathBuilder()
                         .queryParam("page", auxPage - 1)
@@ -283,16 +284,17 @@ public class UserControllerJersey {
     public Response getUserUpcomingList(@PathParam("userId") Long userId) {
         Optional<User> optUser = userService.getLoggedUser();
         if(optUser.isPresent() && optUser.get().getId() != userId) return Response.status(Status.UNAUTHORIZED).build();
-        List<EpisodeDTO> episodes = Collections.EMPTY_LIST;
+        List<ToBeSeenEpisodeDTO> episodes = Collections.EMPTY_LIST;
         try {
             episodes = seriesService.getUpcomingEpisodes().stream()
-                    .map(e -> new EpisodeDTO(e, optUser)).collect(Collectors.toList());
+                    .map(e -> new ToBeSeenEpisodeDTO(new SeriesDTO(e.getSeason().getSeries(), optUser, uriInfo),
+                            new EpisodeDTO(e, optUser))).collect(Collectors.toList());
         } catch (UnauthorizedException e) {
             return Response.status(Status.UNAUTHORIZED).build();
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
         }
-        return ok(new GenericEntity<List<EpisodeDTO>>(episodes) {}).build();
+        return ok(new GenericEntity<List<ToBeSeenEpisodeDTO>>(episodes) {}).build();
     }
 
     @GET
