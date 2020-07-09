@@ -140,15 +140,27 @@ class Search extends PureComponent {
                 <div className="main-block">
                     <div className="main-block-container">
                         <div id="explore">
-                            <input type="text" name="searchName" value={ this.state.seachName } onChange={this.handleInputChange}/>
-                            <select name="searchGenre" value={ this.state.searchGenre } onChange={this.handleInputChange}>
-                                { genreSelect }
-                            </select>
-                            <select name="searchNetwork" value={ this.state.searchNetwork } onChange={this.handleInputChange}>
-                                { networkSelect }
-                            </select>
-                            
-                            <SeriesList key={fetchUrl} source={ fetchUrl } addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
+                            <section>
+                                <h1>{ t("search.searchResults") }</h1>
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col sidebar-box">
+                                            <input type="text" className="styled-input styled-select" name="searchName" placeholder={ t("search.search") } value={ this.state.seachName } onChange={this.handleInputChange}/>
+                                        </div>
+                                        <div className="col sidebar-box">
+                                            <select name="searchGenre" className="styled-select" value={ this.state.searchGenre } onChange={this.handleInputChange}>
+                                                { genreSelect }
+                                            </select>
+                                        </div>
+                                        <div className="col sidebar-box">
+                                            <select name="searchNetwork" className="styled-select" value={ this.state.searchNetwork } onChange={this.handleInputChange}>
+                                                { networkSelect }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <SeriesList key={fetchUrl} source={ fetchUrl } addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
+                            </section>
                         </div>
                     </div>
                 </div>

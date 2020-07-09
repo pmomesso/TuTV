@@ -22,6 +22,7 @@ i18n
             "index.profile":                "Profile",
 
             "search.search":                "Search",
+            "search.searchResults":         "Search Results",
             "search.advancedSearch":        "Advanced search",
             "search.allNetworks":           "All networks",
             "search.allGenres":             "All genres",
@@ -171,6 +172,7 @@ i18n
             "index.profile":                "Perfil",
 
             "search.search":                "Buscar",
+            "search.searchResults":         "Resultados de Búsqueda",
             "search.advancedSearch":        "Búsqueda avanzada",
             "search.allNetworks":           "Todas las cadenas",
             "search.allGenres":             "Todos los géneros",
