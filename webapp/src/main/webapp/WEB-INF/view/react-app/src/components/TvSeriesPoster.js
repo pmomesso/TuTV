@@ -90,7 +90,7 @@ class TvSeriesPoster extends PureComponent {
     render() {
         const { series } = this.state;
 
-        const { t, userLists, addSeriesToListHandler } = this.props;
+        const { t, userLists } = this.props;
 
         const contextMenuId = "seriesContext_" + series.id + "_" + this.getRandomInt(0, 99999);
 

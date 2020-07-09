@@ -109,17 +109,17 @@ class SeriesList extends Component {
         }
         <ul className="posters-list shows-list explore-list list-unstyled list-inline overflow-hidden">
         {(typeof this.state.prevUrl === "string") &&
-            <a className="carousel-genre-left float-left" data-slide="prev" onClick={this.prevPage}>
+            <span className="clickable carousel-genre-left float-left" data-slide="prev" onClick={this.prevPage}>
               <span className="carousel-control-prev-icon my-prev-icon"></span>
-            </a>
+            </span>
           }
 
           { showList }
 
           {(typeof this.state.nextUrl === "string") &&
-            <a className="carousel-genre-right float-left" data-slide="next" onClick={this.nextPage}>
+            <span className="clickable carousel-genre-right float-left" data-slide="next" onClick={this.nextPage}>
               <span className="carousel-control-next-icon my-next-icon"></span>
-            </a>
+            </span>
           }
         </ul>
       </section>

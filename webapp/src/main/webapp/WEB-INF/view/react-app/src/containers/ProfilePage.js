@@ -273,7 +273,7 @@ class ProfilePage extends PureComponent {
                         <div className="profile-nav">
                             <div className="row wrapper">
                                 <div className="avatar">
-                                    <a href="#" className="avatar-upload-link" id="showUploadAvatarPopup" onClick={this.toggleUploadAvatar}>
+                                    <span className="avatar-upload-link" id="showUploadAvatarPopup" onClick={this.toggleUploadAvatar}>
                                         {
                                             (avatar) ?
                                                 (<img src={`data:image/jpeg;base64,${this.state.avatar}`} alt="avatar"/>)
@@ -285,7 +285,7 @@ class ProfilePage extends PureComponent {
                                                 <Trans i18nKey="profile.edit"/>
                                             </span>
                                         }
-                                    </a>
+                                    </span>
                                 </div>
                                 <div className="profile-infos">
                                     <h1 className="name">

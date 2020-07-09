@@ -1,4 +1,4 @@
-import React, {Component, PureComponent} from 'react';
+import React, {PureComponent} from 'react';
 import SeriesList from '../components/SeriesList'
 import Axios from 'axios';
 import { withTranslation } from 'react-i18next';

@@ -174,9 +174,9 @@ class UsersPage extends Component {
                                                 <li className={`page-item ${(typeof this.state.prevUrl !== "string") ? "disabled" : ""}`}>
                                                     {
                                                         (typeof this.state.prevUrl === "string") ?
-                                                            (<a className="page-link" onClick={this.prevPage}>
+                                                            (<button className="button-link page-link" onClick={this.prevPage}>
                                                                 <Trans i18nKey="users.previous"/>
-                                                            </a>)
+                                                            </button>)
                                                             :
                                                             (<span className="page-link">
                                                                 <Trans i18nKey="users.previous"/>
@@ -186,9 +186,9 @@ class UsersPage extends Component {
                                                 <li className={`page-item ${(typeof this.state.nextUrl !== "string") ? "disabled" : ""}`}>
                                                     {
                                                         (typeof this.state.nextUrl === "string") ?
-                                                            (<a className="page-link" onClick={this.nextPage}>
+                                                            (<button className="button-link page-link" onClick={this.nextPage}>
                                                                 <Trans i18nKey="users.next"/>
-                                                            </a>)
+                                                            </button>)
                                                             :
                                                             (<span className="page-link">
                                                                 <Trans i18nKey="users.next"/>

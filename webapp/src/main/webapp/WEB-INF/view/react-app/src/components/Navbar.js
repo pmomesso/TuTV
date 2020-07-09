@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, Link, useHistory, withRouter } from 'react-router-dom';
+import { NavLink, Link, withRouter } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
@@ -82,11 +82,11 @@ const Navbar = (props) => {
                 </div>
             </Modal>
 
-            <a href="#" className="extend-left-link">
-                <span className="fa-normal" onClick={extend}>
+            <button className="extend-left-link">
+                <span className="fa-normal" onClick={extend} >
                     <FontAwesomeIcon icon={ faBars } />
                 </span>
-            </a>
+            </button>
             <div className="scrollable scrolling-element">
                 <div className="wrapper">
                     <a id="home-link" href="/">
@@ -97,11 +97,11 @@ const Navbar = (props) => {
                         <div className="form-group">
                             <input type="text" id="global-search-input" value={searchText} onChange={handleSearchChange} name="name" className="show-search" placeholder={ t("search.search") } onKeyPress={searchKeyPress}/>
                         </div>
-                        {/*<div className="form-group advanced-search">
-                            <Link id="advancedSearchLink" to="/search" onClick={clearSearchText}>
+                        <div className="form-group advanced-search">
+                            <Link id="advancedSearchLink" to="/search">
                                 { t("search.advancedSearch") }
                             </Link>
-                        </div>*/}
+                        </div>
                     </div>
                     <div className="all-left-navs">
                         <section id="menu">

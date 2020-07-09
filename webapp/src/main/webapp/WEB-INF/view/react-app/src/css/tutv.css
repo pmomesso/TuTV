@@ -3053,15 +3053,16 @@ body.right-column .page-center {
     display:block;
     height: 100%;
 }
-#profile .avatar a .avatar-upload-label {
+#profile .avatar span .avatar-upload-label {
     display:none;
     position:absolute;
     top:0;
     left:0;
     right:0;
-    bottom:0
+    bottom:0;
+    cursor: pointer;
 }
-#profile .avatar a:hover .avatar-upload-label {
+#profile .avatar span:hover .avatar-upload-label {
     display:block;
     text-align:center;
     color:#fff;
@@ -5128,7 +5129,23 @@ body.alt h2.title {
     }
 }
 .page-left .extend-left-link {
-    display:none
+    cursor: pointer;
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    display:none;
+    outline: 0;
+}
+.clickable {
+    cursor: pointer;
+}
+.button-link {
+    cursor: pointer;
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    display:none;
+    outline: 0;
 }
 @media (max-width:768px) {
     #episode-details .episode-infos .basic-infos,
