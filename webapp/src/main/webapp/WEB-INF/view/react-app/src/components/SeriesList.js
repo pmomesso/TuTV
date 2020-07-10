@@ -129,11 +129,11 @@ class SeriesList extends Component {
             :
             [
               (this.props.isSearch) ?
-                  (<div style={{marginTop: "10%"}} className="container-center">
+                  (<div key={1} style={{marginTop: "10%"}} className="container-center">
                     <h4><Trans i18nKey="search.noResults"/></h4>
                   </div>)
                   :
-                  (<div style={{marginTop: "3%"}} className="container-center">
+                  (<div key={1} style={{marginTop: "3%"}} className="container-center">
                     <h4><Trans i18nKey="profile.lists.noSeries"/></h4>
                   </div>)
             ]

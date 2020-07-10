@@ -57,10 +57,11 @@ class TvSeriesPoster extends PureComponent {
                     this.props.onSeriesFollowClickedHandler(event, this.state.series.id);
                 }
 
+                var message;
                 if (newValue) {
-                    var message = this.state.series.name + t("series.followed");
+                    message = this.state.series.name + t("series.followed");
                 } else {
-                    var message = this.state.series.name + t("series.unfollowed");
+                    message = this.state.series.name + t("series.unfollowed");
                 }
 
                 store.addNotification({

@@ -303,7 +303,7 @@ class ProfilePage extends PureComponent {
                             <div className="overflow-hidden">
                                 <h2 className="small float-left">{list.name}</h2>
                                 <div className="icon-margin float-left">
-                                    <button onClick={() => this.removeList(list.id, index)} class="heart no-padding"><FontAwesomeIcon icon={faTrash} /></button>
+                                    <button onClick={() => this.removeList(list.id, index)} className="heart no-padding"><FontAwesomeIcon icon={faTrash} /></button>
                                 </div>
                             </div>
                             <SeriesList isSearch={false} source={list.seriesList} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler} />
