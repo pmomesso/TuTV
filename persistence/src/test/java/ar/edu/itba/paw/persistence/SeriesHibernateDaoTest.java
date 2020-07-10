@@ -317,7 +317,7 @@ public class SeriesHibernateDaoTest {
     public void getAddedSeries(){
         insertUser();
         series.addUserFollower(user);
-        Optional<List<Series>> series = seriesDao.getAddedSeries(user.getId());
+        Optional<List<Series>> series = seriesDao.getAddedSeries(user.getId(),1,1);
         Assert.assertTrue(series.isPresent());
         Assert.assertEquals(1,series.get().size());
         assertSeries(series.get().get(0));
@@ -335,7 +335,7 @@ public class SeriesHibernateDaoTest {
     public void getUpcomingEpisodesTest(){
         insertUser();
         series.addUserFollower(user);
-        Optional<List<Episode>> episodes = seriesDao.getUpcomingEpisodes(user.getId());
+        Optional<List<Episode>> episodes = seriesDao.getUpcomingEpisodes(user.getId(),1,1);
         Assert.assertTrue(episodes.isPresent());
         Assert.assertEquals(1,episodes.get().size());
         assertEpisode(episodes.get().get(0));

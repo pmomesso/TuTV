@@ -58,7 +58,7 @@ public class SeriesControllerJersey {
                                  @QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) {
 
         page = page == null || page < 1 ? 1 : page;
-        pageSize = pageSize == null || pageSize <= 0 || pageSize >= 21 ? 21 : pageSize;
+        pageSize = pageSize == null || pageSize <= 0 || pageSize >= 24 ? 24 : pageSize;
         List<Series> results = seriesService.searchSeries(name,genre,network,page, pageSize);
         SeriesDTO[] seriesDTOList = new SeriesDTO[results.size()];
         for(int i = 0; i < results.size(); i++){

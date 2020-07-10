@@ -59,10 +59,10 @@ public interface SeriesService {
 
     List<Series> getRecentlyWatchedList(Long userId, int number) throws NotFoundException, BadRequestException;
 
-    List<Series> getAddedSeries() throws NotFoundException, UnauthorizedException;
-    List<Series> getAddedSeries(long userId) throws NotFoundException;
+    List<Series> getAddedSeries(int page, int pagesize) throws NotFoundException, UnauthorizedException;
+    List<Series> getAddedSeries(long userId,int page, int pagesize) throws NotFoundException;
 
-    List<Episode> getUpcomingEpisodes() throws UnauthorizedException, NotFoundException;
+    List<Episode> getUpcomingEpisodes(int page, int pagesize) throws UnauthorizedException, NotFoundException;
 
     Optional<SeriesList> addList(String name, long[] seriesId) throws UnauthorizedException;
 

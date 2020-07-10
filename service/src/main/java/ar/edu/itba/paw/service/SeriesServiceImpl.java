@@ -329,21 +329,21 @@ public class SeriesServiceImpl implements SeriesService {
     }
 
     @Override
-    public List<Series> getAddedSeries() throws UnauthorizedException, NotFoundException {
+    public List<Series> getAddedSeries(int page, int pagesize) throws UnauthorizedException, NotFoundException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        Optional<List<Series>> series = seriesDao.getAddedSeries(user.getId());
+        Optional<List<Series>> series = seriesDao.getAddedSeries(user.getId(),page,pagesize);
         return series.orElseThrow(NotFoundException::new);
     }
 
     @Override
-    public List<Series> getAddedSeries(long userId) throws NotFoundException {
-        return seriesDao.getAddedSeries(userId).orElseThrow(NotFoundException::new);
+    public List<Series> getAddedSeries(long userId, int page, int pagesize) throws NotFoundException {
+        return seriesDao.getAddedSeries(userId,page,pagesize).orElseThrow(NotFoundException::new);
     }
 
     @Override
-    public List<Episode> getUpcomingEpisodes() throws UnauthorizedException, NotFoundException {
+    public List<Episode> getUpcomingEpisodes(int page, int pagesize) throws UnauthorizedException, NotFoundException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        Optional<List<Episode>> episodes = seriesDao.getUpcomingEpisodes(user.getId());
+        Optional<List<Episode>> episodes = seriesDao.getUpcomingEpisodes(user.getId(),page,pagesize);
         return episodes.orElseThrow(NotFoundException::new);
     }
 

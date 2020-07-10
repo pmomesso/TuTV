@@ -192,8 +192,8 @@ public class SeriesHibernateDao implements SeriesDao {
 
     @Override
     public List<Episode> getNextToBeSeen(long userId, int page, int pageSize) {
-        if(pageSize <= 0 && pageSize >= 20) {
-            pageSize = 20;
+        if(pageSize <= 0 || pageSize >= 24) {
+            pageSize = 24;
         }
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         List<Episode> nextToBeSeen = new ArrayList<>();
@@ -246,17 +246,19 @@ public class SeriesHibernateDao implements SeriesDao {
     }
 
     @Override
-    public Optional<List<Series>> getAddedSeries(long userId) {
-        Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
-        List<Series> followed = new ArrayList<>();
-        user.ifPresent(value -> followed.addAll(value.getFollows()));
-        return Optional.of(followed);
+    public Optional<List<Series>> getAddedSeries(long userId, int page, int pagesize) {
+        return Optional.of(em.createNativeQuery("SELECT series.* FROM follows INNER JOIN series on follows.seriesid = series.id WHERE follows.userid = ? LIMIT ? OFFSET ?",Series.class)
+                .setParameter(1,userId)
+                .setParameter(2,(pagesize))
+                .setParameter(3,(page - 1) * pagesize).getResultList());
     }
 
     @Override
-    public Optional<List<Episode>> getUpcomingEpisodes(long userId) {
+    public Optional<List<Episode>> getUpcomingEpisodes(long userId, int page, int pagesize) {
         TypedQuery<Episode> query = em.createQuery("from Episode as e where e.aired >= :today",Episode.class);
         query.setParameter("today",new Date(), TemporalType.DATE);
+        query.setFirstResult((page - 1) * pagesize);
+        query.setMaxResults(pagesize);
         return Optional.of(query.getResultList());
     }
 

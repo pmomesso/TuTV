@@ -40,9 +40,9 @@ public interface SeriesDao {
 
     Optional<List<Series>> getRecentlyWatched(long userId, int number);
 
-    Optional<List<Series>> getAddedSeries(long userId);
+    Optional<List<Series>> getAddedSeries(long userId, int page, int pagesize);
 
-    Optional<List<Episode>> getUpcomingEpisodes(long userId);
+    Optional<List<Episode>> getUpcomingEpisodes(long userId, int page, int pagesize);
 
     Optional<Genre> getGenreById(long genreId);
 
