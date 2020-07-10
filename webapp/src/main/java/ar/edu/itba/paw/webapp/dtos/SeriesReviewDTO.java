@@ -31,6 +31,11 @@ public class SeriesReviewDTO {
             SeriesReviewCommentDTO seriesReviewCommentDTO = new SeriesReviewCommentDTO(comment, loggedUser);
             seriesReviewComments.add(seriesReviewCommentDTO);
         });
+        seriesReviewComments.sort((c1, c2) -> {
+            if(c1.getId() < c2.getId()) return -1;
+            if(c1.getId() > c2.getId()) return 1;
+            return 0;
+        });
         this.id = review.getId();
         this.body = review.getBody();
         this.likes = review.getNumLikes();
