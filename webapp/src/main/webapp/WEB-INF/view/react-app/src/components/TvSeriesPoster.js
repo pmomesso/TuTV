@@ -65,9 +65,9 @@ class TvSeriesPoster extends PureComponent {
                 }
 
                 store.addNotification({
-                    title: "Info",
+                    title: t("lists.success"),
                     message: message,
-                    type: "info",
+                    type: "success",
                     insert: "top",
                     container: "top-right",
                     animationIn: ["animated", "fadeIn"],

@@ -9,7 +9,6 @@ import { store } from 'react-notifications-component';
 
 class Search extends PureComponent {
     state = {
-        pageSize: 60,
         genreList: [],
         networkList: [],
         searchGenre: undefined,
@@ -161,8 +160,8 @@ class Search extends PureComponent {
     }
 
     composeSearchUrl = () => {
-        const { pageSize, searchGenre, searchName, searchNetwork } = this.state;
-        let queryParams = this.encodeQueryParameter("pagesize", pageSize);
+        const { searchGenre, searchName, searchNetwork } = this.state;
+        let queryParams = "";
 
         if(searchName)
             queryParams += this.encodeQueryParameter("name", searchName);
@@ -205,7 +204,7 @@ class Search extends PureComponent {
             <div className="alt-block" style={{background: 'white'}}>
                 <div className="main-block">
                     <div className="main-block-container">
-                        <div id="explore">
+                        <div id="search">
                             <section>
                                 <h1>{ t("search.searchResults") }</h1>
                                 <div className="container">
@@ -225,7 +224,7 @@ class Search extends PureComponent {
                                         </div>
                                     </div>
                                 </div>
-                                <SeriesList isSearch={true} key={fetchUrl} source={ fetchUrl } addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
+                                <SeriesList isSearch={true} key={fetchUrl} source={ fetchUrl } section={"#search"} addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
                             </section>
                         </div>
                     </div>

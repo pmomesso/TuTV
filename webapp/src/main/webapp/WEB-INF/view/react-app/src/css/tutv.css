@@ -3152,44 +3152,44 @@ body.right-column .page-center {
 #explore {
     margin:0 auto
 }
-#explore section, #home section {
+#explore section, #home section, #profile section {
     margin:0 20px;
     position:relative
 }
-#explore section h1, #home section h1 {
+#explore section h1, #home section h1, #profile section h1 {
     font-size:30px;
     margin-bottom:20px;
     margin-left:0;
     color:#272727
 }
-#explore section h1 i {
+#explore section h1 i, #profile section h1 i {
     color:#666;
     font-size:20px;
     margin-right:10px
 }
-#explore section .show-all {
+#explore section .show-all, #profile section .show-all {
     position:absolute;
     right:20px;
     top:45px;
     font-size:15px
 }
-#explore section .row>div {
+#explore section .row>div, #profile section .row>div {
     padding:0 10px
 }
-#explore section .show-all i {
+#explore section .show-all i, #profile section .show-all i {
     margin-left:8px;
     font-size:11px
 }
-#explore section .show-all:hover {
+#explore section .show-all:hover, #profile section .show-all:hover {
     text-decoration:none
 }
-#explore section .labels {
+#explore section .labels, #profile section .labels {
     margin-top:10px
 }
-#explore section .labels a:hover {
+#explore section .labels a:hover, #profile section .labels a:hover {
     text-decoration:none
 }
-#explore section .labels h3 {
+#explore section .labels h3, #profile section .labels h3 {
     margin:0;
     font-size:18px;
     line-height:1.5;
@@ -3197,15 +3197,15 @@ body.right-column .page-center {
     height:23px;
     overflow:hidden
 }
-#explore section .labels h4 {
+#explore section .labels h4, #profile section .labels h4 {
     margin:5px 0;
     font-size:14px;
     line-height:1.1
 }
-#explore section .labels h3 a {
+#explore section .labels h3 a, #profile section .labels h3 a {
     color:#333
 }
-#explore section .labels h4 a {
+#explore section .labels h4 a, #profile section .labels h4 a {
     color:#777
 }
 #explore li.active {

@@ -128,7 +128,7 @@ class Explore extends Component {
     render() {
         const seriesLists = this.state.genreList.map(genre => {
             return(
-                <SeriesList key={ genre.id } name={ genre.name } source={ genre.seriesUri } addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
+                <SeriesList key={ genre.id } name={ genre.name } source={ genre.seriesUri } section={"#explore"} addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
             )
         });
 

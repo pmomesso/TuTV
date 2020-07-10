@@ -306,7 +306,7 @@ class ProfilePage extends PureComponent {
                                     <button onClick={() => this.removeList(list.id, index)} className="heart no-padding"><FontAwesomeIcon icon={faTrash} /></button>
                                 </div>
                             </div>
-                            <SeriesList isSearch={false} source={list.seriesList} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler} />
+                            <SeriesList isSearch={false} source={list.seriesUri} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler} />
                         </div>
                     </div>
                 );

@@ -33,17 +33,33 @@ class SeriesList extends Component {
 
   fetchData = () => {
     let source = this.state.source;
+    let section = this.props.section;
 
     if(typeof source === "string") {
       var width = window.screen.width;
-      var section_width = $("#explore section")[0].offsetWidth;
-      var pagesize;
-      if (width > 768) {
-        pagesize = (width - 304 - section_width*0.04)/221;
+      var height = window.screen.height;
+
+      var section_width = $(section + " section")[0].offsetWidth;
+      var poster_width = 0;
+      if (section === "#profile") {
+        poster_width = 148
       } else {
-        pagesize = (width - 64 - section_width*0.04)/162;
+        poster_width = 187
       }
-      Axios.get(source,  {params: {pagesize: pagesize.toFixed()}})
+
+      var pagesize;
+      if (width > 768)
+        pagesize = (section_width - 24 - (section_width-24)*0.04)/poster_width;
+      else
+        pagesize = (section_width - section_width*0.04)/162;
+      console.log(pagesize);
+      if (section === "#search") {
+        if (height > 750)
+          pagesize *= 3;
+        else
+          pagesize *= 2;
+      }
+      Axios.get(source,  {params: {pagesize: Math.floor(pagesize)}})
         .then(res => {
           let linkHeader = res.headers["link"];
           let linkHeaderParsed = linkHeaderParser(linkHeader);

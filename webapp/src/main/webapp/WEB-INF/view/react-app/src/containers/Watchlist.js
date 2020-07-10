@@ -8,12 +8,70 @@ import { store } from 'react-notifications-component';
 import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
 import TvSeriesPosterWatchlist from "../components/TvSeriesPosterWatchlist";
+import $ from "jquery";
+
+let linkHeaderParser = require('parse-link-header');
 
 class Watchlist extends Component {
 
     state = {
+        source: null,
         shows: null,
+        prevUrl: null,
+        nextUrl: null,
         loading: true
+    };
+
+    nextPage = () => {
+        this.setState({
+            source: this.state.nextUrl,
+            loading: true
+        }, this.fetchData);
+    };
+
+    prevPage = () => {
+        this.setState({
+            source: this.state.prevUrl,
+            loading: true
+        }, this.fetchData);
+    };
+
+    fetchData = () => {
+        var width = window.screen.width;
+        var height = window.screen.height;
+
+        var section_width = $(".page-center-inner")[0].offsetWidth - 40 - 24;
+
+        var pagesize;
+        if (width > 768)
+            pagesize = Math.floor((section_width - section_width*0.04)/187);
+        else
+            pagesize = Math.floor((section_width - section_width*0.04)/148);
+
+        if (height > 750)
+            pagesize *= 3;
+        else
+            pagesize *= 2;
+
+        Axios.get(this.state.source, {params: {pagesize: pagesize}})
+            .then(res => {
+                let linkHeader = res.headers["link"];
+                let linkHeaderParsed = linkHeaderParser(linkHeader);
+
+                let nextUrl = null;
+                let prevUrl = null;
+                if(linkHeaderParsed) {
+                    nextUrl = linkHeaderParsed.next ? linkHeaderParsed.next.url : null;
+                    prevUrl = linkHeaderParsed.prev ? linkHeaderParsed.prev.url : null;
+                }
+
+                this.setState({
+                    shows: res.data,
+                    nextUrl: nextUrl,
+                    prevUrl: prevUrl,
+                    loading: false
+                });
+            });
     };
 
     componentDidMount = () => {
@@ -21,14 +79,11 @@ class Watchlist extends Component {
             this.props.history.push("/login" + this.props.location.pathname);
             return;
         }
-
-        Axios.get("/users/" + this.props.logged_user.id + "/watchlist")
-        .then(res => {
-            this.setState({
-                shows: res.data,
-                loading: false
-            })
-        });
+        if (this.state.source === null) {
+            this.setState({source: "/users/" + this.props.logged_user.id + "/watchlist"}, this.fetchData)
+        } else {
+            this.setState( {source: this.props.source }, this.fetchData)
+        }
     };
 
     onEpisodeWatchedClickedHandler = (event, series_id, season_index, episode_index, series_name, message) => {
@@ -115,7 +170,21 @@ class Watchlist extends Component {
                                     <section id="new-shows" className="h-100">
                                         <h1><Trans i18nKey="watchlist.watchNext" /></h1>
                                         <ul className="to-watch-list posters-list list-unstyled list-inline single-row">
+                                            {
+                                                (typeof this.state.prevUrl === "string") &&
+                                                    <span className="clickable carousel-genre-left float-left" data-slide="prev" onClick={this.prevPage}>
+                                                        <span className="carousel-control-prev-icon my-prev-icon"></span>
+                                                    </span>
+                                            }
+
                                             { watchlist }
+
+                                            {
+                                                (typeof this.state.nextUrl === "string") &&
+                                                    <span className="clickable carousel-genre-right float-left" data-slide="next" onClick={this.nextPage}>
+                                                        <span className="carousel-control-next-icon my-next-icon"></span>
+                                                    </span>
+                                            }
                                         </ul>
                                     </section>
                             }
