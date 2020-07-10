@@ -7,8 +7,6 @@ import * as Yup from 'yup';
 import Axios from 'axios';
 import { connect } from 'react-redux';
 
-import { store } from 'react-notifications-component';
-
 class Login extends Component {
 
     state = {
@@ -52,19 +50,6 @@ class Login extends Component {
                                             this.props.loginUser(token, user);
                                             this.props.history.push("/");
                                     }).catch((err) => {
-                                        store.addNotification({
-                                            title: "Error",
-                                            message: "Credenciales incorrectas",
-                                            type: "danger",
-                                            insert: "top",
-                                            container: "top-right",
-                                            animationIn: ["animated", "fadeIn"],
-                                            animationOut: ["animated", "fadeOut"],
-                                            dismiss: {
-                                              duration: 6000,
-                                              onScreen: true
-                                            }
-                                        });
                                         this.setState({ error: err.response.status});
                                     }).finally(() => actions.setSubmitting(false));
                                 }}
