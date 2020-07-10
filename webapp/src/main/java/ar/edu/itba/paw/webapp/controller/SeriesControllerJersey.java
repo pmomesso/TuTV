@@ -126,8 +126,18 @@ public class SeriesControllerJersey {
             return status(Status.NOT_FOUND).build();
         }
         Series series = optSeries.get();
+        //Todo: pasarlo al service
         List<SeriesReviewDTO> reviews = series.getSeriesReviewList().stream()
                 .map(sr -> new SeriesReviewDTO(sr, userService.getLoggedUser())).collect(Collectors.toList());
+        reviews.sort((a,b) -> {
+            if(a.getId() < b.getId()) {
+                return 1;
+            }
+            if(a.getId() > b.getId()) {
+                return -1;
+            }
+            return 0;
+        });
         return ok(new GenericEntity<List<SeriesReviewDTO>>(reviews) {}).build();
     }
 
