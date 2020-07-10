@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Trans } from 'react-i18next';
+import { Trans, withTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import Axios from 'axios';
 import { connect } from 'react-redux';
-
+import { compose } from 'recompose';
+import { store } from 'react-notifications-component';
 import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
 import TvSeriesPosterWatchlist from "../components/TvSeriesPosterWatchlist";
@@ -30,16 +31,30 @@ class Watchlist extends Component {
         });
     };
 
-    onEpisodeWatchedClickedHandler = (event, series_id, season_index, episode_index) => {
+    onEpisodeWatchedClickedHandler = (event, series_id, season_index, episode_index, series_name, message) => {
         event.preventDefault();
+        const { t, logged_user } = this.props;
 
         Axios.put("/series/" + series_id + "/seasons/" + season_index + "/episodes/" + episode_index + "/viewed", JSON.stringify({"viewedByUser": true}))
             .then(() => {
-                Axios.get("/users/" + this.props.logged_user.id + "/watchlist")
+                Axios.get("/users/" + logged_user.id + "/watchlist")
                     .then(res => {
                         this.setState({
                             shows: res.data
-                        })
+                        });
+                        store.addNotification({
+                            title:  t("lists.success"),
+                            message:  series_name + " " + t("watchlist.season") + message + t("series.watched"),
+                            type: "success",
+                            insert: "top",
+                            container: "top-right",
+                            animationIn: ["animated", "fadeIn"],
+                            animationOut: ["animated", "fadeOut"],
+                            dismiss: {
+                                duration: 4000,
+                                onScreen: true
+                            }
+                        });
                     });
             })
             .catch((err) => {
@@ -118,4 +133,7 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(Watchlist);
+export default compose(
+    connect(mapStateToProps),
+    withTranslation()
+)(Watchlist);

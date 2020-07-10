@@ -6,7 +6,9 @@ import {faCheckCircle} from "@fortawesome/free-solid-svg-icons";
 
 class TvSeriesPosterWatchlist extends PureComponent {
 
-    onEpisodeWatchedClicked = (event) => this.props.onEpisodeWatchedClickedHandler(event, this.props.series.id, this.props.episode.seasonNumber, this.props.episode.numEpisode);
+    onEpisodeWatchedClicked = (event) => this.props.onEpisodeWatchedClickedHandler(event, this.props.series.id, this.props.episode.seasonNumber, this.props.episode.numEpisode,
+                                                                                    this.props.series.name, this.props.episode.seasonNumber.toString().padStart(2,'0') + "E" +
+                                                                                    this.props.episode.numEpisode.toString().padStart(2,'0'));
 
     render() {
         const { series, episode } = this.props;
