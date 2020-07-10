@@ -11,7 +11,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import $ from "jquery";
 import Chart from "chart.js";
-import {faTrash, faEdit} from "@fortawesome/free-solid-svg-icons";
+import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {confirmAlert} from "react-confirm-alert";
 

@@ -49,6 +49,8 @@ i18n
 
             "series.follow":                "Follow",
             "series.unfollow":              "Unfollow",
+            "series.followed":              " followed",
+            "series.unfollowed":            " unfollowed",
             "series.seasons":               "{{count}} season",
             "series.seasons_plural":        "{{count}} seasons",
             "series.season_number":         "Season {{count}}",
@@ -137,6 +139,12 @@ i18n
             "profile.usernameExists":       "The username already exists.",
             "profile.wrongFileType":        "Selected file extension is not supported.",
 
+            "lists.success":                "Success",
+            "lists.added":                  " added",
+            "lists.addedTo":                  " added to ",
+            "lists.noName":                 "List name can't be empty",
+            "lists.alreadyAdded":           " was already in ",
+
             "upcoming.title":               "Upcoming",
             "upcoming.noshows":             "There are no upcoming shows!",
 
@@ -202,6 +210,8 @@ i18n
 
             "series.follow":                "Seguir",
             "series.unfollow":              "Dejar de seguir",
+            "series.followed":              " seguida",
+            "series.unfollowed":            " dejada de seguir",
             "series.seasons":               "{{count}} temporada",
             "series.seasons_plural":        "{{count}} temporadas",
             "series.season_number":         "Temporada {{count}}",
@@ -289,6 +299,12 @@ i18n
             "profile.save":                 "Guardar",
             "profile.usernameExists":       "El nombre de usuario ya existe.",
             "profile.wrongFileType":        "El archivo seleccionado no es válido.",
+
+            "lists.success":                "Éxito",
+            "lists.added":                  " agregada",
+            "lists.addedTo":                  " agregada a ",
+            "lists.noName":                 "El nombre de la lista no puede estar vacío",
+            "lists.alreadyAdded":           " ya se encontraba en ",
 
             "upcoming.title":               "Próximamente",
             "upcoming.noshows":             "¡No hay próximos episodios!",

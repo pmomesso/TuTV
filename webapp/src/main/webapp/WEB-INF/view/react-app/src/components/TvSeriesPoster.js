@@ -24,12 +24,10 @@ class TvSeriesPoster extends PureComponent {
         this.props.addSeriesToListHandler(data.list, this.state.series);
     };
 
-    onContextMenuButtonClicked = (event) => {
-        alert("context menu");
-    }
-
     onSeriesFollowClicked = (event) => {
-        if (this.props.logged_user === null) {
+        const { t, logged_user } = this.props;
+
+        if (logged_user === null) {
             this.props.history.push("/login" + this.props.location.pathname);
             return;
         }
@@ -38,8 +36,7 @@ class TvSeriesPoster extends PureComponent {
 
         let promise;
         if (newValue) {
-            promise = Axios.post("/users/" + this.props.logged_user.id + "/following",
-                JSON.stringify({ "seriesId": this.state.series.id }));
+            promise = Axios.post("/users/" + this.props.logged_user.id + "/following", JSON.stringify({ "seriesId": this.state.series.id }));
         } else {
             promise = Axios.delete("/users/" + this.props.logged_user.id + "/following/" + this.state.series.id);
         }
@@ -60,8 +57,15 @@ class TvSeriesPoster extends PureComponent {
                     this.props.onSeriesFollowClickedHandler(event, this.state.series.id);
                 }
 
+                if (newValue) {
+                    var message = this.state.series.name + t("series.followed");
+                } else {
+                    var message = this.state.series.name + t("series.unfollowed");
+                }
+
                 store.addNotification({
-                    title: "Cambio estado de seguimiento",
+                    title: "Info",
+                    message: message,
                     type: "info",
                     insert: "top",
                     container: "top-right",
@@ -69,8 +73,7 @@ class TvSeriesPoster extends PureComponent {
                     animationOut: ["animated", "fadeOut"],
                     dismiss: {
                         duration: 4000,
-                        pauseOnHover: true,
-                        showIcon: true,
+                        onScreen: true
                     }
                 });
             })

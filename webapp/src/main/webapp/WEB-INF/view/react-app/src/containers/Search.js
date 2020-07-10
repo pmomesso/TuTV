@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
+import { store } from 'react-notifications-component';
 
 class Search extends PureComponent {
     state = {
@@ -65,8 +66,22 @@ class Search extends PureComponent {
         const { t, logged_user } = this.props;
         let listName = window.prompt(t("series.newListName"),"");
 
-        if(!listName)
+        if(!listName) {
+            store.addNotification({
+                title: "Error",
+                message: t("lists.noName"),
+                type: "danger",
+                insert: "top",
+                container: "top-right",
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                    duration: 4000,
+                    onScreen: true
+                }
+            });
             return;
+        }
 
         Axios.post("/users/" + logged_user.id + "/lists", JSON.stringify({"name": listName}))
             .then(res => {
@@ -74,6 +89,21 @@ class Search extends PureComponent {
                     ...this.state,
                     userLists: [res.data].concat(this.state.userLists)
                 });
+                if (res.status === 200) {
+                    store.addNotification({
+                        title:  t("lists.success"),
+                        message:  listName + t("lists.added"),
+                        type: "success",
+                        insert: "top",
+                        container: "top-right",
+                        animationIn: ["animated", "fadeIn"],
+                        animationOut: ["animated", "fadeOut"],
+                        dismiss: {
+                            duration: 4000,
+                            onScreen: true
+                        }
+                    });
+                }
                 this.addSeriesToListHandler(res.data, series);
             })
             .catch(res => {
@@ -82,11 +112,47 @@ class Search extends PureComponent {
     }
 
     addSeriesToListHandler = (list, series) => {
+        const { t, logged_user } = this.props;
+
         if(!list) { //Crear lista
             this.createSeriesListAndAddSeriesHandler(series);
         } else {
-            Axios.post("/users/" + this.props.logged_user.id + "/lists/" + list.id + "/series",
-                JSON.stringify({"seriesId": series.id}));
+            Axios.post("/users/" + logged_user.id + "/lists/" + list.id + "/series", JSON.stringify({"seriesId": series.id}))
+                .then(res => {
+                    console.log(res.status);
+                    if (res.status === 200) {
+                        store.addNotification({
+                            title:  t("lists.success"),
+                            message:  series.name + t("lists.addedTo") + list.name,
+                            type: "success",
+                            insert: "top",
+                            container: "top-right",
+                            animationIn: ["animated", "fadeIn"],
+                            animationOut: ["animated", "fadeOut"],
+                            dismiss: {
+                                duration: 4000,
+                                onScreen: true
+                            }
+                        });
+                    }
+                })
+                .catch(res => {
+                    if (res.response.status === 304) {
+                        store.addNotification({
+                            title:  "Info",
+                            message: series.name + t("lists.alreadyAdded") + list.name,
+                            type: "info",
+                            insert: "top",
+                            container: "top-right",
+                            animationIn: ["animated", "fadeIn"],
+                            animationOut: ["animated", "fadeOut"],
+                            dismiss: {
+                                duration: 4000,
+                                onScreen: true
+                            }
+                        });
+                    }
+                });
         }
     }
 
