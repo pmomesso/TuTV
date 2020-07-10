@@ -5,6 +5,7 @@ import { Trans } from 'react-i18next';
 import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
 import $ from "jquery";
+import {NavLink} from "react-router-dom";
 
 let linkHeaderParser = require('parse-link-header');
 
@@ -144,14 +145,49 @@ class SeriesList extends Component {
             </section>)
             :
             [
-              (this.props.isSearch) ?
+              (this.props.section === "#search") ?
                   (<div key={1} style={{marginTop: "10%"}} className="container-center">
                     <h4><Trans i18nKey="search.noResults"/></h4>
                   </div>)
                   :
-                  (<div key={1} style={{marginTop: "3%"}} className="container-center">
-                    <h4><Trans i18nKey="profile.lists.noSeries"/></h4>
-                  </div>)
+                  [
+                    (this.props.isLists) ?
+                        (<div key={1} style={{marginTop: "3%"}} className="container-center">
+                          <h4><Trans i18nKey="profile.lists.noSeries"/></h4>
+                        </div>)
+                        :
+                        [
+                          (this.props.currUser) ?
+                              (<div className="container h-100">
+                                <div className="row justify-content-center h-100">
+                                  <div className="col-lg-8 col-sm-12 align-self-center">
+                                    <div className="text-center m-4">
+                                      <h4>
+                                        <Trans i18nKey="watchlist.discover" />
+                                      </h4>
+                                    </div>
+                                    <div className="text-center m-4">
+                                      <NavLink className="tutv-button m-4" id="menu_home" to="/">
+                                        <Trans i18nKey="watchlist.explore" />
+                                      </NavLink>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>)
+                              :
+                              (<div className="container h-100">
+                                <div className="row justify-content-center h-100">
+                                  <div className="col-lg-8 col-sm-12 align-self-center">
+                                    <div className="text-center m-4">
+                                      <h4>
+                                        <Trans i18nKey="profile.userNoShows" values={{ user: this.props.user.userName.toUpperCase() }} />
+                                      </h4>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>)
+                        ]
+                  ]
             ]
         }
         </div>)

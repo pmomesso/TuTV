@@ -1,6 +1,5 @@
 import React, {PureComponent} from 'react';
 import {Trans, withTranslation} from 'react-i18next';
-import { NavLink } from 'react-router-dom';
 import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
 import SeriesList from '../components/SeriesList';
@@ -21,7 +20,6 @@ class ProfilePage extends PureComponent {
         user: null,
         avatar: null,
         recentlyWatched: null,
-        following: null,
         stats: null,
         lists: null,
         loading: true
@@ -46,15 +44,13 @@ class ProfilePage extends PureComponent {
                 Axios.get("/users/" + user_id),
                 Axios.get("/users/" + user_id + "/avatar"),
                 Axios.get("/users/" + user_id + "/recentlyWatched"),
-                Axios.get("/users/" + user_id + "/following"),
                 Axios.get("/users/" + user_id + "/stats"),
                 Axios.get("/users/" + user_id + "/lists")
-            ]).then(Axios.spread(function(userData, avatarData, recentlyWatchedData, followingData, statsData, listsData) {
+            ]).then(Axios.spread(function(userData, avatarData, recentlyWatchedData, statsData, listsData) {
                 that.setState({
                     user: userData.data,
                     avatar: avatarData.data.avatarBase64,
                     recentlyWatched: recentlyWatchedData.data,
-                    following: followingData.data,
                     stats: statsData.data.stats,
                     lists: listsData.data,
                     loading: false
@@ -77,14 +73,12 @@ class ProfilePage extends PureComponent {
             Axios.all([
                 Axios.get("/users/" + user_id),
                 Axios.get("/users/" + user_id + "/avatar"),
-                Axios.get("/users/" + user_id + "/recentlyWatched"),
-                Axios.get("/users/" + user_id + "/following")
-            ]).then(Axios.spread(function(userData, avatarData, recentlyWatchedData, followingData) {
+                Axios.get("/users/" + user_id + "/recentlyWatched")
+            ]).then(Axios.spread(function(userData, avatarData, recentlyWatchedData) {
                 that.setState({
                     user: userData.data,
                     avatar: avatarData.data.avatarBase64,
                     recentlyWatched: recentlyWatchedData.data,
-                    following: followingData.data,
                     loading: false
                 });
             }));
@@ -196,28 +190,25 @@ class ProfilePage extends PureComponent {
         let user_id = this.props.match.params.profile_id;
         var that = this;
 
-        Axios.all([
-            Axios.get("/users/" + user_id + "/following"),
-            Axios.get("/users/" + user_id + "/stats")
-        ]).then(Axios.spread(function(followingData, statsData) {
-            that.setState({
-                following: followingData.data,
-                stats: statsData.data.stats
-            });
-
-            if (that.state.stats.length !== 0) {
-                var labels = [];
-                var values = [];
-                $.each(statsData.data.stats, function (index, stat) {
-                    labels.push(stat.genre.name);
-                    values.push(stat.stat);
+        Axios.get("/users/" + user_id + "/stats")
+            .then(res => {
+                that.setState({
+                    stats: res.data.stats
                 });
-                $("#genresChart").remove();
-                $("#canvasContainer").append("<canvas id='genresChart'/>");
-                var ctx = document.getElementById('genresChart');
-                that.createChart(ctx, labels, values);
-            }
-        }));
+
+                if (that.state.stats.length !== 0) {
+                    var labels = [];
+                    var values = [];
+                    $.each(res.data.stats, function (index, stat) {
+                        labels.push(stat.genre.name);
+                        values.push(stat.stat);
+                    });
+                    $("#genresChart").remove();
+                    $("#canvasContainer").append("<canvas id='genresChart'/>");
+                    var ctx = document.getElementById('genresChart');
+                    that.createChart(ctx, labels, values);
+                }
+        });
     };
 
     createChart = (ctx, labels, values) => {
@@ -292,7 +283,6 @@ class ProfilePage extends PureComponent {
         const recentlyWatched = this.state.recentlyWatched;
         const stats = this.state.stats;
         const lists = this.state.lists;
-        const followedSeries = this.state.following;
 
         var listsElement = null;
         if (currUser) {
@@ -306,7 +296,7 @@ class ProfilePage extends PureComponent {
                                     <button onClick={() => this.removeList(list.id, index)} className="heart no-padding"><FontAwesomeIcon icon={faTrash} /></button>
                                 </div>
                             </div>
-                            <SeriesList isSearch={false} source={list.seriesUri} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler} />
+                            <SeriesList isLists={true} source={list.seriesUri} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler} />
                         </div>
                     </div>
                 );
@@ -412,53 +402,14 @@ class ProfilePage extends PureComponent {
                                                     <h2 className="small">
                                                         <Trans i18nKey="profile.recently" />
                                                     </h2>
-                                                    <section>
-                                                        <SeriesList key={recentlyWatched} source={recentlyWatched} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
-                                                    </section>
+                                                    <SeriesList key={recentlyWatched} source={recentlyWatched} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
                                                 </div>):(<div></div>)
                                             }
                                             <div id="all-shows">
                                                 <h2 className="small">
                                                     <Trans i18nKey="profile.all" />
                                                 </h2>
-                                                <section>
-                                                    {
-                                                        (followedSeries.length) ?
-                                                            (<section>
-                                                                <SeriesList key={followedSeries} source={followedSeries} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
-                                                            </section>)
-                                                            :
-                                                            (currUser) ?
-                                                                (<div className="container h-100">
-                                                                    <div className="row justify-content-center h-100">
-                                                                        <div className="col-lg-8 col-sm-12 align-self-center">
-                                                                            <div className="text-center m-4">
-                                                                                <h4>
-                                                                                    <Trans i18nKey="watchlist.discover" />
-                                                                                </h4>
-                                                                            </div>
-                                                                            <div className="text-center m-4">
-                                                                                <NavLink className="tutv-button m-4" id="menu_home" to="/">
-                                                                                    <Trans i18nKey="watchlist.explore" />
-                                                                                </NavLink>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>)
-                                                                :
-                                                                (<div className="container h-100">
-                                                                    <div className="row justify-content-center h-100">
-                                                                        <div className="col-lg-8 col-sm-12 align-self-center">
-                                                                            <div className="text-center m-4">
-                                                                                <h4>
-                                                                                    <Trans i18nKey="profile.userNoShows" values={{ user: user.userName.toUpperCase() }} />
-                                                                                </h4>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>)
-                                                    }
-                                                </section>
+                                                <SeriesList isLists={false} user={user} currUser={currUser} key={"/users/" + user.id + "/following"} source={"/users/" + user.id + "/following"} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
                                             </div>
                                         </div>
                                     </div>
