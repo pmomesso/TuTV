@@ -463,4 +463,9 @@ public class SeriesServiceImpl implements SeriesService {
         return seriesDao.modifyList(listId, loggedUser.getId(), sl.getName(), newSet).orElseThrow(NotFoundException::new);
     }
 
+    @Override
+    public List<SeriesReview> getSeriesReviewList(Long seriesId) throws NotFoundException {
+        return seriesDao.getSeriesReviewList(seriesId).orElseThrow(NotFoundException::new);
+    }
+
 }

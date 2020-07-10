@@ -101,4 +101,6 @@ public interface SeriesDao {
     int addSeriesToList(long id, long seriesId);
 
     Optional<List<Series>> getSeriesInList(Long listId, int page, int pageSize);
+
+    Optional<List<SeriesReview>> getSeriesReviewList(Long seriesId);
 }

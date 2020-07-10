@@ -89,4 +89,6 @@ public interface SeriesService {
     SeriesList changeListName(Long listId, String name) throws UnauthorizedException, NotFoundException;
 
     SeriesList removeSeriesFromList(Long listId, Long seriesId) throws UnauthorizedException, NotFoundException;
+
+    List<SeriesReview> getSeriesReviewList(Long seriesId) throws NotFoundException;
 }

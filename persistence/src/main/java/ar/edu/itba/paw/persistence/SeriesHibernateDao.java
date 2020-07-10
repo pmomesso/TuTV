@@ -673,4 +673,13 @@ public class SeriesHibernateDao implements SeriesDao {
         return Optional.of(q.getResultList());
     }
 
+    @Override
+    public Optional<List<SeriesReview>> getSeriesReviewList(Long seriesId) {
+        TypedQuery<SeriesReview> query = em.createQuery("select sr from SeriesReview as sr " +
+                "where sr.series.id = :seriesId order by sr.id desc", SeriesReview.class);
+        query.setParameter("seriesId", seriesId);
+        Optional<List<SeriesReview>> resultList = Optional.ofNullable(query.getResultList());
+        return resultList;
+    }
+
 }

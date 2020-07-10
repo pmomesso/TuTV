@@ -121,23 +121,13 @@ public class SeriesControllerJersey {
     @Path("/{seriesId}/reviews")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSeriesComments(@PathParam("seriesId") Long seriesId) {
-        Optional<Series> optSeries = seriesService.getSerieById(seriesId);
-        if(!optSeries.isPresent()) {
+        List<SeriesReviewDTO> reviews;
+        try {
+            reviews = seriesService.getSeriesReviewList(seriesId).stream()
+                    .map(sr -> new SeriesReviewDTO(sr, userService.getLoggedUser())).collect(Collectors.toList());
+        } catch (NotFoundException e) {
             return status(Status.NOT_FOUND).build();
         }
-        Series series = optSeries.get();
-        //Todo: pasarlo al service
-        List<SeriesReviewDTO> reviews = series.getSeriesReviewList().stream()
-                .map(sr -> new SeriesReviewDTO(sr, userService.getLoggedUser())).collect(Collectors.toList());
-        reviews.sort((a,b) -> {
-            if(a.getId() < b.getId()) {
-                return 1;
-            }
-            if(a.getId() > b.getId()) {
-                return -1;
-            }
-            return 0;
-        });
         return ok(new GenericEntity<List<SeriesReviewDTO>>(reviews) {}).build();
     }
 
