@@ -4,6 +4,7 @@ import ar.edu.itba.paw.model.Series;
 import ar.edu.itba.paw.model.SeriesList;
 
 import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +13,7 @@ public class SeriesListDTO {
 
     private Long id;
     private String name;
-    private List<SeriesDTO> seriesList;
+    private URI seriesUri;
 
     public SeriesListDTO() {
         //Empty constructor for JAX-RS
@@ -21,8 +22,7 @@ public class SeriesListDTO {
     public SeriesListDTO(SeriesList list, UriInfo uriInfo) {
         id = list.getId();
         name = list.getName();
-        seriesList = new ArrayList<>(list.getSeries().size());
-        list.getSeries().stream().forEach(series -> seriesList.add(new SeriesDTO(series, uriInfo)));
+        seriesUri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(list.getId())).path("series").build();
     }
 
     public String getName() {
@@ -33,12 +33,12 @@ public class SeriesListDTO {
         this.name = name;
     }
 
-    public List<SeriesDTO> getSeriesList() {
-        return seriesList;
+    public URI getSeriesUri() {
+        return seriesUri;
     }
 
-    public void setSeriesList(List<SeriesDTO> seriesList) {
-        this.seriesList = seriesList;
+    public void setSeriesUri(URI seriesUri) {
+        this.seriesUri = seriesUri;
     }
 
     public Long getId() {
