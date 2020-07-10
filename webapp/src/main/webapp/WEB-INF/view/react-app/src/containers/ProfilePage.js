@@ -1,15 +1,19 @@
 import React, {PureComponent} from 'react';
-import { Trans } from 'react-i18next';
+import {Trans, withTranslation} from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
 import SeriesList from '../components/SeriesList';
 import { connect } from 'react-redux';
+import { compose } from 'recompose';
 import Axios from 'axios';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import $ from "jquery";
 import Chart from "chart.js";
+import {faTrash, faEdit} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {confirmAlert} from "react-confirm-alert";
 
 class ProfilePage extends PureComponent {
 
@@ -243,6 +247,34 @@ class ProfilePage extends PureComponent {
         });
     };
 
+    removeList = (list_id, index) => {
+        const { t } = this.props;
+
+        confirmAlert({
+            title: t("series.deleteConfirmTitle"),
+            message: t("profile.lists.deleteConfirm"),
+            buttons: [
+                {
+                    label: t("series.yes"),
+                    onClick: () => {
+                        Axios.delete("/users/" + this.props.match.params.profile_id + "/lists/" + list_id)
+                            .then(() => {
+                                let newLists = [ ...this.state.lists];
+                                newLists.splice(index, 1);
+
+                                this.setState({
+                                    lists: newLists
+                                });
+                            });
+                    }
+                },
+                {
+                    label: t("series.no")
+                }
+            ]
+        });
+    };
+
     render() {
 
         if(this.state.loading)
@@ -264,19 +296,15 @@ class ProfilePage extends PureComponent {
 
         var listsElement = null;
         if (currUser) {
-            listsElement = lists.map(list => {
+            listsElement = lists.map((list, index) => {
                 return(
                     <div key={list.id} className="profile-shows">
                         <div>
                             <div className="overflow-hidden">
                                 <h2 className="small float-left">{list.name}</h2>
-                                <button className="show-link float-left icon-margin" data-toggle="modal" data-target={"#modifyList" + list.id}>
-                                    <span>MODIFY</span>
-                                </button>
-                                {/* <form action="/removeList?id=${list.id}&userId=${userProfile.id}"
-                                                                        method="post" class="icon-margin float-left" onsubmit="confirmAction(event,'<spring:message code="profile.sureRemove" arguments="${list.name}"/>')">
-                                 <button type="submit" class="heart no-padding" style="font-family: FontAwesome,serif; font-style: normal">&#xf1f8</button>
-                               </form> */}
+                                <div className="icon-margin float-left">
+                                    <button onClick={() => this.removeList(list.id, index)} class="heart no-padding"><FontAwesomeIcon icon={faTrash} /></button>
+                                </div>
                             </div>
                             <SeriesList isSearch={false} source={list.seriesList} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler} />
                         </div>
@@ -589,4 +617,7 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);
+export default compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    withTranslation()
+)(ProfilePage);
