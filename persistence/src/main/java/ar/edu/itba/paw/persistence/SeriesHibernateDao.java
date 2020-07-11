@@ -255,7 +255,11 @@ public class SeriesHibernateDao implements SeriesDao {
 
     @Override
     public Optional<List<Episode>> getUpcomingEpisodes(long userId, int page, int pagesize) {
-        TypedQuery<Episode> query = em.createQuery("from Episode as e where e.aired >= :today",Episode.class);
+        TypedQuery<Episode> query = em.createQuery("from Episode as e " +
+                "where e.aired >= :today " +
+                "and exists(from User as u " +
+                "where u.id = :userId and u in elements(e.season.series.userFollowers))",Episode.class);
+        query.setParameter("userId", userId);
         query.setParameter("today",new Date(), TemporalType.DATE);
         query.setFirstResult((page - 1) * pagesize);
         query.setMaxResults(pagesize);
