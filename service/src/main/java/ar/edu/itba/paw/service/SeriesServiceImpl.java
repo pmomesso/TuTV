@@ -10,7 +10,6 @@ import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -323,7 +322,7 @@ public class SeriesServiceImpl implements SeriesService {
         if(number <= 0) {
             throw new BadRequestException();
         }
-        return seriesDao.getRecentlyWatched(user.getId(), number).orElseThrow(BadRequestException::new);
+        return seriesDao.getRecentlyWatched(user.getId(), number).orElseThrow(NotFoundException::new);
     }
 
     @Override
@@ -347,7 +346,7 @@ public class SeriesServiceImpl implements SeriesService {
 
     @Override
     @Transactional
-    public Optional<SeriesList> addList(String name, long[] seriesId) throws UnauthorizedException{
+    public SeriesList addList(String name, long[] seriesId) throws UnauthorizedException, NotFoundException{
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         Set<Series> series = new HashSet<>();
         if(seriesId != null) {
@@ -355,7 +354,7 @@ public class SeriesServiceImpl implements SeriesService {
                 series.add(seriesDao.getSeriesById(id).orElseThrow(UnauthorizedException::new));
             }
         }
-        return seriesDao.addList(user.getId(), name, series);
+        return seriesDao.addList(user.getId(), name, series).orElseThrow(NotFoundException::new);
     }
 
     @Override

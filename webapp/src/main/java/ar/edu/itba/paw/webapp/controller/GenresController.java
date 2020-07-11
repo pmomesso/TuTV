@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import static javax.ws.rs.core.Response.ok;
 import static javax.ws.rs.core.Response.status;
 
-@Path("genres")
+@Path("api/genres")
 @Component
 public class GenresController {
 

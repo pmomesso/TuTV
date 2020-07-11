@@ -20,7 +20,7 @@ import java.util.List;
 public class OurAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     public OurAuthenticationFilter() {
-        super("/**");
+        super("/api/**");
     }
 
     @Override

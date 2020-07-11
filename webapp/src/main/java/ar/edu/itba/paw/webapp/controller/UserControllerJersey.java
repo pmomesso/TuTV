@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.Response.*;
 
-@Path("users")
+@Path("api/users")
 @Component
 public class UserControllerJersey {
 
@@ -44,19 +44,15 @@ public class UserControllerJersey {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/")
-    public Response register(@Valid RegisterDTO register) {
+    public Response register(@Valid RegisterDTO register) throws BadRequestException, UnauthorizedException {
 
         Set<ConstraintViolation<RegisterDTO>> violations = validator.validate(register);
         if(!violations.isEmpty()) {
-            return status(Status.BAD_REQUEST).build();
+            throw new BadRequestException();
         }
         final URI baseUri = uriInfo.getBaseUri();
         Either<User, Collection<Errors>> u;
-        try{
-            u = userService.createUser(register.getUsername(),register.getPassword(),register.getMail(),false,baseUri.toString());
-        }catch(UnauthorizedException e){
-            return status(Status.UNAUTHORIZED).build();
-        }
+        u = userService.createUser(register.getUsername(),register.getPassword(),register.getMail(),false,baseUri.toString());
         if(u.isValuePresent()){
             return accepted().entity(new UserDTO(u.getValue())).build();
         }
@@ -76,86 +72,62 @@ public class UserControllerJersey {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/recentlyWatched")
-    public Response getRecentlyWatched(@PathParam("userId") Long userId) {
+    public Response getRecentlyWatched(@PathParam("userId") Long userId) throws NotFoundException, BadRequestException {
         List series;
-        try {
-            series = seriesService.getRecentlyWatchedList(userId,5).stream()
-                    .map(e -> new SeriesDTO(e,userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
-        } catch (NotFoundException e) {
-            return Response.status(Status.NOT_FOUND).build();
-        } catch (BadRequestException e) {
-            return Response.status(Status.BAD_REQUEST).build();
-        }
+        series = seriesService.getRecentlyWatchedList(userId,5).stream()
+                .map(e -> new SeriesDTO(e,userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
         return ok(new GenericEntity<List<SeriesDTO>>(series) {}).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/following")
-    public Response getFollowedSeries(@PathParam("userId") Long userId,@QueryParam("page") Integer page, @QueryParam("pagesize") Integer pagesize) {
+    public Response getFollowedSeries(@PathParam("userId") Long userId,@QueryParam("page") Integer page, @QueryParam("pagesize") Integer pagesize) throws NotFoundException {
         page = page == null || page < 1 ? 1 : page;
         pagesize = pagesize == null || pagesize <= 0 || pagesize >= 24 ? 24 : pagesize;
-        try {
-            List<SeriesDTO> seriesList = seriesService.getAddedSeries(userId,page,pagesize).stream().
-                    map(series -> new SeriesDTO(series, userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
-            ResponseBuilder rb = ok(new GenericEntity<List<SeriesDTO>>(seriesList) {});
-            if(seriesService.getAddedSeries(userId,page + 1,pagesize).size() > 0) {
-                rb = rb.link(uriInfo.getAbsolutePathBuilder()
-                        .queryParam("page", page + 1)
-                        .queryParam("pagesize", pagesize)
-                        .build(), "next");
-            }
-            if(page > 1) {
-                rb = rb.link(uriInfo.getAbsolutePathBuilder()
-                        .queryParam("page", page - 1)
-                        .queryParam("pagesize", pagesize)
-                        .build(), "prev");
-            }
-            return rb.build();
-        } catch (NotFoundException e) {
-            return Response.status(Status.NOT_FOUND).build();
+        List<SeriesDTO> seriesList = seriesService.getAddedSeries(userId,page,pagesize).stream().
+                map(series -> new SeriesDTO(series, userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
+        ResponseBuilder rb = ok(new GenericEntity<List<SeriesDTO>>(seriesList) {});
+        if(seriesService.getAddedSeries(userId,page + 1,pagesize).size() > 0) {
+            rb = rb.link(uriInfo.getAbsolutePathBuilder()
+                    .queryParam("page", page + 1)
+                    .queryParam("pagesize", pagesize)
+                    .build(), "next");
         }
+        if(page > 1) {
+            rb = rb.link(uriInfo.getAbsolutePathBuilder()
+                    .queryParam("page", page - 1)
+                    .queryParam("pagesize", pagesize)
+                    .build(), "prev");
+        }
+        return rb.build();
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{userId}/following")
-    public Response followSeries(@PathParam("userId") Long userId, @Valid FollowSeriesDTO followSeriesDTO) {
+    public Response followSeries(@PathParam("userId") Long userId, @Valid FollowSeriesDTO followSeriesDTO) throws UnauthorizedException, NotFoundException {
         Set<ConstraintViolation<FollowSeriesDTO>> violations = validator.validate(followSeriesDTO);
         if(!violations.isEmpty()) return Response.status(Status.BAD_REQUEST).build();
-        try {
-            Series series = seriesService.followSeries(followSeriesDTO.getSeriesId());
-            return ok(new FollowersDTO(series.getFollowers(), true)).build();
-        } catch (NotFoundException e ) {
-            return Response.status(Status.NOT_FOUND).build();
-        } catch (UnauthorizedException e) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
+        Series series = seriesService.followSeries(followSeriesDTO.getSeriesId());
+        return ok(new FollowersDTO(series.getFollowers(), true)).build();
     }
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{userId}/following/{seriesId}")
-    public Response unfollowSeries(@PathParam("userId") Long userId, @PathParam("seriesId") Long seriesId) {
-        //Set<ConstraintViolation<FollowSeriesDTO>> violations = validator.validate(followSeriesDTO);
-        //if(!violations.isEmpty()) return Response.status(Status.BAD_REQUEST).build();
-        try {
-            Series series = seriesService.unfollowSeries(seriesId);
-            return ok(new FollowersDTO(series.getFollowers(), false)).build();
-        } catch (NotFoundException e) {
-            return Response.status(Status.NOT_FOUND).build();
-        } catch (UnauthorizedException e) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
+    public Response unfollowSeries(@PathParam("userId") Long userId, @PathParam("seriesId") Long seriesId) throws NotFoundException, UnauthorizedException {
+        Series series = seriesService.unfollowSeries(seriesId);
+        return ok(new FollowersDTO(series.getFollowers(), false)).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}")
-    public Response getUserById(@PathParam("userId") Long userId) {
+    public Response getUserById(@PathParam("userId") Long userId) throws NotFoundException {
         Optional<User> optUser = userService.findById(userId);
         if(!optUser.isPresent()) {
-            return status(Status.NOT_FOUND).build();
+            throw new NotFoundException();
         }
         UserDTO userDTO = new UserDTO(optUser.get());
         return ok(userDTO).build();
@@ -164,10 +136,10 @@ public class UserControllerJersey {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/notifications")
-    public Response getUserNotifications(@PathParam("userId") Long userId) {
+    public Response getUserNotifications(@PathParam("userId") Long userId) throws UnauthorizedException {
         Optional<User> loggedInUser = userService.getLoggedUser();
         if(!loggedInUser.isPresent() || loggedInUser.get().getId() != userId) {
-            return status(Status.UNAUTHORIZED).build();
+            throw new UnauthorizedException();
         }
         List<NotificationDTO> notifications = loggedInUser.get().getNotifications().stream()
                 .map(NotificationDTO::new).collect(Collectors.toList());
@@ -178,59 +150,45 @@ public class UserControllerJersey {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/notifications/{notificationId}/viewed")
-    public Response editUserNotifications(@PathParam("userId") Long userId,@PathParam("notificationId") Long notificationId, @Valid NotificationStateDTO notificationState)  {
+    public Response editUserNotifications(@PathParam("userId") Long userId,@PathParam("notificationId") Long notificationId, @Valid NotificationStateDTO notificationState) throws BadRequestException, UnauthorizedException, NotFoundException {
         Set<ConstraintViolation<NotificationStateDTO>> constraintViolationSet = validator.validate(notificationState);
         if(!constraintViolationSet.isEmpty()) {
-            return status(Status.BAD_REQUEST).build();
+            throw new BadRequestException();
         }
         if(!userService.getLoggedUser().isPresent() || userService.getLoggedUser().get().getId() != userId) {
-            return status(Status.UNAUTHORIZED).build();
+            throw new UnauthorizedException();
         }
-        try {
-            User loggedUser = userService.getLoggedUser().get();
-            userService.setNotificationViewed(notificationId,notificationState.getViewedByUser());
-            Notification notification = new Notification();
-            for(Notification n : loggedUser.getNotifications()){
-                if(n.getId() == notificationId){
-                    notification = n;
-                    break;
-                }
+        User loggedUser = userService.getLoggedUser().get();
+        userService.setNotificationViewed(notificationId,notificationState.getViewedByUser());
+        Notification notification = new Notification();
+        for(Notification n : loggedUser.getNotifications()){
+            if(n.getId() == notificationId){
+                notification = n;
+                break;
             }
-            return accepted(new NotificationDTO(notification)).build();
-        } catch (UnauthorizedException e) {
-            return status(Status.UNAUTHORIZED).build();
-        } catch (NotFoundException e) {
-            return status(Status.NOT_FOUND).build();
         }
+        return accepted(new NotificationDTO(notification)).build();
     }
 
     @DELETE
     @Path("/{userId}/notifications/{notificationId}")
-    public Response deleteNotification(@PathParam("userId") Long userId,@PathParam("notificationId") Long notificationId)  {
+    public Response deleteNotification(@PathParam("userId") Long userId,@PathParam("notificationId") Long notificationId) throws UnauthorizedException, NotFoundException {
         if(!userService.getLoggedUser().isPresent() || userService.getLoggedUser().get().getId() != userId) {
-            return status(Status.UNAUTHORIZED).build();
+            throw new UnauthorizedException();
         }
-        try {
-            userService.deleteNotification(userId,notificationId);
-            return status(Status.NO_CONTENT).build();
-        } catch (NotFoundException e) {
-            return status(Status.NOT_FOUND).build();
-        }
+        userService.deleteNotification(userId,notificationId);
+        return status(Status.NO_CONTENT).build();
     }
 
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/")
-    public Response getUsersList(@QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) {
+    public Response getUsersList(@QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) throws UnauthorizedException {
         UsersList usersList;
         Integer auxPage = page == null ? 1 : page;
         Integer auxPageSize = pageSize == null ? 8 : pageSize;
-        try {
-            usersList = userService.getAllUsersExceptLoggedOne(auxPage, auxPageSize);
-        } catch (UnauthorizedException e) {
-            return status(Status.UNAUTHORIZED).build();
-        }
+        usersList = userService.getAllUsersExceptLoggedOne(auxPage, auxPageSize);
         List<UserDTO> users = usersList.getUsersList().stream()
                 .map(u -> new UserDTO(u)).collect(Collectors.toList());
         ResponseBuilder rb = Response.ok(new GenericEntity<List<UserDTO>>(users) {});
@@ -252,9 +210,10 @@ public class UserControllerJersey {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/watchlist")
-    public Response getUserWatchList(@PathParam("userId") Long userId, @QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) {
+    public Response getUserWatchList(@PathParam("userId") Long userId, @QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) throws UnauthorizedException, NotFoundException {
         Optional<User> optUser = userService.getLoggedUser();
-        if(optUser.isPresent() && optUser.get().getId() != userId) return Response.status(Status.UNAUTHORIZED).build();
+        if(optUser.isPresent() && optUser.get().getId() != userId) throw new UnauthorizedException();
+
         Integer auxPage = page;
         if(page == null) {
             auxPage = 1;
@@ -265,28 +224,22 @@ public class UserControllerJersey {
         }
         List<ToBeSeenEpisodeDTO> episodes;
         ResponseBuilder rb = ok();
-        try {
-            episodes = seriesService.getWatchList(auxPage, auxPageSize).stream()
-                    .map(e -> new ToBeSeenEpisodeDTO(new SeriesDTO(e.getSeason().getSeries(), optUser, uriInfo),
-                            new EpisodeDTO(e, optUser))).collect(Collectors.toList());
-            rb = rb.entity(new GenericEntity<List<ToBeSeenEpisodeDTO>>(episodes) {});
-            if(auxPage > 1 && episodes.size() > 0) {
-                rb = rb.link(uriInfo.getAbsolutePathBuilder()
-                        .queryParam("page", auxPage - 1)
-                        .queryParam("pagesize", auxPageSize)
-                        .build(), "prev");
-            }
-            int size = seriesService.getWatchList(auxPage + 1, auxPageSize).size();
-            if(size > 0) {
-                rb = rb.link(uriInfo.getAbsolutePathBuilder()
-                        .queryParam("page", auxPage + 1)
-                        .queryParam("pagesize", auxPageSize)
-                        .build(), "next");
-            }
-        } catch (UnauthorizedException e) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        } catch (NotFoundException e) {
-            return Response.status(Status.NOT_FOUND).build();
+        episodes = seriesService.getWatchList(auxPage, auxPageSize).stream()
+                .map(e -> new ToBeSeenEpisodeDTO(new SeriesDTO(e.getSeason().getSeries(), optUser, uriInfo),
+                        new EpisodeDTO(e, optUser))).collect(Collectors.toList());
+        rb = rb.entity(new GenericEntity<List<ToBeSeenEpisodeDTO>>(episodes) {});
+        if(auxPage > 1 && episodes.size() > 0) {
+            rb = rb.link(uriInfo.getAbsolutePathBuilder()
+                    .queryParam("page", auxPage - 1)
+                    .queryParam("pagesize", auxPageSize)
+                    .build(), "prev");
+        }
+        int size = seriesService.getWatchList(auxPage + 1, auxPageSize).size();
+        if(size > 0) {
+            rb = rb.link(uriInfo.getAbsolutePathBuilder()
+                    .queryParam("page", auxPage + 1)
+                    .queryParam("pagesize", auxPageSize)
+                    .build(), "next");
         }
 
         return rb.build();
@@ -295,43 +248,37 @@ public class UserControllerJersey {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/upcoming")
-    public Response getUserUpcomingList(@PathParam("userId") Long userId, @QueryParam("page") Integer page, @QueryParam("pagesize") Integer pagesize) {
+    public Response getUserUpcomingList(@PathParam("userId") Long userId, @QueryParam("page") Integer page, @QueryParam("pagesize") Integer pagesize) throws UnauthorizedException, NotFoundException {
         page = page == null || page < 1 ? 1 : page;
         pagesize = pagesize == null || pagesize <= 0 || pagesize >= 24 ? 24 : pagesize;
         Optional<User> optUser = userService.getLoggedUser();
-        if(optUser.isPresent() && optUser.get().getId() != userId) return Response.status(Status.UNAUTHORIZED).build();
-        try {
-            List<ToBeSeenEpisodeDTO> episodes = seriesService.getUpcomingEpisodes(page,pagesize).stream()
-                    .map(e -> new ToBeSeenEpisodeDTO(new SeriesDTO(e.getSeason().getSeries(), optUser, uriInfo),
-                            new EpisodeDTO(e, optUser))).collect(Collectors.toList());
-            ResponseBuilder rb = ok(new GenericEntity<List<ToBeSeenEpisodeDTO>>(episodes) {});
-            if(seriesService.getUpcomingEpisodes(page + 1,pagesize).size() > 0) {
-                rb = rb.link(uriInfo.getAbsolutePathBuilder()
-                        .queryParam("page", page + 1)
-                        .queryParam("pagesize", pagesize)
-                        .build(), "next");
-            }
-            if(page > 1) {
-                rb = rb.link(uriInfo.getAbsolutePathBuilder()
-                        .queryParam("page", page - 1)
-                        .queryParam("pagesize", pagesize)
-                        .build(), "prev");
-            }
-            return rb.build();
-        } catch (UnauthorizedException e) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        } catch (NotFoundException e) {
-            return Response.status(Status.NOT_FOUND).build();
+        if(optUser.isPresent() && optUser.get().getId() != userId) throw new UnauthorizedException();
+        List<ToBeSeenEpisodeDTO> episodes = seriesService.getUpcomingEpisodes(page,pagesize).stream()
+                .map(e -> new ToBeSeenEpisodeDTO(new SeriesDTO(e.getSeason().getSeries(), optUser, uriInfo),
+                        new EpisodeDTO(e, optUser))).collect(Collectors.toList());
+        ResponseBuilder rb = ok(new GenericEntity<List<ToBeSeenEpisodeDTO>>(episodes) {});
+        if(seriesService.getUpcomingEpisodes(page + 1,pagesize).size() > 0) {
+            rb = rb.link(uriInfo.getAbsolutePathBuilder()
+                    .queryParam("page", page + 1)
+                    .queryParam("pagesize", pagesize)
+                    .build(), "next");
         }
+        if(page > 1) {
+            rb = rb.link(uriInfo.getAbsolutePathBuilder()
+                    .queryParam("page", page - 1)
+                    .queryParam("pagesize", pagesize)
+                    .build(), "prev");
+        }
+        return rb.build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/lists")
-    public Response getUserFavourites(@PathParam("userId") Long userId) {
+    public Response getUserFavourites(@PathParam("userId") Long userId) throws UnauthorizedException {
         Optional<User> optUser = userService.getLoggedUser();
         if(!optUser.isPresent() || optUser.get().getId() != userId) {
-            return status(Status.UNAUTHORIZED).build();
+            throw new UnauthorizedException();
         }
         User user = optUser.get();
         List<SeriesListDTO> seriesLists = user.getLists().stream()
@@ -343,25 +290,21 @@ public class UserControllerJersey {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/lists/{listId}/series")
     public Response getUserList(@PathParam("userId") Long userId, @PathParam("listId") Long listId,
-            @QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) {
+            @QueryParam("page") Integer page, @QueryParam("pagesize") Integer pageSize) throws NotFoundException {
 
         page = page == null ? 1 : page;
         pageSize = pageSize == null ? 24 : pageSize;
 
         List<SeriesDTO> series;
         ResponseBuilder rb = ok();
-        try {
-            series = seriesService.getSeriesInList(listId, page, pageSize)
-                    .stream().map(s -> new SeriesDTO(s, userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
-            List<Series> aux = seriesService.getSeriesInList(listId, page + 1, pageSize);
-            if(!aux.isEmpty()) {
-                rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).queryParam("pagesize", pageSize).build(), "next");
-            }
-            if(page > 1) {
-                rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).queryParam("pagesize", pageSize).build(), "prev");
-            }
-        } catch (NotFoundException e) {
-            return status(Status.NOT_FOUND).build();
+        series = seriesService.getSeriesInList(listId, page, pageSize)
+                .stream().map(s -> new SeriesDTO(s, userService.getLoggedUser(), uriInfo)).collect(Collectors.toList());
+        List<Series> aux = seriesService.getSeriesInList(listId, page + 1, pageSize);
+        if(!aux.isEmpty()) {
+            rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page + 1).queryParam("pagesize", pageSize).build(), "next");
+        }
+        if(page > 1) {
+            rb = rb.link(uriInfo.getAbsolutePathBuilder().queryParam("page", page - 1).queryParam("pagesize", pageSize).build(), "prev");
         }
 
         return rb.entity(new GenericEntity<List<SeriesDTO>>(series) {}).build();
@@ -371,16 +314,15 @@ public class UserControllerJersey {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/lists")
-    public Response createList(@PathParam("userId") @NotNull Long userId, @Valid SeriesListsNewDTO listDto){
+    public Response createList(@PathParam("userId") @NotNull Long userId, @Valid SeriesListsNewDTO listDto) throws BadRequestException, UnauthorizedException, NotFoundException {
         Set<ConstraintViolation<SeriesListsNewDTO>> violations = validator.validate(listDto);
         if(!violations.isEmpty()) {
-            return status(Status.BAD_REQUEST).build();
+            throw new BadRequestException();
         }
         Optional<User> loggedInUser = userService.getLoggedUser();
         if(!loggedInUser.isPresent() || loggedInUser.get().getId() != userId){
-            return status(Status.UNAUTHORIZED).build();
+            throw new UnauthorizedException();
         }
-        Optional<SeriesList> list;
         long[] seriesIds = null;
         if(listDto.getSeries() != null) {
             seriesIds = new long[listDto.getSeries().size()];
@@ -388,98 +330,38 @@ public class UserControllerJersey {
                 seriesIds[i] = listDto.getSeries().get(i);
             }
         }
-        try {
-            list = seriesService.addList(listDto.getName(),seriesIds);
-        } catch (UnauthorizedException e) {
-            return status(Status.UNAUTHORIZED).build();
-        }
-        if(!list.isPresent()){
-            return status(Status.NOT_FOUND).build();
-        } else {
-            return ok(new SeriesListDTO(list.get(), uriInfo)).build();
-        }
+        SeriesList list = seriesService.addList(listDto.getName(),seriesIds);
+        return ok(new SeriesListDTO(list, uriInfo)).build();
     }
-
-    /*
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{userId}/lists/{listId}/name")
-    public Response modifyList(@PathParam("userId") Long userId, @PathParam("listId") Long listId,
-                               @Valid SeriesListStateDTO listDto){
-
-        Set<ConstraintViolation<SeriesListStateDTO>> violations = validator.validate(listDto);
-        if(!violations.isEmpty()) {
-            return status(Status.BAD_REQUEST).build();
-        }
-
-        Optional<User> loggedInUser = userService.getLoggedUser();
-        if(!loggedInUser.isPresent() || loggedInUser.get().getId() != userId){
-            return Response.status(Status.UNAUTHORIZED).build();
-        }
-
-        try {
-            SeriesList seriesList = seriesService.changeListName(listId, listDto.getName());
-            if(!seriesList.getName().equals(listDto.getName())) {
-                return accepted().build();
-            } else {
-                return accepted(Status.NOT_MODIFIED).build();
-            }
-        } catch (UnauthorizedException e) {
-            return status(Status.UNAUTHORIZED).build();
-        } catch (NotFoundException e) {
-            return status(Status.NOT_FOUND).build();
-        }
-    }
-    */
 
     @DELETE
     @Path("/{userId}/lists/{listId}/series/{seriesId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeSeriesFromList(@PathParam("userId") Long userId, @PathParam("listId") Long listId, @PathParam("seriesId") Long seriesId) {
-        try {
-            SeriesListDTO updatedList = new SeriesListDTO(seriesService.removeSeriesFromList(listId, seriesId), uriInfo);
-            return ok(updatedList).build();
-        } catch (UnauthorizedException e) {
-            return status(Status.UNAUTHORIZED).build();
-        } catch (NotFoundException e) {
-            return status(Status.NOT_FOUND).build();
-        }
+    public Response removeSeriesFromList(@PathParam("userId") Long userId, @PathParam("listId") Long listId, @PathParam("seriesId") Long seriesId) throws UnauthorizedException, NotFoundException {
+        SeriesListDTO updatedList = new SeriesListDTO(seriesService.removeSeriesFromList(listId, seriesId), uriInfo);
+        return ok(updatedList).build();
     }
 
     @DELETE
     @Path("/{userId}/lists/{listId}")
-    public Response deleteList(@PathParam("userId")@NotNull Long userId, @PathParam("listId")@NotNull Long listId){
+    public Response deleteList(@PathParam("userId")@NotNull Long userId, @PathParam("listId")@NotNull Long listId) throws NotFoundException, UnauthorizedException {
         if(userId < 0 || listId < 0){
-            return status(Status.BAD_REQUEST).build();
+            throw new NotFoundException();
         }
         Optional<User> loggedInUser = userService.getLoggedUser();
         if(!loggedInUser.isPresent() || loggedInUser.get().getId() != userId){
-            return Response.status(Status.UNAUTHORIZED).build();
+            throw new UnauthorizedException();
         }
-        try {
-            seriesService.removeList(listId);
-        } catch (UnauthorizedException e) {
-            return status(Status.UNAUTHORIZED).build();
-        } catch (NotFoundException e) {
-            return status(Status.NOT_FOUND).build();
-        }
+        seriesService.removeList(listId);
         return status(Status.NO_CONTENT).build();
     }
 
     @POST
     @Path("/{userId}/lists/{listId}/series")
-    public Response addSeriesToList(@PathParam("userId") Long userId, @PathParam("listId") Long listId, @Valid SeriesToAddDTO seriesToAddDTO) {
+    public Response addSeriesToList(@PathParam("userId") Long userId, @PathParam("listId") Long listId, @Valid SeriesToAddDTO seriesToAddDTO) throws UnauthorizedException, NotFoundException {
         Optional<User> optUser = userService.getLoggedUser();
-        if(optUser.isPresent() && optUser.get().getId() != userId) return Response.status(Status.UNAUTHORIZED).build();
-        int result;
-        try {
-            result = seriesService.addSeriesToList(listId, seriesToAddDTO.getSeriesId());
-        } catch (UnauthorizedException e) {
-            return Response.status(Status.UNAUTHORIZED).build();
-        } catch (NotFoundException e) {
-            return Response.status(Status.NOT_FOUND).build();
-        }
+        if(optUser.isPresent() && optUser.get().getId() != userId) throw new UnauthorizedException();
+        int result = seriesService.addSeriesToList(listId, seriesToAddDTO.getSeriesId());
         if(result == 0) {
             return Response.status(Status.NOT_MODIFIED).build();
         }
@@ -490,92 +372,70 @@ public class UserControllerJersey {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/username")
-    public Response editUser(@PathParam("userId") Long userId,@Valid UsernameEditDTO usernameEditDTO) {
+    public Response editUser(@PathParam("userId") Long userId,@Valid UsernameEditDTO usernameEditDTO) throws BadRequestException, UnauthorizedException {
 
         Set<ConstraintViolation<UsernameEditDTO>> violations = validator.validate(usernameEditDTO);
         if(!violations.isEmpty()) {
-            return status(Status.BAD_REQUEST).build();
+            throw new BadRequestException();
         }
-
-        try {
-            User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-            if (loggedUser.getId() != userId) return status(Status.UNAUTHORIZED).build();
-            userService.updateLoggedUserName(usernameEditDTO.getUserName());
-            return accepted().entity(new UserDTO(userService.findById(userId).get())).build();
-        } catch (UnauthorizedException e) {
-            return status(Status.UNAUTHORIZED).build();
-        }
+        User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        if (loggedUser.getId() != userId) throw new UnauthorizedException();
+        userService.updateLoggedUserName(usernameEditDTO.getUserName());
+        return accepted().entity(new UserDTO(userService.findById(userId).get())).build();
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/banned")
-    public Response banUser(@PathParam("userId") Long userId,@Valid BanUserDTO banUserDTO) {
+    public Response banUser(@PathParam("userId") Long userId,@Valid BanUserDTO banUserDTO) throws BadRequestException, UnauthorizedException, NotFoundException {
 
         Set<ConstraintViolation<BanUserDTO>> violations = validator.validate(banUserDTO);
         if(!violations.isEmpty()) {
-            return status(Status.BAD_REQUEST).build();
+            throw new BadRequestException();
         }
-        try {
-            User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-            if (!loggedUser.getIsAdmin()) return status(Status.UNAUTHORIZED).build();
-            if (banUserDTO.getBanned()) {
-                userService.banUser(userId);
-            } else {
-                userService.unbanUser(userId);
-            }
-            return accepted().entity(new UserDTO(userService.findById(userId).get())).build();
-        } catch (UnauthorizedException e) {
-            return status(Status.UNAUTHORIZED).build();
-        } catch (NotFoundException e) {
-            return status(Status.NOT_FOUND).build();
+        User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        if (!loggedUser.getIsAdmin()) throw new UnauthorizedException();
+        if (banUserDTO.getBanned()) {
+            userService.banUser(userId);
+        } else {
+            userService.unbanUser(userId);
         }
+        return accepted().entity(new UserDTO(userService.findById(userId).get())).build();
     }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/stats")
-    public Response getUserStats(@PathParam("userId") Long userId) {
-        try {
-            Optional<User> optUser = userService.getLoggedUser();
-            if(!optUser.isPresent() || optUser.get().getId() != userId) return status(Status.UNAUTHORIZED).build();
-            return ok(new GenresStatsDTO(userService.getGenresStats())).build();
-        } catch (UnauthorizedException e) {
-            return status(Status.UNAUTHORIZED).build();
-        }
+    public Response getUserStats(@PathParam("userId") Long userId) throws UnauthorizedException {
+        Optional<User> optUser = userService.getLoggedUser();
+        if(!optUser.isPresent() || optUser.get().getId() != userId) throw new UnauthorizedException();
+        return ok(new GenresStatsDTO(userService.getGenresStats())).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{userId}/avatar")
-    public Response getUserAvatar(@PathParam("userId") Long userId) {
+    public Response getUserAvatar(@PathParam("userId") Long userId) throws UnauthorizedException {
         Optional<User> user = userService.findById(userId);
         if(!user.isPresent()) {
-            return status(Status.NOT_FOUND).build();
+            throw new UnauthorizedException();
         }
-        if(user.get().getUserAvatar() != null) {
-            return ok(new UserAvatarDTO(user.get())).build();
-        } else {
-            return status(Status.NO_CONTENT).build();
-        }
+        return ok(new UserAvatarDTO(user.get())).build();
     }
 
     @PUT
     @Consumes({"image/jpeg", "image/png", "image/jpg"})
     @Path("/{userId}/avatar")
-    public Response setUserAvatar(@PathParam("userId") Long userId, String base64Image) {
+    public Response setUserAvatar(@PathParam("userId") Long userId, String base64Image) throws BadRequestException, UnauthorizedException {
         if(base64Image == null) {
-            return status(Status.BAD_REQUEST).build();
+            throw new BadRequestException();
         }
         if(!userService.getLoggedUser().isPresent() || userService.getLoggedUser().get().getId() != userId) {
-            return status(Status.UNAUTHORIZED).build();
+            throw new UnauthorizedException();
         }
-        try {
-            userService.setUserAvatar(userId, base64Image);
-            return ok().build();
-        } catch (BadRequestException e) {
-            return status(Status.BAD_REQUEST).build();
-        }
+        userService.setUserAvatar(userId, base64Image);
+        return ok().build();
     }
 
 }

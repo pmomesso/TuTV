@@ -64,7 +64,7 @@ public interface SeriesService {
 
     List<Episode> getUpcomingEpisodes(int page, int pagesize) throws UnauthorizedException, NotFoundException;
 
-    Optional<SeriesList> addList(String name, long[] seriesId) throws UnauthorizedException;
+    SeriesList addList(String name, long[] seriesId) throws UnauthorizedException, NotFoundException;
 
     Optional<Boolean> getLoggedInUserLikesSeriesReview(long seriesReviewId);
 

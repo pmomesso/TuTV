@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.Response.ok;
 
-@Path("networks")
+@Path("api/networks")
 @Component
 public class NetworksController {
 
