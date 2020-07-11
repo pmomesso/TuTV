@@ -15,8 +15,8 @@ import Axios from 'axios';
 
 const store = createStore(rootReducer);
 
-//TODO remove this 2 lines
-const APIURL = "http://localhost:8080";
+//TODO remove domain from url
+const APIURL = "http://localhost:8080/api";
 Axios.defaults.baseURL = APIURL;
 
 Axios.defaults.headers['Content-Type'] = 'application/json';
