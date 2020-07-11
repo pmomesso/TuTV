@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.controller;
+package ar.edu.itba.paw.webapp.dtos;
 
 import javax.validation.constraints.NotNull;
 
