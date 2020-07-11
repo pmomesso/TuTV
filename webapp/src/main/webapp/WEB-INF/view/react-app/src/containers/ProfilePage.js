@@ -13,6 +13,7 @@ import Chart from "chart.js";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {confirmAlert} from "react-confirm-alert";
+import ErrorPage from "./ErrorPage";
 
 class ProfilePage extends PureComponent {
 
@@ -23,7 +24,8 @@ class ProfilePage extends PureComponent {
         followingChanged: null,
         stats: null,
         lists: null,
-        loading: true
+        loading: true,
+        error: false
     };
 
     componentDidMount = () => {
@@ -70,7 +72,11 @@ class ProfilePage extends PureComponent {
                     var ctx = document.getElementById('genresChart');
                     that.createChart(ctx, labels, values);
                 }
-            }));
+            })).catch((err) => {
+                var error_status = "error." + err.response.status + "status";
+                var error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
+            });
         } else {
             Axios.all([
                 Axios.get("/users/" + user_id),
@@ -84,7 +90,11 @@ class ProfilePage extends PureComponent {
                     followingChanged: true,
                     loading: false
                 });
-            }));
+            })).catch((err) => {
+                var error_status = "error." + err.response.status + "status";
+                var error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
+            });
         }
     };
 
@@ -281,43 +291,44 @@ class ProfilePage extends PureComponent {
                 </section>
             );
 
-        const user = this.state.user;
-        const currUser = this.props.logged_user && this.props.logged_user.id === user.id;
-        const avatar = this.state.avatar;
-        const recentlyWatched = this.state.recentlyWatched;
-        const stats = this.state.stats;
-        const lists = this.state.lists;
+        if (!this.state.error) {
+            const user = this.state.user;
+            const currUser = this.props.logged_user && this.props.logged_user.id === user.id;
+            const avatar = this.state.avatar;
+            const recentlyWatched = this.state.recentlyWatched;
+            const stats = this.state.stats;
+            const lists = this.state.lists;
 
-        var listsElement = null;
-        if (currUser) {
-            listsElement = lists.map((list, index) => {
-                return(
-                    <div key={list.id} className="profile-shows">
-                        <div>
-                            <div className="overflow-hidden">
-                                <h2 className="small float-left">{list.name}</h2>
-                                <div className="icon-margin float-left">
-                                    <button onClick={() => this.removeList(list.id, index)} className="heart no-padding"><FontAwesomeIcon icon={faTrash} /></button>
+            var listsElement = null;
+            if (currUser) {
+                listsElement = lists.map((list, index) => {
+                    return(
+                        <div key={list.id} className="profile-shows">
+                            <div>
+                                <div className="overflow-hidden">
+                                    <h2 className="small float-left">{list.name}</h2>
+                                    <div className="icon-margin float-left">
+                                        <button onClick={() => this.removeList(list.id, index)} className="heart no-padding"><FontAwesomeIcon icon={faTrash} /></button>
+                                    </div>
                                 </div>
+                                <SeriesList isLists={true} source={list.seriesUri} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler} />
                             </div>
-                            <SeriesList isLists={true} source={list.seriesUri} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler} />
                         </div>
-                    </div>
-                );
-            });
-        }
+                    );
+                });
+            }
 
-        return (
-            <div>
-                <div className="main-block-container">
-                    <div id="profile">
-                        <div className="images">
-                            <div className="images-inner"></div>
-                            <img src={require('../img/background.jpg')} alt="Background" />
-                        </div>
-                        <div className="profile-nav">
-                            <div className="row wrapper">
-                                <div className="avatar">
+            return (
+                <div>
+                    <div className="main-block-container">
+                        <div id="profile">
+                            <div className="images">
+                                <div className="images-inner"></div>
+                                <img src={require('../img/background.jpg')} alt="Background" />
+                            </div>
+                            <div className="profile-nav">
+                                <div className="row wrapper">
+                                    <div className="avatar">
                                     <span className="avatar-upload-link" id="showUploadAvatarPopup" onClick={this.toggleUploadAvatar}>
                                         {
                                             (avatar) ?
@@ -325,238 +336,241 @@ class ProfilePage extends PureComponent {
                                                 :
                                                 (<img src={"https://d36rlb2fgh8cjd.cloudfront.net/default-images/default-user-q80.png"} alt="avatar"/>)
                                         }{
-                                            currUser &&
-                                            <span className="avatar-upload-label">
+                                        currUser &&
+                                        <span className="avatar-upload-label">
                                                 <Trans i18nKey="profile.edit"/>
                                             </span>
-                                        }
+                                    }
                                     </span>
-                                </div>
-                                <div className="profile-infos">
-                                    <h1 className="name">
-                                        {user.userName.toUpperCase()}
-                                    </h1>
-                                </div>
+                                    </div>
+                                    <div className="profile-infos">
+                                        <h1 className="name">
+                                            {user.userName.toUpperCase()}
+                                        </h1>
+                                    </div>
 
-                                {/* TAB TITLES */}
-                                <ul className="nav nav-tabs align-self-center">
-                                    <li id="followedTab" role="presentation" className="tab-shows active">
-                                        <a id="followedLink" href="#tab-shows" data-toggle="tab" aria-controls="tab-shows" aria-expanded="true" onClick={this.setActiveFollowedLink}>
-                                            <div className="label">
-                                                <Trans i18nKey="profile.followed"/>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    {
-                                        currUser && 
-                                        <li id="listsTab" role="presentation" className="tab-information">
-                                            <a id="listsLink" href="#tab-lists" data-toggle="tab" aria-controls="tab-lists" aria-expanded="true" onClick={this.setActiveListsLink}>
+                                    {/* TAB TITLES */}
+                                    <ul className="nav nav-tabs align-self-center">
+                                        <li id="followedTab" role="presentation" className="tab-shows active">
+                                            <a id="followedLink" href="#tab-shows" data-toggle="tab" aria-controls="tab-shows" aria-expanded="true" onClick={this.setActiveFollowedLink}>
                                                 <div className="label">
-                                                    <Trans i18nKey="profile.lists"/>
+                                                    <Trans i18nKey="profile.followed"/>
                                                 </div>
                                             </a>
                                         </li>
-                                    }
-                                    {
-                                        currUser && 
-                                        <li id="statsTab" role="presentation" className="tab-information">
-                                            <a id="statsLink" href="#tab-stats" data-toggle="tab" aria-controls="tab-stats" aria-expanded="true" onClick={this.setActiveStatsLink}>
-                                                <div className="label">
-                                                    <Trans i18nKey="profile.stats"/>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    }
-                                    {
-                                        currUser && 
-                                        <li id="informationTab" role="presentation" className="tab-information">
-                                            <a id="informationLink" href="#tab-information" data-toggle="tab" aria-controls="tab-information" aria-expanded="true" onClick={this.setActiveInformationLink}>
-                                                <div className="label">
-                                                    <Trans i18nKey="profile.information"/>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    }
-                                </ul>
+                                        {
+                                            currUser &&
+                                            <li id="listsTab" role="presentation" className="tab-information">
+                                                <a id="listsLink" href="#tab-lists" data-toggle="tab" aria-controls="tab-lists" aria-expanded="true" onClick={this.setActiveListsLink}>
+                                                    <div className="label">
+                                                        <Trans i18nKey="profile.lists"/>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        }
+                                        {
+                                            currUser &&
+                                            <li id="statsTab" role="presentation" className="tab-information">
+                                                <a id="statsLink" href="#tab-stats" data-toggle="tab" aria-controls="tab-stats" aria-expanded="true" onClick={this.setActiveStatsLink}>
+                                                    <div className="label">
+                                                        <Trans i18nKey="profile.stats"/>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        }
+                                        {
+                                            currUser &&
+                                            <li id="informationTab" role="presentation" className="tab-information">
+                                                <a id="informationLink" href="#tab-information" data-toggle="tab" aria-controls="tab-information" aria-expanded="true" onClick={this.setActiveInformationLink}>
+                                                    <div className="label">
+                                                        <Trans i18nKey="profile.information"/>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                        <div className="popover fade bottom in" role="tooltip" id="uploadAvatarPopup" style={{top: '250px', left: '-41px', display: 'none'}}>
-                            <div className="arrow" style={{left: '50%'}}></div>
-                            <h3 className="popover-title">
-                                <Trans i18nKey="profile.upload"/>
-                            </h3>
-                            <div className="popover-content">
-                                <h3 className="popover-title" id="avatarMaxSizeError" style={{display: 'none'}}>
-                                    <span style={{color: 'red'}}><Trans i18nKey="profile.avatarMaxSize"/> 2MB</span>
+                            <div className="popover fade bottom in" role="tooltip" id="uploadAvatarPopup" style={{top: '250px', left: '-41px', display: 'none'}}>
+                                <div className="arrow" style={{left: '50%'}}></div>
+                                <h3 className="popover-title">
+                                    <Trans i18nKey="profile.upload"/>
                                 </h3>
-                                <h3 className="popover-title" id="wrongFileTypeError" style={{display: 'none'}}>
-                                    <span style={{color: 'red'}}><Trans i18nKey="profile.wrongFileType"/></span>
-                                </h3>
-                                <input id="avatarFileInput" type="file" name="avatar" accept=".jpg,.jpeg,.png" data-max-size={2097152} onChange={this.readAvatar}/>
+                                <div className="popover-content">
+                                    <h3 className="popover-title" id="avatarMaxSizeError" style={{display: 'none'}}>
+                                        <span style={{color: 'red'}}><Trans i18nKey="profile.avatarMaxSize"/> 2MB</span>
+                                    </h3>
+                                    <h3 className="popover-title" id="wrongFileTypeError" style={{display: 'none'}}>
+                                        <span style={{color: 'red'}}><Trans i18nKey="profile.wrongFileType"/></span>
+                                    </h3>
+                                    <input id="avatarFileInput" type="file" name="avatar" accept=".jpg,.jpeg,.png" data-max-size={2097152} onChange={this.readAvatar}/>
+                                </div>
                             </div>
-                        </div>
-                        <div className="profile-content">
-                            <div className="wrapper">
-                                <div className="tab-content">
-                                    <div id="tab-shows" className="tab-pane active" role="tabpanel">
-                                        <div className="profile-shows">
+                            <div className="profile-content">
+                                <div className="wrapper">
+                                    <div className="tab-content">
+                                        <div id="tab-shows" className="tab-pane active" role="tabpanel">
+                                            <div className="profile-shows">
 
-                                            {(recentlyWatched.length) ?
-                                                (<div id="recently-watched-shows">
+                                                {(recentlyWatched.length) ?
+                                                    (<div id="recently-watched-shows">
+                                                        <h2 className="small">
+                                                            <Trans i18nKey="profile.recently" />
+                                                        </h2>
+                                                        <SeriesList key={recentlyWatched} source={recentlyWatched} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
+                                                    </div>):(<div></div>)
+                                                }
+                                                <div id="all-shows">
                                                     <h2 className="small">
-                                                        <Trans i18nKey="profile.recently" />
+                                                        <Trans i18nKey="profile.all" />
                                                     </h2>
-                                                    <SeriesList key={recentlyWatched} source={recentlyWatched} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
-                                                </div>):(<div></div>)
-                                            }
-                                            <div id="all-shows">
-                                                <h2 className="small">
-                                                    <Trans i18nKey="profile.all" />
-                                                </h2>
-                                                <SeriesList isLists={false} user={user} currUser={currUser} key={this.state.followingChanged} source={"/users/" + user.id + "/following"} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
+                                                    <SeriesList isLists={false} user={user} currUser={currUser} key={this.state.followingChanged} source={"/users/" + user.id + "/following"} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div id="tab-lists" className="tab-pane" role="tabpanel">
-                                        {(currUser && listsElement.length) ?
-                                            listsElement
-                                            :
-                                            (<div id="all-shows">
-                                                <h2 className="small"> </h2>
-                                                <section>
-                                                    <div className="container h-100">
-                                                        <div className="row justify-content-center h-100">
-                                                            <div className="col-lg-8 col-sm-12 align-self-center">
-                                                                <div className="text-center m-4">
-                                                                    <h4>
-                                                                        <Trans i18nKey="profile.noLists" />
-                                                                    </h4>
+                                        <div id="tab-lists" className="tab-pane" role="tabpanel">
+                                            {(currUser && listsElement.length) ?
+                                                listsElement
+                                                :
+                                                (<div id="all-shows">
+                                                    <h2 className="small"> </h2>
+                                                    <section>
+                                                        <div className="container h-100">
+                                                            <div className="row justify-content-center h-100">
+                                                                <div className="col-lg-8 col-sm-12 align-self-center">
+                                                                    <div className="text-center m-4">
+                                                                        <h4>
+                                                                            <Trans i18nKey="profile.noLists" />
+                                                                        </h4>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </section>
-                                            </div>)
-                                        }
-                                    </div>
-                                    <div id="tab-stats" className="tab-pane" role="tabpanel">
-                                        <div className="profile-shows">
-                                            <div>
-                                                <h2 className="small"><Trans i18nKey="profile.favoriteGenres"/></h2>
-                                                <div className="row justify-content-center">
-                                                    {
-                                                        (currUser && stats.length !== 0) ?
-                                                            (<div id="canvasContainer" className="mt-lg-5 mt-sm-0"><canvas id="genresChart"/></div>)
-                                                            :
-                                                            (<div className="container h-100">
-                                                                <div className="row justify-content-center h-100">
-                                                                    <div className="col-lg-8 col-sm-12 align-self-center">
-                                                                        <div className="text-center m-4">
-                                                                            <h4><Trans i18nKey="profile.noStats"/></h4>
-                                                                            <h4><Trans i18nKey="watchlist.discover"/></h4>
-                                                                        </div>
-                                                                        <div className="text-center m-4">
-                                                                            <button className="tutv-button m-4" onClick={event =>  window.location.href='/'}><Trans i18nKey="watchlist.explore"/></button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>)
-                                                    }
-                                                </div>
-                                            </div>
+                                                    </section>
+                                                </div>)
+                                            }
                                         </div>
-                                    </div>
-                                    <div id="tab-information" className="tab-pane" role="tabpanel">
-                                        <section id="basic-settings" className="container">
-                                            <div className="row text-center">
-                                                <div className="col my-auto self-align-center">
-                                                    <div className="other-infos infos-zone">
-                                                        <Formik
-                                                            initialValues={{ username: user.userName, mail: user.mail }}
-                                                            validationSchema={Yup.object({
-                                                                mail: Yup.string()
-                                                                    .email(<Trans i18nKey="register.invalidEmail" />)
-                                                                    .required('Required'),
-                                                                username: Yup.string()
-                                                                    .max(20, <Trans i18nKey="register.passwordTooLong" />)
-                                                                    .required('Required'),
-                                                            })}
-                                                            onSubmit={(values, actions) => {
-                                                                const options = {
-                                                                    headers: {'Content-Type': 'application/json'}
-                                                                };
-                                                                let data = { "userName": values.username };
-                                                                Axios.put("/users/" + this.props.logged_user.id + "/username", JSON.stringify(data), options)
-                                                                    .then((res) => {
-                                                                        let newUser = {
-                                                                            ...this.state.user,
-                                                                            userName: values.username
-                                                                        };
-
-                                                                        this.setState({
-                                                                            user: newUser
-                                                                        });
-
-                                                                        let user = res.data;
-                                                                        this.props.updateUserName(user);
-                                                                    })
-                                                                    .catch((err) => {
-                                                                        /* TODO SI CADUCO LA SESION? */
-                                                                        //alert("Error: " + err.response.status);
-                                                                    })
-                                                                    .finally(() => actions.setSubmitting(false));
-                                                            }}
-                                                            >
-                                                            {formik => (
-                                                                <form onSubmit={formik.handleSubmit}>
-
-                                                                    <div className="row form-group">
-                                                                        <label className="col-sm-4 control-label" path="username">
-                                                                            <Trans i18nKey="register.username" />
-                                                                        </label>
-                                                                        <div className="col-sm-6">
-                                                                            <input {...formik.getFieldProps('username')} path="username" type="text" minLength="6" maxLength="32" className="form-control" name="username" placeholder="JohnDoe" />
-                                                                            {formik.touched.username && formik.errors.username ? (
-                                                                                    <span className="error m-3 w-100">{formik.errors.username}</span>
-                                                                                ) : null}
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="row form-group">
-                                                                        <label className="col-sm-4 control-label">
-                                                                            <Trans i18nKey="register.mail" />
-                                                                        </label>
-                                                                        <div className="col-sm-6">
-                                                                            <input {...formik.getFieldProps('mail')} type="email" className="form-control" name="mail" disabled />
-                                                                            {formik.touched.mail && formik.errors.mail ? (
-                                                                                    <span className="error m-3 w-100">{formik.errors.mail}</span>
-                                                                                ) : null}
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="row text-center justify-content-center">
-                                                                        <div className="col align-self-center">
+                                        <div id="tab-stats" className="tab-pane" role="tabpanel">
+                                            <div className="profile-shows">
+                                                <div>
+                                                    <h2 className="small"><Trans i18nKey="profile.favoriteGenres"/></h2>
+                                                    <div className="row justify-content-center">
+                                                        {
+                                                            (currUser && stats.length !== 0) ?
+                                                                (<div id="canvasContainer" className="mt-lg-5 mt-sm-0"><canvas id="genresChart"/></div>)
+                                                                :
+                                                                (<div className="container h-100">
+                                                                    <div className="row justify-content-center h-100">
+                                                                        <div className="col-lg-8 col-sm-12 align-self-center">
                                                                             <div className="text-center m-4">
-                                                                                <button type="submit" className="tutv-button m-4" >
-                                                                                    <Trans i18nKey="profile.save" />
-                                                                                </button>
+                                                                                <h4><Trans i18nKey="profile.noStats"/></h4>
+                                                                                <h4><Trans i18nKey="watchlist.discover"/></h4>
+                                                                            </div>
+                                                                            <div className="text-center m-4">
+                                                                                <button className="tutv-button m-4" onClick={event =>  window.location.href='/'}><Trans i18nKey="watchlist.explore"/></button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-
-                                                                </form>
-                                                            )}
-                                                        </Formik>
+                                                                </div>)
+                                                        }
                                                     </div>
                                                 </div>
                                             </div>
-                                        </section>
+                                        </div>
+                                        <div id="tab-information" className="tab-pane" role="tabpanel">
+                                            <section id="basic-settings" className="container">
+                                                <div className="row text-center">
+                                                    <div className="col my-auto self-align-center">
+                                                        <div className="other-infos infos-zone">
+                                                            <Formik
+                                                                initialValues={{ username: user.userName, mail: user.mail }}
+                                                                validationSchema={Yup.object({
+                                                                    mail: Yup.string()
+                                                                        .email(<Trans i18nKey="register.invalidEmail" />)
+                                                                        .required('Required'),
+                                                                    username: Yup.string()
+                                                                        .max(20, <Trans i18nKey="register.passwordTooLong" />)
+                                                                        .required('Required'),
+                                                                })}
+                                                                onSubmit={(values, actions) => {
+                                                                    const options = {
+                                                                        headers: {'Content-Type': 'application/json'}
+                                                                    };
+                                                                    let data = { "userName": values.username };
+                                                                    Axios.put("/users/" + this.props.logged_user.id + "/username", JSON.stringify(data), options)
+                                                                        .then((res) => {
+                                                                            let newUser = {
+                                                                                ...this.state.user,
+                                                                                userName: values.username
+                                                                            };
+
+                                                                            this.setState({
+                                                                                user: newUser
+                                                                            });
+
+                                                                            let user = res.data;
+                                                                            this.props.updateUserName(user);
+                                                                        })
+                                                                        .catch((err) => {
+                                                                            /* TODO SI CADUCO LA SESION? */
+                                                                            //alert("Error: " + err.response.status);
+                                                                        })
+                                                                        .finally(() => actions.setSubmitting(false));
+                                                                }}
+                                                            >
+                                                                {formik => (
+                                                                    <form onSubmit={formik.handleSubmit}>
+
+                                                                        <div className="row form-group">
+                                                                            <label className="col-sm-4 control-label" path="username">
+                                                                                <Trans i18nKey="register.username" />
+                                                                            </label>
+                                                                            <div className="col-sm-6">
+                                                                                <input {...formik.getFieldProps('username')} path="username" type="text" minLength="6" maxLength="32" className="form-control" name="username" placeholder="JohnDoe" />
+                                                                                {formik.touched.username && formik.errors.username ? (
+                                                                                    <span className="error m-3 w-100">{formik.errors.username}</span>
+                                                                                ) : null}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="row form-group">
+                                                                            <label className="col-sm-4 control-label">
+                                                                                <Trans i18nKey="register.mail" />
+                                                                            </label>
+                                                                            <div className="col-sm-6">
+                                                                                <input {...formik.getFieldProps('mail')} type="email" className="form-control" name="mail" disabled />
+                                                                                {formik.touched.mail && formik.errors.mail ? (
+                                                                                    <span className="error m-3 w-100">{formik.errors.mail}</span>
+                                                                                ) : null}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="row text-center justify-content-center">
+                                                                            <div className="col align-self-center">
+                                                                                <div className="text-center m-4">
+                                                                                    <button type="submit" className="tutv-button m-4" >
+                                                                                        <Trans i18nKey="profile.save" />
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </form>
+                                                                )}
+                                                            </Formik>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        )
+            )
+        } else {
+            return <ErrorPage status={this.state.error_status} body={this.state.error_body}/>
+        }
     }
 }
 

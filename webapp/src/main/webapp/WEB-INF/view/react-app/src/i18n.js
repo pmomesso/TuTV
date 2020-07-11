@@ -168,6 +168,16 @@ i18n
             "users.previous":               "Previous",
             "users.next":                   "Next",
             "users.banConfirmDialog":       "Are you sure you wish to ban this user?",
+
+            "error.400status":              "400 Bad Request",
+            "error.401status":              "401 Unauthorized",
+            "error.404status":              "404 Not Found",
+            "error.500status":              "500 Internal Server Error",
+            "error.400body":                "The request sent is not valid.",
+            "error.401body":                "You are not authorized to send this request.",
+            "error.404body":                "The page you were looking for does not exist.",
+            "error.500body":                "A server error has occured when processing the request.",
+            "error.goHome":                 "Take me Home"
         }
       },
       es: {
@@ -330,6 +340,16 @@ i18n
             "users.previous":               "Anterior",
             "users.next":                   "Siguiente",
             "users.banConfirmDialog":       "¿Está seguro de que desea bloquear a este usuario?",
+
+           " error.400status":              "400 Solicitud Incorrecta",
+            "error.401status":              "401 No Autorizado",
+            "error.404status":              "404 No Encontrado",
+            "error.500status":              "500 Error Interno de Servidor",
+            "error.400body":                "La solicitud enviada no es valida.",
+            "error.401body":                "No está autorizado para realizar esta solicitud.",
+            "error.404body":                "La página que buscas no existe.",
+            "error.500body":                "Un error en el servidor ha ocurrido mientras se procesaba su solicitud.",
+            "error.goHome":                 "Volver al Inicio"
         }
       }
     },

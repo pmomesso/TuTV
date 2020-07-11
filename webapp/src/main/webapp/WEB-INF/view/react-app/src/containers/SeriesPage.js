@@ -14,13 +14,15 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import Discussion from '../components/Discussion';
 import { confirmAlert } from 'react-confirm-alert';
+import ErrorPage from "./ErrorPage";
 
 class SeriesPage extends Component {
     state = {
         id: null,
         series: null,
         comments: null,
-        loading: true
+        loading: true,
+        error: false
     }
 
     componentDidMount = () => {
@@ -32,8 +34,12 @@ class SeriesPage extends Component {
                         series: res.data,
                         loading: false
                     })
+                }).catch((err) => {
+                    var error_status = "error." + err.response.status + "status";
+                    var error_body = "error." + err.response.status + "body";
+                    this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
                 });
-    }
+    };
 
     onEpisodeWatchedClickedHandler = (event, season_index, episode_index, automatic = false) => {
         if(!automatic)
@@ -296,94 +302,104 @@ class SeriesPage extends Component {
                     </div>
                 </section>
             );
-        
-        const series = this.state.series;
 
-        let seasonList = [];
+        if (!this.state.error) {
 
-        let seasonCount = series.seasons.length;
-        for(let i = 0; i < seasonCount; i++) {
-            seasonList.push(
-                <SeasonAccordion number={i} key={i} season={series.seasons[i]} onSeasonWatchedClicked={this.onSeasonWatchedClicked} onEpisodeWatchedClickedHandler={this.onEpisodeWatchedClickedHandler}/>
-            );
-        }
+            const series = this.state.series;
 
-        //let reviewList = [];
+            let seasonList = [];
 
-        return (
-            <div className="main-block">
-                <div id="explore" style={{backgroundColor: "#ededed"}}>
-                    <section id="new-shows">
-                        <h1>{series.name}</h1>
-                        <div id="myCarousel" className="carousel slide" data-ride="carousel">
-                            <div className="carousel-inner">
-                                <div className="carousel-item active">
-                                    <img src={"https://image.tmdb.org/t/p/original"  + series.bannerUrl} itemProp="image" alt=""/>
-                                    <div className="carousel-caption">
-                                        <div className="text-center">
-                                            <span className={series.loggedInUserFollows ? "star" : "star-unchecked"} />
-                                            <h2>
-                                                {(series.userRating == null) ? 
-                                                t("series.no_rating")
-                                                : series.userRating + " / 5"}
+            let seasonCount = series.seasons.length;
+            for (let i = 0; i < seasonCount; i++) {
+                seasonList.push(
+                    <SeasonAccordion number={i} key={i} season={series.seasons[i]}
+                                     onSeasonWatchedClicked={this.onSeasonWatchedClicked}
+                                     onEpisodeWatchedClickedHandler={this.onEpisodeWatchedClickedHandler}/>
+                );
+            }
+
+            //let reviewList = [];
+
+            return (
+                <div className="main-block">
+                    <div id="explore" style={{backgroundColor: "#ededed"}}>
+                        <section id="new-shows">
+                            <h1>{series.name}</h1>
+                            <div id="myCarousel" className="carousel slide" data-ride="carousel">
+                                <div className="carousel-inner">
+                                    <div className="carousel-item active">
+                                        <img src={"https://image.tmdb.org/t/p/original" + series.bannerUrl}
+                                             itemProp="image" alt=""/>
+                                        <div className="carousel-caption">
+                                            <div className="text-center">
+                                                <span
+                                                    className={series.loggedInUserFollows ? "star" : "star-unchecked"}/>
+                                                <h2>
+                                                    {(series.userRating == null) ?
+                                                        t("series.no_rating")
+                                                        : series.userRating + " / 5"}
                                                 </h2>
-                                        </div>
-                                        <button className="add-button" onClick={this.onSeriesFollowClicked}>
-                                            { t(series.loggedInUserFollows ? "series.unfollow" : "series.follow") }
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <div className="main-block-container">
-                        <div id="show-details" className="show">
-                            <div className="row show-nav">
-                                <div className="col-lg-8">
-                                    <div className="basic-infos">
-                                        <span>{ series.network }</span>
-                                        <span className="separator">•</span>
-                                        <span>
-                                            { t("series.seasons", { count: seasonCount }) }
-                                        </span>
-                                    </div>
-                                    <div className="overview">
-                                        { series.seriesDescription }
-                                    </div>
-                                    <div className="followers">
-                                        { t("index.followers", { count: series.followers }) }
-                                    </div>
-                                </div>
-                                <div className="col-lg-4">
-                                    <div className="container h-20">
-                                        <div className="starrating risingstar d-flex justify-content-right flex-row-reverse">
-                                            <Rating 
-                                                initialRating={ series.loggedInUserRating }
-                                                emptySymbol={<span className="star-unchecked"/>}
-                                                fullSymbol={<span className="star"/>}
-                                                //fractions="2"
-                                                onChange={this.onRatingChanged}/>
+                                            </div>
+                                            <button className="add-button" onClick={this.onSeriesFollowClicked}>
+                                                {t(series.loggedInUserFollows ? "series.unfollow" : "series.follow")}
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div id="content" className="show-main alt">
-                                <div className="content-container">
-                                    <div className="left">
-                                        <div className="w-100 no-padding no-margin">
-
-                                           {seasonList}
-
+                        </section>
+                        <div className="main-block-container">
+                            <div id="show-details" className="show">
+                                <div className="row show-nav">
+                                    <div className="col-lg-8">
+                                        <div className="basic-infos">
+                                            <span>{series.network}</span>
+                                            <span className="separator">•</span>
+                                            <span>
+                                                {t("series.seasons", {count: seasonCount})}
+                                            </span>
                                         </div>
-                                        <Discussion series={this.state.series} />
+                                        <div className="overview">
+                                            {series.seriesDescription}
+                                        </div>
+                                        <div className="followers">
+                                            {t("index.followers", {count: series.followers})}
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-4">
+                                        <div className="container h-20">
+                                            <div
+                                                className="starrating risingstar d-flex justify-content-right flex-row-reverse">
+                                                <Rating
+                                                    initialRating={series.loggedInUserRating}
+                                                    emptySymbol={<span className="star-unchecked"/>}
+                                                    fullSymbol={<span className="star"/>}
+                                                    //fractions="2"
+                                                    onChange={this.onRatingChanged}/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="content" className="show-main alt">
+                                    <div className="content-container">
+                                        <div className="left">
+                                            <div className="w-100 no-padding no-margin">
+
+                                                {seasonList}
+
+                                            </div>
+                                            <Discussion series={this.state.series}/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        );
+            );
+        } else {
+            return <ErrorPage status={this.state.error_status} body={this.state.error_body}/>
+        }
     }
 }
 

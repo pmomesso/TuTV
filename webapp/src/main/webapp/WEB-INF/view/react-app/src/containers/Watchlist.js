@@ -140,7 +140,7 @@ class Watchlist extends Component {
                         <div id="home" className="h-100">
                             {
                                 (!watchlist.length) ?
-                                    <section id="new-shows" className="h-100">
+                                    <section id="new-shows" className="h-100 p-0">
                                         <div className="container h-100">
                                             <div className="row justify-content-center h-100">
                                                 <div className="col-lg-8 col-sm-12 align-self-center">

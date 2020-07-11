@@ -11,6 +11,7 @@ import ProfilePage from './ProfilePage';
 import Watchlist from './Watchlist';
 import Upcoming from './Upcoming';
 import Search from './Search';
+import ErrorPage from './ErrorPage';
 
 const DefaultContainer = () => {
     return (
@@ -27,6 +28,7 @@ const DefaultContainer = () => {
                   <Route path='/watchlist' component={Watchlist}/>
                   <Route path='/upcoming' component={Upcoming}/>
                   <Route path='/search' component={Search}/>
+                  <Route path='*' exact={true} render={() => (<ErrorPage status={"error.404status"} body={"error.404body"}/>)} />
               </div>
             </div>  
 
