@@ -23,8 +23,6 @@ public class TuTVController {
 
     @Autowired
     private ServletContext servletContext;
-    @Autowired
-    private UserService userService;
 
     @GET
     @Produces(MediaType.TEXT_HTML)
@@ -37,15 +35,4 @@ public class TuTVController {
         return ok(new FileInputStream(index)).build();
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/user")
-    public Response getLoggedInUser(){
-        Optional<User> optUser = userService.getLoggedUser();
-        if(!optUser.isPresent()) {
-            return status(Status.NOT_FOUND).build();
-        }
-        UserDTO userDTO = new UserDTO(optUser.get());
-        return ok(userDTO).build();
-    }
 }
