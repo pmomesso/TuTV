@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 
 import Navbar from '../components/Navbar'
 import Explore from './Explore';
@@ -21,14 +21,16 @@ const DefaultContainer = () => {
 
             <div className="page-center page-column ">
               <div className="page-center-inner">
-                  <Route exact path='/' component={Explore}/>
-                  <Route path='/series/:series_id' component={SeriesPage}/>
-                  <Route path='/profiles/:profile_id' component={ProfilePage}/>
-                  <Route path='/users' render={() => (<UsersPage source={"/users"}/>)}/>
-                  <Route path='/watchlist' component={Watchlist}/>
-                  <Route path='/upcoming' component={Upcoming}/>
-                  <Route path='/search' component={Search}/>
-                  <Route path='*' exact={true} render={() => (<ErrorPage status={"error.404status"} body={"error.404body"}/>)} />
+                  <Switch>
+                      <Route exact path='/' component={Explore}/>
+                      <Route path='/series/:series_id' component={SeriesPage}/>
+                      <Route path='/profiles/:profile_id' component={ProfilePage}/>
+                      <Route path='/users' render={() => (<UsersPage source={"/users"}/>)}/>
+                      <Route path='/watchlist' component={Watchlist}/>
+                      <Route path='/upcoming' component={Upcoming}/>
+                      <Route path='/search' component={Search}/>
+                      <Route path='*' render={() => (<ErrorPage status={"error.404status"} body={"error.404body"}/>)} />
+                  </Switch>
               </div>
             </div>  
 
