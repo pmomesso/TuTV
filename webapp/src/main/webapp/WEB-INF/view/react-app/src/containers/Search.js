@@ -118,7 +118,6 @@ class Search extends PureComponent {
         } else {
             Axios.post("/users/" + logged_user.id + "/lists/" + list.id + "/series", JSON.stringify({"seriesId": series.id}))
                 .then(res => {
-                    console.log(res.status);
                     if (res.status === 200) {
                         store.addNotification({
                             title:  t("lists.success"),

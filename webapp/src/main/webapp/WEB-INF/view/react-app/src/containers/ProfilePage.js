@@ -20,6 +20,7 @@ class ProfilePage extends PureComponent {
         user: null,
         avatar: null,
         recentlyWatched: null,
+        followingChanged: null,
         stats: null,
         lists: null,
         loading: true
@@ -51,6 +52,7 @@ class ProfilePage extends PureComponent {
                     user: userData.data,
                     avatar: avatarData.data.avatarBase64,
                     recentlyWatched: recentlyWatchedData.data,
+                    followingChanged: true,
                     stats: statsData.data.stats,
                     lists: listsData.data,
                     loading: false
@@ -79,6 +81,7 @@ class ProfilePage extends PureComponent {
                     user: userData.data,
                     avatar: avatarData.data.avatarBase64,
                     recentlyWatched: recentlyWatchedData.data,
+                    followingChanged: true,
                     loading: false
                 });
             }));
@@ -193,7 +196,8 @@ class ProfilePage extends PureComponent {
         Axios.get("/users/" + user_id + "/stats")
             .then(res => {
                 that.setState({
-                    stats: res.data.stats
+                    stats: res.data.stats,
+                    followingChanged: !this.state.followingChanged
                 });
 
                 if (that.state.stats.length !== 0) {
@@ -409,7 +413,7 @@ class ProfilePage extends PureComponent {
                                                 <h2 className="small">
                                                     <Trans i18nKey="profile.all" />
                                                 </h2>
-                                                <SeriesList isLists={false} user={user} currUser={currUser} key={"/users/" + user.id + "/following"} source={"/users/" + user.id + "/following"} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
+                                                <SeriesList isLists={false} user={user} currUser={currUser} key={this.state.followingChanged} source={"/users/" + user.id + "/following"} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
                                             </div>
                                         </div>
                                     </div>

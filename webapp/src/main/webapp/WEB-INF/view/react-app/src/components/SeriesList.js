@@ -53,7 +53,7 @@ class SeriesList extends Component {
         pagesize = (section_width - 24 - (section_width-24)*0.04)/poster_width;
       else
         pagesize = (section_width - section_width*0.04)/162;
-      console.log(pagesize);
+
       if (section === "#search") {
         if (height > 750)
           pagesize *= 3;
