@@ -90,7 +90,6 @@
     </filter>
     <filter-mapping>
         <filter-name>CacheControlFilter</filter-name>
-        <url-pattern>/</url-pattern>
         <url-pattern>*.jpg</url-pattern>
         <url-pattern>*.js</url-pattern>
         <url-pattern>*.png</url-pattern>
