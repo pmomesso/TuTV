@@ -145,6 +145,8 @@ i18n
             "lists.addedTo":                  " added to ",
             "lists.noName":                 "List name can't be empty",
             "lists.alreadyAdded":           " was already in ",
+            "lists.deleteFrom":             "Remove from list",
+            "lists.deletedFrom":            " removed from ",
 
             "upcoming.title":               "Upcoming",
             "upcoming.noshows":             "There are no upcoming shows!",
@@ -317,6 +319,8 @@ i18n
             "lists.addedTo":                  " agregada a ",
             "lists.noName":                 "El nombre de la lista no puede estar vacío",
             "lists.alreadyAdded":           " ya se encontraba en ",
+            "lists.deleteFrom":             "Eliminar de la lista",
+            "lists.deletedFrom":            " eliminada de ",
 
             "upcoming.title":               "Próximamente",
             "upcoming.noshows":             "¡No hay próximos episodios!",
@@ -341,7 +345,7 @@ i18n
             "users.next":                   "Siguiente",
             "users.banConfirmDialog":       "¿Está seguro de que desea bloquear a este usuario?",
 
-           " error.400status":              "400 Solicitud Incorrecta",
+            "error.400status":              "400 Solicitud Incorrecta",
             "error.401status":              "401 No Autorizado",
             "error.404status":              "404 No Encontrado",
             "error.500status":              "500 Error Interno de Servidor",

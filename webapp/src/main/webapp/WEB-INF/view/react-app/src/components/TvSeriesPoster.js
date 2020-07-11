@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { withTranslation } from 'react-i18next';
 import { Link, withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusCircle, faMinusCircle, faEllipsisH, faList } from '@fortawesome/free-solid-svg-icons';
+import {faPlusCircle, faMinusCircle, faEllipsisH, faList, faTrash} from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import Axios from 'axios';
 import { store } from 'react-notifications-component';
@@ -36,9 +36,9 @@ class TvSeriesPoster extends PureComponent {
 
         let promise;
         if (newValue) {
-            promise = Axios.post("/users/" + this.props.logged_user.id + "/following", JSON.stringify({ "seriesId": this.state.series.id }));
+            promise = Axios.post("/users/" + logged_user.id + "/following", JSON.stringify({ "seriesId": this.state.series.id }));
         } else {
-            promise = Axios.delete("/users/" + this.props.logged_user.id + "/following/" + this.state.series.id);
+            promise = Axios.delete("/users/" + logged_user.id + "/following/" + this.state.series.id);
         }
 
         promise
@@ -84,6 +84,36 @@ class TvSeriesPoster extends PureComponent {
             });
     };
 
+    onRemoveFromListClicked = () => {
+        const { t, logged_user, list } = this.props;
+
+        if (logged_user === null) {
+            this.props.history.push("/login" + this.props.location.pathname);
+            return;
+        }
+
+        Axios.delete("/users/" + logged_user.id + "/lists/" + list.id + "/series/" + this.state.series.id)
+            .then(res => {
+                if (this.props.onRemoveFromListClickedHandler !== undefined) {
+                    this.props.onRemoveFromListClickedHandler();
+                }
+
+                store.addNotification({
+                    title: t("lists.success"),
+                    message: this.state.series.name + t("lists.deletedFrom") + list.name,
+                    type: "success",
+                    insert: "top",
+                    container: "top-right",
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                        duration: 4000,
+                        onScreen: true
+                    }
+                });
+            })
+    };
+
     contextTrigger = null;
     toggleMenu = e => {
         if(this.contextTrigger) {
@@ -97,17 +127,6 @@ class TvSeriesPoster extends PureComponent {
         const { t, userLists } = this.props;
 
         const contextMenuId = "seriesContext_" + series.id + "_" + this.getRandomInt(0, 99999);
-
-        /*const userLists = [
-            {
-                "id": 1,
-                "name": "Primera lista"
-            },
-            {
-                "id": 2,
-                "name": "Otra cosa"
-            }
-        ];*/
 
         const userListsMenu = !userLists ? null : userLists.map(userList => {
             return (
@@ -164,6 +183,16 @@ class TvSeriesPoster extends PureComponent {
                                 </MenuItem>
                             </SubMenu>
                         </div>)
+                    }
+                    {
+                        this.props.isLists &&
+                        <MenuItem onClick={this.onRemoveFromListClicked}>
+                            <FontAwesomeIcon
+                                icon={faTrash}
+                                className="icon" />
+                            &nbsp;
+                            { t("lists.deleteFrom") }
+                        </MenuItem>
                     }
                 </ContextMenu>
             </li>

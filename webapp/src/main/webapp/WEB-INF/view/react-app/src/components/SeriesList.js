@@ -91,7 +91,11 @@ class SeriesList extends Component {
 
   componentDidMount = () => {
     this.setState({ source: this.props.source }, this.fetchData);
-  }
+  };
+
+  onRemoveFromListClickedHandler = () => {
+    this.setState({ source: this.props.source }, this.fetchData);
+  };
 
   render() {
 
@@ -113,7 +117,7 @@ class SeriesList extends Component {
 
     const showList = this.state.showList.map(series => {
       return(
-        <TvSeriesPoster key={ series.id } series={ series } onSeriesFollowClickedHandler={this.props.onSeriesFollowClickedHandler} userLists={userLists} addSeriesToListHandler={addSeriesToListHandler}/>
+        <TvSeriesPoster key={ series.id } series={ series } onSeriesFollowClickedHandler={this.props.onSeriesFollowClickedHandler} userLists={userLists} isLists={this.props.isLists} list={this.props.list} addSeriesToListHandler={addSeriesToListHandler} onRemoveFromListClickedHandler={this.onRemoveFromListClickedHandler}/>
       )
     });
     
