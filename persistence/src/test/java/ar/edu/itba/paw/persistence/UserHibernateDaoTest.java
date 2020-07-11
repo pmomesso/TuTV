@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @Transactional
-public class UserHibernateDaoTest {
+public class    UserHibernateDaoTest {
 
     /* Valores test serie */
     private static final int TVDB_ID = 2;

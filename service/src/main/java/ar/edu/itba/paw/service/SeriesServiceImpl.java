@@ -254,13 +254,11 @@ public class SeriesServiceImpl implements SeriesService {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
 
         SeriesReview review = seriesDao.getSeriesReviewById(commentPostId).orElseThrow(NotFoundException::new);
-        Object[] args = {review.getSeries().getName()};
-        String message = messageSource.getMessage("index.commentNotification", args, LocaleContextHolder.getLocale());
 
         SeriesReviewComment s = seriesDao.addCommentToPost(commentPostId, body, user.getId()).orElseThrow(NotFoundException::new);
         if (!user.equals(review.getUser())) {
             mailService.sendCommentResponseMail(s, baseUrl);
-            seriesDao.createNotification(review.getUser(), review.getSeries(), message);
+            seriesDao.createNotification(review.getUser(), review.getSeries(), "commentNotification");
         }
         return s;
     }
@@ -413,9 +411,7 @@ public class SeriesServiceImpl implements SeriesService {
             Series series = episode.getSeason().getSeries();
             for(User user : series.getUserFollowers()) {
                 /* Creo una notificacion y la persisto*/
-                Object[] args = {series.getName()};
-                String message = messageSource.getMessage("index.releaseNotification", args, LocaleContextHolder.getLocale());
-                seriesDao.createNotification(user, series, message);
+                seriesDao.createNotification(user, series, "episodeNotification");
             }
         }
     }

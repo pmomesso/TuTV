@@ -7,6 +7,7 @@ public class NotificationDTO {
     private Long id;
     private Boolean viewedByUser;
     private SeriesDTO series;
+    private String type;
 
     public NotificationDTO() {
         //Empty constructor for JAX-RS
@@ -18,6 +19,7 @@ public class NotificationDTO {
         this.series.setId(notification.getResource().getId());
         this.series.setName(notification.getResource().getName());
         this.viewedByUser = notification.getViewed();
+        this.type = notification.getMessage();
     }
 
     public Long getId() {
@@ -44,4 +46,11 @@ public class NotificationDTO {
         this.series = series;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

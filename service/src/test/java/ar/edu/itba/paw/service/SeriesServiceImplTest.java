@@ -243,7 +243,6 @@ public class SeriesServiceImplTest {
         Mockito.when(mockUserService.getLoggedUser()).thenReturn(Optional.of(getMockUser()));
         Mockito.when(mockDao.getSeriesReviewById(Mockito.eq(postId))).thenReturn(Optional.of(review));
         Mockito.when(mockDao.addCommentToPost(Mockito.eq(postId),Mockito.eq(body),Mockito.eq(USER_ID))).thenReturn(Optional.of(new SeriesReviewComment()));
-        Mockito.when(mockMessageSource.getMessage(Mockito.anyString(),Mockito.any(),Mockito.any())).thenReturn("message");
         //Ejercitar
         try {
             seriesService.addCommentToPost(postId,body,"baseUrl");
