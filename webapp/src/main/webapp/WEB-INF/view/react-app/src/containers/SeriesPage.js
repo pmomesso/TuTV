@@ -13,6 +13,7 @@ import 'react-activity/dist/react-activity.css';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import Discussion from '../components/Discussion';
+import { confirmAlert } from 'react-confirm-alert';
 
 class SeriesPage extends Component {
     state = {
@@ -83,12 +84,25 @@ class SeriesPage extends Component {
                 const { series } = this.state;
 
                 let asked = false;
+                let exit = false;
                 for(let i = 0; i < season_index; i++) {
                     if(!series.seasons[i].viewedByUser) {
                         if(!asked) {
-                            if(!window.confirm(t("series.viewPrevious")))
-                                return;
-                            asked = true;
+                            confirmAlert({
+                                title: t("series.deleteConfirmTitle"),
+                                message:t("series.viewPrevious"),
+                                buttons: [
+                                    {
+                                        label: t("series.yes"),
+                                        onClick: () => {asked = true;}
+                                    },
+                                    {
+                                        label: t("series.no"),
+                                        onClick: () => {exit = true;}
+                                    }
+                                ]
+                            });
+                            if (exit) return;
                         }
 
                         this.onSeasonWatchedClicked(null, i, true);
@@ -98,9 +112,21 @@ class SeriesPage extends Component {
                 for(let j = 0; j < episode_index; j++) {
                     if(!series.seasons[season_index].episodes[j].viewedByUser) {
                         if(!asked) {
-                            if(!window.confirm(t("series.viewPrevious")))
-                                return;
-                            asked = true;
+                            confirmAlert({
+                                title: t("series.deleteConfirmTitle"),
+                                message:t("series.viewPrevious"),
+                                buttons: [
+                                    {
+                                        label: t("series.yes"),
+                                        onClick: () => {asked = true;}
+                                    },
+                                    {
+                                        label: t("series.no"),
+                                        onClick: () => {exit = true;}
+                                    }
+                                ]
+                            });
+                            if (exit) return;
                         }
 
                         this.onEpisodeWatchedClickedHandler(event, season_index, j, true);
@@ -166,12 +192,25 @@ class SeriesPage extends Component {
                 const { series } = this.state;
 
                 let asked = false;
+                let exit = false;
                 for(let i = 0; i < season_index; i++) {
                     if(!series.seasons[i].viewedByUser) {
                         if(!asked) {
-                            if(!window.confirm(t("series.viewPrevious")))
-                                return;
-                            asked = true;
+                            confirmAlert({
+                                title: t("series.deleteConfirmTitle"),
+                                message:t("series.viewPrevious"),
+                                buttons: [
+                                    {
+                                        label: t("series.yes"),
+                                        onClick: () => {asked = true;}
+                                    },
+                                    {
+                                        label: t("series.no"),
+                                        onClick: () => {exit = true;}
+                                    }
+                                ]
+                            });
+                            if (exit) return;
                         }
 
                         this.onSeasonWatchedClicked(null, i, true);
