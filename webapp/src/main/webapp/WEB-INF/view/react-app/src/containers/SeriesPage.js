@@ -45,6 +45,8 @@ class SeriesPage extends Component {
 
         let series = this.state.series;
 
+        if (!series.loggedInUserFollows) this.onSeriesFollowClicked();
+
         let newValue = !this.state.series.seasons[season_index].episodes[episode_index].viewedByUser;
 
         let data = { "viewedByUser": newValue };
@@ -119,6 +121,8 @@ class SeriesPage extends Component {
             this.props.history.push("/login" + this.props.location.pathname);
             return;
         }
+        
+        if (!this.state.series.loggedInUserFollows) this.onSeriesFollowClicked();
 
         let newValue;// = true;
         
