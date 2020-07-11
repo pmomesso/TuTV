@@ -19,7 +19,7 @@ import static javax.ws.rs.core.Response.*;
 
 @Path("/")
 @Component
-public class TuTVController {
+public class TuTVControllerJersey {
 
     @Autowired
     private ServletContext servletContext;

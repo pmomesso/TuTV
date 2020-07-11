@@ -22,7 +22,7 @@ import static javax.ws.rs.core.Response.status;
 
 @Path("api/genres")
 @Component
-public class GenresController {
+public class GenresControllerJersey {
 
     @Autowired
     private UserService userService;

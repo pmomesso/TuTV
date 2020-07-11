@@ -20,7 +20,7 @@ import static javax.ws.rs.core.Response.ok;
 
 @Path("api/networks")
 @Component
-public class NetworksController {
+public class NetworksControllerJersey {
 
     @Autowired
     private SeriesService seriesService;

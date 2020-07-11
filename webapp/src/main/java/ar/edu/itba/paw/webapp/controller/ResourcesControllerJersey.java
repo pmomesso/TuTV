@@ -17,7 +17,7 @@ import static javax.ws.rs.core.Response.*;
 
 @Path("static")
 @Component
-public class ResourcesController {
+public class ResourcesControllerJersey {
 
     @Autowired
     private ServletContext servletContext;

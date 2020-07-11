@@ -18,7 +18,7 @@ import static javax.ws.rs.core.Response.status;
 
 @Component
 @Path("/api/user")
-public class LoggedUserController {
+public class LoggedUserControllerJersey {
 
     @Autowired
     private UserService userService;
