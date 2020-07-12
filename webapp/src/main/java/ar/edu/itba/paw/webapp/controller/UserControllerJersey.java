@@ -11,6 +11,8 @@ import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import ar.edu.itba.paw.webapp.dtos.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintViolation;
@@ -39,6 +41,8 @@ public class UserControllerJersey {
     private SeriesService seriesService;
     @Autowired
     private Validator validator;
+    @Autowired
+    private MessageSource messageSource;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -410,7 +414,21 @@ public class UserControllerJersey {
     public Response getUserStats(@PathParam("userId") Long userId) throws UnauthorizedException {
         Optional<User> optUser = userService.getLoggedUser();
         if(!optUser.isPresent() || optUser.get().getId() != userId) throw new UnauthorizedException();
-        return ok(new GenresStatsDTO(userService.getGenresStats())).build();
+        GenresStatsDTO statsDTO = new GenresStatsDTO();
+        statsDTO.setStats(new ArrayList<>());
+        Map<Genre, Long> stats = userService.getGenresStats();
+        stats.keySet().stream()
+                .forEach(g -> {
+                    GenreDTO genreDTO = new GenreDTO(g);
+                    genreDTO.setName(messageSource.getMessage("genres." + g.getI18Key(), null, LocaleContextHolder.getLocale()));
+
+                    GenreStatsDTO genreStatsDTO = new GenreStatsDTO();
+                    genreStatsDTO.setGenre(genreDTO);
+                    genreStatsDTO.setStat(stats.get(g));
+
+                    statsDTO.getStats().add(genreStatsDTO);
+                });
+        return ok(statsDTO).build();
     }
 
     @GET

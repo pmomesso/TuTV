@@ -117,7 +117,6 @@ public class UserServiceImpl implements UserService {
     public Map<Genre, Long> getGenresStats() throws UnauthorizedException {
         Optional<User> loggedUser = getLoggedUser();
         return userDao.getGenreStats(loggedUser.orElseThrow(UnauthorizedException::new).getId());
-
     }
 
     @Override
