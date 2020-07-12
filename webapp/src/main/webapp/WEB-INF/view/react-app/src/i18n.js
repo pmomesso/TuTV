@@ -180,7 +180,7 @@ i18n
             "error.401body":                "You are not authorized to send this request.",
             "error.403body":                "You are not authorized to access this page.",
             "error.404body":                "The page you were looking for does not exist.",
-            "error.500body":                "A server error has occured when processing the request.",
+            "error.500body":                "A server error has occurred when processing the request.",
             "error.goHome":                 "Take me Home"
         }
       },
