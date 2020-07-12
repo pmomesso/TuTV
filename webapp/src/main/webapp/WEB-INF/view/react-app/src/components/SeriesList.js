@@ -40,20 +40,24 @@ class SeriesList extends Component {
       var width = window.screen.width;
       var height = window.screen.height;
 
-      var section_width = $(section + " section")[0].offsetWidth;
-      var poster_width = 0;
-      if (section === "#profile") {
-        poster_width = 148
+      var pagesize = 1;
+      if (this.props.section === "#profile") {
+        if (width > 375) pagesize = 2;
+        if (width > 528) pagesize = 3;
+        if (width > 680) pagesize = 4;
+        if (width > 773) pagesize = 3;
+        if (width > 920) pagesize = 4;
+        if (width > 1075) pagesize = 5;
+        if (width > 1230) pagesize = 6;
       } else {
-        poster_width = 187
+        var section_width = $(section + " section")[0].offsetWidth;
+        var poster_width = 187;
+
+        if (width > 768)
+          pagesize = (section_width - 24 - (section_width-24)*0.04)/poster_width;
+        else
+          pagesize = (section_width - section_width*0.04)/162;
       }
-
-      var pagesize;
-      if (width > 768)
-        pagesize = (section_width - 24 - (section_width-24)*0.04)/poster_width;
-      else
-        pagesize = (section_width - section_width*0.04)/162;
-
       if (section === "#search") {
         if (height > 750)
           pagesize *= 3;
