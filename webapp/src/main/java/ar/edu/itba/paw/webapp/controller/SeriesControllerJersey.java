@@ -276,15 +276,20 @@ public class SeriesControllerJersey {
     @Path("/{seriesId}/seasons/{seasonNumber}/viewed")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response viewSeason(@PathParam("seriesId") Long seriesId, @PathParam("seasonNumber") Integer seasonNumber,
-                               @Valid ViewedResourceDTO viewedResourceDTO) throws UnauthorizedException, NotFoundException, BadRequestException {
+                               @Valid ViewedResourceDTO viewedResourceDTO, @QueryParam("markPrevious") Boolean markPrevious) throws UnauthorizedException, NotFoundException, BadRequestException {
 
         Set<ConstraintViolation<ViewedResourceDTO>> violations = validator.validate(viewedResourceDTO);
         if(!violations.isEmpty()) throw new BadRequestException();
 
         if(seriesId < 0 || seasonNumber < 0) throw new NotFoundException();
+        if(markPrevious != null && viewedResourceDTO.getViewedByUser()) throw new BadRequestException();
 
         if(viewedResourceDTO.getViewedByUser()){
-            seriesService.setViewedSeason(seriesId,seasonNumber);
+            if(markPrevious != null && markPrevious) {
+                seriesService.viewUntilSeason(seriesId, seasonNumber);
+            } else {
+                seriesService.setViewedSeason(seriesId,seasonNumber);
+            }
         }
         else{
             seriesService.unviewSeason(seriesId,seasonNumber);
@@ -329,12 +334,18 @@ public class SeriesControllerJersey {
     @Path("/{seriesId}/seasons/{seasonNumber}/episodes/{episodeNumber}/viewed")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response viewEpisode(@PathParam("seriesId") Long seriesId, @PathParam("seasonNumber") Integer seasonNumber, @PathParam("episodeNumber") Integer episodeNumber,
-                                @Valid ViewedResourceDTO viewedResourceDTO) throws NotFoundException, UnauthorizedException, BadRequestException {
+                                @Valid ViewedResourceDTO viewedResourceDTO, @QueryParam("markPrevious") Boolean markPrevious) throws NotFoundException, UnauthorizedException, BadRequestException {
 
         Set<ConstraintViolation<ViewedResourceDTO>> violations = validator.validate(viewedResourceDTO);
         if(!violations.isEmpty()) throw new BadRequestException();
+        if(markPrevious != null && viewedResourceDTO.getViewedByUser()) throw new BadRequestException();
+
         if(viewedResourceDTO.getViewedByUser()) {
-            seriesService.setViewedEpisode(seriesId,seasonNumber,episodeNumber);
+            if(markPrevious != null && markPrevious) {
+                seriesService.viewUntilEpisode(seriesId, seasonNumber, episodeNumber);
+            } else {
+                seriesService.setViewedEpisode(seriesId,seasonNumber,episodeNumber);
+            }
         } else {
             seriesService.unviewEpisode(seriesId,seasonNumber,episodeNumber);
         }

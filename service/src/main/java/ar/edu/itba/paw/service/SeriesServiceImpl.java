@@ -468,4 +468,17 @@ public class SeriesServiceImpl implements SeriesService {
         return seriesDao.getSeriesReviewList(seriesId).orElseThrow(NotFoundException::new);
     }
 
+    @Override
+    @Transactional
+    public void viewUntilEpisode(Long seriesId, Integer seasonNumber, Integer episodeNumber) throws NotFoundException, UnauthorizedException {
+        int result = seriesDao.viewUntilEpisode(seriesId, seasonNumber, episodeNumber, userService.getLoggedUser().orElseThrow(UnauthorizedException::new));
+        if(result == 0) throw new NotFoundException();
+    }
+
+    @Override
+    public void viewUntilSeason(Long seriesId, Integer seasonNumber) throws UnauthorizedException, NotFoundException {
+        int result = seriesDao.viewUntilSeason(seriesId, seasonNumber, userService.getLoggedUser().orElseThrow(UnauthorizedException::new));
+        if(result == 0) throw new NotFoundException();
+    }
+
 }

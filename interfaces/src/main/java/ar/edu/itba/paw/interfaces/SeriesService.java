@@ -91,4 +91,8 @@ public interface SeriesService {
     SeriesList removeSeriesFromList(Long listId, Long seriesId) throws UnauthorizedException, NotFoundException;
 
     List<SeriesReview> getSeriesReviewList(Long seriesId) throws NotFoundException;
+
+    void viewUntilEpisode(Long seriesId, Integer seasonNumber, Integer episodeNumber) throws NotFoundException, UnauthorizedException;
+
+    void viewUntilSeason(Long seriesId, Integer seasonNumber) throws UnauthorizedException, NotFoundException;
 }

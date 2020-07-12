@@ -103,4 +103,8 @@ public interface SeriesDao {
     Optional<List<Series>> getSeriesInList(Long listId, int page, int pageSize);
 
     Optional<List<SeriesReview>> getSeriesReviewList(Long seriesId);
+
+    int viewUntilEpisode(Long seriesId, Integer seasonNumber, Integer episodeNumber, User user);
+
+    int viewUntilSeason(Long seriesId, Integer seasonNumber, User user);
 }

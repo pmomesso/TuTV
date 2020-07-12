@@ -688,4 +688,52 @@ public class SeriesHibernateDao implements SeriesDao {
         return resultList;
     }
 
+    @Override
+    public int viewUntilEpisode(Long seriesId, Integer seasonNumber, Integer episodeNumber, User user) {
+        TypedQuery<Long> countQuery = em.createQuery("select count(*) from Series as s inner join s.seasons as sea inner join sea.episodes as ep " +
+                "where s.id = :seriesId and sea.seasonNumber = :seasonNumber and ep.numEpisode = :episodeNumber", Long.class)
+                .setParameter("seriesId", seriesId)
+                .setParameter("seasonNumber", seasonNumber)
+                .setParameter("episodeNumber", episodeNumber);
+
+        Long count = countQuery.getSingleResult();
+        if(count == 0) {
+            return 0;
+        }
+
+        Series s = em.find(Series.class, seriesId);
+        s.getSeasons().stream().forEach(season -> {
+            if(season.getSeasonNumber() <= seasonNumber) {
+                season.getEpisodes().stream().forEach(ep -> {
+                    if(season.getSeasonNumber() < seasonNumber || ep.getNumEpisode() <= episodeNumber) {
+                        ep.addViewer(user);
+                    }
+                });
+            }
+        });
+        return 1;
+    }
+
+    @Override
+    public int viewUntilSeason(Long seriesId, Integer seasonNumber, User user) {
+        TypedQuery<Long> countQuery = em.createQuery("select count(*) from Series as s inner join s.seasons as sea " +
+                "where s.id = :seriesId and sea.seasonNumber = :seasonNumber", Long.class)
+                .setParameter("seriesId", seriesId)
+                .setParameter("seasonNumber", seasonNumber);
+
+        Long count = countQuery.getSingleResult();
+        if(count == 0) {
+            return 0;
+        }
+
+        Series s = em.find(Series.class, seriesId);
+        s.getSeasons().stream().forEach(season -> {
+            if(season.getSeasonNumber() <= seasonNumber) {
+                season.getEpisodes().stream().forEach(ep -> ep.addViewer(user));
+            }
+        });
+        return 1;
+    }
+
+
 }
