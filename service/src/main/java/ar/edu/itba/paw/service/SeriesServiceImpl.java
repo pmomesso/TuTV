@@ -10,6 +10,7 @@ import ar.edu.itba.paw.model.exceptions.NotFoundException;
 import ar.edu.itba.paw.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -253,11 +254,13 @@ public class SeriesServiceImpl implements SeriesService {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
 
         SeriesReview review = seriesDao.getSeriesReviewById(commentPostId).orElseThrow(NotFoundException::new);
+        Object[] args = {review.getSeries().getName()};
+        String message = messageSource.getMessage("index.commentNotification", args, LocaleContextHolder.getLocale());
 
         SeriesReviewComment s = seriesDao.addCommentToPost(commentPostId, body, user.getId()).orElseThrow(NotFoundException::new);
         if (!user.equals(review.getUser())) {
             mailService.sendCommentResponseMail(s, baseUrl);
-            seriesDao.createNotification(review.getUser(), review.getSeries(), "commentNotification");
+            seriesDao.createNotification(review.getUser(), review.getSeries(), message);
         }
         return s;
     }
@@ -410,7 +413,9 @@ public class SeriesServiceImpl implements SeriesService {
             Series series = episode.getSeason().getSeries();
             for(User user : series.getUserFollowers()) {
                 /* Creo una notificacion y la persisto*/
-                seriesDao.createNotification(user, series, "episodeNotification");
+                Object[] args = {series.getName()};
+                String message = messageSource.getMessage("index.releaseNotification", args, LocaleContextHolder.getLocale());
+                seriesDao.createNotification(user, series, message);
             }
         }
     }

@@ -107,8 +107,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UsersList getAllUsersExceptLoggedOne(int page, int pageSize) throws UnauthorizedException {
-        Optional<User> loggedUser = getLoggedUser();
-        return userDao.getAllUsers(page, pageSize, loggedUser.orElseThrow(UnauthorizedException::new).getId());
+        User loggedUser = getLoggedUser().orElseThrow(UnauthorizedException::new);
+        if(!loggedUser.getIsAdmin() || loggedUser.getIsBanned()) throw new UnauthorizedException();
+        return userDao.getAllUsers(page, pageSize, loggedUser.getId());
     }
 
     @Override
