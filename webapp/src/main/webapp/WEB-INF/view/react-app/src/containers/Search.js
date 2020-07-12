@@ -159,11 +159,14 @@ class Search extends PureComponent {
     }
 
     composeSearchUrl = () => {
-        const { searchGenre, searchName, searchNetwork } = this.state;
+        const { searchGenre, searchNetwork } = this.state;
+
+        const { search_name } = this.props;
+
         let queryParams = "";
 
-        if(searchName)
-            queryParams += this.encodeQueryParameter("name", searchName);
+        if(search_name)
+            queryParams += this.encodeQueryParameter("name", search_name);
 
         if(searchGenre && searchGenre !== "0")
             queryParams += this.encodeQueryParameter("genre", searchGenre);
@@ -182,6 +185,10 @@ class Search extends PureComponent {
         this.setState({
             [name]: value
         });
+    }
+
+    handleSearchChange = (event) => {
+        this.props.updateSearchName(event.target.value);
     }
 
     render() {
@@ -209,7 +216,7 @@ class Search extends PureComponent {
                                 <div className="container">
                                     <div className="row">
                                         <div className="col sidebar-box">
-                                            <input type="text" className="styled-input styled-select" name="searchName" placeholder={ t("search.search") } value={ this.state.seachName } onChange={this.handleInputChange}/>
+                                            <input type="text" className="styled-input styled-select" name="searchName" placeholder={ t("search.search") } value={ this.props.search_name } onChange={this.handleSearchChange}/>
                                         </div>
                                         <div className="col sidebar-box">
                                             <select name="searchGenre" className="styled-select" value={ this.state.searchGenre } onChange={this.handleInputChange}>
@@ -235,11 +242,18 @@ class Search extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
-        logged_user: state.auth.user
+        logged_user: state.auth.user,
+        search_name: state.search.searchName
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateSearchName: searchName => { dispatch({ type: "UPDATE_SEARCH", payload: { "searchName": searchName} }) }
     }
 };
 
 export default compose(
-    connect(mapStateToProps),
+    connect(mapStateToProps, mapDispatchToProps),
     withTranslation()
 )(withRouter(Search));
