@@ -180,7 +180,7 @@ public class SeriesControllerJersey {
         } else {
             seriesReview = seriesService.unlikePost(seriesReviewId);
         }
-        return accepted(new NumLikesDTO(seriesReview.getNumLikes(), seriesReviewStateDTO.getLoggedInUserLikes())).build();
+        return ok(new NumLikesDTO(seriesReview.getNumLikes(), seriesReviewStateDTO.getLoggedInUserLikes())).build();
     }
 
     @PUT
@@ -209,7 +209,7 @@ public class SeriesControllerJersey {
         } else {
             seriesReviewComment = seriesService.unlikeComment(commentId);
         }
-        return accepted(new NumLikesDTO(seriesReviewComment.getNumLikes(), seriesReviewCommentStateDTO.getLoggedInUserLikes())).build();
+        return ok(new NumLikesDTO(seriesReviewComment.getNumLikes(), seriesReviewCommentStateDTO.getLoggedInUserLikes())).build();
     }
 
     @DELETE
@@ -247,7 +247,7 @@ public class SeriesControllerJersey {
         if(!violations.isEmpty()) throw new BadRequestException();
 
         Series series = seriesService.rateSeries(seriesId, serieStateDTO.getLoggedInUserRating());
-        return accepted(new RatingDTO(series.getUserRating(), serieStateDTO.getLoggedInUserRating())).build();
+        return ok(new RatingDTO(series.getUserRating(), serieStateDTO.getLoggedInUserRating())).build();
     }
 
     @GET
@@ -290,7 +290,7 @@ public class SeriesControllerJersey {
             seriesService.unviewSeason(seriesId,seasonNumber);
         }
 
-        return accepted(viewedResourceDTO).build();
+        return ok(viewedResourceDTO).build();
     }
 
     @GET
@@ -338,7 +338,7 @@ public class SeriesControllerJersey {
         } else {
             seriesService.unviewEpisode(seriesId,seasonNumber,episodeNumber);
         }
-        return accepted(viewedResourceDTO).build();
+        return ok(viewedResourceDTO).build();
     }
 
 }

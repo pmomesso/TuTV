@@ -58,7 +58,7 @@ public class UserControllerJersey {
         Either<User, Collection<Errors>> u;
         u = userService.createUser(register.getUsername(),register.getPassword(),register.getMail(),false,baseUri.toString());
         if(u.isValuePresent()){
-            return accepted().entity(new UserDTO(u.getValue())).build();
+            return ok().entity(new UserDTO(u.getValue())).build();
         }
         else{
             ErrorDTO[] errors = new ErrorDTO[u.getAlternative().size()];
@@ -181,7 +181,7 @@ public class UserControllerJersey {
                 break;
             }
         }
-        return accepted(new NotificationDTO(notification)).build();
+        return ok(new NotificationDTO(notification)).build();
     }
 
     @DELETE
@@ -395,7 +395,7 @@ public class UserControllerJersey {
         User loggedUser = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
         if (loggedUser.getId() != userId) throw new UnauthorizedException();
         userService.updateLoggedUserName(usernameEditDTO.getUserName());
-        return accepted().entity(new UserDTO(userService.findById(userId).get())).build();
+        return ok().entity(new UserDTO(userService.findById(userId).get())).build();
     }
 
     @PUT
@@ -415,7 +415,7 @@ public class UserControllerJersey {
         } else {
             userService.unbanUser(userId);
         }
-        return accepted().entity(new UserDTO(userService.findById(userId).get())).build();
+        return ok().entity(new UserDTO(userService.findById(userId).get())).build();
     }
 
     @GET
