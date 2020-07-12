@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, Link, withRouter } from 'react-router-dom';
+import { NavLink, Link, withRouter, matchPath, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
@@ -37,9 +37,9 @@ const customStyles = {
 
 const Navbar = (props) => {
     const { t } = useTranslation();
+    let location = useLocation();
 
     const [modalIsOpen,setIsOpen] = React.useState(false);
-    const [searchText,setSearchText] = React.useState("");
 
     function openModal() {
         setIsOpen(true);
@@ -57,14 +57,20 @@ const Navbar = (props) => {
     }
 
     function searchKeyPress(event) {
-        if(event.key === 'Enter'){
-            //props.history.push('/search', { searchText: searchText });
-            //setSearchText("");
+        if(event.key === 'Enter') {
+            const searchPageMatch = matchPath(location.pathname, {
+                path: '/search',
+                exact: true,
+                strict: false
+            });
+
+            if(!searchPageMatch)
+                props.history.push('/search');
         }
     }
 
     function handleSearchChange(event) {
-        setSearchText(event.target.value);
+        props.updateSearchName(event.target.value);
     }
 
     return (
@@ -94,7 +100,7 @@ const Navbar = (props) => {
                 </a>
                 <div id="global-search" className="navbar-form form-search">
                     <div className="form-group">
-                        <input type="text" id="global-search-input" value={searchText} onChange={handleSearchChange} name="name" className="show-search" placeholder={ t("search.search") } onKeyPress={searchKeyPress}/>
+                        <input type="text" id="global-search-input" value={props.search_name} onChange={handleSearchChange} name="name" className="show-search" placeholder={ t("search.search") } onKeyPress={searchKeyPress}/>
                     </div>
                     <div className="form-group advanced-search">
                         <Link id="advancedSearchLink" to="/search">
@@ -213,10 +219,17 @@ const Navbar = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        logged_user: state.auth.user
+        logged_user: state.auth.user,
+        search_name: state.search.searchName
     }
 }
 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateSearchName: searchName => { dispatch({ type: "UPDATE_SEARCH", payload: { "searchName": searchName} }) }
+    }
+};
+
 export default compose(
-    connect(mapStateToProps),
+    connect(mapStateToProps, mapDispatchToProps),
 )(withRouter(Navbar));
