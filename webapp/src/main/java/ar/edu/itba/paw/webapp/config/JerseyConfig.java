@@ -10,7 +10,7 @@ public class JerseyConfig extends ResourceConfig {
     public JerseyConfig() {
         register(ApiExceptionMapper.class);
         register(NotFoundExceptionMapper.class);
-        register(AccessDeniedExceptionMapper.class)
+        register(AccessDeniedExceptionMapper.class);
     }
 
 }
