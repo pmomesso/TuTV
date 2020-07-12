@@ -146,7 +146,17 @@ public class UserControllerJersey {
             throw new UnauthorizedException();
         }
         List<NotificationDTO> notifications = loggedInUser.get().getNotifications().stream()
-                .map(NotificationDTO::new).collect(Collectors.toList());
+                .map(n -> {
+                    NotificationDTO notificationDTO = new NotificationDTO(n);
+
+                    Object[] args = {n.getResource().getName()};
+                    String code = (n.getMessage().contains("episode") || n.getMessage().contains("episodio")) ? "index.releaseNotification" : "index.commentNotification";
+                    String message = messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
+
+                    notificationDTO.setMessage(message);
+
+                    return notificationDTO;
+                }).collect(Collectors.toList());
         return ok(new GenericEntity<List<NotificationDTO>>(notifications) {}).build();
     }
 
