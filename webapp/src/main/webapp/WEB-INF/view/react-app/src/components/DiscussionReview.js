@@ -70,10 +70,6 @@ class DiscussionReview extends Component {
         });
     }
 
-    toggleUserBan = () => {
-
-    }
-
     toggleSpoilerVisibility = () => {
         this.setState({
             revealSpoilers: !this.state.revealSpoilers
@@ -109,12 +105,12 @@ class DiscussionReview extends Component {
     }
 
     render() {
-        const { t, logged_user, series, deleteReview } = this.props;
+        const { t, logged_user, series, deleteReview, toggleUserBanned } = this.props;
 
         const { seriesReview, revealSpoilers } = this.state;
 
         let replies = seriesReview.seriesReviewComments.map((comment, id) => {
-            return <DiscussionReviewComment key={comment.id} deleteComment={this.deleteComment} comment={comment} series={series} seriesReview={seriesReview} />
+            return <DiscussionReviewComment key={comment.id} toggleUserBanned={toggleUserBanned} deleteComment={this.deleteComment} comment={comment} series={series} seriesReview={seriesReview} />
         });
 
         return (
@@ -133,12 +129,12 @@ class DiscussionReview extends Component {
 
                                 { ( logged_user && logged_user.admin && logged_user.id !== seriesReview.user.id ) &&
                                     (
-                                        ( seriesReview.user.isBanned ) ?
-                                            (<button className="remove" onClick={this.toggleUserBan}>
+                                        ( seriesReview.user.banned ) ?
+                                            (<button className="remove" onClick={() => toggleUserBanned(seriesReview.user)}>
                                                 <img src={require('../img/unban.png')} title={t("series.unban")} alt={t("series.unban")}/>
                                             </button>)
                                             :
-                                            (<button className="heart post-liked" onClick={this.toggleUserBan}>
+                                            (<button className="heart post-liked" onClick={() => toggleUserBanned(seriesReview.user)}>
                                                 <FontAwesomeIcon icon={ faBan }/>
                                             </button>)
                                     )

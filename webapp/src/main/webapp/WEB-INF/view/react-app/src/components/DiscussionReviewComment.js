@@ -43,8 +43,7 @@ class DiscussionReviewComment extends Component {
     }
 
     render() {
-        const { t, logged_user, deleteComment } = this.props;
-
+        const { t, logged_user, deleteComment, toggleUserBanned } = this.props;
         const { comment } = this.state;
 
         return (
@@ -61,12 +60,12 @@ class DiscussionReviewComment extends Component {
 
                         { ( logged_user && logged_user.admin && logged_user.id !== comment.user.id ) &&
                             (
-                                ( comment.user.isBanned ) ?
-                                    (<button className="remove" onClick={this.toggleUserBan}>
+                                ( comment.user.banned ) ?
+                                    (<button className="remove" onClick={() => toggleUserBanned(comment.user)}>
                                         <img src={require('../img/unban.png')} title={t("series.unban")} alt={t("series.unban")}/>
                                     </button>)
                                     :
-                                    (<button className="heart post-liked" onClick={this.toggleUserBan}>
+                                    (<button className="heart post-liked" onClick={() => toggleUserBanned(comment.user)}>
                                             <FontAwesomeIcon icon={ faBan }/>
                                     </button>)
                             )

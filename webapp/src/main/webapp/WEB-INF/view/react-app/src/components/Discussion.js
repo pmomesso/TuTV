@@ -12,16 +12,70 @@ import { confirmAlert } from 'react-confirm-alert';
 class Discussion extends Component {
     state = {
         loading: true,
-        seriesReviews: null
+        seriesReviews: null,
+        updateCount: 0
     }
 
     componentDidMount = () => {
+        this.fetchData();
+    };
+
+    fetchData = () => {
         Axios.get("/series/" + this.props.series.id + "/reviews")
             .then(res => {
                 this.setState({
                     loading: false,
-                    seriesReviews: res.data
+                    seriesReviews: res.data,
+                    updateCount: this.state.updateCount + 1
                 });
+            });
+    }
+
+    toggleUserBanned = (user) => {
+        const newVal = !user.banned;
+
+        //const { seriesReviews } = this.state;
+
+        Axios.put("/users/" + user.id + "/banned", {"banned": newVal})
+            .then(() => {
+                this.fetchData();
+
+                /*let newSeriesReviews = [];
+
+                for(let i = 0; i < seriesReviews.length; i++) {
+                    let comments = [];
+                    for(let j = 0; j < seriesReviews[i].seriesReviewComments.length; j++) {
+                        let comment = { ...seriesReviews[i].seriesReviewComments[j] };
+                        if(comment.user.id === user.id) {
+                            comment.user.banned = newVal;
+                            comments.body = "jajas";
+                        }
+
+                        comments.push(comment);
+                    }
+
+                    let review = {
+                        ...seriesReviews[i],
+                        seriesReviewComments: []
+                    };
+
+                    console.log(review);
+
+                    if(review.user.id === user.id)
+                        review.user.banned = newVal;
+
+                    newSeriesReviews.push(review);
+                }
+
+                this.setState({
+                    ...this.state,
+                    seriesReviews: newSeriesReviews
+                });*/
+
+            })
+            .catch((err) => {
+                /* TODO SI CADUCO LA SESION? */
+                //alert("Error: " + err.response.status);
             });
     };
 
@@ -90,7 +144,7 @@ class Discussion extends Component {
         const { t, logged_user, series } = this.props;
 
         const reviews = this.state.seriesReviews.map(seriesReview => {
-            return <DiscussionReview key={seriesReview.id} deleteReview={this.deleteComment} seriesReview={seriesReview} series={series} />
+            return <DiscussionReview key={seriesReview.id + "_" + this.state.updateCount} toggleUserBanned={this.toggleUserBanned} deleteReview={this.deleteComment} seriesReview={seriesReview} series={series} />
         });
 
         return (

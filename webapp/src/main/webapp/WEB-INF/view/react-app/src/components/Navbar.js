@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { NavLink, Link, withRouter, matchPath, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
@@ -13,6 +13,8 @@ import { faUsers, faBars, faBell, faTasks } from '@fortawesome/free-solid-svg-ic
 import { faCompass, faCalendarCheck, faUser } from '@fortawesome/free-regular-svg-icons'
 import NotificationItem from "./NotificationItem";
 import { compose } from 'recompose';
+
+import Axios from 'axios';
 
 const customStyles = {
     content : {
@@ -40,6 +42,29 @@ const Navbar = (props) => {
     let location = useLocation();
 
     const [modalIsOpen,setIsOpen] = React.useState(false);
+    const [notifications,setNotifications] = React.useState([]);
+
+    const getNotifications = useCallback(() => {
+        Axios.get("/users/" + props.logged_user.id + "/notifications")
+        .then((res) => {
+            setNotifications(res.data);
+        });
+    }, [props.logged_user]);
+
+    function updateNotificationsAndClosePanel() {
+        getNotifications();
+        setIsOpen(false);
+    }
+
+    useEffect(() => {
+        if(props.logged_user) {
+            getNotifications();
+            const interval = setInterval(() => getNotifications(), 10000)
+            return () => {
+              clearInterval(interval);
+            }
+        }
+    }, [getNotifications, props.logged_user])
 
     function openModal() {
         setIsOpen(true);
@@ -73,18 +98,22 @@ const Navbar = (props) => {
         props.updateSearchName(event.target.value);
     }
 
+    let notificationItems = notifications.map(notif => {
+        return <NotificationItem key={notif.id} notification={notif} forceUpdateList={updateNotificationsAndClosePanel} />
+    })
+
     return (
         <div className="page-left page-sidebar page-column">
             <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles} contentLabel="Example Modal">
                 <div id="notifications" style={{maxHeight: '330px'}}>
-                    <ul className="notifications-list list-unstyled container">
-                        <NotificationItem message="notification message with link to resource" viewed={true}/>
-                        <NotificationItem message="notification message with link to resource" viewed={false}/>
-                        <NotificationItem message="notification message with link to resource" viewed={false}/>
-                        <NotificationItem message="notification message with link to resource" viewed={false}/>
-                        <NotificationItem message="notification message with link to resource" viewed={true}/>
-                        <NotificationItem message="notification message with link to resource" viewed={true}/>
-                    </ul>
+                    { (notifications.length > 0) ?
+                        (<ul className="notifications-list list-unstyled container">
+                            {notificationItems}
+                        </ul>)
+                        :
+                        <h2>{t("index.noNotifications")}</h2>
+                    }
+                    
                 </div>
             </Modal>
 
@@ -174,14 +203,18 @@ const Navbar = (props) => {
                             <h1>
                                 {props.logged_user.userName}
                             </h1>
-                            <div className="alt-user-nav">
-                                <NavLink to="#" activeClassName="active">
-                                    <span onClick={openModal} className="notifications-btn icon-btn">
-                                        <FontAwesomeIcon icon={ faBell } />
-                                        <div className="badge zero font" style={{color: "#ccc"}}>count</div>
-                                    </span>
-                                </NavLink>
-                            </div>
+                            { props.logged_user &&
+                                (<div className="alt-user-nav">
+                                    <NavLink to="#" activeClassName="active">
+                                        <span onClick={openModal} className="notifications-btn icon-btn">
+                                            <FontAwesomeIcon icon={ faBell } />
+                                            <div className="badge zero font" style={{color: "#ccc"}}>
+                                                { notifications.length }
+                                            </div>
+                                        </span>
+                                    </NavLink>
+                                </div>)
+                            }
                             <ul className="menu list-unstyled">
                                 <li className="profile">
                                     <NavLink to={"/profiles/" + props.logged_user.id}>

@@ -20,6 +20,7 @@ i18n
             "index.followers_plural":       "{{count}} followers",
             "index.newShows":               "Recently added",
             "index.profile":                "Profile",
+            "index.noNotifications":        "You have no notifications",
 
             "search.search":                "Search",
             "search.searchResults":         "Search Results",
@@ -196,6 +197,7 @@ i18n
             "index.followers_plural":       "{{count}} seguidores",
             "index.newShows":               "Recientemente agregadas",
             "index.profile":                "Perfil",
+            "index.noNotifications":        "No tiene notificaciones",
 
             "search.search":                "Buscar",
             "search.searchResults":         "Resultados de Búsqueda",
