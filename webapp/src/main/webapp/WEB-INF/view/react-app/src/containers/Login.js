@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import { Trans } from 'react-i18next';
+import { compose } from 'recompose';
+import {Trans, withTranslation} from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -14,6 +15,7 @@ class Login extends Component {
     };
 
     render() {
+        const { t } = this.props;
 
         return (
             <div className="h-100">
@@ -35,7 +37,7 @@ class Login extends Component {
                                         .email('Invalid email address')
                                         .required('Required'),
                                     password: Yup.string()
-                                        .max(20, 'Must be 20 characters or less')
+                                        .max(20, t('register.passwordTooLong'))
                                         .required('Required'),
                                 })}
                                 onSubmit={(values, actions) => {
@@ -172,4 +174,7 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default compose(
+    withTranslation(),
+    connect(mapStateToProps, mapDispatchToProps)
+)(Login);

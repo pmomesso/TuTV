@@ -34,43 +34,9 @@ class Discussion extends Component {
     toggleUserBanned = (user) => {
         const newVal = !user.banned;
 
-        //const { seriesReviews } = this.state;
-
         Axios.put("/users/" + user.id + "/banned", {"banned": newVal})
             .then(() => {
                 this.fetchData();
-
-                /*let newSeriesReviews = [];
-
-                for(let i = 0; i < seriesReviews.length; i++) {
-                    let comments = [];
-                    for(let j = 0; j < seriesReviews[i].seriesReviewComments.length; j++) {
-                        let comment = { ...seriesReviews[i].seriesReviewComments[j] };
-                        if(comment.user.id === user.id) {
-                            comment.user.banned = newVal;
-                            comments.body = "jajas";
-                        }
-
-                        comments.push(comment);
-                    }
-
-                    let review = {
-                        ...seriesReviews[i],
-                        seriesReviewComments: []
-                    };
-
-                    console.log(review);
-
-                    if(review.user.id === user.id)
-                        review.user.banned = newVal;
-
-                    newSeriesReviews.push(review);
-                }
-
-                this.setState({
-                    ...this.state,
-                    seriesReviews: newSeriesReviews
-                });*/
 
             })
             .catch((err) => {
@@ -103,9 +69,6 @@ class Discussion extends Component {
               }
             ]
         });
-
-
-        
     }
 
     publishNewComment = (values, actions) => {
@@ -160,7 +123,7 @@ class Discussion extends Component {
                                 initialValues={{ body: '', isSpam: false }}
                                 validationSchema={Yup.object({
                                     body: Yup.string()
-                                        .min(6, 'Must be 6 characters or more')
+                                        .min(6, t('limits.6'))
                                         .required('Required'),
                                 })}
                                 onSubmit={this.publishNewComment}

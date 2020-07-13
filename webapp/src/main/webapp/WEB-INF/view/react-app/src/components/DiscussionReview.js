@@ -193,7 +193,7 @@ class DiscussionReview extends Component {
                             initialValues={{ body: '' }}
                             validationSchema={Yup.object({
                                 body: Yup.string()
-                                    .min(6, 'Must be 6 characters or more')
+                                    .min(6, t('limits.6'))
                                     .required('Required'),
                             })}
                             onSubmit={this.publishNewComment}

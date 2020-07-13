@@ -182,7 +182,10 @@ i18n
             "error.403body":                "You are not authorized to access this page.",
             "error.404body":                "The page you were looking for does not exist.",
             "error.500body":                "A server error has occurred when processing the request.",
-            "error.goHome":                 "Take me Home"
+            "error.goHome":                 "Take me Home",
+
+            
+            "limits.6":                    "Must be 6 characters or more"
         }
       },
       es: {
@@ -359,7 +362,9 @@ i18n
             "error.403body":                "No está autorizado para realizar para acceder a esta página.",
             "error.404body":                "La página que buscas no existe.",
             "error.500body":                "Un error en el servidor ha ocurrido mientras se procesaba su solicitud.",
-            "error.goHome":                 "Volver al Inicio"
+            "error.goHome":                 "Volver al Inicio",
+
+            "limits.6":                     "Debe contener 6 o mas caracteres"
         }
       }
     },
