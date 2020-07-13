@@ -26,7 +26,7 @@ public class TuTVControllerJersey {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    @Path("/")
+    @Path("/{route: (?!api).*}")
     public Response getTuTV(@QueryParam("page") Integer page) throws FileNotFoundException {
         File index = new File(servletContext.getRealPath("WEB-INF/view/react-app/build/index.html"));
         if(!index.exists()) {
