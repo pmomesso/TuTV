@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
 import $ from "jquery";
+import ErrorPage from "./ErrorPage";
 
 let linkHeaderParser = require('parse-link-header');
 
@@ -18,7 +19,8 @@ class Upcoming extends Component {
         shows: null,
         prevUrl: null,
         nextUrl: null,
-        loading: true
+        loading: true,
+        error: false
     };
 
     nextPage = () => {
@@ -70,6 +72,10 @@ class Upcoming extends Component {
                     prevUrl: prevUrl,
                     loading: false
                 });
+            }).catch((err) => {
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
     };
 
@@ -95,70 +101,74 @@ class Upcoming extends Component {
                 </section>
             );
 
-        let upcoming = this.state.shows.map((showEpisodePair) => {
-            return(
-                <TvSeriesPosterUpcoming key={ showEpisodePair.series.id } series={ showEpisodePair.series } episode={ showEpisodePair.episode } />
-            );
-        });
+        if (!this.state.error) {
+            let upcoming = this.state.shows.map((showEpisodePair) => {
+                return(
+                    <TvSeriesPosterUpcoming key={ showEpisodePair.series.id } series={ showEpisodePair.series } episode={ showEpisodePair.episode } />
+                );
+            });
 
-        return (
-            <div className="main-block h-100">
-                <div className="main-block-container h-100">
-                    <div id="home" className="h-100">
-                        <section id="new-shows" className="h-100">
-                            {
-                                (!upcoming.length) ?
-                                    <div className="container h-100">
-                                        <div className="row justify-content-center h-100">
-                                            <div className="col-lg-8 col-sm-12 align-self-center">
-                                                <div className="text-center">
-                                                    <h2>
-                                                        <Trans i18nKey="upcoming.noshows" />
-                                                    </h2>
-                                                </div>
-                                                <div className="text-center">
-                                                    <img src={require('../img/noshows.png')} alt="" />
-                                                </div>
-                                                <div className="text-center m-4">
-                                                    <h4>
-                                                        <Trans i18nKey="watchlist.discover" />
-                                                    </h4>
-                                                </div>
-                                                <div className="text-center m-4">
-                                                    <NavLink to="/" className="tutv-button m-4">
-                                                        <Trans i18nKey="watchlist.explore" />
-                                                    </NavLink>
+            return (
+                <div className="main-block h-100">
+                    <div className="main-block-container h-100">
+                        <div id="home" className="h-100">
+                            <section id="new-shows" className="h-100">
+                                {
+                                    (!upcoming.length) ?
+                                        <div className="container h-100">
+                                            <div className="row justify-content-center h-100">
+                                                <div className="col-lg-8 col-sm-12 align-self-center">
+                                                    <div className="text-center">
+                                                        <h2>
+                                                            <Trans i18nKey="upcoming.noshows" />
+                                                        </h2>
+                                                    </div>
+                                                    <div className="text-center">
+                                                        <img src={require('../img/noshows.png')} alt="" />
+                                                    </div>
+                                                    <div className="text-center m-4">
+                                                        <h4>
+                                                            <Trans i18nKey="watchlist.discover" />
+                                                        </h4>
+                                                    </div>
+                                                    <div className="text-center m-4">
+                                                        <NavLink to="/" className="tutv-button m-4">
+                                                            <Trans i18nKey="watchlist.explore" />
+                                                        </NavLink>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    :
-                                    <div className="h-100">
-                                        <h1><Trans i18nKey="upcoming.title" /></h1>
-                                        <ul className="to-watch-list posters-list list-unstyled list-inline single-row">
-                                            {
-                                                (typeof this.state.prevUrl === "string") &&
+                                        :
+                                        <div className="h-100">
+                                            <h1><Trans i18nKey="upcoming.title" /></h1>
+                                            <ul className="to-watch-list posters-list list-unstyled list-inline single-row">
+                                                {
+                                                    (typeof this.state.prevUrl === "string") &&
                                                     <span className="clickable carousel-genre-left float-left" data-slide="prev" onClick={this.prevPage}>
                                                         <span className="carousel-control-prev-icon my-prev-icon"></span>
                                                     </span>
-                                            }
+                                                }
 
-                                            { upcoming }
+                                                { upcoming }
 
-                                            {
-                                                (typeof this.state.nextUrl === "string") &&
+                                                {
+                                                    (typeof this.state.nextUrl === "string") &&
                                                     <span className="clickable carousel-genre-right float-left" data-slide="next" onClick={this.nextPage}>
                                                         <span className="carousel-control-next-icon my-next-icon"></span>
                                                     </span>
-                                            }
-                                        </ul>
-                                    </div>
-                            }
-                        </section>
+                                                }
+                                            </ul>
+                                        </div>
+                                }
+                            </section>
+                        </div>
                     </div>
                 </div>
-            </div>
-        )
+            )
+        } else {
+            return <ErrorPage status={this.state.error_status} body={this.state.error_body}/>
+        }
     }
 
 }

@@ -73,8 +73,8 @@ class ProfilePage extends PureComponent {
                     that.createChart(ctx, labels, values);
                 }
             })).catch((err) => {
-                var error_status = "error." + err.response.status + "status";
-                var error_body = "error." + err.response.status + "body";
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
                 this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
         } else {
@@ -91,8 +91,8 @@ class ProfilePage extends PureComponent {
                     loading: false
                 });
             })).catch((err) => {
-                var error_status = "error." + err.response.status + "status";
-                var error_body = "error." + err.response.status + "body";
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
                 this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
         }
@@ -190,10 +190,10 @@ class ProfilePage extends PureComponent {
                         avatar: e.target.result.split("base64,")[1]
                     });
                     $("#uploadAvatarPopup").toggle();
-                })
-                .catch((err) => {
-                    /* TODO SI CADUCO LA SESION? */
-                    //alert("Error: " + err.response.status);
+                }).catch((err) => {
+                    const error_status = "error." + err.response.status + "status";
+                    const error_body = "error." + err.response.status + "body";
+                    this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
                 });
         });
         FR.readAsDataURL( $(fileInput)[0].files[0] );
@@ -222,7 +222,11 @@ class ProfilePage extends PureComponent {
                     var ctx = document.getElementById('genresChart');
                     that.createChart(ctx, labels, values);
                 }
-        });
+            }).catch((err) => {
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
+            });
     };
 
     createChart = (ctx, labels, values) => {
@@ -270,6 +274,10 @@ class ProfilePage extends PureComponent {
                                 this.setState({
                                     lists: newLists
                                 });
+                            }).catch((err) => {
+                                const error_status = "error." + err.response.status + "status";
+                                const error_body = "error." + err.response.status + "body";
+                                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
                             });
                     }
                 },
@@ -510,12 +518,11 @@ class ProfilePage extends PureComponent {
 
                                                                             let user = res.data;
                                                                             this.props.updateUserName(user);
-                                                                        })
-                                                                        .catch((err) => {
-                                                                            /* TODO SI CADUCO LA SESION? */
-                                                                            //alert("Error: " + err.response.status);
-                                                                        })
-                                                                        .finally(() => actions.setSubmitting(false));
+                                                                        }).catch((err) => {
+                                                                            const error_status = "error." + err.response.status + "status";
+                                                                            const error_body = "error." + err.response.status + "body";
+                                                                            this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
+                                                                        }).finally(() => actions.setSubmitting(false));
                                                                 }}
                                                             >
                                                                 {formik => (

@@ -6,12 +6,14 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { withTranslation } from 'react-i18next';
 import { store } from 'react-notifications-component';
+import ErrorPage from "./ErrorPage";
 
 class Explore extends Component {
     state = {
         bannerSeries: [],
         userLists: null,
         genreList: [],
+        error: false
     };
 
     componentDidMount = () => {
@@ -20,6 +22,10 @@ class Explore extends Component {
             this.setState({
                 genreList: res.data,
             })
+        }).catch((err) => {
+            const error_status = "error." + err.response.status + "status";
+            const error_body = "error." + err.response.status + "body";
+            this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
         });
 
         if(this.props.logged_user)
@@ -28,6 +34,10 @@ class Explore extends Component {
                 this.setState({
                     userLists: res.data,
                 })
+            }).catch((err) => {
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
     };
 
@@ -75,11 +85,12 @@ class Explore extends Component {
                 }
 
                 this.addSeriesToListHandler(res.data, series);
-            })
-            .catch(res => {
-
+            }).catch((err) => {
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
-    }
+    };
 
     addSeriesToListHandler = (list, series) => {
         const { t, logged_user } = this.props;
@@ -126,24 +137,28 @@ class Explore extends Component {
     };
 
     render() {
-        const seriesLists = this.state.genreList.map(genre => {
-            return(
-                <SeriesList key={ genre.id } name={ genre.name } source={ genre.seriesUri } section={"#explore"} addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
-            )
-        });
+        if (!this.state.error) {
+            const seriesLists = this.state.genreList.map(genre => {
+                return(
+                    <SeriesList key={ genre.id } name={ genre.name } source={ genre.seriesUri } section={"#explore"} addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
+                )
+            });
 
-        return (
-            <div className="alt-block" style={{background: 'white'}}>
-                <div className="main-block">
-                    <div className="main-block-container">
-                        <div id="explore">
-                            <SeriesCarousel source="/series/featured"/>
-                            { seriesLists }
+            return (
+                <div className="alt-block" style={{background: 'white'}}>
+                    <div className="main-block">
+                        <div className="main-block-container">
+                            <div id="explore">
+                                <SeriesCarousel source="/series/featured"/>
+                                { seriesLists }
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        );
+            );
+        } else {
+            return <ErrorPage status={this.state.error_status} body={this.state.error_body}/>
+        }
     }
 }
 

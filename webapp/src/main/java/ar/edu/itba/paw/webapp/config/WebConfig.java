@@ -115,8 +115,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//		registry.addResourceHandler("/resources/**")
-//				.addResourceLocations("/resources/");
 		registry.addResourceHandler("/static/**")
 				.addResourceLocations("/WEB-INF/view/react-app/build/static/");
 		registry.addResourceHandler("/*.js")
@@ -128,13 +126,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		registry.addResourceHandler("/index.html")
 				.addResourceLocations("/WEB-INF/view/react-app/build/index.html");
 	}
-
-	/*@Override
-	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**")
-				.allowedMethods("*")
-				.allowedOrigins("http://localhost:5000");
-	}*/
 
 	@Bean
 	public MessageSource messageSource() {

@@ -23,7 +23,7 @@ class SeriesPage extends Component {
         comments: null,
         loading: true,
         error: false
-    }
+    };
 
     componentDidMount = () => {
         this.setState({
@@ -43,11 +43,11 @@ class SeriesPage extends Component {
                     loading: false
                 })
             }).catch((err) => {
-                var error_status = "error." + err.response.status + "status";
-                var error_body = "error." + err.response.status + "body";
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
                 this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
-    }
+    };
 
     arePreviousNotViewed = (season_index, episode_index) => {
         for (var i = 0; i <= season_index; i++) {
@@ -98,10 +98,10 @@ class SeriesPage extends Component {
         Axios.put("/series/" + series.id + "/seasons/" + series.seasons[season_index].number + "/episodes/" + series.seasons[season_index].episodes[episode_index].numEpisode + "/viewed" + markPreviousQueryParameter, JSON.stringify(data))
             .then(() => {
                 this.fetchData();
-            })
-            .catch((err) => {
-                /* TODO SI CADUCO LA SESION? */
-                //alert("Error: " + err.response.status);
+            }).catch((err) => {
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
     };
 
@@ -147,10 +147,10 @@ class SeriesPage extends Component {
         Axios.put("/series/" + series.id + "/seasons/" + series.seasons[season_index].number + "/viewed" + markPreviousQueryParameter, JSON.stringify(data))
             .then(() => {
                 this.fetchData();
-            })
-            .catch((err) => {
-                /* TODO SI CADUCO LA SESION? */
-                //alert("Error: " + err.response.status);
+            }).catch((err) => {
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
     };
 
@@ -173,10 +173,10 @@ class SeriesPage extends Component {
                 this.setState({
                     series: newSeries
                 });
-            })
-            .catch((err) => {
-                /* TODO SI CADUCO LA SESION? */
-                //alert("Error: " + err.response.status);
+            }).catch((err) => {
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
     };
 
@@ -208,12 +208,12 @@ class SeriesPage extends Component {
                 this.setState({
                     series: newSeries
                 });
-            })
-            .catch((err) => {
-                /* TODO SI CADUCO LA SESION? */
-                //alert("Error: " + err.response.status);
+            }).catch((err) => {
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
-    }
+    };
 
     render() {
 

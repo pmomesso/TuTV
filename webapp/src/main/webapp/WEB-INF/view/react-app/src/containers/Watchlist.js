@@ -9,6 +9,7 @@ import { Digital } from 'react-activity';
 import 'react-activity/dist/react-activity.css';
 import TvSeriesPosterWatchlist from "../components/TvSeriesPosterWatchlist";
 import $ from "jquery";
+import ErrorPage from "./ErrorPage";
 
 let linkHeaderParser = require('parse-link-header');
 
@@ -19,7 +20,8 @@ class Watchlist extends Component {
         shows: null,
         prevUrl: null,
         nextUrl: null,
-        loading: true
+        loading: true,
+        error: false
     };
 
     nextPage = () => {
@@ -71,6 +73,10 @@ class Watchlist extends Component {
                     prevUrl: prevUrl,
                     loading: false
                 });
+            }).catch((err) => {
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
     };
 
@@ -111,10 +117,10 @@ class Watchlist extends Component {
                             }
                         });
                     });
-            })
-            .catch((err) => {
-                /* TODO SI CADUCO LA SESION? */
-                //alert("Error: " + err.response.status);
+            }).catch((err) => {
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
     };
 
@@ -122,20 +128,21 @@ class Watchlist extends Component {
         if(this.state.loading)
         return (
             <section>
-                    <div style={{width: "100%",height: "100", display: "flex", justifyContent: "center", alignItems: "center"}}>
-                        <Digital color="#727981" size={32} speed={1} animating={true} />
-                    </div>
-                </section>
-            );
-            
-        let watchlist = this.state.shows.map((showEpisodePair) => {
-            return(
-                <TvSeriesPosterWatchlist key={ showEpisodePair.series.id } series={ showEpisodePair.series } episode={ showEpisodePair.episode } onEpisodeWatchedClickedHandler={this.onEpisodeWatchedClickedHandler} />
-            );
-        });
-        
-        return (
-            <div className="main-block h-100">
+                <div style={{width: "100%",height: "100", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                    <Digital color="#727981" size={32} speed={1} animating={true} />
+                </div>
+            </section>
+        );
+
+        if(!this.state.error) {
+            let watchlist = this.state.shows.map((showEpisodePair) => {
+                return(
+                    <TvSeriesPosterWatchlist key={ showEpisodePair.series.id } series={ showEpisodePair.series } episode={ showEpisodePair.episode } onEpisodeWatchedClickedHandler={this.onEpisodeWatchedClickedHandler} />
+                );
+            });
+
+            return (
+                <div className="main-block h-100">
                     <div className="main-block-container h-100">
                         <div id="home" className="h-100">
                             {
@@ -172,7 +179,7 @@ class Watchlist extends Component {
                                         <ul className="to-watch-list posters-list list-unstyled list-inline single-row">
                                             {
                                                 (typeof this.state.prevUrl === "string") &&
-                                                    <span className="clickable carousel-genre-left float-left" data-slide="prev" onClick={this.prevPage}>
+                                                <span className="clickable carousel-genre-left float-left" data-slide="prev" onClick={this.prevPage}>
                                                         <span className="carousel-control-prev-icon my-prev-icon"></span>
                                                     </span>
                                             }
@@ -181,7 +188,7 @@ class Watchlist extends Component {
 
                                             {
                                                 (typeof this.state.nextUrl === "string") &&
-                                                    <span className="clickable carousel-genre-right float-left" data-slide="next" onClick={this.nextPage}>
+                                                <span className="clickable carousel-genre-right float-left" data-slide="next" onClick={this.nextPage}>
                                                         <span className="carousel-control-next-icon my-next-icon"></span>
                                                     </span>
                                             }
@@ -191,9 +198,11 @@ class Watchlist extends Component {
                         </div>
                     </div>
                 </div>
-        )
+            )
+        } else {
+            return <ErrorPage status={this.state.error_status} body={this.state.error_body}/>
+        }
     }
-    
 }
 
 const mapStateToProps = (state) => {

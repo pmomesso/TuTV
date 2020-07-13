@@ -58,8 +58,8 @@ class UsersPage extends Component {
                     loading: false
                 });
             }).catch((err) => {
-                var error_status = "error." + err.response.status + "status";
-                var error_body = "error." + err.response.status + "body";
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
                 this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
         });
     };
@@ -78,10 +78,10 @@ class UsersPage extends Component {
                 this.setState({
                     users: newUsers
                 });
-            })
-            .catch((err) => {
-                /* TODO SI CADUCO LA SESION? */
-                //alert("Error: " + err.response.status);
+            }).catch((err) => {
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
     };
 

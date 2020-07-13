@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { store } from 'react-notifications-component';
+import ErrorPage from "./ErrorPage";
 
 class Search extends PureComponent {
     state = {
@@ -14,7 +15,8 @@ class Search extends PureComponent {
         searchGenre: undefined,
         searchNetwork: undefined,
         searchName: undefined,
-        userLists: null
+        userLists: null,
+        error: false
     };
 
     /*shouldComponentUpdate = (nextProps, nextState) => {
@@ -50,7 +52,11 @@ class Search extends PureComponent {
                 genreList: genres.data,
                 networkList: networks.data
             })
-        }));
+        })).catch((err) => {
+            const error_status = "error." + err.response.status + "status";
+            const error_body = "error." + err.response.status + "body";
+            this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
+        });
 
         if(this.props.logged_user)
             Axios.get("/users/" + this.props.logged_user.id + "/lists")
@@ -58,6 +64,10 @@ class Search extends PureComponent {
                 this.setState({
                     userLists: res.data,
                 })
+            }).catch((err) => {
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
     };
 
@@ -104,11 +114,12 @@ class Search extends PureComponent {
                     });
                 }
                 this.addSeriesToListHandler(res.data, series);
-            })
-            .catch(res => {
-
+            }).catch((err) => {
+                const error_status = "error." + err.response.status + "status";
+                const error_body = "error." + err.response.status + "body";
+                this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
-    }
+    };
 
     addSeriesToListHandler = (list, series) => {
         const { t, logged_user } = this.props;
@@ -192,51 +203,55 @@ class Search extends PureComponent {
     }
 
     render() {
-        const { t } = this.props;
+        if (!this.state.error) {
+            const { t } = this.props;
 
-        const fetchUrl = this.composeSearchUrl();
+            const fetchUrl = this.composeSearchUrl();
 
-        const genreSelect = this.state.genreList.map(genre => {
-            return (<option key={genre.id} value={genre.id}>{ genre.name }</option>);
-        });
-        genreSelect.unshift(<option key="0" value="0"> { t("search.allGenres") } </option>)
+            const genreSelect = this.state.genreList.map(genre => {
+                return (<option key={genre.id} value={genre.id}>{ genre.name }</option>);
+            });
+            genreSelect.unshift(<option key="0" value="0"> { t("search.allGenres") } </option>)
 
-        const networkSelect = this.state.networkList.map(network => {
-            return (<option key={network.id} value={network.id}>{ network.name }</option>);
-        });
-        networkSelect.unshift(<option key="0" value="0"> { t("search.allNetworks") } </option>)
+            const networkSelect = this.state.networkList.map(network => {
+                return (<option key={network.id} value={network.id}>{ network.name }</option>);
+            });
+            networkSelect.unshift(<option key="0" value="0"> { t("search.allNetworks") } </option>)
 
-        return (
-            <div className="alt-block" style={{background: 'white'}}>
-                <div className="main-block">
-                    <div className="main-block-container">
-                        <div id="search">
-                            <section>
-                                <h1>{ t("search.searchResults") }</h1>
-                                <div className="container">
-                                    <div className="row">
-                                        <div className="col sidebar-box">
-                                            <input type="text" className="styled-input styled-select" name="searchName" placeholder={ t("search.search") } value={ this.props.search_name } onChange={this.handleSearchChange}/>
-                                        </div>
-                                        <div className="col sidebar-box">
-                                            <select name="searchGenre" className="styled-select" value={ this.state.searchGenre } onChange={this.handleInputChange}>
-                                                { genreSelect }
-                                            </select>
-                                        </div>
-                                        <div className="col sidebar-box">
-                                            <select name="searchNetwork" className="styled-select" value={ this.state.searchNetwork } onChange={this.handleInputChange}>
-                                                { networkSelect }
-                                            </select>
+            return (
+                <div className="alt-block" style={{background: 'white'}}>
+                    <div className="main-block">
+                        <div className="main-block-container">
+                            <div id="search">
+                                <section>
+                                    <h1>{ t("search.searchResults") }</h1>
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col sidebar-box">
+                                                <input type="text" className="styled-input styled-select" name="searchName" placeholder={ t("search.search") } value={ this.props.search_name } onChange={this.handleSearchChange}/>
+                                            </div>
+                                            <div className="col sidebar-box">
+                                                <select name="searchGenre" className="styled-select" value={ this.state.searchGenre } onChange={this.handleInputChange}>
+                                                    { genreSelect }
+                                                </select>
+                                            </div>
+                                            <div className="col sidebar-box">
+                                                <select name="searchNetwork" className="styled-select" value={ this.state.searchNetwork } onChange={this.handleInputChange}>
+                                                    { networkSelect }
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <SeriesList key={fetchUrl} source={ fetchUrl } section={"#search"} addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
-                            </section>
+                                    <SeriesList key={fetchUrl} source={ fetchUrl } section={"#search"} addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
+                                </section>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        );
+            );
+        } else {
+            return <ErrorPage status={this.state.error_status} body={this.state.error_body}/>
+        }
     }
 }
 
