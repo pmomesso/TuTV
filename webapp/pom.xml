@@ -207,40 +207,39 @@
                     <target>8</target>
                 </configuration>
             </plugin>
-<!--            TODO uncomment-->
-<!--            <plugin>-->
-<!--                <groupId>com.github.eirslett</groupId>-->
-<!--                <artifactId>frontend-maven-plugin</artifactId>-->
-<!--                <version>${react-plugin.version}</version>-->
-<!--                <configuration>-->
-<!--                    <nodeVersion>${node.version}</nodeVersion>-->
-<!--                    <npmVersion>${npm.version}</npmVersion>-->
-<!--                    <workingDirectory>src/main/webapp/WEB-INF/view/react-app</workingDirectory>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>install node and npm</id>-->
-<!--                        <goals>-->
-<!--                            <goal>install-node-and-npm</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>npm install</id>-->
-<!--                        <goals>-->
-<!--                            <goal>npm</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>npm run build</id>-->
-<!--                        <goals>-->
-<!--                            <goal>npm</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <arguments>run build</arguments>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>${react-plugin.version}</version>
+                <configuration>
+                    <nodeVersion>${node.version}</nodeVersion>
+                    <npmVersion>${npm.version}</npmVersion>
+                    <workingDirectory>src/main/webapp/WEB-INF/view/react-app</workingDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>npm run build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
