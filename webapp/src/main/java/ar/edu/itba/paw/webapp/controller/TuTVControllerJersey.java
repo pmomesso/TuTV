@@ -30,7 +30,7 @@ public class TuTVControllerJersey {
     public Response getTuTV(@QueryParam("page") Integer page) throws FileNotFoundException {
         File index = new File(servletContext.getRealPath("WEB-INF/view/react-app/build/index.html"));
         if(!index.exists()) {
-            return status(Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).entity("").type(MediaType.TEXT_PLAIN).build();
         }
         return ok(new FileInputStream(index)).build();
     }

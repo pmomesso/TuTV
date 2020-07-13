@@ -8,6 +8,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +29,7 @@ public class ResourcesControllerJersey {
     public Response getJs(@PathParam("filename") String filename) throws FileNotFoundException {
         File resource = new File(servletContext.getRealPath("WEB-INF/view/react-app/build/static/js/" + filename));
         if(!resource.exists()) {
-            return status(Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).entity("").type(MediaType.TEXT_PLAIN).build();
         }
         return ok(new FileInputStream(resource)).build();
     }
@@ -39,7 +40,7 @@ public class ResourcesControllerJersey {
     public Response getCss(@PathParam("filename") String filename) throws FileNotFoundException {
         File resource = new File(servletContext.getRealPath("WEB-INF/view/react-app/build/static/css/" + filename));
         if(!resource.exists()) {
-            return status(Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).entity("").type(MediaType.TEXT_PLAIN).build();
         }
         return ok(new FileInputStream(resource)).build();
     }
@@ -50,7 +51,7 @@ public class ResourcesControllerJersey {
     public Response getMedia(@PathParam("filename") String filename) throws FileNotFoundException {
         File resource = new File(servletContext.getRealPath("WEB-INF/view/react-app/build/static/media/" + filename));
         if(!resource.exists()) {
-            return status(Status.NOT_FOUND).build();
+            return status(Status.NOT_FOUND).entity("").type(MediaType.TEXT_PLAIN).build();
         }
         return ok(new FileInputStream(resource)).build();
     }
