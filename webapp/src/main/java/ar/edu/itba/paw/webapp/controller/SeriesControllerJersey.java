@@ -282,7 +282,7 @@ public class SeriesControllerJersey {
         if(!violations.isEmpty()) throw new BadRequestException();
 
         if(seriesId < 0 || seasonNumber < 0) throw new NotFoundException();
-        if(markPrevious != null && viewedResourceDTO.getViewedByUser()) throw new BadRequestException();
+        if(markPrevious != null && !viewedResourceDTO.getViewedByUser()) throw new BadRequestException();
 
         if(viewedResourceDTO.getViewedByUser()){
             if(markPrevious != null && markPrevious) {
@@ -338,7 +338,7 @@ public class SeriesControllerJersey {
 
         Set<ConstraintViolation<ViewedResourceDTO>> violations = validator.validate(viewedResourceDTO);
         if(!violations.isEmpty()) throw new BadRequestException();
-        if(markPrevious != null && viewedResourceDTO.getViewedByUser()) throw new BadRequestException();
+        if(markPrevious != null && !viewedResourceDTO.getViewedByUser()) throw new BadRequestException();
 
         if(viewedResourceDTO.getViewedByUser()) {
             if(markPrevious != null && markPrevious) {

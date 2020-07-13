@@ -49,78 +49,20 @@ class SeriesPage extends Component {
             });
     }
 
-    markPreviousEpisodesAsWatched(season_index, episode_index) {
-        const { t } = this.props;
-        const { series } = this.state;
-        let asked = false;
-
-        let exit = false;
-
-        let promises = [];
-        for(let i = 0; i < season_index; i++) {
-            if(!series.seasons[i].viewedByUser) {
-                if(!asked) {
-                    confirmAlert({
-                        title: t("series.deleteConfirmTitle"),
-                        message:t("series.viewPrevious"),
-                        buttons: [
-                            {
-                                label: t("series.yes"),
-                                onClick: () => {asked = true;}
-                            },
-                            {
-                                label: t("series.no"),
-                                onClick: () => {exit = true;}
-                            }
-                        ]
-                    });
-
-                    if(exit) return;
-                }
-
-                promises.push(
-                    Axios.put("/series/" + series.id + "/seasons/" + series.seasons[i].number + "/viewed", { "viewedByUser": true })
-                );
+    arePreviousNotViewed = (season_index, episode_index) => {
+        for (var i = 0; i <= season_index; i++) {
+            for (var j = 0; j < this.state.series.seasons[i].episodes.length; j++) {
+                if (i === season_index && j === episode_index) return false;
+                if (!this.state.series.seasons[i].episodes[j].viewedByUser) return true;
             }
         }
+        return false;
+    };
 
-        for(let j = 0; j < episode_index; j++) {
-            if(!series.seasons[season_index].episodes[j].viewedByUser) {
-                if(!asked) {
-                    confirmAlert({
-                        title: t("series.deleteConfirmTitle"),
-                        message:t("series.viewPrevious"),
-                        buttons: [
-                            {
-                                label: t("series.yes"),
-                                onClick: () => {asked = true;}
-                            },
-                            {
-                                label: t("series.no"),
-                                onClick: () => {exit = true;}
-                            }
-                        ]
-                    });
+    onEpisodeWatchedClickedHandler = (event, season_index, episode_index) => {
+        const {t} = this.props;
 
-                    if(exit) return;
-                }
-
-                promises.push(
-                    Axios.put("/series/" + series.id + "/seasons/" + series.seasons[season_index].number + "/episodes/" + series.seasons[season_index].episodes[j].numEpisode + "/viewed", { "viewedByUser": true })
-                );
-            }
-        }
-
-        if(promises.length > 0)
-            Promise.all(promises)
-                .then(this.fetchData);
-    }
-
-    onEpisodeWatchedClickedHandler = (event, season_index, episode_index, automatic = false) => {
-        if(!automatic)
-            event.preventDefault();
-
-        if(this.props.logged_user === null) {
+        if (this.props.logged_user === null) {
             this.props.history.push("/login" + this.props.location.pathname);
             return;
         }
@@ -131,37 +73,31 @@ class SeriesPage extends Component {
 
         let newValue = !this.state.series.seasons[season_index].episodes[episode_index].viewedByUser;
 
-        let data = { "viewedByUser": newValue };
+        let data = {"viewedByUser": newValue};
 
-        Axios.put("/series/" + series.id + "/seasons/" + series.seasons[season_index].number + "/episodes/" + series.seasons[season_index].episodes[episode_index].numEpisode + "/viewed", JSON.stringify(data))
-            .then((res) => {
-                let newEpisode = {
-                    ...this.state.series.seasons[season_index].episodes[episode_index],
-                    "viewedByUser": res.data.viewedByUser
-                };
+        if (newValue) {
+            if (this.arePreviousNotViewed(season_index, episode_index)) {
+                confirmAlert({
+                    title: t("series.deleteConfirmTitle"),
+                    message: t("series.viewPrevious"),
+                    buttons: [
+                        { label: t("series.yes"), onClick: () => { this.updateEpisodeWatched(season_index, episode_index, data, true); }},
+                        { label: t("series.no"), onClick: () => { this.updateEpisodeWatched(season_index, episode_index, data); }}]
+                });
+            } else {
+                this.updateEpisodeWatched(season_index, episode_index, data);
+            }
+        } else {
+            this.updateEpisodeWatched(season_index, episode_index, data);
+        }
+    };
 
-                let newSeasonEpisodeList = [ ...this.state.series.seasons[season_index].episodes ]
-                newSeasonEpisodeList[episode_index] = newEpisode;
-
-                let newSeason = {
-                    ...this.state.series.seasons[season_index],
-                    "episodes": newSeasonEpisodeList
-                };
-
-                let newSeasonList = [ ...this.state.series.seasons ]
-                newSeasonList[season_index] = newSeason;
-
-                let newSeries = {
-                    ...this.state.series,
-                    "seasons": newSeasonList
-                };
-        
-                this.setState({ "series": newSeries });
-
-                if(automatic || !newValue)
-                    return;
-
-                this.markPreviousEpisodesAsWatched(season_index, episode_index);
+    updateEpisodeWatched = (season_index, episode_index, data, markPrevious = false) => {
+        let series = this.state.series;
+        const markPreviousQueryParameter = markPrevious ? "?markPrevious=true" : "";
+        Axios.put("/series/" + series.id + "/seasons/" + series.seasons[season_index].number + "/episodes/" + series.seasons[season_index].episodes[episode_index].numEpisode + "/viewed" + markPreviousQueryParameter, JSON.stringify(data))
+            .then(() => {
+                this.fetchData();
             })
             .catch((err) => {
                 /* TODO SI CADUCO LA SESION? */
@@ -169,62 +105,54 @@ class SeriesPage extends Component {
             });
     };
 
-    onSeasonWatchedClicked = (event, season_index, automatic = false) => {
-        if(!automatic)
-            event.preventDefault();
+    onSeasonWatchedClicked = (event, season_index) => {
+        const {t} = this.props;
 
         if(this.props.logged_user === null) {
             this.props.history.push("/login" + this.props.location.pathname);
             return;
         }
+
+        let series = this.state.series;
         
-        if (!this.state.series.loggedInUserFollows) this.onSeriesFollowClicked();
+        if (!series.loggedInUserFollows) this.onSeriesFollowClicked();
 
         let newValue;// = true;
         
-        if(this.state.series.seasons[season_index].episodes.length > 0)
+        if(series.seasons[season_index].episodes.length > 0)
             newValue = !this.state.series.seasons[season_index].episodes.every((episode) => episode.viewedByUser === true);
 
         let data = { "viewedByUser": newValue };
 
-        Axios.put("/series/" + this.state.series.id + "/seasons/" + this.state.series.seasons[season_index].number + "/viewed", JSON.stringify(data))
-            .then((res) => {
-
-                let newSeasonEpisodeList = [];
-
-                this.state.series.seasons[season_index].episodes.forEach((episode) => {
-                    let newEpisode = {
-                        ...episode,
-                        "viewedByUser": res.data.viewedByUser
-                    };
-
-                    newSeasonEpisodeList.push(newEpisode);
+        if (newValue) {
+            if (this.arePreviousNotViewed(season_index, 0)) {
+                confirmAlert({
+                    title: t("series.deleteConfirmTitle"),
+                    message: t("series.viewPrevious"),
+                    buttons: [
+                        { label: t("series.yes"), onClick: () => { this.updateSeasonWatched(season_index, data, true); }},
+                        { label: t("series.no"), onClick: () => { this.updateSeasonWatched(season_index, data); }}]
                 });
+            } else {
+                this.updateSeasonWatched(season_index, data);
+            }
+        } else {
+            this.updateSeasonWatched(season_index, data);
+        }
+    };
 
-                let newSeason = {
-                    ...this.state.series.seasons[season_index],
-                    "episodes": newSeasonEpisodeList
-                };
-
-                let newSeasonList = [ ...this.state.series.seasons ];
-                newSeasonList[season_index] = newSeason;
-
-                let newSeries = {
-                    ...this.state.series,
-                    "seasons": newSeasonList
-                };
-                this.setState({ "series": newSeries });
-
-                if(automatic || !newValue)
-                    return;
-
-                this.markPreviousEpisodesAsWatched(season_index, 0);
+    updateSeasonWatched = (season_index, data, markPrevious = false) => {
+        let series = this.state.series;
+        const markPreviousQueryParameter = markPrevious ? "?markPrevious=true" : "";
+        Axios.put("/series/" + series.id + "/seasons/" + series.seasons[season_index].number + "/viewed" + markPreviousQueryParameter, JSON.stringify(data))
+            .then(() => {
+                this.fetchData();
             })
             .catch((err) => {
                 /* TODO SI CADUCO LA SESION? */
                 //alert("Error: " + err.response.status);
             });
-    }
+    };
 
     onRatingChanged = (newValue) => {
         if(this.props.logged_user === null) {
