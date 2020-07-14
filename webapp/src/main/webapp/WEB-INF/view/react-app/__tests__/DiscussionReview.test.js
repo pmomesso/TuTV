@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, fireEvent, screen } from '../__tests_util__/testUtils'
+import { render, fireEvent, screen } from '../__tests_utils/testUtils'
 import DiscussionReview from '../src/components/DiscussionReview'
 
 const series = null;

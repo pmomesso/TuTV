@@ -45,7 +45,7 @@ class SeasonAccordion extends PureComponent {
                             {viewedEpisodes} / {episodeCount }
                         </span>
                         <div>
-                            <button onClick={this.onSeasonWatchedClicked} className={"check-season" + (viewedEpisodes === episodeCount ? " viewed" : "")}>
+                            <button data-testid="onSeasonWatchedClickedButton" onClick={this.onSeasonWatchedClicked} className={"check-season" + (viewedEpisodes === episodeCount ? " viewed" : "")}>
                                 <FontAwesomeIcon icon={faCheckCircle} />
                             </button>
                         </div>
