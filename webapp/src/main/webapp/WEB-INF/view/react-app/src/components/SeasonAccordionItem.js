@@ -19,7 +19,7 @@ class SeasonAccordionItem extends PureComponent {
                     <span className="ml-3 episode-date">
                         {episode.air_date}
                     </span>
-                    <button onClick={this.onEpisodeWatchedClicked} className={"check" + (episode.viewedByUser ? " viewed" : "")}>
+                    <button data-testid="onEpisodeWatchedClickedHandlerButton" onClick={this.onEpisodeWatchedClicked} className={"check" + (episode.viewedByUser ? " viewed" : "")}>
                         <FontAwesomeIcon icon={faCheckCircle} />
                     </button>
                 </div>
