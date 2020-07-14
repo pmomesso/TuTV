@@ -9,8 +9,6 @@ import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//Todo: https://www.baeldung.com/cron-expressions
-
 @Repository
 public class SeriesHibernateDao implements SeriesDao {
 
@@ -201,7 +199,6 @@ public class SeriesHibernateDao implements SeriesDao {
             List<Season> seasons = new ArrayList<>();
             List<Episode> episodes = new ArrayList<>();
             boolean done;
-            //TODO: ver si es posible optimizar
             for(Series series : user.get().getFollows()){
                 done = false;
                 seasons.addAll(series.getSeasons());

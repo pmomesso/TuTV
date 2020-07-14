@@ -79,7 +79,6 @@ class TvSeriesPoster extends PureComponent {
                 });
             })
             .catch((err) => {
-                /* TODO SI CADUCO LA SESION? */
                 //alert("Error: " + err.response.status);
             });
     };

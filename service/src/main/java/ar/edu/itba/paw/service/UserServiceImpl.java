@@ -149,10 +149,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    //Todo no depender más de este método
-    void setAuthentication(Authentication authentication) {
-        //this.authentication = authentication;
-    }
 
     @Override
     @Transactional

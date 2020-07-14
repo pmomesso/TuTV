@@ -104,7 +104,6 @@ public class UserHibernateDao implements UserDao {
 
     @Override
     public void setUserAvatar(long userId, byte[] byteArray) {
-        //Todo: ask if should change User Class
         TypedQuery<User> query = em.createQuery("from User as u where u.id = :id", User.class);
         query.setParameter("id", userId);
         query.getResultList().stream().findFirst().ifPresent(user -> {
