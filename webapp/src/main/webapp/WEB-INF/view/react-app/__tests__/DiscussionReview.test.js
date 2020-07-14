@@ -5,26 +5,22 @@ import DiscussionReview from '../src/components/DiscussionReview'
 const series = null;
 const seriesReview = {"body": "Review 1", "id": 1, "likes": 0, "loggedInUserLikes": false, "seriesReviewComments": [], "spam": false, "user": {"admin": false, "avatar": "", "banned": false, "id": 1, "userName": "User 1"}};
 
-it('should never call toggleUserBanned if logged_user is not admin', () => {
+it('should call toggleUserBanned if toggleUserBannedButton clicked', () => {
     const mockToggleUserBanned = jest.fn();
-    const logged_user = {"admin": false, "avatar": "", "banned": false, "id": 2, "userName": "User 2"};
-    render(<DiscussionReview logged_user={logged_user}
-                             toggleUserBanned={mockToggleUserBanned}
+    render(<DiscussionReview toggleUserBanned={mockToggleUserBanned}
                              seriesReview={seriesReview}
                              series={series} />);
 
-    // fireEvent.click(screen.getByTestId("toggleUserBannedButton"));
-    expect(mockToggleUserBanned).toHaveBeenCalledTimes(0);
+    fireEvent.click(screen.getByTestId("toggleUserBannedButton"));
+    expect(mockToggleUserBanned).toHaveBeenCalledTimes(1);
 });
 
-it('should never call deleteComment if logged_user is not comment owner', () => {
-    const mockDeleteComment = jest.fn();
-    const logged_user = {"admin": false, "avatar": "", "banned": false, "id": 2, "userName": "User 2"};
-    render(<DiscussionReview logged_user={logged_user}
-                             deleteReview={mockDeleteComment}
+it('should call deleteComment if deleteReviewButton clicked', () => {
+    const mockDeleteReview = jest.fn();
+    render(<DiscussionReview deleteReview={mockDeleteReview}
                              seriesReview={seriesReview}
                              series={series} />);
 
-    // fireEvent.click(screen.getByTestId("toggleUserBannedButton"));
-    expect(mockDeleteComment).toHaveBeenCalledTimes(0);
+    fireEvent.click(screen.getByTestId("deleteReviewButton"));
+    expect(mockDeleteReview).toHaveBeenCalledTimes(1);
 });

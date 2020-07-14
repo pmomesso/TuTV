@@ -1,19 +1,29 @@
 import React from 'react'
-import rootReducer from "../src/store/reducers/rootReducer";
 import { render as rtlRender } from '@testing-library/react'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
+import { BrowserRouter } from "react-router-dom";
+
+const initState = {
+    "auth": null
+};
+
+function log_user(state = initState) {
+    return {
+        ...state,
+        auth: {"user": {"admin": true, "avatar": "", "banned": false, "id": 2, "userName": "User 2"}}
+    }
+}
 
 function render(
     ui,
     {
-        initialState,
-        store = createStore(rootReducer, initialState),
+        store = createStore(log_user),
         ...renderOptions
     } = {}
 ) {
     function Wrapper({ children }) {
-        return <Provider store={store}>{children}</Provider>
+        return <BrowserRouter><Provider store={store}>{children}</Provider></BrowserRouter>
     }
     return rtlRender(ui, { wrapper: Wrapper, ...renderOptions })
 }

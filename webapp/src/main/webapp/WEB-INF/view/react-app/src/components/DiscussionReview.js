@@ -134,7 +134,7 @@ class DiscussionReview extends Component {
                                                 <img src={require('../img/unban.png')} title={t("series.unban")} alt={t("series.unban")}/>
                                             </button>)
                                             :
-                                            (<button className="heart post-liked" onClick={() => toggleUserBanned(seriesReview.user)}>
+                                            (<button data-testid="toggleUserBannedButton" className="heart post-liked" onClick={() => toggleUserBanned(seriesReview.user)}>
                                                 <FontAwesomeIcon icon={ faBan }/>
                                             </button>)
                                     )
@@ -142,7 +142,7 @@ class DiscussionReview extends Component {
 
                                 <div className="float-right mr-5">
                                     { ( logged_user && (logged_user.admin || logged_user.id === seriesReview.user.id) ) &&
-                                        <button className="remove" onClick={() => deleteReview(seriesReview)}>
+                                        <button data-testid="deleteReviewButton" className="remove" onClick={() => deleteReview(seriesReview)}>
                                             <FontAwesomeIcon icon={faTrash} />
                                         </button>
                                     }
