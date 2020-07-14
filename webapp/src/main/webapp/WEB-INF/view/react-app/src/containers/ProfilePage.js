@@ -485,89 +485,118 @@ class ProfilePage extends PureComponent {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="tab-information" className="tab-pane" role="tabpanel">
-                                            <section id="basic-settings" className="container">
-                                                <div className="row text-center">
-                                                    <div className="col my-auto self-align-center">
-                                                        <div className="other-infos infos-zone">
-                                                            <Formik
-                                                                initialValues={{ username: user.userName, mail: user.mail }}
-                                                                validationSchema={Yup.object({
-                                                                    mail: Yup.string()
-                                                                        .email(<Trans i18nKey="register.invalidEmail" />)
-                                                                        .required('Required'),
-                                                                    username: Yup.string()
-                                                                        .max(20, <Trans i18nKey="register.passwordTooLong" />)
-                                                                        .required('Required'),
-                                                                })}
-                                                                onSubmit={(values, actions) => {
-                                                                    const options = {
-                                                                        headers: {'Content-Type': 'application/json'}
-                                                                    };
-                                                                    let data = { "userName": values.username };
-                                                                    Axios.put("/users/" + this.props.logged_user.id + "/username", JSON.stringify(data), options)
-                                                                        .then((res) => {
-                                                                            let newUser = {
-                                                                                ...this.state.user,
-                                                                                userName: values.username
-                                                                            };
+                                        {
+                                            currUser &&
+                                            <div id="tab-information" className="tab-pane" role="tabpanel">
+                                                <section id="basic-settings" className="container">
+                                                    <div className="row text-center">
+                                                        <div className="col my-auto self-align-center">
+                                                            <div className="other-infos infos-zone">
+                                                                <Formik
+                                                                    initialValues={{
+                                                                        username: user.userName,
+                                                                        mail: user.mail
+                                                                    }}
+                                                                    validationSchema={Yup.object({
+                                                                        mail: Yup.string()
+                                                                            .email(<Trans
+                                                                                i18nKey="register.invalidEmail"/>)
+                                                                            .required('Required'),
+                                                                        username: Yup.string()
+                                                                            .max(20, <Trans
+                                                                                i18nKey="register.passwordTooLong"/>)
+                                                                            .required('Required'),
+                                                                    })}
+                                                                    onSubmit={(values, actions) => {
+                                                                        const options = {
+                                                                            headers: {'Content-Type': 'application/json'}
+                                                                        };
+                                                                        let data = {"userName": values.username};
+                                                                        Axios.put("/users/" + this.props.logged_user.id + "/username", JSON.stringify(data), options)
+                                                                            .then((res) => {
+                                                                                let newUser = {
+                                                                                    ...this.state.user,
+                                                                                    userName: values.username
+                                                                                };
 
-                                                                            this.setState({
-                                                                                user: newUser
-                                                                            });
+                                                                                this.setState({
+                                                                                    user: newUser
+                                                                                });
 
-                                                                            let user = res.data;
-                                                                            this.props.updateUserName(user);
-                                                                        }).catch((err) => {
+                                                                                let user = res.data;
+                                                                                this.props.updateUserName(user);
+                                                                            }).catch((err) => {
                                                                             const error_status = "error." + err.response.status + "status";
                                                                             const error_body = "error." + err.response.status + "body";
-                                                                            this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
+                                                                            this.setState({
+                                                                                error: true,
+                                                                                error_status: error_status,
+                                                                                error_body: error_body,
+                                                                                loading: false
+                                                                            });
                                                                         }).finally(() => actions.setSubmitting(false));
-                                                                }}
-                                                            >
-                                                                {formik => (
-                                                                    <form onSubmit={formik.handleSubmit}>
+                                                                    }}
+                                                                >
+                                                                    {formik => (
+                                                                        <form onSubmit={formik.handleSubmit}>
 
-                                                                        <div className="row form-group">
-                                                                            <label className="col-sm-4 control-label" path="username">
-                                                                                <Trans i18nKey="register.username" />
-                                                                            </label>
-                                                                            <div className="col-sm-6">
-                                                                                <input {...formik.getFieldProps('username')} path="username" type="text" minLength="6" maxLength="32" className="form-control" name="username" placeholder="JohnDoe" />
-                                                                                {formik.touched.username && formik.errors.username ? (
-                                                                                    <span className="error m-3 w-100">{formik.errors.username}</span>
-                                                                                ) : null}
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className="row form-group">
-                                                                            <label className="col-sm-4 control-label">
-                                                                                <Trans i18nKey="register.mail" />
-                                                                            </label>
-                                                                            <div className="col-sm-6">
-                                                                                <input {...formik.getFieldProps('mail')} type="email" className="form-control" name="mail" disabled />
-                                                                                {formik.touched.mail && formik.errors.mail ? (
-                                                                                    <span className="error m-3 w-100">{formik.errors.mail}</span>
-                                                                                ) : null}
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className="row text-center justify-content-center">
-                                                                            <div className="col align-self-center">
-                                                                                <div className="text-center m-4">
-                                                                                    <button type="submit" className="tutv-button m-4" >
-                                                                                        <Trans i18nKey="profile.save" />
-                                                                                    </button>
+                                                                            <div className="row form-group">
+                                                                                <label
+                                                                                    className="col-sm-4 control-label"
+                                                                                    path="username">
+                                                                                    <Trans i18nKey="register.username"/>
+                                                                                </label>
+                                                                                <div className="col-sm-6">
+                                                                                    <input {...formik.getFieldProps('username')}
+                                                                                           path="username" type="text"
+                                                                                           minLength="6" maxLength="32"
+                                                                                           className="form-control"
+                                                                                           name="username"
+                                                                                           placeholder="JohnDoe"/>
+                                                                                    {formik.touched.username && formik.errors.username ? (
+                                                                                        <span
+                                                                                            className="error m-3 w-100">{formik.errors.username}</span>
+                                                                                    ) : null}
                                                                                 </div>
                                                                             </div>
-                                                                        </div>
+                                                                            <div className="row form-group">
+                                                                                <label
+                                                                                    className="col-sm-4 control-label">
+                                                                                    <Trans i18nKey="register.mail"/>
+                                                                                </label>
+                                                                                <div className="col-sm-6">
+                                                                                    <input {...formik.getFieldProps('mail')}
+                                                                                           type="email"
+                                                                                           className="form-control"
+                                                                                           name="mail" disabled/>
+                                                                                    {formik.touched.mail && formik.errors.mail ? (
+                                                                                        <span
+                                                                                            className="error m-3 w-100">{formik.errors.mail}</span>
+                                                                                    ) : null}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div
+                                                                                className="row text-center justify-content-center">
+                                                                                <div className="col align-self-center">
+                                                                                    <div className="text-center m-4">
+                                                                                        <button type="submit"
+                                                                                                className="tutv-button m-4">
+                                                                                            <Trans
+                                                                                                i18nKey="profile.save"/>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
 
-                                                                    </form>
-                                                                )}
-                                                            </Formik>
+                                                                        </form>
+                                                                    )}
+                                                                </Formik>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </section>
-                                        </div>
+                                                </section>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
