@@ -38,10 +38,6 @@ class DiscussionReviewComment extends Component {
 
     }
 
-    toggleUserBan = () => {
-
-    }
-
     render() {
         const { t, logged_user, deleteComment, toggleUserBanned } = this.props;
         const { comment } = this.state;
