@@ -21,14 +21,18 @@ public class OurAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res, Authentication auth) throws ServletException, IOException {
-        boolean isAdmin = false;
+        boolean isAdmin = false, isUser = false;
         for(GrantedAuthority a : auth.getAuthorities()){
             if(a.getAuthority().equals("ROLE_ADMIN")){
                 isAdmin = true;
-                break;
+            }
+            if(a.getAuthority().equals("ROLE_USER")){
+                isUser = true;
             }
         }
-        res.addHeader("Authorization","Bearer " + jwtUtil.generateToken(auth.getName(),isAdmin));
+        if(isUser){
+            res.addHeader("Authorization","Bearer " + jwtUtil.generateToken(auth.getName(),isAdmin));
+        }
     }
 
 }
