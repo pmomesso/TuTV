@@ -123,10 +123,10 @@ const Navbar = (props) => {
                 </span>
             </button>
             <div className="wrapper">
-                <a id="home-link" href="/">
+                <NavLink id="home-link" to="/">
                     <img className="logo tutv" src={require('../img/Tutv.png')} alt="TUTV"/>
                     <span id="home-text">TUTV</span>
-                </a>
+                </NavLink>
                 <div id="global-search" className="navbar-form form-search">
                     <div className="form-group">
                         <input type="text" id="global-search-input" value={props.search_name} onChange={handleSearchChange} name="name" className="show-search" placeholder={ t("search.search") } onKeyPress={searchKeyPress}/>
