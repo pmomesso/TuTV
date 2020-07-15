@@ -152,19 +152,19 @@ class SeriesList extends Component {
               </ul>
             </section>)
             :
-            [
+            (
               (this.props.section === "#search") ?
                   (<div key={1} style={{marginTop: "10%"}} className="container-center">
                     <h4><Trans i18nKey="search.noResults"/></h4>
                   </div>)
                   :
-                  [
+                  (
                     (this.props.isLists) ?
                         (<div key={1} style={{marginTop: "3%"}} className="container-center">
                           <h4><Trans i18nKey="profile.lists.noSeries"/></h4>
                         </div>)
                         :
-                        [
+                        (
                           (this.props.currUser) ?
                               (<div className="container h-100">
                                 <div className="row justify-content-center h-100">
@@ -194,9 +194,9 @@ class SeriesList extends Component {
                                   </div>
                                 </div>
                               </div>)
-                        ]
-                  ]
-            ]
+                        )
+                  )
+            )
         }
         </div>)
   }

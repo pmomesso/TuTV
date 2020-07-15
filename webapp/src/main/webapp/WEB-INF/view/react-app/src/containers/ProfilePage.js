@@ -10,11 +10,11 @@ import { NavLink } from 'react-router-dom';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import $ from "jquery";
-import Chart from "chart.js";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {confirmAlert} from "react-confirm-alert";
 import ErrorPage from "./ErrorPage";
+import DoughnutChart from '../components/DoughnutChart';
 
 class ProfilePage extends PureComponent {
 
@@ -59,20 +59,21 @@ class ProfilePage extends PureComponent {
                     stats: statsData.data.stats,
                     lists: listsData.data,
                     loading: false
+                }, () => {
+                    /*if (that.state.stats.length !== 0) {
+                        var labels = [];
+                        var values = [];
+                        $.each(statsData.data.stats, function (index, stat) {
+                            labels.push(stat.genre.name);
+                            values.push(stat.stat);
+                        });
+                        $("#genresChart").remove();
+                        $("#canvasContainer").append("<canvas id='genresChart'/>");
+                        var ctx = document.getElementById('genresChart');
+                        that.createChart(ctx, labels, values);
+                    }*/
                 });
 
-                if (that.state.stats.length !== 0) {
-                    var labels = [];
-                    var values = [];
-                    $.each(statsData.data.stats, function (index, stat) {
-                        labels.push(stat.genre.name);
-                        values.push(stat.stat);
-                    });
-                    $("#genresChart").remove();
-                    $("#canvasContainer").append("<canvas id='genresChart'/>");
-                    var ctx = document.getElementById('genresChart');
-                    that.createChart(ctx, labels, values);
-                }
             })).catch((err) => {
                 const error_status = "error." + err.response.status + "status";
                 const error_body = "error." + err.response.status + "body";
@@ -215,52 +216,26 @@ class ProfilePage extends PureComponent {
                 that.setState({
                     stats: res.data.stats,
                     followingChanged: !this.state.followingChanged
+                }, () => {
+                    /*if (that.state.stats.length !== 0) {
+                        var labels = [];
+                        var values = [];
+                        $.each(res.data.stats, function (index, stat) {
+                            labels.push(stat.genre.name);
+                            values.push(stat.stat);
+                        });
+                        $("#genresChart").remove();
+                        $("#canvasContainer").append("<canvas id='genresChart'/>");
+                        var ctx = document.getElementById('genresChart');
+                        that.createChart(ctx, labels, values);
+                    }*/
                 });
 
-                if (that.state.stats.length !== 0) {
-                    var labels = [];
-                    var values = [];
-                    $.each(res.data.stats, function (index, stat) {
-                        labels.push(stat.genre.name);
-                        values.push(stat.stat);
-                    });
-                    $("#genresChart").remove();
-                    $("#canvasContainer").append("<canvas id='genresChart'/>");
-                    var ctx = document.getElementById('genresChart');
-                    that.createChart(ctx, labels, values);
-                }
             }).catch((err) => {
                 const error_status = "error." + err.response.status + "status";
                 const error_body = "error." + err.response.status + "body";
                 this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
             });
-    };
-
-    createChart = (ctx, labels, values) => {
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: values,
-                    backgroundColor: [
-                        '#3cb44b', '#469990', '#aaffc3', '#42d4f4', '#4363d8',
-                        '#000075', '#911eb4', '#f032e6', '#e6beff', '#800000',
-                        '#e6194b', '#f58231', '#ffd8b1', '#ffe119', '#bfef45'
-                    ]
-                }]
-            },
-            options: {
-                maintainAspectRatio: false,
-                legend: {
-                    display: true,
-                    position: 'bottom',
-                    labels: {
-                        padding: 20
-                    }
-                }
-            }
-        });
     };
 
     removeList = (list_id, index) => {
@@ -293,6 +268,22 @@ class ProfilePage extends PureComponent {
                 }
             ]
         });
+    };
+
+    formatStatsForChart = () => {
+        const { stats } = this.state;
+
+        if(!stats)
+            return null;
+        
+        const formattedStats = stats.map(stat => {
+            return {
+                label: stat.genre.name,
+                value: stat.stat
+            }
+        });
+
+        return formattedStats;
     };
 
     render() {
@@ -432,7 +423,7 @@ class ProfilePage extends PureComponent {
                                                         <h2 className="small">
                                                             <Trans i18nKey="profile.recently" />
                                                         </h2>
-                                                        <SeriesList key={recentlyWatched} source={recentlyWatched} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
+                                                        <SeriesList key={this.state.followingChanged} source={recentlyWatched} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
                                                     </div>):(<div></div>)
                                                 }
                                                 <div id="all-shows">
@@ -472,7 +463,8 @@ class ProfilePage extends PureComponent {
                                                     <div className="row justify-content-center">
                                                         {
                                                             (currUser && stats.length !== 0) ?
-                                                                (<div id="canvasContainer" className="mt-lg-5 mt-sm-0"><canvas id="genresChart"/></div>)
+                                                                //(<div id="canvasContainer" className="mt-lg-5 mt-sm-0"><canvas id="genresChart"/></div>)
+                                                                (<DoughnutChart key={this.state.followingChanged} dataSet={this.formatStatsForChart()}/>)
                                                                 :
                                                                 (<div className="container h-100">
                                                                     <div className="row justify-content-center h-100">
