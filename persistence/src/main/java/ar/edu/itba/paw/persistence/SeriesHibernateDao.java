@@ -292,6 +292,7 @@ public class SeriesHibernateDao implements SeriesDao {
                 series.get().addUserFollower(user.get());
                 series.get().setFollowers(series.get().getUserFollowers().size());
             }
+            em.flush();
         }
         return series;
     }
@@ -300,11 +301,12 @@ public class SeriesHibernateDao implements SeriesDao {
     public Optional<Series> unfollowSeries(long seriesId, long userId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<Series> series = Optional.ofNullable(em.find(Series.class,seriesId));
-        int updated = 0;
         if(user.isPresent() && series.isPresent()){
-            series.get().removeUserFollower(user.get());
-            series.get().setFollowers(series.get().getUserFollowers().size());
-            updated++;
+            if(series.get().getUserFollowers().contains(user.get())) {
+                series.get().removeUserFollower(user.get());
+                series.get().setFollowers(series.get().getUserFollowers().size());
+            }
+            em.flush();
         }
         return series;
     }
@@ -320,8 +322,11 @@ public class SeriesHibernateDao implements SeriesDao {
         Optional<Episode> episode = resultList.stream().findFirst();
         int updated = 0;
         if(user.isPresent() && episode.isPresent()){
-            episode.get().addViewer(user.get());
-            updated++;
+            updated = 1;
+            if(!episode.get().getViewers().contains(user.get())) {
+                episode.get().addViewer(user.get());
+            }
+            em.flush();
         }
         return updated;
     }
@@ -343,6 +348,7 @@ public class SeriesHibernateDao implements SeriesDao {
                     updated++;
                 }
             }
+            em.flush();
         }
         return updated;
     }
@@ -356,10 +362,14 @@ public class SeriesHibernateDao implements SeriesDao {
         Optional<Season> season = Optional.ofNullable(query.getSingleResult());
         int updated = 0;
         if(user.isPresent() && season.isPresent()){
+            updated = 1;
             for(Episode episode : season.get().getEpisodes()){
-                episode.removeViewer(user.get());
-                updated++;
+                if(episode.getViewers().contains(user.get())) {
+                    episode.removeViewer(user.get());
+                    updated++;
+                }
             }
+            em.flush();
         }
         return updated;
     }
@@ -375,8 +385,11 @@ public class SeriesHibernateDao implements SeriesDao {
         Optional<Episode> episode = resultList.stream().findFirst();
         int updated = 0;
         if(user.isPresent() && episode.isPresent()){
-            episode.get().removeViewer(user.get());
-            updated++;
+            updated = 1;
+            if(episode.get().getViewers().contains(user.get())) {
+                episode.get().removeViewer(user.get());
+            }
+            em.flush();
         }
         return updated;
     }
@@ -399,11 +412,12 @@ public class SeriesHibernateDao implements SeriesDao {
     public Optional<SeriesReview> likePost(long userId, long postId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<SeriesReview> review = Optional.ofNullable(em.find(SeriesReview.class,postId));
-        int updated = 0;
         if(user.isPresent() && review.isPresent()){
-            review.get().addLike(user.get());
-            review.get().setNumLikes(review.get().getLikes().size());
-            updated++;
+            if(review.get().getLikes().contains(user.get())) {
+                review.get().addLike(user.get());
+                review.get().setNumLikes(review.get().getLikes().size());
+            }
+            em.flush();
         }
         return review;
     }
@@ -412,11 +426,12 @@ public class SeriesHibernateDao implements SeriesDao {
     public Optional<SeriesReview> unlikePost(long userId, long postId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<SeriesReview> review = Optional.ofNullable(em.find(SeriesReview.class,postId));
-        int updated = 0;
         if(user.isPresent() && review.isPresent()){
-            review.get().removeLike(user.get());
-            review.get().setNumLikes(review.get().getLikes().size());
-            updated++;
+            if(review.get().getLikes().contains(user.get())) {
+                review.get().removeLike(user.get());
+                review.get().setNumLikes(review.get().getLikes().size());
+            }
+            em.flush();
         }
         return review;
     }
@@ -448,11 +463,12 @@ public class SeriesHibernateDao implements SeriesDao {
     public Optional<SeriesReviewComment> likeComment(long userId, long commentId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<SeriesReviewComment> comment = Optional.ofNullable(em.find(SeriesReviewComment.class,commentId));
-        int updated = 0;
         if(user.isPresent() && comment.isPresent()){
-            comment.get().addLike(user.get());
-            comment.get().setNumLikes(comment.get().getLikes().size());
-            updated++;
+            if(!comment.get().getLikes().contains(user.get())) {
+                comment.get().addLike(user.get());
+                comment.get().setNumLikes(comment.get().getLikes().size());
+            }
+            em.flush();
         }
         return comment;
     }
@@ -461,11 +477,12 @@ public class SeriesHibernateDao implements SeriesDao {
     public Optional<SeriesReviewComment> unlikeComment(long userId, long commentId) {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<SeriesReviewComment> comment = Optional.ofNullable(em.find(SeriesReviewComment.class,commentId));
-        int updated = 0;
         if(user.isPresent() && comment.isPresent()){
-            comment.get().removeLike(user.get());
-            comment.get().setNumLikes(comment.get().getLikes().size());
-            updated++;
+            if(comment.get().getLikes().contains(user.get())) {
+                comment.get().removeLike(user.get());
+                comment.get().setNumLikes(comment.get().getLikes().size());
+            }
+            em.flush();
         }
         return comment;
     }
@@ -708,11 +725,14 @@ public class SeriesHibernateDao implements SeriesDao {
             if(season.getSeasonNumber() <= seasonNumber) {
                 season.getEpisodes().stream().forEach(ep -> {
                     if(season.getSeasonNumber() < seasonNumber || ep.getNumEpisode() <= episodeNumber) {
-                        ep.addViewer(user);
+                        if(!ep.getViewers().contains(user)) {
+                            ep.addViewer(user);
+                        }
                     }
                 });
             }
         });
+        em.flush();
         return 1;
     }
 
@@ -731,9 +751,14 @@ public class SeriesHibernateDao implements SeriesDao {
         Series s = em.find(Series.class, seriesId);
         s.getSeasons().stream().forEach(season -> {
             if(season.getSeasonNumber() <= seasonNumber) {
-                season.getEpisodes().stream().forEach(ep -> ep.addViewer(user));
+                season.getEpisodes().stream().forEach(ep -> {
+                    if(!ep.getViewers().contains(user)) {
+                        ep.addViewer(user);
+                    }
+                });
             }
         });
+        em.flush();
         return 1;
     }
 
