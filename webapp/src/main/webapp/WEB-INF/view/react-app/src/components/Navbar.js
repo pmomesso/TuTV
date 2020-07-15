@@ -5,7 +5,6 @@ import Modal from 'react-modal';
 import { connect } from 'react-redux';
 
 import $ from "jquery";
-// import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

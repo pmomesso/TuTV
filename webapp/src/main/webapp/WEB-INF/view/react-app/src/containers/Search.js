@@ -7,6 +7,7 @@ import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 import { store } from 'react-notifications-component';
 import ErrorPage from "./ErrorPage";
+import $ from "jquery";
 
 class Search extends PureComponent {
     state = {
@@ -33,15 +34,9 @@ class Search extends PureComponent {
     componentDidMount = () => {
         var that = this;
 
-        /*if(this.props.location.state && this.props.location.state.searchText) {
-            this.setState({
-                ...this.state,
-                seachName: "assdwdqdwqdq"
-            })
-            this.props.history.replace({
-                state: {}
-            })
-        }*/
+        var navigation = $(".page-left");
+        var width = window.screen.width;
+        if (width < 768) navigation.css('width', width + 'px');
 
         Axios.all([
             Axios.get("/genres"),
