@@ -210,7 +210,7 @@ public class SeriesServiceImpl implements SeriesService {
             throw new NotFoundException();
         }
     }
-    
+
     @Override
     @Transactional
     public void setViewedSeason(long seriesId, int seasonNumber) throws UnauthorizedException, NotFoundException {
