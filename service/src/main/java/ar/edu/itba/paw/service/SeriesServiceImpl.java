@@ -248,6 +248,7 @@ public class SeriesServiceImpl implements SeriesService {
     @Transactional
     public Optional<SeriesReview> addSeriesReview(String body, long seriesId, boolean isSpam) throws UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        if(user.getIsBanned()) throw new UnauthorizedException();
         Optional<SeriesReview> optSeriesReview = seriesDao.createSeriesReview(body, seriesId, user.getId(), isSpam);
         return optSeriesReview;
     }
@@ -272,6 +273,7 @@ public class SeriesServiceImpl implements SeriesService {
     @Transactional
     public SeriesReviewComment addCommentToPost(long commentPostId, String body, String baseUrl) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
+        if(user.getIsBanned()) throw new UnauthorizedException();
 
         SeriesReview review = seriesDao.getSeriesReviewById(commentPostId).orElseThrow(NotFoundException::new);
         Object[] args = {review.getSeries().getName()};
