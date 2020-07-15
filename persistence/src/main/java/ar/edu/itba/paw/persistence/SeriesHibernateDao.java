@@ -334,9 +334,12 @@ public class SeriesHibernateDao implements SeriesDao {
         Optional<Season> season = resultList.stream().findFirst();
         int updated = 0;
         if(user.isPresent() && season.isPresent()){
+            updated = 1;
             for(Episode episode : season.get().getEpisodes()){
-                episode.addViewer(user.get());
-                updated++;
+                if(!episode.getViewers().contains(user.get())) {
+                    episode.addViewer(user.get());
+                    updated++;
+                }
             }
         }
         return updated;
