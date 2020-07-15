@@ -262,7 +262,7 @@ class SeriesPage extends Component {
                                                 <h2>
                                                     {(series.userRating == null) ?
                                                         t("series.no_rating")
-                                                        : series.userRating + " / 5"}
+                                                        : series.userRating.toFixed(1) + " / 5.0"}
                                                 </h2>
                                             </div>
                                             <button className="add-button" onClick={this.onSeriesFollowClicked}>

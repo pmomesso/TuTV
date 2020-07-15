@@ -6,6 +6,7 @@ import SeriesList from '../components/SeriesList';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import Axios from 'axios';
+import { NavLink } from 'react-router-dom';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import $ from "jquery";
@@ -184,11 +185,17 @@ class ProfilePage extends PureComponent {
             const options = {
                 headers: {'Content-Type': e.target.result.split("base64,")[0].replace("data:", "").replace(";", "")}
             };
-            Axios.put("/users/" + that.props.logged_user.id + "/avatar", e.target.result.split("base64,")[1], options)
+            const avatar = e.target.result.split("base64,")[1];
+            Axios.put("/users/" + that.props.logged_user.id + "/avatar", avatar, options)
                 .then((res) => {
                     that.setState({
-                        avatar: e.target.result.split("base64,")[1]
+                        avatar: avatar
                     });
+                    let user = {
+                        ...that.state.user,
+                        avatar: avatar
+                    };
+                    that.props.updateUserName(user);
                     $("#uploadAvatarPopup").toggle();
                 }).catch((err) => {
                     const error_status = "error." + err.response.status + "status";
@@ -475,7 +482,7 @@ class ProfilePage extends PureComponent {
                                                                                 <h4><Trans i18nKey="watchlist.discover"/></h4>
                                                                             </div>
                                                                             <div className="text-center m-4">
-                                                                                <button className="tutv-button m-4" onClick={event =>  window.location.href='/'}><Trans i18nKey="watchlist.explore"/></button>
+                                                                                <NavLink className="tutv-button m-4" to="/"><Trans i18nKey="watchlist.explore"/></NavLink>
                                                                             </div>
                                                                         </div>
                                                                     </div>
