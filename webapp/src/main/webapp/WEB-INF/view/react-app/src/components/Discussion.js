@@ -124,7 +124,7 @@ class Discussion extends Component {
                 <div id="show-comments">
                     <div className="comments">
                         
-                        { (logged_user && !logged_user.isBanned) &&
+                        { (logged_user && !logged_user.banned) &&
                             <Formik
                                 initialValues={{ body: '', isSpam: false }}
                                 validationSchema={Yup.object({

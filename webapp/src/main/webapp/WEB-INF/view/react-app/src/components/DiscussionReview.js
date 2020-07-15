@@ -188,7 +188,7 @@ class DiscussionReview extends Component {
                 <div className="replies sub-comment">
                     { replies }
 
-                    { (logged_user && !logged_user.isBanned) &&
+                    { (logged_user && !logged_user.banned) &&
                         <Formik
                             initialValues={{ body: '' }}
                             validationSchema={Yup.object({
