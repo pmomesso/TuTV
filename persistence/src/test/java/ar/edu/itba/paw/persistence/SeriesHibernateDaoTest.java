@@ -361,7 +361,7 @@ public class SeriesHibernateDaoTest {
     public void setViewedSeasonTest(){
         insertUser();
         int updated = seriesDao.setViewedSeason(series.getId(),season.getSeasonNumber(),user.getId());
-        Assert.assertEquals(1,updated);
+        Assert.assertEquals(2,updated);
         Assert.assertEquals(1,episode.getViewers().size());
         Assert.assertEquals(1,user.getViewed().size());
     }
@@ -372,7 +372,7 @@ public class SeriesHibernateDaoTest {
             e.addViewer(user);
 
         int updated = seriesDao.unviewSeason(series.getId(),season.getSeasonNumber(),user.getId());
-        Assert.assertEquals(1,updated);
+        Assert.assertEquals(2,updated);
         Assert.assertEquals(0,episode.getViewers().size());
         Assert.assertEquals(0,user.getViewed().size());
     }

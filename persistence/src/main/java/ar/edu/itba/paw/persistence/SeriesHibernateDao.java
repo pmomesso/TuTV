@@ -413,11 +413,11 @@ public class SeriesHibernateDao implements SeriesDao {
         Optional<User> user = Optional.ofNullable(em.find(User.class,userId));
         Optional<SeriesReview> review = Optional.ofNullable(em.find(SeriesReview.class,postId));
         if(user.isPresent() && review.isPresent()){
-            if(review.get().getLikes().contains(user.get())) {
+            if(!review.get().getLikes().contains(user.get())) {
                 review.get().addLike(user.get());
                 review.get().setNumLikes(review.get().getLikes().size());
+                em.flush();
             }
-            em.flush();
         }
         return review;
     }
