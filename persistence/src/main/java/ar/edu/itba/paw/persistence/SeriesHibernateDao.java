@@ -291,8 +291,8 @@ public class SeriesHibernateDao implements SeriesDao {
             if(!series.get().getUserFollowers().contains(user.get())) {
                 series.get().addUserFollower(user.get());
                 series.get().setFollowers(series.get().getUserFollowers().size());
+                em.flush();
             }
-            em.flush();
         }
         return series;
     }

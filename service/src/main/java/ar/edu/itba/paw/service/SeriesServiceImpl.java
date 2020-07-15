@@ -202,9 +202,6 @@ public class SeriesServiceImpl implements SeriesService {
     @Transactional
     public void setViewedEpisode(long seriesId, int seasonNumber, int episodeNumber) throws NotFoundException, UnauthorizedException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        if(!this.follows(seriesId)){
-            this.followSeries(seriesId);
-        }
         int result = seriesDao.setViewedEpisode(seriesId, seasonNumber, episodeNumber, user.getId());
         if(result == 0) {
             throw new NotFoundException();
@@ -215,9 +212,6 @@ public class SeriesServiceImpl implements SeriesService {
     @Transactional
     public void setViewedSeason(long seriesId, int seasonNumber) throws UnauthorizedException, NotFoundException {
         User user = userService.getLoggedUser().orElseThrow(UnauthorizedException::new);
-        if(!this.follows(seriesId)){
-            this.followSeries(seriesId);
-        }
         int result = seriesDao.setViewedSeason(seriesId,seasonNumber,user.getId());
         if(result == 0) {
             throw new NotFoundException();
