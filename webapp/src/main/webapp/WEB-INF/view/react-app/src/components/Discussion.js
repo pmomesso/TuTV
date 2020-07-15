@@ -20,6 +20,12 @@ class Discussion extends Component {
         this.fetchData();
     };
 
+    componentDidUpdate = (prevProps) => {
+        if (this.props.series.id !== prevProps.series.id ) {
+            this.fetchData();
+        }
+    };
+
     fetchData = () => {
         Axios.get("/series/" + this.props.series.id + "/reviews")
             .then(res => {

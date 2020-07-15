@@ -33,6 +33,12 @@ class SeriesPage extends Component {
         })
     };
 
+    componentDidUpdate = (prevProps) => {
+        if (this.props.match.params.series_id !== prevProps.match.params.series_id ) {
+            this.fetchData();
+        }
+    };
+
     fetchData = () => {
         let seriesId = this.props.match.params.series_id;
 
@@ -313,7 +319,7 @@ class SeriesPage extends Component {
                                                 {seasonList}
 
                                             </div>
-                                            <Discussion series={this.state.series}/>
+                                            <Discussion key={this.state.series} series={this.state.series}/>
                                         </div>
                                     </div>
                                 </div>
