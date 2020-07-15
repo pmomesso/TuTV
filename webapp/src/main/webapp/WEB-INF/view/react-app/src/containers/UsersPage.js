@@ -188,12 +188,11 @@ class UsersPage extends Component {
                                                     <li className={`page-item ${(typeof this.state.prevUrl !== "string") ? "disabled" : ""}`}>
                                                         {
                                                             (typeof this.state.prevUrl === "string") ?
-                                                                (<button className="button-link page-link"
-                                                                         onClick={this.prevPage}>
+                                                                (<button onClick={this.prevPage}>
                                                                     <Trans i18nKey="users.previous"/>
                                                                 </button>)
                                                                 :
-                                                                (<span className="page-link">
+                                                                (<span>
                                                                     <Trans i18nKey="users.previous"/>
                                                                 </span>)
                                                         }
@@ -201,12 +200,11 @@ class UsersPage extends Component {
                                                     <li className={`page-item ${(typeof this.state.nextUrl !== "string") ? "disabled" : ""}`}>
                                                         {
                                                             (typeof this.state.nextUrl === "string") ?
-                                                                (<button className="button-link page-link"
-                                                                         onClick={this.nextPage}>
+                                                                (<button onClick={this.nextPage}>
                                                                     <Trans i18nKey="users.next"/>
                                                                 </button>)
                                                                 :
-                                                                (<span className="page-link">
+                                                                (<span>
                                                                     <Trans i18nKey="users.next"/>
                                                                 </span>)
                                                         }
