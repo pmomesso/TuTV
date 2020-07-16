@@ -42,9 +42,10 @@ class Search extends PureComponent {
             Axios.get("/genres"),
             Axios.get("/networks"),
         ]).then(Axios.spread(function(genres, networks) {
+            const genres_sorted = genres.data.sort((a,b)=> a.name.localeCompare(b.name))
             that.setState({
                 ...that.state,
-                genreList: genres.data,
+                genreList: genres_sorted,
                 networkList: networks.data
             })
         })).catch((err) => {
@@ -237,7 +238,7 @@ class Search extends PureComponent {
                                             </div>
                                         </div>
                                     </div>
-                                    <SeriesList key={fetchUrl} source={ fetchUrl } section={"#search"} addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
+                                    <SeriesList key={fetchUrl} childKey={true} source={ fetchUrl } section={"#search"} addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
                                 </section>
                             </div>
                         </div>

@@ -19,8 +19,10 @@ class Explore extends Component {
     componentDidMount = () => {
         Axios.get("/genres")
         .then(res => {
+            const genres = res.data.sort((a,b)=> a.name.localeCompare(b.name));
+
             this.setState({
-                genreList: res.data,
+                genreList: genres,
             })
         }).catch((err) => {
             const error_status = "error." + err.response.status + "status";
@@ -140,7 +142,7 @@ class Explore extends Component {
         if (!this.state.error) {
             const seriesLists = this.state.genreList.map(genre => {
                 return(
-                    <SeriesList key={ genre.id } name={ genre.name } source={ genre.seriesUri } section={"#explore"} addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
+                    <SeriesList key={ genre.id } childKey={true} name={ genre.name } source={ genre.seriesUri } section={"#explore"} addSeriesToListHandler={this.addSeriesToListHandler} userLists={this.state.userLists}/>
                 )
             });
 
