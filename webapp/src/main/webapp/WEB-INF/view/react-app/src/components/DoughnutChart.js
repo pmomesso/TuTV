@@ -11,20 +11,10 @@ class DoughnutChart extends Component {
 
     getData = () => {
         const colors = [
-            "#FF6384",
-            "#36A2EB",
-            "#FFCE56",
-            "#4661EE",
-            "#1BCDD1",
-            "#8FAABB",
-            "#B08BEB",
-            "#3EA0DD",
-            "#F5A52A",
-            "#23BFAA",
-            "#FAA586",
-            "#EB8CC6",
-            "#EC5657",
-        ]
+            '#3cb44b', '#469990', '#aaffc3', '#42d4f4', '#4363d8',
+            '#000075', '#911eb4', '#f032e6', '#e6beff', '#800000',
+            '#e6194b', '#f58231', '#ffd8b1', '#ffe119', '#bfef45'
+        ];
 
         let label = [];
         let data = [];
@@ -34,7 +24,7 @@ class DoughnutChart extends Component {
             label.push(dataRow.label);
             data.push(dataRow.value);
             color.push(colors[i]);
-        })
+        });
         
         return {
             labels: label,
@@ -44,11 +34,21 @@ class DoughnutChart extends Component {
                 hoverBackgroundColor: color
             }]
         };
-    }
+    };
 
     render() {
+        const options = {
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    padding: 20
+                }
+            }
+        };
+
         return (
-            <Doughnut data={ this.getData } />
+            <Doughnut data={ this.getData } options={ options } />
         );
     }
 }
