@@ -15,7 +15,7 @@ import Axios from 'axios';
 
 const store = createStore(rootReducer);
 
-const APIURL = "/api";
+const APIURL = "/paw-2019b-1/api";
 Axios.defaults.baseURL = APIURL;
 
 Axios.defaults.headers['Content-Type'] = 'application/json';

@@ -14,7 +14,7 @@ const App = () => {
   return (
     <div className="app-container h-100">
       <ReactNotification />
-      <BrowserRouter>
+      <BrowserRouter basename="/paw-2019b-1">
         <RouterContainer />
       </BrowserRouter>      
     </div>
