@@ -59,21 +59,7 @@ class ProfilePage extends PureComponent {
                     stats: statsData.data.stats,
                     lists: listsData.data,
                     loading: false
-                }, () => {
-                    /*if (that.state.stats.length !== 0) {
-                        var labels = [];
-                        var values = [];
-                        $.each(statsData.data.stats, function (index, stat) {
-                            labels.push(stat.genre.name);
-                            values.push(stat.stat);
-                        });
-                        $("#genresChart").remove();
-                        $("#canvasContainer").append("<canvas id='genresChart'/>");
-                        var ctx = document.getElementById('genresChart');
-                        that.createChart(ctx, labels, values);
-                    }*/
                 });
-
             })).catch((err) => {
                 const error_status = "error." + err.response.status + "status";
                 const error_body = "error." + err.response.status + "body";
@@ -211,27 +197,16 @@ class ProfilePage extends PureComponent {
         let user_id = this.props.match.params.profile_id;
         var that = this;
 
-        Axios.get("/users/" + user_id + "/stats")
-            .then(res => {
-                that.setState({
-                    stats: res.data.stats,
-                    followingChanged: !this.state.followingChanged
-                }, () => {
-                    /*if (that.state.stats.length !== 0) {
-                        var labels = [];
-                        var values = [];
-                        $.each(res.data.stats, function (index, stat) {
-                            labels.push(stat.genre.name);
-                            values.push(stat.stat);
-                        });
-                        $("#genresChart").remove();
-                        $("#canvasContainer").append("<canvas id='genresChart'/>");
-                        var ctx = document.getElementById('genresChart');
-                        that.createChart(ctx, labels, values);
-                    }*/
-                });
-
-            }).catch((err) => {
+        Axios.all([
+            Axios.get("/users/" + user_id + "/recentlyWatched"),
+            Axios.get("/users/" + user_id + "/stats")
+        ]).then(Axios.spread(function(recentlyWatchedData, statsData) {
+            that.setState({
+                recentlyWatched: recentlyWatchedData.data,
+                stats: statsData.data.stats,
+                followingChanged: !that.state.followingChanged
+            });
+        })).catch((err) => {
                 const error_status = "error." + err.response.status + "status";
                 const error_body = "error." + err.response.status + "body";
                 this.setState({error:true, error_status: error_status, error_body: error_body, loading: false});
@@ -317,7 +292,7 @@ class ProfilePage extends PureComponent {
                                         <button onClick={() => this.removeList(list.id, index)} className="heart no-padding"><FontAwesomeIcon icon={faTrash} /></button>
                                     </div>
                                 </div>
-                                <SeriesList isLists={true} list={list} source={list.seriesUri} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler} />
+                                <SeriesList key={this.state.followingChanged} childKey={this.state.followingChanged} isLists={true} list={list} source={list.seriesUri} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler} />
                             </div>
                         </div>
                     );
@@ -423,14 +398,14 @@ class ProfilePage extends PureComponent {
                                                         <h2 className="small">
                                                             <Trans i18nKey="profile.recently" />
                                                         </h2>
-                                                        <SeriesList key={this.state.followingChanged} source={recentlyWatched} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
+                                                        <SeriesList key={this.state.followingChanged} childKey={this.state.followingChanged} source={recentlyWatched} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
                                                     </div>):(<div></div>)
                                                 }
                                                 <div id="all-shows">
                                                     <h2 className="small">
                                                         <Trans i18nKey="profile.all" />
                                                     </h2>
-                                                    <SeriesList isLists={false} user={user} currUser={currUser} key={this.state.followingChanged} source={"/users/" + user.id + "/following"} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
+                                                    <SeriesList isLists={false} user={user} currUser={currUser} key={this.state.followingChanged} childKey={this.state.followingChanged} source={"/users/" + user.id + "/following"} section={"#profile"} onSeriesFollowClickedHandler={this.onSeriesFollowClickedHandler}/>
                                                 </div>
                                             </div>
                                         </div>
@@ -463,7 +438,6 @@ class ProfilePage extends PureComponent {
                                                     <div className="row justify-content-center">
                                                         {
                                                             (currUser && stats.length !== 0) ?
-                                                                //(<div id="canvasContainer" className="mt-lg-5 mt-sm-0"><canvas id="genresChart"/></div>)
                                                                 (<DoughnutChart key={this.state.followingChanged} dataSet={this.formatStatsForChart()}/>)
                                                                 :
                                                                 (<div className="container h-100">

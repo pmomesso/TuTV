@@ -121,7 +121,7 @@ class SeriesList extends Component {
 
     const showList = this.state.showList.map(series => {
       return(
-        <TvSeriesPoster key={ series.id } series={ series } onSeriesFollowClickedHandler={this.props.onSeriesFollowClickedHandler} userLists={userLists} isLists={this.props.isLists} list={this.props.list} addSeriesToListHandler={addSeriesToListHandler} onRemoveFromListClickedHandler={this.onRemoveFromListClickedHandler}/>
+        <TvSeriesPoster key={ series.id + this.props.childKey.toString() } series={ series } onSeriesFollowClickedHandler={this.props.onSeriesFollowClickedHandler} userLists={userLists} isLists={this.props.isLists} list={this.props.list} addSeriesToListHandler={addSeriesToListHandler} onRemoveFromListClickedHandler={this.onRemoveFromListClickedHandler}/>
       )
     });
     
